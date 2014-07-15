@@ -246,6 +246,8 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
           block.typeParams[f] = block.typeParams[f].apply(unifyResult);
         }
       }
+
+      block.render();
     }
     Blockly.TypeVar.triggerGarbageCollection();
   }
@@ -834,7 +836,7 @@ Blockly.TypeExpr.prototype.unify = function(other, subst /* = {} */ ) {
     result[attr] = s[attr];
   }
   if (a.isTypeVar() && b.isTypeVar()) {
-    result[a.name] = b;
+    result[b.name] = a;
   } else if (a.isTypeVar() && !b.isTypeVar()) {
     if (a.name in result) {
       result = result[a.name].unify(b, result);
@@ -849,8 +851,8 @@ Blockly.TypeExpr.prototype.unify = function(other, subst /* = {} */ ) {
     }
   } else {
     if (a.name != b.name) return false;
-    if (a.children.lengh != b.children.lengh) return false;
-    for (var i = 0; i < a.children.lengh; i++) {
+    if (a.children.length != b.children.length) return false;
+    for (var i = 0; i < a.children.length; i++) {
       result = a.children[i].unify(b.children[i], result);
       if (result === false) return false;
     }
@@ -889,6 +891,10 @@ Blockly.TypeVar.initTypeVarDB_ = function() {
   Blockly.TypeVar.addTypeVar_("E", "BlueViolet");
   Blockly.TypeVar.addTypeVar_("F", "Brown");
   Blockly.TypeVar.addTypeVar_("G", "Black");
+  Blockly.TypeVar.addTypeVar_("H", "Chartreuse");
+  Blockly.TypeVar.addTypeVar_("I", "Gold");
+  Blockly.TypeVar.addTypeVar_("J", "HotPink");
+  Blockly.TypeVar.addTypeVar_("K", "LightSkyBlue");
 }
 
 Blockly.TypeVar.addTypeVar_ = function(name, color) {
