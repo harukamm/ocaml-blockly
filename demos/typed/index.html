@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Blockly Demo: Fixed Blockly</title>
+  <script type="text/javascript" src="../../blockly_uncompressed.js"></script>
+  <script type="text/javascript" src="../../blocks_compressed.js"></script>
+  <script type="text/javascript" src="../../msg/js/en.js"></script>
+  <style>
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
+  </style>
+</head>
+<body>
+  <div id="blocklyDiv" style="height: 600px; width: 1024px;"></div>
+
+  <xml id="toolbox" style="display: none">
+    <category name="Logic">
+      <block type="logic_boolean_typed"></block>
+      <block type="logic_ternary_typed"></block>
+      <block type="logic_compare_typed"></block>
+    </category>
+    <category name="Lists">
+      <block type="lists_create_with_typed"></block>
+    </category>
+    <category name="Math">
+      <block type="math_number_typed"></block>
+      <block type="math_arithmetic_typed"></block>
+    </category>
+    <category name="Pairs">
+      <block type="pair_create_typed"></block>
+      <block type="pair_first_typed"></block>
+      <block type="pair_second_typed"></block>
+    </category>
+    <category name="Functions">
+      <block type="lambda_typed"></block>
+      <block type="lambda_app_typed"></block>
+    </category>
+    <category name="Variables">
+      <block type="variables_get_typed"></block>
+    </category>
+  </xml>
+
+  <script>
+    Blockly.inject(document.getElementById('blocklyDiv'),
+        {path: '../../', toolbox: document.getElementById('toolbox')});
+  </script>
+
+</body>
+</html>

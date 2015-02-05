@@ -1566,6 +1566,27 @@ Blockly.Block.prototype.toDevString = function() {
  */
 
 /* should go in blocks/logic.js */
+
+Blockly.Blocks['logic_boolean_typed'] = {
+  /**
+   * Block for boolean data type: true and false.
+   * @this Blockly.Block
+   */
+  init: function() {
+    var BOOLEANS =
+        [[Blockly.Msg.LOGIC_BOOLEAN_TRUE, 'TRUE'],
+         [Blockly.Msg.LOGIC_BOOLEAN_FALSE, 'FALSE']];
+    this.setHelpUrl(Blockly.Msg.LOGIC_BOOLEAN_HELPURL);
+    this.setColour(210);
+    this.setOutput(true, 'Boolean');
+    // Sorin
+    this.setOutputTypeExpr(new Blockly.TypeExpr('bool'));
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldDropdown(BOOLEANS), 'BOOL');
+    this.setTooltip(Blockly.Msg.LOGIC_BOOLEAN_TOOLTIP);
+  }
+};
+
 Blockly.Blocks['logic_compare_typed'] = {
   /**
    * Block for comparison operator.
@@ -1658,6 +1679,48 @@ Blockly.Blocks['math_number_typed'] = {
     // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr('int'));
     this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
+  }
+};
+
+/* should go in blocks/math.js */ 
+Blockly.Blocks['math_arithmetic_typed'] = {
+  /**
+   * Block for basic arithmetic operator.
+   * @this Blockly.Block
+   */
+  init: function() {
+    var OPERATORS =
+        [[Blockly.Msg.MATH_ADDITION_SYMBOL, 'ADD'],
+         [Blockly.Msg.MATH_SUBTRACTION_SYMBOL, 'MINUS'],
+         [Blockly.Msg.MATH_MULTIPLICATION_SYMBOL, 'MULTIPLY'],
+         [Blockly.Msg.MATH_DIVISION_SYMBOL, 'DIVIDE'],
+         [Blockly.Msg.MATH_POWER_SYMBOL, 'POWER']];
+    this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
+    this.setColour(230);
+    this.setOutput(true, 'Number');
+    // Sorin
+    this.setOutputTypeExpr(new Blockly.TypeExpr('int'));
+    this.appendValueInput('A')
+        .setTypeExpr(new Blockly.TypeExpr('int'))
+        .setCheck('Number');
+    this.appendValueInput('B')
+        .setTypeExpr(new Blockly.TypeExpr('int'))
+        .setCheck('Number')
+        .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP');
+    this.setInputsInline(true);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+    this.setTooltip(function() {
+      var mode = thisBlock.getFieldValue('OP');
+      var TOOLTIPS = {
+        'ADD': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_ADD,
+        'MINUS': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MINUS,
+        'MULTIPLY': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MULTIPLY,
+        'DIVIDE': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_DIVIDE,
+        'POWER': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_POWER
+      };
+      return TOOLTIPS[mode];
+    });
   }
 };
 
