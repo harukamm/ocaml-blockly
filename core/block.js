@@ -1857,8 +1857,6 @@ Blockly.Blocks['lists_create_with_typed'] = {
  */
 Blockly.Blocks['pair_create_typed'] = {
   /**
-   * Block for ternary operator.
-   * @this Blockly.Block
    */
   init: function() {
     this.setColour(210);
@@ -1876,8 +1874,6 @@ Blockly.Blocks['pair_create_typed'] = {
 
 Blockly.Blocks['pair_first_typed'] = {
   /**
-   * Block for ternary operator.
-   * @this Blockly.Block
    */
   init: function() {
     this.setColour(210);
@@ -1893,8 +1889,6 @@ Blockly.Blocks['pair_first_typed'] = {
 
 Blockly.Blocks['pair_second_typed'] = {
   /**
-   * Block for ternary operator.
-   * @this Blockly.Block
    */
   init: function() {
     this.setColour(210);
@@ -1907,6 +1901,69 @@ Blockly.Blocks['pair_second_typed'] = {
     this.setOutputTypeExpr(B);
   }
 };
+
+/**
+ * Sums
+ */
+Blockly.Blocks['sum_first_create_typed'] = {
+  /**
+   */
+  init: function() {
+    this.setColour(210);
+    var A = Blockly.TypeVar.getUnusedTypeVar();
+    var B = Blockly.TypeVar.getUnusedTypeVar();
+    this.appendValueInput('FIRST')
+        .setTypeExpr(A)
+        .appendField("create first sum with");
+    this.appendValueInput('SECOND')
+        .setTypeExpr(B)
+        .appendField("and other type");
+    this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr ("sum", [A, B]));
+  }
+};
+
+Blockly.Blocks['sum_second_create_typed'] = {
+  /**
+   */
+  init: function() {
+    this.setColour(210);
+    var A = Blockly.TypeVar.getUnusedTypeVar();
+    var B = Blockly.TypeVar.getUnusedTypeVar();
+    this.appendValueInput('FIRST')
+        .setTypeExpr(A)
+        .appendField("create second sum with");
+    this.appendValueInput('SECOND')
+        .setTypeExpr(B)
+        .appendField("and other type");
+    this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr ("sum", [B, A]));
+  }
+};
+
+Blockly.Blocks['sum_case_typed'] = {
+  /**
+   */
+  init: function() {
+    this.setColour(210);
+    var A = Blockly.TypeVar.getUnusedTypeVar();
+    var B = Blockly.TypeVar.getUnusedTypeVar();
+    var C = Blockly.TypeVar.getUnusedTypeVar();
+    this.appendValueInput('VALUE')
+        .setTypeExpr(new Blockly.TypeExpr ("sum", [A, B]))
+        .appendField("case on");
+    this.appendValueInput('FIRST')
+        .setTypeExpr(new Blockly.TypeExpr ("fun", [A, C]))
+        .appendField("if first");
+    this.appendValueInput('SECOND')
+        .setTypeExpr(new Blockly.TypeExpr ("fun", [B, C]))
+        .appendField("if second");
+    this.setInputsInline(true);
+    this.setOutput(true);
+    this.setOutputTypeExpr(C);
+  }
+};
+
 
 /**
  * First class functions

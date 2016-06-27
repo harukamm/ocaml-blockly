@@ -303,6 +303,31 @@ Blockly.BlockSvg.typeVarShapes_ = {
     }
   },
 
+  sum : {
+    down: function (self, steps, updown) {
+      steps.push('l 0,3 -12,0 0,3 12,0');
+      Blockly.BlockSvg.renderTypeExpr(self.children[0], steps, updown);
+      steps.push('l 0,1 -5,0 0,4 5,0, 0,1');
+      Blockly.BlockSvg.renderTypeExpr(self.children[1], steps, updown);
+      steps.push('l -12,0 0,3 12,0 0,3');
+    },
+    up: function (self, steps, updown) {
+      steps.push('l 0,-3 -12,0 0,-3 12,0');
+      Blockly.BlockSvg.renderTypeExpr(self.children[1], steps, updown);
+      steps.push('l 0,-1 -5,0 0,-4 5,0, 0,-1');
+      Blockly.BlockSvg.renderTypeExpr(self.children[0], steps, updown);
+      steps.push('l -12,0 0,-3 12,0 0,-3');
+    },
+    height: function(self) {
+      return Blockly.BlockSvg.getTypeExprHeight(self.children[0]) + 
+             Blockly.BlockSvg.getTypeExprHeight(self.children[1]) + 
+             18;
+    },
+    offsetsY: function(self) {
+      return [6, Blockly.BlockSvg.getTypeExprHeight(self.children[0]) + 12];
+    }
+  },
+
   fun : {
     down: function (self, steps, updown) {
       steps.push('l 0,3 -12,0 0,3 12,0');
