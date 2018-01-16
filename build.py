@@ -50,6 +50,7 @@
 #   php_compressed.js: The compressed PHP generator.
 #   lua_compressed.js: The compressed Lua generator.
 #   dart_compressed.js: The compressed Dart generator.
+#   typedlang_compressed.js: The compressed TypedLang generator.
 #   msg/js/<LANG>.js for every language <LANG> defined in msg/js/<LANG>.json.
 
 import sys
@@ -211,6 +212,7 @@ class Gen_compressed(threading.Thread):
       self.gen_generator("php")
       self.gen_generator("lua")
       self.gen_generator("dart")
+      self.gen_generator('typedlang')
 
   def gen_core(self):
     target_filename = "blockly_compressed.js"

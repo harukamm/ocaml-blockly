@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Blockly Demo: Generating TypedLang</title>
+
+  <script type="text/javascript" src="../../blockly_uncompressed.js"></script>
+<!--
+  <script type="text/javascript" src="../../blocks_compressed.js"></script>
+-->
+  <script src="../../blocks/logic.js"></script>
+  <script src="../../blocks/loops.js"></script>
+  <script src="../../blocks/math.js"></script>
+  <script src="../../blocks/text.js"></script>
+  <script src="../../blocks/lists.js"></script>
+  <script src="../../blocks/colour.js"></script>
+  <script src="../../blocks/variables.js"></script>
+  <script src="../../blocks/procedures.js"></script>
+<!--
+  <script type="text/javascript" src="../../javascript_compressed.js"></script>
+-->
+  <script src="../../generators/typedlang.js"></script>
+  <script src="../../generators/typedlang/logic.js"></script>
+  <script src="../../generators/typedlang/loops.js"></script>
+  <script src="../../generators/typedlang/math.js"></script>
+  <script src="../../generators/typedlang/text.js"></script>
+  <script src="../../generators/typedlang/lists.js"></script>
+  <script src="../../generators/typedlang/colour.js"></script>
+  <script src="../../generators/typedlang/variables.js"></script>
+  <script src="../../generators/typedlang/procedures.js"></script>
+
+  <script type="text/javascript" src="../../msg/js/en.js"></script>
+  <style>
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
+  </style>
+</head>
+<body>
+  <h1><a href="https://blockly.googlecode.com/">Blockly</a> &gt;
+    <a href="../index.html">Demos</a> &gt; Generating TypedLang</h1>
+
+  <p>This is a simple demo of generating code from blocks.</p>
+
+  <p>&rarr; More info on <a href="https://code.google.com/p/blockly/wiki/LanguageGenerators">Language Generators</a>...</p>
+
+  <p>
+    <button onclick="showCode()">Show TypedLang</button>
+    <button onclick="runCode()">Run TypedLang</button>
+  </p>
+
+  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+
+  <xml id="toolbox" style="display: none">
+    <category name="Logic">
+      <block type="logic_boolean_typed"></block>
+      <block type="logic_ternary_typed"></block>
+      <block type="logic_compare_typed"></block>
+    </category>
+    <category name="Lists">
+      <block type="lists_create_with_typed"></block>
+    </category>
+    <category name="Math">
+      <block type="int_typed"></block>
+      <block type="float_typed"></block>
+      <block type="int_arithmetic_typed"></block>
+      <block type="float_arithmetic_typed"></block>
+    </category>
+    <category name="Pairs">
+      <block type="pair_create_typed"></block>
+      <block type="pair_first_typed"></block>
+      <block type="pair_second_typed"></block>
+    </category>
+    <category name="Sums">
+      <block type="sum_first_create_typed"></block>
+      <block type="sum_second_create_typed"></block>
+      <block type="sum_case_typed"></block>
+    </category>
+    <category name="Functions">
+      <block type="lambda_typed"></block>
+      <block type="lambda_app_typed"></block>
+    </category>
+    <category name="Variables">
+      <block type="variables_get_typed"></block>
+    </category>
+  </xml>
+
+  <script>
+    Blockly.inject(document.getElementById('blocklyDiv'),
+        {path: '../../', toolbox: document.getElementById('toolbox')});
+
+    function showCode() {
+      // Generate TypedLang code and display it.
+      Blockly.TypedLang.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.TypedLang.workspaceToCode();
+      alert(code);
+    }
+
+    function runCode() {
+      // Generate TypedLang code and run it.
+      window.LoopTrap = 1000;
+      Blockly.TypedLang.INFINITE_LOOP_TRAP =
+          'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
+      var code = Blockly.TypedLang.workspaceToCode();
+      Blockly.TypedLang.INFINITE_LOOP_TRAP = null;
+      try {
+        eval(code);
+      } catch (e) {
+        alert(e);
+      }
+    }
+  </script>
+
+</body>
+</html>
