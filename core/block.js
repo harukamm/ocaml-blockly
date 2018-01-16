@@ -1650,13 +1650,13 @@ Blockly.Blocks['logic_ternary_typed'] = {
     this.appendValueInput('IF')
         .setCheck('Boolean')
         .setTypeExpr(new Blockly.TypeExpr('bool'))
-        .appendField(Blockly.Msg.LOGIC_TERNARY_CONDITION);
+        .appendField('if')
     this.appendValueInput('THEN')
         .setTypeExpr(A)
-        .appendField(Blockly.Msg.LOGIC_TERNARY_IF_TRUE);
+        .appendField('then')
     this.appendValueInput('ELSE')
         .setTypeExpr(A)
-        .appendField(Blockly.Msg.LOGIC_TERNARY_IF_FALSE);
+        .appendField('else');
     this.setInputsInline(true);
     this.setOutput(true);
     this.setOutputTypeExpr(A);
@@ -1734,18 +1734,25 @@ Blockly.Blocks['lists_create_with_typed'] = {
   init: function() {
     this.setColour(260);
     this.typeParams = { elmtType: Blockly.TypeVar.getUnusedTypeVar() };
+    this.appendDummyInput('LPAREN')
+        .appendField('[');
     this.appendValueInput('ADD0')
-        .setTypeExpr(this.typeParams.elmtType)
-        .appendField(Blockly.Msg.LISTS_CREATE_WITH_INPUT_WITH);
+        .setTypeExpr(this.typeParams.elmtType);
     this.appendValueInput('ADD1')
-        .setTypeExpr(this.typeParams.elmtType);
+        .setTypeExpr(this.typeParams.elmtType)
+        .appendField(';');
     this.appendValueInput('ADD2')
-        .setTypeExpr(this.typeParams.elmtType);
+        .setTypeExpr(this.typeParams.elmtType)
+        .appendField(';');
+    this.appendDummyInput('RPAREN')
+        .appendField(']');
     this.setOutput(true, 'Array');
     this.setOutputTypeExpr(new Blockly.TypeExpr('list', [this.typeParams.elmtType]));
     this.setMutator(new Blockly.Mutator(['lists_create_with_item']));
     this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_TOOLTIP);
     this.itemCount_ = 3;
+    // https://developers.google.com/blockly/guides/create-custom-blocks/define-blocks
+    this.setInputsInline(true);
   },
   /**
    * Create XML to represent list inputs.
@@ -1763,21 +1770,23 @@ Blockly.Blocks['lists_create_with_typed'] = {
    * @this Blockly.Block
    */
   domToMutation: function(xmlElement) {
+    this.removeInput('LPAREN');
     for (var x = 0; x < this.itemCount_; x++) {
       this.removeInput('ADD' + x);
     }
+    this.removeInput('RPAREN');
     this.itemCount_ = parseInt(xmlElement.getAttribute('items'), 10);
+    this.appendDummyInput('LPAREN')
+        .appendField('[');
     for (var x = 0; x < this.itemCount_; x++) {
       var input = this.appendValueInput('ADD' + x)
                       .setTypeExpr(this.typeParams.elmtType);
-      if (x == 0) {
-        input.appendField(Blockly.Msg.LISTS_CREATE_WITH_INPUT_WITH);
+      if (x != 0) {
+        input.appendField(';');
       }
     }
-    if (this.itemCount_ == 0) {
-      this.appendDummyInput('EMPTY')
-          .appendField(Blockly.Msg.LISTS_CREATE_EMPTY_TITLE);
-    }
+    this.appendDummyInput('RPAREN')
+        .appendField(']');
   },
   /**
    * Populate the mutator's dialog with this block's components.
@@ -1805,9 +1814,8 @@ Blockly.Blocks['lists_create_with_typed'] = {
    */
   compose: function(containerBlock) {
     // Disconnect all input blocks and remove all inputs.
-    if (this.itemCount_ == 0) {
-      this.removeInput('EMPTY');
-    } else {
+    this.removeInput('RPAREN');
+    if (this.itemCount_ != 0) {
       for (var x = this.itemCount_ - 1; x >= 0; x--) {
         this.removeInput('ADD' + x);
       }
@@ -1818,8 +1826,8 @@ Blockly.Blocks['lists_create_with_typed'] = {
     while (itemBlock) {
       var input = this.appendValueInput('ADD' + this.itemCount_)
                       .setTypeExpr(this.typeParams.elmtType);
-      if (this.itemCount_ == 0) {
-        input.appendField(Blockly.Msg.LISTS_CREATE_WITH_INPUT_WITH);
+      if (this.itemCount_ != 0) {
+        input.appendField(';');
       }
       // Reconnect any child blocks.
       if (itemBlock.valueConnection_) {
@@ -1829,10 +1837,8 @@ Blockly.Blocks['lists_create_with_typed'] = {
       itemBlock = itemBlock.nextConnection &&
           itemBlock.nextConnection.targetBlock();
     }
-    if (this.itemCount_ == 0) {
-      this.appendDummyInput('EMPTY')
-          .appendField(Blockly.Msg.LISTS_CREATE_EMPTY_TITLE);
-    }
+    this.appendDummyInput('RPAREN')
+        .appendField(']');
   },
   /**
    * Store pointers to any connected child blocks.
@@ -1864,11 +1870,15 @@ Blockly.Blocks['pair_create_typed'] = {
     var B = Blockly.TypeVar.getUnusedTypeVar();
     this.appendValueInput('FIRST')
         .setTypeExpr(A)
-        .appendField("create pair with");
+        .appendField('(');
     this.appendValueInput('SECOND')
         .setTypeExpr(B)
+        .appendField(',');
+    this.appendDummyInput()
+        .appendField(')');
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.TypeExpr ("pair", [A, B]));
+    this.setInputsInline(true);
   }
 };
 
@@ -1879,11 +1889,17 @@ Blockly.Blocks['pair_first_typed'] = {
     this.setColour(210);
     var A = Blockly.TypeVar.getUnusedTypeVar();
     var B = Blockly.TypeVar.getUnusedTypeVar();
-    this.appendValueInput('PAIR')
-        .setTypeExpr(new Blockly.TypeExpr ("pair", [A, B]))
-        .appendField("get 1st elmt of pair");
+    this.appendValueInput('FIRST')
+        .setTypeExpr(A)
+        .appendField('first (');
+    this.appendValueInput('SECOND')
+        .setTypeExpr(B)
+        .appendField(',');
+    this.appendDummyInput()
+        .appendField(')');
     this.setOutput(true);
     this.setOutputTypeExpr(A);
+    this.setInputsInline(true);
   }
 };
 
@@ -1894,11 +1910,17 @@ Blockly.Blocks['pair_second_typed'] = {
     this.setColour(210);
     var A = Blockly.TypeVar.getUnusedTypeVar();
     var B = Blockly.TypeVar.getUnusedTypeVar();
-    this.appendValueInput('PAIR')
-        .setTypeExpr(new Blockly.TypeExpr ("pair", [A, B]))
-        .appendField("get 2nd elmt of pair");
+    this.appendValueInput('FIRST')
+        .setTypeExpr(A)
+        .appendField('second (');
+    this.appendValueInput('SECOND')
+        .setTypeExpr(B)
+        .appendField(',');
+    this.appendDummyInput()
+        .appendField(')');
     this.setOutput(true);
     this.setOutputTypeExpr(B);
+    this.setInputsInline(true);
   }
 };
 
@@ -1981,11 +2003,11 @@ Blockly.Blocks['lambda_typed'] = {
     this.argName = 'X' + Blockly.Blocks.lambda_id;
     Blockly.Blocks.lambda_id++;
     this.appendDummyInput()
-        .appendField('function with arg: ' + this.argName);
+        .appendField('fun ' + this.argName);
     this.appendValueInput('RETURN')
         .setTypeExpr(B)
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField(Blockly.Msg.PROCEDURES_DEFRETURN_RETURN);
+        .appendField('->');
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.TypeExpr ("fun", [A, B]));
   },
@@ -2010,13 +2032,14 @@ Blockly.Blocks['lambda_app_typed'] = {
     var B = Blockly.TypeVar.getUnusedTypeVar();
     this.appendValueInput('FUN')
         .setTypeExpr(new Blockly.TypeExpr ("fun", [A, B]))
-        .appendField('call function');
+        .appendField('(');
     this.appendValueInput('ARG')
         .setTypeExpr(A)
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField('with arg');
+        .appendField(')');
     this.setOutput(true);
     this.setOutputTypeExpr(B);
+    this.setInputsInline(true);
   },
 
   getVars: function () {
