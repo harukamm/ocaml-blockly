@@ -2107,6 +2107,37 @@ Blockly.Blocks['lambda_app_typed'] = {
   }
 }
 
+Blockly.Blocks['match_typed'] = {
+  /**
+   */
+  init: function() {
+    this.setColour(290);
+    var A = Blockly.TypeVar.getUnusedTypeVar();
+    this.appendDummyInput()
+        .appendField('match');
+    this.appendValueInput('INPUT')
+        .setTypeExpr(A)
+        .setAlign(Blockly.ALIGN_RIGHT)
+    this.appendDummyInput()
+        .appendField('with');
+    this.appendValueInput('PATTERN1')
+        .setTypeExpr(A)
+        .appendField('->');
+    this.appendValueInput('PATTERN2')
+        .setTypeExpr(A)
+        .appendField('->');
+    this.setOutput(true);
+    this.setOutputTypeExpr(A);
+    //this.setInputsInline(true);
+  },
+
+  getVarsWithTypes: function() {
+    var result = {};
+    result[this.argName] = this.outputConnection.typeExpr.children[0];
+    return result;
+  }
+}
+
 /**
  * Typed variables
  */
