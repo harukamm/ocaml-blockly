@@ -1947,12 +1947,10 @@ Blockly.Blocks['pair_first_typed'] = {
     this.setColour(210);
     var A = Blockly.TypeVar.getUnusedTypeVar();
     var B = Blockly.TypeVar.getUnusedTypeVar();
+    var pair_t = new Blockly.TypeExpr ("pair", [A, B]);
     this.appendValueInput('FIRST')
-        .setTypeExpr(A)
+        .setTypeExpr(pair_t)
         .appendField('first (');
-    this.appendValueInput('SECOND')
-        .setTypeExpr(B)
-        .appendField(',');
     this.appendDummyInput()
         .appendField(')');
     this.setOutput(true);
@@ -1968,12 +1966,10 @@ Blockly.Blocks['pair_second_typed'] = {
     this.setColour(210);
     var A = Blockly.TypeVar.getUnusedTypeVar();
     var B = Blockly.TypeVar.getUnusedTypeVar();
-    this.appendValueInput('FIRST')
-        .setTypeExpr(A)
-        .appendField('second (');
+    var pair_t = new Blockly.TypeExpr ("pair", [A, B]);
     this.appendValueInput('SECOND')
-        .setTypeExpr(B)
-        .appendField(',');
+        .setTypeExpr(pair_t)
+        .appendField('second (');
     this.appendDummyInput()
         .appendField(')');
     this.setOutput(true);
