@@ -1675,8 +1675,8 @@ Blockly.Blocks['int_typed'] = {
     this.setColour(230);
     this.appendDummyInput()
         .appendField(new Blockly.FieldTextInput('0',
-        Blockly.FieldTextInput.intValidator), 'NUM');
-    this.setOutput(true, 'Number');
+        Blockly.FieldTextInput.intValidator), 'INT');
+    this.setOutput(true, 'Int');
     // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr('int'));
     this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
@@ -1691,34 +1691,32 @@ Blockly.Blocks['int_arithmetic_typed'] = {
    */
   init: function() {
     var OPERATORS =
-        [[Blockly.Msg.MATH_ADDITION_SYMBOL, 'ADD'],
-         [Blockly.Msg.MATH_SUBTRACTION_SYMBOL, 'MINUS'],
-         [Blockly.Msg.MATH_MULTIPLICATION_SYMBOL, 'MULTIPLY'],
-         [Blockly.Msg.MATH_DIVISION_SYMBOL, 'DIVIDE'],
-         [Blockly.Msg.MATH_POWER_SYMBOL, 'POWER']];
+        [[Blockly.Msg.MATH_ADDITION_SYMBOL, 'ADD_INT'],
+         [Blockly.Msg.MATH_SUBTRACTION_SYMBOL, 'MINUS_INT'],
+         [Blockly.Msg.MATH_MULTIPLICATION_SYMBOL, 'MULTIPLY_INT'],
+         [Blockly.Msg.MATH_DIVISION_SYMBOL, 'DIVIDE_INT']];
     this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
     this.setColour(230);
-    this.setOutput(true, 'Number');
+    this.setOutput(true, 'Int');
     // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr('int'));
     this.appendValueInput('A')
         .setTypeExpr(new Blockly.TypeExpr('int'))
-        .setCheck('Number');
+        .setCheck('Int');
     this.appendValueInput('B')
         .setTypeExpr(new Blockly.TypeExpr('int'))
-        .setCheck('Number')
-        .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP');
+        .setCheck('Int')
+        .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP_INT');
     this.setInputsInline(true);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     this.setTooltip(function() {
-      var mode = thisBlock.getFieldValue('OP');
+      var mode = thisBlock.getFieldValue('OP_INT');
       var TOOLTIPS = {
-        'ADD': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_ADD,
-        'MINUS': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MINUS,
-        'MULTIPLY': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MULTIPLY,
-        'DIVIDE': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_DIVIDE,
-        'POWER': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_POWER
+        'ADD_INT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_ADD,
+        'MINUS_INT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MINUS,
+        'MULTIPLY_INT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MULTIPLY,
+        'DIVIDE_INT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_DIVIDE
       };
       return TOOLTIPS[mode];
     });
@@ -1752,10 +1750,10 @@ Blockly.Blocks['float_arithmetic_typed'] = {
    */
   init: function() {
     var OPERATORS =
-        [['+.', 'FLOAT_ADD'],
-         ['-.', 'MINUS'],
-         ['*.', 'MULTIPLY'],
-         ['/.', 'DIVIDE']];
+        [['+.', 'ADD_FLOAT'],
+         ['-.', 'MINUS_FLOAT'],
+         ['*.', 'MULTIPLY_FLOAT'],
+         ['/.', 'DIVIDE_FLOAT']];
     this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
     this.setColour(100);
     this.setOutput(true, 'Float');
@@ -1774,10 +1772,10 @@ Blockly.Blocks['float_arithmetic_typed'] = {
     this.setTooltip(function() {
       var mode = thisBlock.getFieldValue('OP_FLOAT');
       var TOOLTIPS = {
-        'ADD': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_ADD,
-        'MINUS': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MINUS,
-        'MULTIPLY': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MULTIPLY,
-        'DIVIDE': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_DIVIDE,
+        'ADD_FLOAT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_ADD,
+        'MINUS_FLOAT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MINUS,
+        'MULTIPLY_FLOAT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MULTIPLY,
+        'DIVIDE_FLOAT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_DIVIDE,
       };
       return TOOLTIPS[mode];
     });

@@ -29,34 +29,54 @@ goog.provide('Blockly.TypedLang.math');
 goog.require('Blockly.TypedLang');
 
 
-Blockly.TypedLang['math_number_typed'] = function(block) {
-  // Numeric value.
-  var code = parseFloat(block.getFieldValue('NUM'));
+Blockly.TypedLang['int_typed'] = function(block) {
+  // int value.
+  var code = parseInt(block.getFieldValue('INT'));
   var order = code >= 0 ? Blockly.TypedLang.ORDER_ATOMIC : 
               Blockly.TypedLang.ORDER_UNARY_NEGATION;
   return [code, order];
 };
 
-Blockly.TypedLang['math_arithmetic_typed'] = function(block) {
-  // Basic arithmetic operators, and power.
+Blockly.TypedLang['int_arithmetic_typed'] = function(block) {
+  // Basic arithmetic operators
   var OPERATORS = {
-    'ADD': [' + ', Blockly.TypedLang.ORDER_ADDITION],
-    'MINUS': [' - ', Blockly.TypedLang.ORDER_SUBTRACTION],
-    'MULTIPLY': [' * ', Blockly.TypedLang.ORDER_MULTIPLICATION],
-    'DIVIDE': [' / ', Blockly.TypedLang.ORDER_DIVISION],
-    'POWER': [null, Blockly.TypedLang.ORDER_COMMA]  // Handle power separately.
+    'ADD_INT': [' + ', Blockly.TypedLang.ORDER_ADDITION],
+    'MINUS_INT': [' - ', Blockly.TypedLang.ORDER_SUBTRACTION],
+    'MULTIPLY_INT': [' * ', Blockly.TypedLang.ORDER_MULTIPLICATION],
+    'DIVIDE_INT': [' / ', Blockly.TypedLang.ORDER_DIVISION]
   };
-  var tuple = OPERATORS[block.getFieldValue('OP')];
+  var tuple = OPERATORS[block.getFieldValue('OP_INT')];
   var operator = tuple[0];
   var order = tuple[1];
   var argument0 = Blockly.TypedLang.valueToCode(block, 'A', order) || '0';
   var argument1 = Blockly.TypedLang.valueToCode(block, 'B', order) || '0';
   var code;
-  // Power in TypedLang requires a special case since it has no operator.
-  if (!operator) {
-    code = 'Math.pow(' + argument0 + ', ' + argument1 + ')';
-    return [code, Blockly.TypedLang.ORDER_FUNCTION_CALL];
-  }
+  code = argument0 + operator + argument1;
+  return [code, order];
+};
+
+Blockly.TypedLang['float_typed'] = function(block) {
+  // float value.
+  var code = block.getFieldValue('FLOAT');
+  var order = code >= 0 ? Blockly.TypedLang.ORDER_ATOMIC : 
+              Blockly.TypedLang.ORDER_UNARY_NEGATION;
+  return [code, order];
+};
+
+Blockly.TypedLang['float_arithmetic_typed'] = function(block) {
+  // Basic arithmetic operators
+  var OPERATORS = {
+    'ADD_FLOAT': [' +. ', Blockly.TypedLang.ORDER_ADDITION],
+    'MINUS_FLOAT': [' -. ', Blockly.TypedLang.ORDER_SUBTRACTION],
+    'MULTIPLY_FLOAT': [' *. ', Blockly.TypedLang.ORDER_MULTIPLICATION],
+    'DIVIDE_FLOAT': [' /. ', Blockly.TypedLang.ORDER_DIVISION]
+  };
+  var tuple = OPERATORS[block.getFieldValue('OP_FLOAT')];
+  var operator = tuple[0];
+  var order = tuple[1];
+  var argument0 = Blockly.TypedLang.valueToCode(block, 'A', order) || '0.';
+  var argument1 = Blockly.TypedLang.valueToCode(block, 'B', order) || '0.';
+  var code;
   code = argument0 + operator + argument1;
   return [code, order];
 };
