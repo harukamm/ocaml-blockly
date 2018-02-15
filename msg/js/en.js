@@ -388,7 +388,7 @@ goog.require('Blockly.Msg');
 /** @export */ Blockly.Msg.TEXT_TRIM_TOOLTIP = "Return a copy of the text with spaces removed from one or both ends.";
 /** @export */ Blockly.Msg.TODAY = "Today";
 /** @export */ Blockly.Msg.UNDO = "Undo";
-/** @export */ Blockly.Msg.VARIABLES_DEFAULT_NAME = "item";
+/** @export */ Blockly.Msg.VARIABLES_DEFAULT_NAME = "x";
 /** @export */ Blockly.Msg.VARIABLES_GET_CREATE_SET = "Create 'set %1'";
 /** @export */ Blockly.Msg.VARIABLES_GET_HELPURL = "https://github.com/google/blockly/wiki/Variables#get";
 /** @export */ Blockly.Msg.VARIABLES_GET_TOOLTIP = "Returns the value of this variable.";
