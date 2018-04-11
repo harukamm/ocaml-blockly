@@ -1100,8 +1100,8 @@ Blockly.BlockSvg.prototype.renderDrawRight_ = function(steps, highlightSteps,
     }
   }
   // Sorin: adjust height to display output
-  if (this.block_.outputConnection) {
-    var out_height = Blockly.BlockSvg.getTypeExprHeight(this.block_.outputConnection.typeExpr);
+  if (this.outputConnection) {
+    var out_height = Blockly.BlockSvg.getTypeExprHeight(this.outputConnection.typeExpr);
     var padding = out_height - cursorY;
     if (padding > 0) {
       cursorY += padding
@@ -1167,17 +1167,17 @@ Blockly.BlockSvg.prototype.renderDrawLeft_ = function(steps, highlightSteps) {
   if (this.outputConnection) {
     // Create output connection.
     this.outputConnection.setOffsetInBlock(0, 0);
-    Blockly.BlockSvg.TAB_HEIGHT = Blockly.BlockSvg.getTypeExprHeight(this.block_.outputConnection.typeExpr);
+    Blockly.BlockSvg.TAB_HEIGHT = Blockly.BlockSvg.getTypeExprHeight(this.outputConnection.typeExpr);
     steps.push('V', Blockly.BlockSvg.TAB_HEIGHT);
     // Sorin
-    steps.push(Blockly.BlockSvg.getUpPath(this.block_.outputConnection));
+    steps.push(Blockly.BlockSvg.getUpPath(this.outputConnection));
     if (this.RTL) {
       highlightSteps.push('M', (Blockly.BlockSvg.TAB_WIDTH * -0.25) + ',8.4');
       highlightSteps.push('l', (Blockly.BlockSvg.TAB_WIDTH * -0.45) + ',-2.1');
     }
     this.width += Blockly.BlockSvg.TAB_WIDTH;
     // Sorin
-    this.block_.outputConnection.renderTypeVarHighlights();
+    this.outputConnection.renderTypeVarHighlights();
   } else if (!this.RTL) {
     if (this.squareTopLeftCorner_) {
       // Statement block in a stack.

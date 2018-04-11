@@ -220,8 +220,8 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
   // Sorin
   var unifyResult;
-  if (this.typeExpr && otherConnection.typeExpr) {
-    unifyResult = this.typeExpr.unify(otherConnection.typeExpr);
+  if (this.typeExpr && childConnection.typeExpr) {
+    unifyResult = this.typeExpr.unify(childConnection.typeExpr);
     if (unifyResult === false) {
       throw 'Attempt to connect incompatible types.';
     }
@@ -267,7 +267,7 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
   if (parentBlock.rendered && childBlock.rendered) {
     // Sorin
-    if (this.typeExpr && otherConnection.typeExpr) {
+    if (this.typeExpr && childConnection.typeExpr) {
       childBlock.render();
       parentBlock.render();
       return;
@@ -484,7 +484,7 @@ Blockly.Connection.prototype.renderTypeVarHighlights = function() {
   for (var i = 0; i < typeVarHighlights.length; i++) {
     var highlight = typeVarHighlights[i];
     this.typeVarPaths_.push(
-      Blockly.createSvgElement(
+      Blockly.utils.createSvgElement(
         'path', {
           'class': 'blocklyTypeVarPath',
           stroke: highlight.color,
@@ -530,7 +530,7 @@ Blockly.Connection.prototype.addColor = function() {
   var x = this.x_ - xy.x;
   var y = this.y_ - xy.y;
   
-  this.coloredPath_ = Blockly.createSvgElement(
+  this.coloredPath_ = Blockly.utils.createSvgElement(
     'path', {
       'class': 'blocklyTypeVarPath',
       stroke: Blockly.TypeVar.getTypeVarColor(this.typeExpr.name),
@@ -539,7 +539,7 @@ Blockly.Connection.prototype.addColor = function() {
     },
     this.sourceBlock_.getSvgRoot());
 
-  // this.coloredPath_ = Blockly.createSvgElement('path',
+  // this.coloredPath_ = Blockly.utils.createSvgElement('path',
   //     {class: 'blocklyHighlightedConnectionPath' + 
   //                Blockly.TypeVar.getTypeVarColor(this.typeExpr.name),
   //      stroke: Blockly.TypeVar.getTypeVarColor(this.typeExpr.name),
