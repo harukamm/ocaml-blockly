@@ -387,12 +387,23 @@ Blockly.BlockSvg.typeVarShapes_ = {
   }
 }
 
+/**
+ * Create a list of record to present highlights for the given type expression.
+ * @param {Blockly.TypeExpr} typeExpr
+ * @return {Array<{color: string, path: string}>}
+ */
 Blockly.BlockSvg.typeVarHighlights = function(typeExpr) {
   var typeVarHighlights = [];
   Blockly.BlockSvg.typeVarHighlights_(typeExpr, 0, typeVarHighlights);
   return typeVarHighlights;
 }
 
+/**
+ * Helper function to create a highlight for type variable
+ * @param {Blockly.TypeExpr} typeExpr
+ * @param {number} y
+ * @param {Array<{color: string, path: string}>} typeVarHightlights
+ */
 Blockly.BlockSvg.typeVarHighlights_ = function(typeExpr, y, typeVarHighlights) {
   if (typeExpr) {
     var name = typeExpr.name
