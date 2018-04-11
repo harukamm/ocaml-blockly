@@ -158,6 +158,7 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
 
   // Call an initialization function, if it exists.
   if (goog.isFunction(this.init)) {
+    Blockly.TypeVar.triggerGarbageCollection();
     this.init();
   }
   // Record initial inline state.
