@@ -25,6 +25,7 @@
 'use strict';
 
 goog.provide('Blockly.Connection');
+goog.provide('Blockly.TypeExpr');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
@@ -217,6 +218,38 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
     parentConnection.setShadowDom(shadowDom);
   }
 
+  // Sorin
+  var unifyResult;
+  if (this.typeExpr && otherConnection.typeExpr) {
+    unifyResult = this.typeExpr.unify(otherConnection.typeExpr);
+    if (unifyResult === false) {
+      throw 'Attempt to connect incompatible types.';
+    }
+
+    var blocks = Blockly.mainWorkspace.getAllBlocks();
+    if (Blockly.mainWorkspace.flyout_) {
+      blocks = blocks.concat(Blockly.mainWorkspace.flyout_.workspace_.getAllBlocks());
+    }
+    for (var i = 0; i < blocks.length; i++) {
+      var block = blocks[i]
+      // process connections
+      var connections = block.getConnections_(true);
+      for (var j = 0; j < connections.length; j++) {
+        if (connections[j].typeExpr) {
+          connections[j].typeExpr = connections[j].typeExpr.apply(unifyResult);
+        }
+      }
+
+      // process block type params if any
+      if (block.typeParams) {
+        for (var f in block.typeParams) {
+          block.typeParams[f] = block.typeParams[f].apply(unifyResult);
+        }
+      }
+    }
+    Blockly.TypeVar.triggerGarbageCollection();
+  }
+
   var event;
   if (Blockly.Events.isEnabled()) {
     event = new Blockly.Events.BlockMove(childBlock);
@@ -228,6 +261,15 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   if (event) {
     event.recordNew();
     Blockly.Events.fire(event);
+  }
+
+  if (parentBlock.rendered && childBlock.rendered) {
+    // Sorin
+    if (this.typeExpr && otherConnection.typeExpr) {
+      childBlock.render();
+      parentBlock.render();
+      return;
+    }
   }
 };
 
@@ -243,6 +285,14 @@ Blockly.Connection.prototype.dispose = function() {
   }
   this.db_ = null;
   this.dbOpposite_ = null;
+
+  // Sorin
+  if (this.typeVarPaths_) {
+    for (var i = 0; i < this.typeVarPaths_.length; i++) {
+      goog.dom.removeNode(this.typeVarPaths_[i]);
+      delete this.typeVarPaths_[i];
+    }
+  }  
 };
 
 /**
@@ -417,6 +467,85 @@ Blockly.Connection.connectReciprocally_ = function(first, second) {
   second.targetConnection = first;
 };
 
+Blockly.Connection.prototype.renderTypeVarHighlights = function() {
+  if (this.typeVarPaths_) {
+    for (var i = 0; i < this.typeVarPaths_.length; i++) {
+      goog.dom.removeNode(this.typeVarPaths_[i]);
+      delete this.typeVarPaths_[i];
+    }
+  }
+  this.typeVarPaths_ = [];
+  var xy = this.sourceBlock_.getRelativeToSurfaceXY();
+  var x = this.x_ - xy.x;
+  var y = this.y_ - xy.y;
+  var typeVarHighlights = Blockly.BlockSvg.typeVarHighlights(this.typeExpr);
+  for (var i = 0; i < typeVarHighlights.length; i++) {
+    var highlight = typeVarHighlights[i];
+    this.typeVarPaths_.push(
+      Blockly.createSvgElement(
+        'path', {
+          'class': 'blocklyTypeVarPath',
+          stroke: highlight.color,
+          d: highlight.path,
+          transform: 'translate(' + x + ', ' + y + ')'
+        },
+        this.sourceBlock_.getSvgRoot()));
+  }
+}
+
+/**
+ * Adds color if this is a type varible connection
+ * Sorin
+ */
+Blockly.Connection.prototype.addColor = function() {
+  if (this.coloredPath_) {
+    goog.dom.removeNode(this.coloredPath_);
+    delete this.coloredPath_;
+  }
+  if (!(this.typeExpr)) {
+    return;
+  }
+  if (!(this.typeExpr.isTypeVar())) {
+    return;
+  }
+  var steps;
+  if (this.type == Blockly.INPUT_VALUE || this.type == Blockly.OUTPUT_VALUE) {
+    // Sorin
+    steps = 'm 0,0 ' + Blockly.BlockSvg.getDownPath(this) +  ' v 5';
+    //steps = 'm 0,0 l -8,10 8,10 v 5';
+    // var tabWidth = Blockly.RTL ? -Blockly.BlockSvg.TAB_WIDTH :
+    //                              Blockly.BlockSvg.TAB_WIDTH;
+    // steps = 'm 0,0 v 5 c 0,10 ' + -tabWidth + ',-8 ' + -tabWidth + ',7.5 s ' +
+    //         tabWidth + ',-2.5 ' + tabWidth + ',7.5 v 5';
+  } else {
+    if (Blockly.RTL) {
+      steps = 'm 20,0 h -5 l -6,4 -3,0 -6,-4 h -5';
+    } else {
+      steps = 'm -20,0 h 5 l 6,4 3,0 6,-4 h 5';
+    }
+  }
+  var xy = this.sourceBlock_.getRelativeToSurfaceXY();
+  var x = this.x_ - xy.x;
+  var y = this.y_ - xy.y;
+  
+  this.coloredPath_ = Blockly.createSvgElement(
+    'path', {
+      'class': 'blocklyTypeVarPath',
+      stroke: Blockly.TypeVar.getTypeVarColor(this.typeExpr.name),
+      d: steps,
+      transform: 'translate(' + x + ', ' + y + ')'
+    },
+    this.sourceBlock_.getSvgRoot());
+
+  // this.coloredPath_ = Blockly.createSvgElement('path',
+  //     {class: 'blocklyHighlightedConnectionPath' + 
+  //                Blockly.TypeVar.getTypeVarColor(this.typeExpr.name),
+  //      stroke: Blockly.TypeVar.getTypeVarColor(this.typeExpr.name),
+  //      d: steps,
+  //      transform: 'translate(' + x + ', ' + y + ')'},
+  //     this.sourceBlock_.getSvgRoot());
+};
+
 /**
  * Does the given block have one and only one connection point that will accept
  * an orphaned block?
@@ -553,6 +682,17 @@ Blockly.Connection.prototype.targetBlock = function() {
  * @private
  */
 Blockly.Connection.prototype.checkType_ = function(otherConnection) {
+  // Sorin
+  if (this.typeExpr && otherConnection.typeExpr) {
+    var unifyResult = this.typeExpr.unify(otherConnection.typeExpr);
+    return (unifyResult !== false);
+  }
+  if (!this.typeExpr && otherConnection.typeExpr) {
+    return false;
+  }
+  if (this.typeExpr && !otherConnection.typeExpr) {
+    return false;
+  }
   if (!this.check_ || !otherConnection.check_) {
     // One or both sides are promiscuous enough that anything will fit.
     return true;
@@ -599,6 +739,12 @@ Blockly.Connection.prototype.setCheck = function(check) {
   }
   return this;
 };
+
+// Sorin
+Blockly.Connection.prototype.setTypeExpr = function(t) {
+  this.typeExpr = t;
+  return this;
+}
 
 /**
  * Change a connection's shadow block.
@@ -661,3 +807,141 @@ Blockly.Connection.prototype.toString = function() {
   }
   return msg + block.toDevString();
 };
+
+// Sorin
+Blockly.TypeExpr = function(name, children /* = [] */ ) {
+  this.name = name;
+  this.children = arguments.length == 2 ? children : [];
+}
+
+Blockly.TypeExpr.prototype.isTypeVar = function() {
+  return this.name in Blockly.TypeVar.getTypeVarDB_();
+}
+
+Blockly.TypeExpr.prototype.unify = function(other, subst /* = {} */ ) {
+  var s, a, b;
+  if (arguments.length == 2) {
+    s = subst;
+    a = this.apply(s);
+    b = other.apply(s);
+  } else {
+    s = {};
+    a = this;
+    b = other;
+  }
+  var result = {};
+  for (var attr in s) { 
+    result[attr] = s[attr];
+  }
+  if (a.isTypeVar() && b.isTypeVar()) {
+    result[a.name] = b;
+  } else if (a.isTypeVar() && !b.isTypeVar()) {
+    if (a.name in result) {
+      result = result[a.name].unify(b, result);
+    } else {
+      result[a.name] = b;
+    }
+  } else if (!a.isTypeVar() && b.isTypeVar()) {
+    if (b.name in result) {
+      result = a.unify(result[b.name], result);
+    } else {
+      result[b.name] = a;
+    }
+  } else {
+    if (a.name != b.name) return false;
+    if (a.children.lengh != b.children.lengh) return false;
+    for (var i = 0; i < a.children.lengh; i++) {
+      result = a.children[i].unify(b.children[i], result);
+      if (result === false) return false;
+    }
+  }
+  return result;
+}
+
+Blockly.TypeExpr.prototype.apply = function(subst) {
+  if (this.isTypeVar() && this.name in subst) {
+    return subst[this.name];
+  }
+  return new Blockly.TypeExpr(
+    this.name, 
+    this.children.map(function (x) { return x.apply(subst); }));
+}
+
+Blockly.TypeVar = function(name, color) {
+  this.name = name;
+  this.color = color;
+  this.used = false;
+}
+
+Blockly.TypeVar.getTypeVarDB_ = function() {
+  if (!Blockly.TypeVar.typeVarDB_) {
+    Blockly.TypeVar.initTypeVarDB_();
+  }
+  return Blockly.TypeVar.typeVarDB_;
+}
+
+Blockly.TypeVar.initTypeVarDB_ = function() {
+  Blockly.TypeVar.typeVarDB_ = {};
+  Blockly.TypeVar.addTypeVar_("A", "Red");
+  Blockly.TypeVar.addTypeVar_("B", "Blue");
+  Blockly.TypeVar.addTypeVar_("C", "Green");
+  Blockly.TypeVar.addTypeVar_("D", "Cyan");
+  Blockly.TypeVar.addTypeVar_("E", "BlueViolet");
+  Blockly.TypeVar.addTypeVar_("F", "Brown");
+  Blockly.TypeVar.addTypeVar_("G", "Black");
+}
+
+Blockly.TypeVar.addTypeVar_ = function(name, color) {
+  Blockly.TypeVar.typeVarDB_[name] = new Blockly.TypeVar(name, color);
+}
+
+Blockly.TypeVar.getTypeVarColor = function(name) {
+  var db = Blockly.TypeVar.getTypeVarDB_();
+  return db[name].color;
+}
+
+Blockly.TypeVar.getUnusedTypeVar = function() {
+  Blockly.TypeVar.doGarbageCollection();
+  var db = Blockly.TypeVar.getTypeVarDB_();
+  for (name in db) {
+    if (!db[name].used) {
+      db[name].used = true;
+      return new Blockly.TypeExpr(name);
+    }
+  }
+  throw 'Ran out of type varables!';
+}
+
+Blockly.TypeVar.triggerGarbageCollection = function () {
+  Blockly.TypeVar.needGC = true;
+  setTimeout(Blockly.TypeVar.doGarbageCollection, 500);
+}
+
+Blockly.TypeVar.doGarbageCollection = function () {
+  if (Blockly.TypeVar.needGC === false) {
+    return;
+  }
+  var db = Blockly.TypeVar.getTypeVarDB_();
+  for (name in db) {
+    db[name].used = false;
+  }
+  function traverse(t) {
+    if (t.isTypeVar()) {
+      db[t.name].used = true;
+    }
+    t.children.map(function (c) { traverse(c) } );
+  };
+  var blocks = Blockly.mainWorkspace.getAllBlocks();
+  if (Blockly.mainWorkspace.flyout_) {
+    blocks = blocks.concat(Blockly.mainWorkspace.flyout_.workspace_.getAllBlocks());
+  }
+  for (var i = 0; i < blocks.length; i++) {
+    var connections = blocks[i].getConnections_(true);
+    for (var j = 0; j < connections.length; j++) {
+      if (connections[j].typeExpr) {
+        traverse(connections[j].typeExpr)
+      }
+    }
+  }
+  Blockly.TypeVar.needGC = false;
+}
