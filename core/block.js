@@ -1673,8 +1673,8 @@ Blockly.Blocks['math_number_typed'] = {
     this.setHelpUrl(Blockly.Msg.MATH_NUMBER_HELPURL);
     this.setColour(230);
     this.appendDummyInput()
-        .appendField(new Blockly.FieldTextInput('0',
-        Blockly.FieldTextInput.numberValidator), 'NUM');
+        .appendField(new Blockly.FieldNumber('0',
+        Blockly.FieldNumber), 'NUM');
     this.setOutput(true, 'Number');
     // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr('int'));
@@ -1786,11 +1786,11 @@ Blockly.Blocks['lists_create_with_typed'] = {
    */
   decompose: function(workspace) {
     var containerBlock =
-        Blockly.Block.obtain(workspace, 'lists_create_with_container');
+        workspace.newBlock(workspace, 'lists_create_with_container');
     containerBlock.initSvg();
     var connection = containerBlock.getInput('STACK').connection;
     for (var x = 0; x < this.itemCount_; x++) {
-      var itemBlock = Blockly.Block.obtain(workspace, 'lists_create_with_item');
+      var itemBlock = workspace.newBlock(workspace, 'lists_create_with_item');
       itemBlock.initSvg();
       connection.connect(itemBlock.previousConnection);
       connection = itemBlock.nextConnection;
