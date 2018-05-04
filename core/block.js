@@ -1665,7 +1665,7 @@ Blockly.Blocks['logic_ternary_typed'] = {
 };
 
 /* should go in blocks/math.js */ 
-Blockly.Blocks['math_number_typed'] = {
+Blockly.Blocks['int_typed'] = {
   /**
    * Block for numeric value.
    * @this Blockly.Block
@@ -1674,8 +1674,8 @@ Blockly.Blocks['math_number_typed'] = {
     this.setHelpUrl(Blockly.Msg.MATH_NUMBER_HELPURL);
     this.setColour(230);
     this.appendDummyInput()
-        .appendField(new Blockly.FieldNumber('0',
-        Blockly.FieldNumber), 'NUM');
+        .appendField(new Blockly.FieldTextInput('0',
+        Blockly.FieldTextInput.intValidator), 'NUM');
     this.setOutput(true, 'Number');
     // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr('int'));
@@ -1684,7 +1684,7 @@ Blockly.Blocks['math_number_typed'] = {
 };
 
 /* should go in blocks/math.js */ 
-Blockly.Blocks['math_arithmetic_typed'] = {
+Blockly.Blocks['int_arithmetic_typed'] = {
   /**
    * Block for basic arithmetic operator.
    * @this Blockly.Block
@@ -1724,6 +1724,66 @@ Blockly.Blocks['math_arithmetic_typed'] = {
     });
   }
 };
+
+/* should go in blocks/math.js */ 
+Blockly.Blocks['float_typed'] = {
+  /**
+   * Block for numeric value.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.MATH_NUMBER_HELPURL);
+    this.setColour(100);
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldTextInput('0.',
+        Blockly.FieldTextInput.floatValidator), 'Float');
+    this.setOutput(true, 'Float');
+    // Sorin
+    this.setOutputTypeExpr(new Blockly.TypeExpr('float'));
+    this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
+  }
+};
+
+/* should go in blocks/math.js */ 
+Blockly.Blocks['float_arithmetic_typed'] = {
+  /**
+   * Block for basic arithmetic operator.
+   * @this Blockly.Block
+   */
+  init: function() {
+    var OPERATORS =
+        [['+.', 'FLOAT_ADD'],
+         ['-.', 'MINUS'],
+         ['*.', 'MULTIPLY'],
+         ['/.', 'DIVIDE']];
+    this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
+    this.setColour(100);
+    this.setOutput(true, 'Float');
+    // Sorin
+    this.setOutputTypeExpr(new Blockly.TypeExpr('float'));
+    this.appendValueInput('A')
+        .setTypeExpr(new Blockly.TypeExpr('float'))
+        .setCheck('Float');
+    this.appendValueInput('B')
+        .setTypeExpr(new Blockly.TypeExpr('float'))
+        .setCheck('Float')
+        .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP_FLOAT');
+    this.setInputsInline(true);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+    this.setTooltip(function() {
+      var mode = thisBlock.getFieldValue('OP_FLOAT');
+      var TOOLTIPS = {
+        'ADD': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_ADD,
+        'MINUS': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MINUS,
+        'MULTIPLY': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MULTIPLY,
+        'DIVIDE': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_DIVIDE,
+      };
+      return TOOLTIPS[mode];
+    });
+  }
+};
+
 
 /* should go in blocks/lists.js */ 
 Blockly.Blocks['lists_create_with_typed'] = {

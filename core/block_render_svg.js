@@ -359,6 +359,12 @@ Blockly.BlockSvg.typeVarShapes_ = {
     height: 20
   },
 
+  float : {
+    down: 'l 0,5 -6,0 3,6 -3,6 6,0 0,3',
+    up: 'l 0,-3 -6,0 3,-6 -3,-6 6,0 0,-5',
+    height: 20
+  },
+
   bool : {
     down: 'l 0,5 -8,7.5 8,7.5',
     up: 'l -8,-7.5 8,-7.5 0,-5',

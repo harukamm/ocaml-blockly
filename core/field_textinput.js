@@ -410,6 +410,31 @@ Blockly.FieldTextInput.numberValidator = function(text) {
 };
 
 /**
+ * Ensure that only an integer may be entered.
+ * @param {string} text The user's text.
+ * @return {?string} A string representing a valid integer, or null if invalid.
+ */
+Blockly.FieldTextInput.intValidator = function(text) {
+  // Strip out thousands separators.
+  text = text.replace(/,/g, '');
+  var n = parseInt(text || 0);
+  return isNaN(n) ? null : String(n);
+};
+
+/**
+ * Ensure that a float may be entered.
+ * @param {string} text The user's text.
+ * @return {?string} A string representing a valid float, or null if invalid.
+ */
+Blockly.FieldTextInput.floatValidator = function(text) {
+  // Strip out thousands separators.
+  text = text.replace(/,/g, '');
+  var dot = text.includes('.');
+  var n = parseFloat(text || 0);
+  return !dot || isNaN(n) ? null : text;
+};
+
+/**
  * Ensure that only a nonnegative integer may be entered.
  * @param {string} text The user's text.
  * @return {?string} A string representing a valid int, or null if invalid.
