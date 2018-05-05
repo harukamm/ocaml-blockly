@@ -44,7 +44,7 @@ Blockly.TypedLang['lists_create_with_typed'] = function(block) {
   var code = '[' + elements.join(', ') + ']';
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
-/*
+
 Blockly.TypedLang['lists_repeat'] = function(block) {
   // Create a list with one element repeated.
   var functionName = Blockly.TypedLang.provideFunction_(
@@ -400,4 +400,3 @@ Blockly.TypedLang['lists_reverse'] = function(block) {
   var code = list + '.slice().reverse()';
   return [code, Blockly.TypedLang.ORDER_FUNCTION_CALL];
 };
-*/
