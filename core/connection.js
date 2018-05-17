@@ -220,8 +220,8 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
   // Sorin
   var unifyResult;
-  if (this.typeExpr && childConnection.typeExpr) {
-    unifyResult = this.typeExpr.unify(childConnection.typeExpr);
+  if (parentConnection.typeExpr && childConnection.typeExpr) {
+    unifyResult = parentConnection.typeExpr.unify(childConnection.typeExpr);
     if (unifyResult === false) {
       throw 'Attempt to connect incompatible types.';
     }
@@ -267,7 +267,7 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
   if (parentBlock.rendered && childBlock.rendered) {
     // Sorin
-    if (this.typeExpr && childConnection.typeExpr) {
+    if (parentConnection.typeExpr && childConnection.typeExpr) {
       childBlock.render();
       parentBlock.render();
       return;
