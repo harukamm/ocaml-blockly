@@ -412,11 +412,11 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       if (tvar.val != null) {
         staq.push([tvar.val, othr]);
       } else {
-        goog.assert(!othr.occur(tvar.name), 'Unify error: variable occurrace');
+        goog.asserts.assert(!othr.occur(tvar.name), 'Unify error: variable occurrace');
         tvar.val = othr;
       }
     } else {
-      goog.assert(t1.label == t2.label, 'Unify error: Cannot unify');
+      goog.asserts.assert(t1.label == t2.label, 'Unify error: Cannot unify');
       if (t1.label == Blockly.TypeExpr.prototype.FUN_) {
         staq.push([t1.arg_type, t2.arg_type]);
         staq.push([t1.return_type, t2.return_type]);
@@ -456,7 +456,7 @@ Blockly.TypeExpr.prototype.occur = function(name) {
         staq.push(t.val);
       break;
     default:
-      goog.assert(false, 'This should not happen.');
+      goog.asserts.assert(false, 'This should not happen.');
     }
   }
   return false;
