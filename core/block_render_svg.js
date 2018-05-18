@@ -530,6 +530,7 @@ Blockly.BlockSvg.prototype.render = function(opt_bubble) {
   var inputRows = this.renderCompute_(cursorX);
   this.renderDraw_(cursorX, inputRows);
   this.renderMoveConnections_();
+  this.renderDraw_(cursorX, inputRows);
 
   if (opt_bubble !== false) {
     // Render all blocks above this one (propagate a reflow).
