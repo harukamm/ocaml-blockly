@@ -47,6 +47,25 @@ TypeExpr.prototype.toString = function(opt_deref) {
 }
 
 /**
+ * @static
+ * @return {string}
+ */
+TypeExpr.generateColor = function() {
+  var getRandomInt = function(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+  var to2digitshexString = function(v) {
+    var x = v.toString(16).slice(-2);
+    return '0'.repeat(2 - x.length) + x;
+  }
+  var r = getRandomInt(1 << 8);
+  var g = getRandomInt(1 << 8);
+  var b = getRandomInt(1 << 8);
+  return '#' + to2digitshexString(r) + to2digitshexString(g) +
+      to2digitshexString(b);
+}
+
+/**
  * Returns whether the object is a type variable.
  * @return {boolean} True if the object is a type variable.
  */
@@ -124,13 +143,18 @@ TypeExpr.FUN.prototype.toString = function(opt_deref) {
  * @constructor
  * @param {string} name
  * @param {TypeExpr} val
+ * @param {string=} opt_color
  * @return {TypeExpr}
  */
-TypeExpr.TVAR = function(name, val) {
+TypeExpr.TVAR = function(name, val, opt_color) {
   /** @type {string} */
   this.name = name;
   /** @type {TypeExpr} */
   this.val = val;
+  /** @type {Type} */
+  this.type = type;
+  /** @type {string} */
+  this.color = opt_color ? opt_color : TypeExpr.generateColor();
   TypeExpr.call(this, TypeExpr.prototype.TVAR);
 }
 goog.inherits(TypeExpr.TVAR, TypeExpr);
