@@ -41,6 +41,13 @@ Blockly.TypeExpr.prototype.LIST_ = 105;
  * @type {number}
  * @private
  */
+Blockly.TypeExpr.prototype.PAIR_ = 106;
+
+
+/**
+ * @type {number}
+ * @private
+ */
 Blockly.TypeExpr.prototype.FUN_ = 102;
 
 /**
@@ -72,6 +79,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'bool';
     case Blockly.TypeExpr.prototype.LIST_:
       return 'list';
+    case Blockly.TypeExpr.prototype.PAIR_:
+      return 'pair';
     case Blockly.TypeExpr.prototype.FUN_:
       return 'fun';
     case Blockly.TypeExpr.prototype.TVAR_:
@@ -202,6 +211,40 @@ Blockly.TypeExpr.LIST.prototype.toString = function(opt_deref) {
  */
 Blockly.TypeExpr.LIST.prototype.getChildren = function() {
   return [this.element_type];
+}
+
+/**
+ * @extends {Blockly.TypeExpr}
+ * @constructor
+ * @param {Type} first_type
+ * @param {Type} second_type
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.PAIR = function(first_type, second_type) {
+  /** @type {Type} */
+  this.first_type = first_type;
+  /** @type {Type} */
+  this.second_type = second_type;
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.PAIR_);
+}
+goog.inherits(Blockly.TypeExpr.PAIR, Blockly.TypeExpr);
+
+/**
+ * @override
+ * @param {boolean=} opt_deref
+ * @return {string}
+ */
+Blockly.TypeExpr.PAIR.prototype.toString = function(opt_deref) {
+  return "PAIR[" + this.first_type.toString() + " * " +
+      this.second_type.toString() + "]";
+}
+
+/**
+ * @override
+ * @return {Array<Type>}
+ */
+Blockly.TypeExpr.PAIR.prototype.getChildren = function() {
+  return [this.first_type, this.second_type];
 }
 
 /**
@@ -356,6 +399,10 @@ Blockly.TypeExpr.prototype.occur = function(name) {
       break;
     case Blockly.TypeExpr.prototype.LIST_:
       staq.push(t.element_type);
+      break;
+    case Blockly.TypeExpr.prototype.PAIR_:
+      staq.push(t.first_type);
+      staq.push(t.second_type);
       break;
     case Blockly.TypeExpr.prototype.FUN_:
       staq.push(t.arg_type);
