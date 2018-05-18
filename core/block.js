@@ -1610,7 +1610,7 @@ Blockly.Blocks['logic_compare_typed'] = {
     this.setOutput(true, 'Boolean');
     // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr('bool'));
-    var A = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
     this.appendValueInput('A')
         .setTypeExpr(A);
     this.appendValueInput('B')
@@ -1642,7 +1642,7 @@ Blockly.Blocks['logic_ternary_typed'] = {
   init: function() {
     this.setHelpUrl(Blockly.Msg.LOGIC_TERNARY_HELPURL);
     this.setColour(210);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
     this.appendValueInput('IF')
         .setCheck('Boolean')
         .setTypeExpr(new Blockly.TypeExpr('bool'))
@@ -1787,7 +1787,7 @@ Blockly.Blocks['lists_create_with_typed'] = {
    */
   init: function() {
     this.setColour(260);
-    this.typeParams = { elmtType: Blockly.TypeVar.getUnusedTypeVar() };
+    this.typeParams = { elmtType: TypeExpr.GenerateTypeVar() };
     this.appendDummyInput('LPAREN')
         .appendField('[');
     this.appendValueInput('ADD0')
@@ -1920,8 +1920,8 @@ Blockly.Blocks['pair_create_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
-    var B = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
+    var B = TypeExpr.GenerateTypeVar();
     this.appendValueInput('FIRST')
         .setTypeExpr(A)
         .appendField('(');
@@ -1941,8 +1941,8 @@ Blockly.Blocks['pair_first_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
-    var B = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
+    var B = TypeExpr.GenerateTypeVar();
     var pair_t = new Blockly.TypeExpr ("pair", [A, B]);
     this.appendValueInput('FIRST')
         .setTypeExpr(pair_t)
@@ -1960,8 +1960,8 @@ Blockly.Blocks['pair_second_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
-    var B = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
+    var B = TypeExpr.GenerateTypeVar();
     var pair_t = new Blockly.TypeExpr ("pair", [A, B]);
     this.appendValueInput('SECOND')
         .setTypeExpr(pair_t)
@@ -1982,8 +1982,8 @@ Blockly.Blocks['sum_first_create_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
-    var B = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
+    var B = TypeExpr.GenerateTypeVar();
     this.appendValueInput('FIRST')
         .setTypeExpr(A)
         .appendField("create first sum with");
@@ -2000,8 +2000,8 @@ Blockly.Blocks['sum_second_create_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
-    var B = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
+    var B = TypeExpr.GenerateTypeVar();
     this.appendValueInput('FIRST')
         .setTypeExpr(A)
         .appendField("create second sum with");
@@ -2018,9 +2018,9 @@ Blockly.Blocks['sum_case_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
-    var B = Blockly.TypeVar.getUnusedTypeVar();
-    var C = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
+    var B = TypeExpr.GenerateTypeVar();
+    var C = TypeExpr.GenerateTypeVar();
     this.appendValueInput('VALUE')
         .setTypeExpr(new Blockly.TypeExpr ("sum", [A, B]))
         .appendField("case on");
@@ -2048,8 +2048,8 @@ Blockly.Blocks['lambda_typed'] = {
    */
   init: function() {
     this.setColour(290);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
-    var B = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
+    var B = TypeExpr.GenerateTypeVar();
     this.argName = 'X' + Blockly.Blocks.lambda_id;
     Blockly.Blocks.lambda_id++;
     this.appendDummyInput()
@@ -2079,8 +2079,8 @@ Blockly.Blocks['lambda_app_typed'] = {
    */
   init: function() {
     this.setColour(290);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
-    var B = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
+    var B = TypeExpr.GenerateTypeVar();
     this.appendValueInput('FUN')
         .setTypeExpr(new Blockly.TypeExpr ("fun", [A, B]));
     this.appendValueInput('ARG')
@@ -2109,7 +2109,7 @@ Blockly.Blocks['match_typed'] = {
    */
   init: function() {
     this.setColour(290);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
     this.appendDummyInput()
         .appendField('match');
     this.appendValueInput('INPUT')
@@ -2153,7 +2153,7 @@ Blockly.Blocks['variables_get_typed'] = {
           Blockly.Msg.VARIABLES_GET_ITEM, this.createDropDownChangeFunction()), 'VAR')
         .appendField(Blockly.Msg.VARIABLES_GET_TAIL);
     this.setOutput(true);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
     this.contextMenuMsg_ = Blockly.Msg.VARIABLES_GET_CREATE_SET;
@@ -2221,8 +2221,8 @@ Blockly.Blocks['let_typed'] = {
   init: function() {
     this.setHelpUrl(Blockly.Msg.VARIABLES_SET_HELPURL);
     this.setColour(330);
-    var A = Blockly.TypeVar.getUnusedTypeVar();
-    var B = Blockly.TypeVar.getUnusedTypeVar();
+    var A = TypeExpr.GenerateTypeVar();
+    var B = TypeExpr.GenerateTypeVar();
     var variable_field = new Blockly.FieldVariable(
         Blockly.Msg.VARIABLES_GET_ITEM,
         this.createDropDownChangeFunction());

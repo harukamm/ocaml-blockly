@@ -211,7 +211,7 @@ TypeExpr.ExcelColumn = function(n) {
  * @static
  * @return {TypeExpr}
  */
-TypeExpr.Gen = function() {
+TypeExpr.GenerateTypeVar = function() {
   var name = TypeExpr.ExcelColumn(TypeExpr.prototype.gen_counter);
   TypeExpr.prototype.gen_counter++;
   return new TypeExpr.TVAR(name, null);
