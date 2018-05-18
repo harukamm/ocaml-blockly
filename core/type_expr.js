@@ -23,43 +23,43 @@ Blockly.TypeExpr.prototype.INT_ = 100;
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.FLOAT_ = 104;
+Blockly.TypeExpr.prototype.FLOAT_ = 105;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.BOOL_ = 101;
+Blockly.TypeExpr.prototype.BOOL_ = 110;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.LIST_ = 105;
+Blockly.TypeExpr.prototype.LIST_ = 115;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.PAIR_ = 106;
+Blockly.TypeExpr.prototype.PAIR_ = 120;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.SUM_ = 107;
+Blockly.TypeExpr.prototype.SUM_ = 125;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.FUN_ = 102;
+Blockly.TypeExpr.prototype.FUN_ = 130;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.TVAR_ = 103;
+Blockly.TypeExpr.prototype.TVAR_ = 135;
 
 /**
  * Convert the type instance into plan text.
