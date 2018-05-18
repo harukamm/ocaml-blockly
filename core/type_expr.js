@@ -39,7 +39,7 @@ Blockly.TypeExpr.prototype.TVAR_ = 103;
 
 /**
  * Convert the type instance into plan text.
- * @type {boolean=} opt_deref
+ * @param {boolean=} opt_deref
  * @return {string}
  */
 Blockly.TypeExpr.prototype.toString = function(opt_deref) {
