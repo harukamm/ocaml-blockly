@@ -212,7 +212,8 @@ Blockly.TypeExpr.ExcelColumn = function(n) {
  * @return {Blockly.TypeExpr}
  */
 Blockly.TypeExpr.generateTypeVar = function() {
-  var name = Blockly.TypeExpr.ExcelColumn(Blockly.TypeExpr.prototype.gen_counter);
+  var name = Blockly.TypeExpr.ExcelColumn(
+      Blockly.TypeExpr.prototype.gen_counter);
   Blockly.TypeExpr.prototype.gen_counter++;
   return new Blockly.TypeExpr.TVAR(name, null);
 }
@@ -226,11 +227,13 @@ Blockly.TypeExpr.prototype.unify = function(other) {
     var pair = staq.pop();
     var t1 = pair[0];
     var t2 = pair[1];
-    if (t1.label == Blockly.TypeExpr.prototype.TVAR || t2.label == Blockly.TypeExpr.prototype.TVAR) {
+    if (t1.label == Blockly.TypeExpr.prototype.TVAR ||
+        t2.label == Blockly.TypeExpr.prototype.TVAR) {
       var tvar, othr;
       tvar = t1.label == Blockly.TypeExpr.prototype.TVAR ? t1 : t2;
       othr = t1.label == Blockly.TypeExpr.prototype.TVAR ? t2 : t1;
-      if (othr.label == Blockly.TypeExpr.prototype.TVAR && tvar.name == othr.name)
+      if (othr.label == Blockly.TypeExpr.prototype.TVAR &&
+          tvar.name == othr.name)
         continue;
       if (tvar.val != null) {
         staq.push([tvar.val, othr]);
