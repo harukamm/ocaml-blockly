@@ -178,8 +178,6 @@ Blockly.TypeExpr.TVAR = function(name, val, opt_color) {
   this.name = name;
   /** @type {Blockly.TypeExpr} */
   this.val = val;
-  /** @type {Type} */
-  this.type = type;
   /** @type {string} */
   this.color = opt_color ? opt_color : Blockly.TypeExpr.generateColor();
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.TVAR_);
