@@ -263,15 +263,15 @@ Blockly.BlockSvg.typeVarShapes_ = {
 
   list : { 
     down: function (self, steps, updown) {
-      Blockly.BlockSvg.renderTypeExpr(self.children[0], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.element_type, steps, updown);
       steps.push('l 0,3 -8,0 0,4, 8,0 0,3');
     },
     up: function (self, steps, updown) {
       steps.push('l 0,-3 -8,0 0,-4, 8,0 0,-3');
-      Blockly.BlockSvg.renderTypeExpr(self.children[0], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.element_type, steps, updown);
     },
     height: function(self) {
-      return Blockly.BlockSvg.getTypeExprHeight(self.children[0]) + 10;
+      return Blockly.BlockSvg.getTypeExprHeight(self.element_type) + 10;
     },
     offsetsY: function(self) {
       return [0];
@@ -281,75 +281,75 @@ Blockly.BlockSvg.typeVarShapes_ = {
   pair : {
     down: function (self, steps, updown) {
       steps.push('l 0,3 -12,0 0,3 12,0');
-      Blockly.BlockSvg.renderTypeExpr(self.children[0], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.first_type, steps, updown);
       steps.push('l -5,3 5,3');
-      Blockly.BlockSvg.renderTypeExpr(self.children[1], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.second_type, steps, updown);
       steps.push('l -12,0 0,3 12,0 0,3');
     },
     up: function (self, steps, updown) {
       steps.push('l 0,-3 -12,0 0,-3 12,0');
-      Blockly.BlockSvg.renderTypeExpr(self.children[1], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.second_type, steps, updown);
       steps.push('l -5,-3 5,-3');
-      Blockly.BlockSvg.renderTypeExpr(self.children[0], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.first_type, steps, updown);
       steps.push('l -12,0 0,-3 12,0 0,-3');
     },
     height: function(self) {
-      return Blockly.BlockSvg.getTypeExprHeight(self.children[0]) + 
-             Blockly.BlockSvg.getTypeExprHeight(self.children[1]) + 
+      return Blockly.BlockSvg.getTypeExprHeight(self.first_type) + 
+             Blockly.BlockSvg.getTypeExprHeight(self.second_type) + 
              18;
     },
     offsetsY: function(self) {
-      return [6, Blockly.BlockSvg.getTypeExprHeight(self.children[0]) + 12];
+      return [6, Blockly.BlockSvg.getTypeExprHeight(self.first_type) + 12];
     }
   },
 
   sum : {
     down: function (self, steps, updown) {
       steps.push('l 0,3 -12,0 0,3 12,0');
-      Blockly.BlockSvg.renderTypeExpr(self.children[0], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.left_type, steps, updown);
       steps.push('l 0,1 -5,0 0,4 5,0, 0,1');
-      Blockly.BlockSvg.renderTypeExpr(self.children[1], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.right_type, steps, updown);
       steps.push('l -12,0 0,3 12,0 0,3');
     },
     up: function (self, steps, updown) {
       steps.push('l 0,-3 -12,0 0,-3 12,0');
-      Blockly.BlockSvg.renderTypeExpr(self.children[1], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.right_type, steps, updown);
       steps.push('l 0,-1 -5,0 0,-4 5,0, 0,-1');
-      Blockly.BlockSvg.renderTypeExpr(self.children[0], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.left_type, steps, updown);
       steps.push('l -12,0 0,-3 12,0 0,-3');
     },
     height: function(self) {
-      return Blockly.BlockSvg.getTypeExprHeight(self.children[0]) + 
-             Blockly.BlockSvg.getTypeExprHeight(self.children[1]) + 
+      return Blockly.BlockSvg.getTypeExprHeight(self.left_type) + 
+             Blockly.BlockSvg.getTypeExprHeight(self.right_type) + 
              18;
     },
     offsetsY: function(self) {
-      return [6, Blockly.BlockSvg.getTypeExprHeight(self.children[0]) + 12];
+      return [6, Blockly.BlockSvg.getTypeExprHeight(self.left_type) + 12];
     }
   },
 
   fun : {
     down: function (self, steps, updown) {
       steps.push('l 0,3 -12,0 0,3 12,0');
-      Blockly.BlockSvg.renderTypeExpr(self.children[0], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.arg_type, steps, updown);
       steps.push('l 5,3 -5,3');
-      Blockly.BlockSvg.renderTypeExpr(self.children[1], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.return_type, steps, updown);
       steps.push('l -12,0 0,3 12,0 0,3');
     },
     up: function (self, steps, updown) {
       steps.push('l 0,-3 -12,0 0,-3 12,0');
-      Blockly.BlockSvg.renderTypeExpr(self.children[1], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.return_type, steps, updown);
       steps.push('l 5,-3 -5,-3');
-      Blockly.BlockSvg.renderTypeExpr(self.children[0], steps, updown);
+      Blockly.BlockSvg.renderTypeExpr(self.arg_type, steps, updown);
       steps.push('l -12,0 0,-3 12,0 0,-3');
     },
     height: function(self) {
-      return Blockly.BlockSvg.getTypeExprHeight(self.children[0]) + 
-             Blockly.BlockSvg.getTypeExprHeight(self.children[1]) + 
+      return Blockly.BlockSvg.getTypeExprHeight(self.arg_type) + 
+             Blockly.BlockSvg.getTypeExprHeight(self.return_type) + 
              18;
     },
     offsetsY: function(self) {
-      return [6, Blockly.BlockSvg.getTypeExprHeight(self.children[0]) + 12];
+      return [6, Blockly.BlockSvg.getTypeExprHeight(self.arg_type) + 12];
     }
   },
 
@@ -413,16 +413,17 @@ Blockly.BlockSvg.typeVarHighlights = function(typeExpr) {
 Blockly.BlockSvg.typeVarHighlights_ = function(typeExpr, y, typeVarHighlights) {
   if (typeExpr) {
     var type = typeExpr.deref();
-    var name = Blockly.BlockSvg.getTypeName(type);
+    var children = type.getChildren();
     if (type.isTypeVar()) {
       typeVarHighlights.push({
         color: type.color,
         path: "m 0," + y + " " + Blockly.BlockSvg.typeVarShapes_["typeVar"]["highlight"]
       });
-    } else if (type.children.length != 0) {
+    } else if (children.length != 0) {
+      var name = type.getTypeName();
       var offsetsY = Blockly.BlockSvg.typeVarShapes_[name].offsetsY(type);
-      for (var i = 0; i < type.children.length; i++) {
-        Blockly.BlockSvg.typeVarHighlights_(type.children[i],
+      for (var i = 0; i < children.length; i++) {
+        Blockly.BlockSvg.typeVarHighlights_(children[i],
                                             y + offsetsY[i],
                                             typeVarHighlights);
       }

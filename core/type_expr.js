@@ -66,6 +66,14 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
 }
 
 /**
+ * Return a collection of the object's child types.
+ * @return {Array<Type>}
+ */
+Blockly.TypeExpr.prototype.getChildren = function() {
+  return [];
+}
+
+ /**
  * @static
  * @return {string}
  */

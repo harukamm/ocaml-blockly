@@ -2069,7 +2069,7 @@ Blockly.Blocks['lambda_typed'] = {
 
   getVarsWithTypes: function() {
     var result = {};
-    result[this.argName] = this.outputConnection.typeExpr.children[0];
+    result[this.argName] = this.outputConnection.typeExpr.arg_type;
     return result;
   }
 }
@@ -2098,9 +2098,7 @@ Blockly.Blocks['lambda_app_typed'] = {
   },
 
   getVarsWithTypes: function() {
-    var result = {};
-    result[this.argName] = this.outputConnection.typeExpr.children[0];
-    return result;
+    goog.asserts.assert(false, 'No implemented.');
   }
 }
 
@@ -2129,9 +2127,7 @@ Blockly.Blocks['match_typed'] = {
   },
 
   getVarsWithTypes: function() {
-    var result = {};
-    result[this.argName] = this.outputConnection.typeExpr.children[0];
-    return result;
+    goog.asserts.assert(false, 'No implemented.');
   }
 }
 
