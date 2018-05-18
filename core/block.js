@@ -1787,21 +1787,21 @@ Blockly.Blocks['lists_create_with_typed'] = {
    */
   init: function() {
     this.setColour(260);
-    this.typeParams = { elmtType: Blockly.TypeExpr.generateTypeVar() };
+    var element_type = Blockly.TypeExpr.generateTypeVar();
     this.appendDummyInput('LPAREN')
         .appendField('[');
     this.appendValueInput('ADD0')
-        .setTypeExpr(this.typeParams.elmtType);
+        .setTypeExpr(element_type);
     this.appendValueInput('ADD1')
-        .setTypeExpr(this.typeParams.elmtType)
+        .setTypeExpr(element_type)
         .appendField(';');
     this.appendValueInput('ADD2')
-        .setTypeExpr(this.typeParams.elmtType)
+        .setTypeExpr(element_type)
         .appendField(';');
     this.appendDummyInput('RPAREN')
         .appendField(']');
     this.setOutput(true, 'Array');
-    this.setOutputTypeExpr(new Blockly.TypeExpr.LIST(this.typeParams.elmtType));
+    this.setOutputTypeExpr(new Blockly.TypeExpr.LIST(element_type));
     this.setMutator(new Blockly.Mutator(['lists_create_with_item']));
     this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_TOOLTIP);
     this.itemCount_ = 3;
@@ -1832,9 +1832,10 @@ Blockly.Blocks['lists_create_with_typed'] = {
     this.itemCount_ = parseInt(xmlElement.getAttribute('items'), 10);
     this.appendDummyInput('LPAREN')
         .appendField('[');
+    var element_type = this.outputConnection.typeExpr.element_type;
     for (var x = 0; x < this.itemCount_; x++) {
       var input = this.appendValueInput('ADD' + x)
-                      .setTypeExpr(this.typeParams.elmtType);
+                      .setTypeExpr(element_type);
       if (x != 0) {
         input.appendField(';');
       }
@@ -1877,9 +1878,10 @@ Blockly.Blocks['lists_create_with_typed'] = {
     this.itemCount_ = 0;
     // Rebuild the block's inputs.
     var itemBlock = containerBlock.getInputTargetBlock('STACK');
+    var element_type = this.outputConnection.typeExpr.element_type;
     while (itemBlock) {
       var input = this.appendValueInput('ADD' + this.itemCount_)
-                      .setTypeExpr(this.typeParams.elmtType);
+                      .setTypeExpr(element_type);
       if (this.itemCount_ != 0) {
         input.appendField(';');
       }
