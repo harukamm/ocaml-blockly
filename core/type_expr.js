@@ -35,6 +35,12 @@ Blockly.TypeExpr.prototype.BOOL_ = 101;
  * @type {number}
  * @private
  */
+Blockly.TypeExpr.prototype.LIST_ = 105;
+
+/**
+ * @type {number}
+ * @private
+ */
 Blockly.TypeExpr.prototype.FUN_ = 102;
 
 /**
@@ -64,6 +70,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'float';
     case Blockly.TypeExpr.prototype.BOOL_:
       return 'bool';
+    case Blockly.TypeExpr.prototype.LIST_:
+      return 'list';
     case Blockly.TypeExpr.prototype.FUN_:
       return 'fun';
     case Blockly.TypeExpr.prototype.TVAR_:
@@ -164,6 +172,36 @@ goog.inherits(Blockly.TypeExpr.BOOL, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.BOOL.prototype.toString = function(opt_deref) {
   return "BOOL";
+}
+
+/**
+ * @extends {Blockly.TypeExpr}
+ * @constructor
+ * @param {Type} element_type
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.LIST = function(element_type) {
+  /** @type {Type} */
+  this.element_type = element_type;
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.LIST_);
+}
+goog.inherits(Blockly.TypeExpr.LIST, Blockly.TypeExpr);
+
+/**
+ * @override
+ * @param {boolean=} opt_deref
+ * @return {string}
+ */
+Blockly.TypeExpr.LIST.prototype.toString = function(opt_deref) {
+  return "LIST[" + this.element_type.toString() + "]";
+}
+
+/**
+ * @override
+ * @return {Array<Type>}
+ */
+Blockly.TypeExpr.LIST.prototype.getChildren = function() {
+  return [this.element_type];
 }
 
 /**
@@ -315,6 +353,9 @@ Blockly.TypeExpr.prototype.occur = function(name) {
     case Blockly.TypeExpr.prototype.INT_:
     case Blockly.TypeExpr.prototype.FLOAT_:
     case Blockly.TypeExpr.prototype.BOOL_:
+      break;
+    case Blockly.TypeExpr.prototype.LIST_:
+      staq.push(t.element_type);
       break;
     case Blockly.TypeExpr.prototype.FUN_:
       staq.push(t.arg_type);
