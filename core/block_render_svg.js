@@ -413,9 +413,9 @@ Blockly.BlockSvg.typeVarHighlights = function(typeExpr) {
 Blockly.BlockSvg.typeVarHighlights_ = function(typeExpr, y, typeVarHighlights) {
   if (typeExpr) {
     var name = typeExpr.name
-    if (typeExpr.isTypeVar()) {
+    if (typeExpr.isTypeVar()) { // 先にderef必要
       typeVarHighlights.push({
-        color: Blockly.TypeVar.getTypeVarColor(name), 
+        color: typeExpr.color,
         path: "m 0," + y + " " + Blockly.BlockSvg.typeVarShapes_["typeVar"]["highlight"]
       });
     } else if (typeExpr.children.length != 0) {

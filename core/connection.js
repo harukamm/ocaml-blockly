@@ -533,7 +533,7 @@ Blockly.Connection.prototype.addColor = function() {
   this.coloredPath_ = Blockly.utils.createSvgElement(
     'path', {
       'class': 'blocklyTypeVarPath',
-      stroke: Blockly.TypeVar.getTypeVarColor(this.typeExpr.name),
+      stroke: this.typeExpr.color,
       d: steps,
       transform: 'translate(' + x + ', ' + y + ')'
     },
@@ -541,8 +541,8 @@ Blockly.Connection.prototype.addColor = function() {
 
   // this.coloredPath_ = Blockly.utils.createSvgElement('path',
   //     {class: 'blocklyHighlightedConnectionPath' + 
-  //                Blockly.TypeVar.getTypeVarColor(this.typeExpr.name),
-  //      stroke: Blockly.TypeVar.getTypeVarColor(this.typeExpr.name),
+  //                this.typeExpr.color;
+  //      stroke: this.typeExpr.color;
   //      d: steps,
   //      transform: 'translate(' + x + ', ' + y + ')'},
   //     this.sourceBlock_.getSvgRoot());
