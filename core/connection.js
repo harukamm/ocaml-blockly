@@ -249,7 +249,6 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
       block.render();
     }
-    Blockly.TypeVar.triggerGarbageCollection();
   }
 
   var event;

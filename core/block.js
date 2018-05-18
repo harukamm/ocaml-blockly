@@ -158,7 +158,6 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
 
   // Call an initialization function, if it exists.
   if (goog.isFunction(this.init)) {
-    Blockly.TypeVar.triggerGarbageCollection();
     this.init();
   }
   // Record initial inline state.
@@ -297,9 +296,6 @@ Blockly.Block.prototype.initModel = function() {
       }
     }
   }
-
-  // Sorin: trigger garbage collection for type variables
-  Blockly.TypeVar.triggerGarbageCollection();
 };
 
 /**
