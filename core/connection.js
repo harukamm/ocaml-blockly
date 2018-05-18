@@ -468,33 +468,6 @@ Blockly.Connection.connectReciprocally_ = function(first, second) {
   second.targetConnection = first;
 };
 
-Blockly.Connection.prototype.renderTypeVarHighlights = function() {
-  if (this.typeVarPaths_) {
-    for (var i = 0; i < this.typeVarPaths_.length; i++) {
-      goog.dom.removeNode(this.typeVarPaths_[i]);
-      delete this.typeVarPaths_[i];
-    }
-  }
-  this.typeVarPaths_ = [];
-  var xy = this.sourceBlock_.getRelativeToSurfaceXY();
-  var x = this.x_ - xy.x;
-  var y = this.y_ - xy.y;
-  /** @type {Array<{color: string, path: string}>} */
-  var typeVarHighlights = Blockly.BlockSvg.typeVarHighlights(this.typeExpr);
-  for (var i = 0; i < typeVarHighlights.length; i++) {
-    var highlight = typeVarHighlights[i];
-    this.typeVarPaths_.push(
-      Blockly.utils.createSvgElement(
-        'path', {
-          'class': 'blocklyTypeVarPath',
-          stroke: highlight.color,
-          d: highlight.path,
-          transform: 'translate(' + x + ', ' + y + ')'
-        },
-        this.sourceBlock_.getSvgRoot()));
-  }
-}
-
 /**
  * Adds color if this is a type varible connection
  * Sorin
