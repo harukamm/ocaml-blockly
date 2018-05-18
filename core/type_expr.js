@@ -79,7 +79,7 @@ Blockly.TypeExpr.generateColor = function() {
  */
 Blockly.TypeExpr.prototype.isTypeVar = function() {
   var t = this.deref();
-  return t.label == Blockly.TypeExpr.prototype.TVAR;
+  return t.label == Blockly.TypeExpr.prototype.TVAR_;
 }
 
 /**
@@ -88,7 +88,7 @@ Blockly.TypeExpr.prototype.isTypeVar = function() {
  * @return {Blockly.TypeExpr}
  */
 Blockly.TypeExpr.INT = function() {
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.INT);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.INT_);
 }
 goog.inherits(Blockly.TypeExpr.INT, Blockly.TypeExpr);
 
@@ -115,7 +115,7 @@ Blockly.TypeExpr.INT.prototype.getTypeName = function() {
  * @return {Blockly.TypeExpr}
  */
 Blockly.TypeExpr.BOOL = function() {
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.BOOL);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.BOOL_);
 }
 goog.inherits(Blockly.TypeExpr.BOOL, Blockly.TypeExpr);
 
@@ -148,7 +148,7 @@ Blockly.TypeExpr.FUN = function(arg_type, return_type) {
   this.arg_type = arg_type;
   /** @type {Blockly.TypeExpr} */
   this.return_type = return_type;
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.FUN);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.FUN_);
 }
 goog.inherits(Blockly.TypeExpr.FUN, Blockly.TypeExpr);
 
@@ -187,7 +187,7 @@ Blockly.TypeExpr.TVAR = function(name, val, opt_color) {
   this.type = type;
   /** @type {string} */
   this.color = opt_color ? opt_color : Blockly.TypeExpr.generateColor();
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.TVAR);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.TVAR_);
 }
 goog.inherits(Blockly.TypeExpr.TVAR, Blockly.TypeExpr);
 
@@ -198,7 +198,7 @@ goog.inherits(Blockly.TypeExpr.TVAR, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
   var inst = opt_deref ? this.deref() : this;
-  if (inst.label == Blockly.TypeExpr.prototype.TVAR) {
+  if (inst.label == Blockly.TypeExpr.prototype.TVAR_) {
     var val_str = inst.val ? inst.val.toString(opt_deref) : "null";
     return "<" + inst.name + "=" + val_str + ">";
   } else {
@@ -219,7 +219,7 @@ Blockly.TypeExpr.TVAR.prototype.getTypeName = function() {
  */
 Blockly.TypeExpr.prototype.deref = function() {
   var t = this;
-  while (t.label == Blockly.TypeExpr.prototype.TVAR && t.val != null)
+  while (t.label == Blockly.TypeExpr.prototype.TVAR_ && t.val != null)
     t = t.val;
   return t;
 }
@@ -267,12 +267,12 @@ Blockly.TypeExpr.prototype.unify = function(other) {
     var pair = staq.pop();
     var t1 = pair[0];
     var t2 = pair[1];
-    if (t1.label == Blockly.TypeExpr.prototype.TVAR ||
-        t2.label == Blockly.TypeExpr.prototype.TVAR) {
+    if (t1.label == Blockly.TypeExpr.prototype.TVAR_ ||
+        t2.label == Blockly.TypeExpr.prototype.TVAR_) {
       var tvar, othr;
-      tvar = t1.label == Blockly.TypeExpr.prototype.TVAR ? t1 : t2;
-      othr = t1.label == Blockly.TypeExpr.prototype.TVAR ? t2 : t1;
-      if (othr.label == Blockly.TypeExpr.prototype.TVAR &&
+      tvar = t1.label == Blockly.TypeExpr.prototype.TVAR_ ? t1 : t2;
+      othr = t1.label == Blockly.TypeExpr.prototype.TVAR_ ? t2 : t1;
+      if (othr.label == Blockly.TypeExpr.prototype.TVAR_ &&
           tvar.name == othr.name)
         continue;
       if (tvar.val != null) {
@@ -283,7 +283,7 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       }
     } else {
       goog.assert(t1.label == t2.label, 'Unify error: Cannot unify');
-      if (t1.label == Blockly.TypeExpr.prototype.FUN) {
+      if (t1.label == Blockly.TypeExpr.prototype.FUN_) {
         staq.push([t1.arg_type, t2.arg_type]);
         staq.push([t1.return_type, t2.return_type]);
       }
@@ -300,14 +300,14 @@ Blockly.TypeExpr.prototype.occur = function(name) {
   while (staq.length != 0) {
     var t = staq.pop();
     switch (t.label) {
-    case Blockly.TypeExpr.prototype.INT:
-    case Blockly.TypeExpr.prototype.BOOL:
+    case Blockly.TypeExpr.prototype.INT_:
+    case Blockly.TypeExpr.prototype.BOOL_:
       break;
-    case Blockly.TypeExpr.prototype.FUN:
+    case Blockly.TypeExpr.prototype.FUN_:
       staq.push(t.arg_type);
       staq.push(t.return_type);
       break;
-    case Blockly.TypeExpr.prototype.TVAR:
+    case Blockly.TypeExpr.prototype.TVAR_:
       if (t.name == name)
         return true;
       if (t.val)
