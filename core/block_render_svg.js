@@ -412,10 +412,11 @@ Blockly.BlockSvg.typeVarHighlights = function(typeExpr) {
  */
 Blockly.BlockSvg.typeVarHighlights_ = function(typeExpr, y, typeVarHighlights) {
   if (typeExpr) {
-    var name = typeExpr.name
-    if (typeExpr.isTypeVar()) { // 先にderef必要
+    var type = typeExpr.deref();
+    var name = Blockly.BlockSvg.getTypeName(type);
+    if (type.isTypeVar()) {
       typeVarHighlights.push({
-        color: typeExpr.color,
+        color: type.color,
         path: "m 0," + y + " " + Blockly.BlockSvg.typeVarShapes_["typeVar"]["highlight"]
       });
     } else if (typeExpr.children.length != 0) {
@@ -431,11 +432,7 @@ Blockly.BlockSvg.typeVarHighlights_ = function(typeExpr, y, typeVarHighlights) {
 
 Blockly.BlockSvg.getTypeName = function(typeExpr) {
   if (typeExpr) {
-    if (typeExpr.isTypeVar()) {
-      return "typeVar";
-    } else {
-      return typeExpr.name;
-    }
+    return typeExpr.deref().getTypeName();
   } else {
     return "original";
   }

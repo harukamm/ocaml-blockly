@@ -47,6 +47,14 @@ Blockly.TypeExpr.prototype.toString = function(opt_deref) {
 }
 
 /**
+ * Return the object's type name.
+ * @return {string}
+ */
+Blockly.TypeExpr.prototype.getTypeName = function() {
+  goog.asserts.assert(false, 'Not implemented.');
+}
+
+/**
  * @static
  * @return {string}
  */
@@ -94,6 +102,14 @@ Blockly.TypeExpr.INT.prototype.toString = function(opt_deref) {
 }
 
 /**
+ * @override
+ * @return {string}
+ */
+Blockly.TypeExpr.INT.prototype.getTypeName = function() {
+  return 'int';
+}
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @return {Blockly.TypeExpr}
@@ -110,6 +126,14 @@ goog.inherits(Blockly.TypeExpr.BOOL, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.BOOL.prototype.toString = function(opt_deref) {
   return "BOOL";
+}
+
+/**
+ * @override
+ * @return {string}
+ */
+Blockly.TypeExpr.BOOL.prototype.getTypeName = function() {
+  return 'bool';
 }
 
 /**
@@ -136,6 +160,14 @@ goog.inherits(Blockly.TypeExpr.FUN, Blockly.TypeExpr);
 Blockly.TypeExpr.FUN.prototype.toString = function(opt_deref) {
   return "FUN((" + this.arg_type.toString(opt_deref) + ") -> (" +
       this.return_type.toString(opt_deref) + "))";
+}
+
+/**
+ * @override
+ * @return {string}
+ */
+Blockly.TypeExpr.FUN.prototype.getTypeName = function() {
+  return 'fun';
 }
 
 /**
@@ -172,6 +204,14 @@ Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
   } else {
     return "" + inst.toString(opt_deref);
   }
+}
+
+/**
+ * @override
+ * @return {string}
+ */
+Blockly.TypeExpr.TVAR.prototype.getTypeName = function() {
+  return 'typeVar';
 }
 
 /**
