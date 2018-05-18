@@ -43,6 +43,11 @@ Blockly.TypeExpr.prototype.LIST_ = 105;
  */
 Blockly.TypeExpr.prototype.PAIR_ = 106;
 
+/**
+ * @type {number}
+ * @private
+ */
+Blockly.TypeExpr.prototype.SUM_ = 107;
 
 /**
  * @type {number}
@@ -81,6 +86,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'list';
     case Blockly.TypeExpr.prototype.PAIR_:
       return 'pair';
+    case Blockly.TypeExpr.prototype.SUM_:
+      return 'sum';
     case Blockly.TypeExpr.prototype.FUN_:
       return 'fun';
     case Blockly.TypeExpr.prototype.TVAR_:
@@ -245,6 +252,40 @@ Blockly.TypeExpr.PAIR.prototype.toString = function(opt_deref) {
  */
 Blockly.TypeExpr.PAIR.prototype.getChildren = function() {
   return [this.first_type, this.second_type];
+}
+
+/**
+ * @extends {Blockly.TypeExpr}
+ * @constructor
+ * @param {Type} left_type
+ * @param {Type} right_type
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.SUM = function(left_type, right_type) {
+  /** @type {Type} */
+  this.left_type = left_type;
+  /** @type {Type} */
+  this.right_type = right_type;
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.SUM_);
+}
+goog.inherits(Blockly.TypeExpr.SUM, Blockly.TypeExpr);
+
+/**
+ * @override
+ * @param {boolean=} opt_deref
+ * @return {string}
+ */
+Blockly.TypeExpr.SUM.prototype.toString = function(opt_deref) {
+  return "SUM[" + this.left_type.toString() + " * " +
+      this.right_type.toString() + "]";
+}
+
+/**
+ * @override
+ * @return {Array<Type>}
+ */
+Blockly.TypeExpr.SUM.prototype.getChildren = function() {
+  return [this.left_type, this.right_type];
 }
 
 /**
