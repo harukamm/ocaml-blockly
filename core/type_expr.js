@@ -23,6 +23,12 @@ Blockly.TypeExpr.prototype.INT_ = 100;
  * @type {number}
  * @private
  */
+Blockly.TypeExpr.prototype.FLOAT_ = 104;
+
+/**
+ * @type {number}
+ * @private
+ */
 Blockly.TypeExpr.prototype.BOOL_ = 101;
 
 /**
@@ -54,6 +60,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
   switch (this.label) {
     case Blockly.TypeExpr.prototype.INT_:
       return 'int';
+    case Blockly.TypeExpr.prototype.FLOAT_:
+      return 'float';
     case Blockly.TypeExpr.prototype.BOOL_:
       return 'bool';
     case Blockly.TypeExpr.prototype.FUN_:
@@ -118,6 +126,25 @@ goog.inherits(Blockly.TypeExpr.INT, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.INT.prototype.toString = function(opt_deref) {
   return "INT";
+}
+
+/**
+ * @extends {Blockly.TypeExpr}
+ * @constructor
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.FLOAT = function() {
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.FLOAT_);
+}
+goog.inherits(Blockly.TypeExpr.FLOAT, Blockly.TypeExpr);
+
+/**
+ * @override
+ * @param {boolean=} opt_deref
+ * @return {string}
+ */
+Blockly.TypeExpr.FLOAT.prototype.toString = function(opt_deref) {
+  return "FLOAT";
 }
 
 /**
@@ -286,6 +313,7 @@ Blockly.TypeExpr.prototype.occur = function(name) {
     var t = staq.pop();
     switch (t.label) {
     case Blockly.TypeExpr.prototype.INT_:
+    case Blockly.TypeExpr.prototype.FLOAT_:
     case Blockly.TypeExpr.prototype.BOOL_:
       break;
     case Blockly.TypeExpr.prototype.FUN_:
