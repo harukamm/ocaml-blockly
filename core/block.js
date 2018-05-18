@@ -2224,16 +2224,15 @@ Blockly.Blocks['let_typed'] = {
         this.createDropDownChangeFunction());
     this.appendDummyInput('VARIABLE')
         .appendField('let')
-        .appendField(variable_field, 'VAR')
-        .setTypeExpr(A);
+        .appendField(variable_field, 'VAR');
     this.appendValueInput('EXP1')
         .setTypeExpr(A)
         .appendField('=');
     this.appendValueInput('EXP2')
         .setTypeExpr(B)
-        .appendField('in')
+        .appendField('in');
     this.setOutput(true);
-    this.setOutputTypeExpr(A);
+    this.setOutputTypeExpr(B);
     this.setInputsInline(true);
   },
 
