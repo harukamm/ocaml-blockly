@@ -9,7 +9,7 @@ goog.require('goog.dom');
  * @constructor
  * @param {number} label
  */
-function TypeExpr(label) {
+Blockly.TypeExpr = function(label) {
   this.label = label;
 }
 
@@ -17,32 +17,32 @@ function TypeExpr(label) {
  * @type {number}
  * @private
  */
-TypeExpr.prototype.INT_ = 100;
+Blockly.TypeExpr.prototype.INT_ = 100;
 
 /**
  * @type {number}
  * @private
  */
-TypeExpr.prototype.BOOL_ = 101;
+Blockly.TypeExpr.prototype.BOOL_ = 101;
 
 /**
  * @type {number}
  * @private
  */
-TypeExpr.prototype.FUN_ = 102;
+Blockly.TypeExpr.prototype.FUN_ = 102;
 
 /**
  * @type {number}
  * @private
  */
-TypeExpr.prototype.TVAR_ = 103;
+Blockly.TypeExpr.prototype.TVAR_ = 103;
 
 /**
  * Convert the type instance into plan text.
  * @type {boolean=} opt_deref
  * @return {string}
  */
-TypeExpr.prototype.toString = function(opt_deref) {
+Blockly.TypeExpr.prototype.toString = function(opt_deref) {
   goog.asserts.assert(false, 'Not implemented.');
 }
 
@@ -50,7 +50,7 @@ TypeExpr.prototype.toString = function(opt_deref) {
  * @static
  * @return {string}
  */
-TypeExpr.generateColor = function() {
+Blockly.TypeExpr.generateColor = function() {
   var getRandomInt = function(max) {
     return Math.floor(Math.random() * Math.floor(max));
   }
@@ -69,104 +69,104 @@ TypeExpr.generateColor = function() {
  * Returns whether the object is a type variable.
  * @return {boolean} True if the object is a type variable.
  */
-TypeExpr.prototype.isTypeVar = function() {
+Blockly.TypeExpr.prototype.isTypeVar = function() {
   var t = this.deref();
-  return t.label == TypeExpr.prototype.TVAR;
+  return t.label == Blockly.TypeExpr.prototype.TVAR;
 }
 
 /**
- * @extends {TypeExpr}
+ * @extends {Blockly.TypeExpr}
  * @constructor
- * @return {TypeExpr}
+ * @return {Blockly.TypeExpr}
  */
-TypeExpr.INT = function() {
-  TypeExpr.call(this, TypeExpr.prototype.INT);
+Blockly.TypeExpr.INT = function() {
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.INT);
 }
-goog.inherits(TypeExpr.INT, TypeExpr);
+goog.inherits(Blockly.TypeExpr.INT, Blockly.TypeExpr);
 
 /**
  * @override
  * @param {boolean=} opt_deref
  * @return {string}
  */
-TypeExpr.INT.prototype.toString = function(opt_deref) {
+Blockly.TypeExpr.INT.prototype.toString = function(opt_deref) {
   return "INT";
 }
 
 /**
- * @extends {TypeExpr}
+ * @extends {Blockly.TypeExpr}
  * @constructor
- * @return {TypeExpr}
+ * @return {Blockly.TypeExpr}
  */
-TypeExpr.BOOL = function() {
-  TypeExpr.call(this, TypeExpr.prototype.BOOL);
+Blockly.TypeExpr.BOOL = function() {
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.BOOL);
 }
-goog.inherits(TypeExpr.BOOL, TypeExpr);
+goog.inherits(Blockly.TypeExpr.BOOL, Blockly.TypeExpr);
 
 /**
  * @override
  * @param {boolean=} opt_deref
  * @return {string}
  */
-TypeExpr.BOOL.prototype.toString = function(opt_deref) {
+Blockly.TypeExpr.BOOL.prototype.toString = function(opt_deref) {
   return "BOOL";
 }
 
 /**
- * @extends {TypeExpr}
+ * @extends {Blockly.TypeExpr}
  * @constructor
- * @param {TypeExpr} arg_type
- * @param {TypeExpr} return_type
- * @return {TypeExpr}
+ * @param {Blockly.TypeExpr} arg_type
+ * @param {Blockly.TypeExpr} return_type
+ * @return {Blockly.TypeExpr}
  */
-TypeExpr.FUN = function(arg_type, return_type) {
-  /** @type {TypeExpr} */
+Blockly.TypeExpr.FUN = function(arg_type, return_type) {
+  /** @type {Blockly.TypeExpr} */
   this.arg_type = arg_type;
-  /** @type {TypeExpr} */
+  /** @type {Blockly.TypeExpr} */
   this.return_type = return_type;
-  TypeExpr.call(this, TypeExpr.prototype.FUN);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.FUN);
 }
-goog.inherits(TypeExpr.FUN, TypeExpr);
+goog.inherits(Blockly.TypeExpr.FUN, Blockly.TypeExpr);
 
 /**
  * @override
  * @param {boolean=} opt_deref
  * @return {string}
  */
-TypeExpr.FUN.prototype.toString = function(opt_deref) {
+Blockly.TypeExpr.FUN.prototype.toString = function(opt_deref) {
   return "FUN((" + this.arg_type.toString(opt_deref) + ") -> (" +
       this.return_type.toString(opt_deref) + "))";
 }
 
 /**
- * @extends {TypeExpr}
+ * @extends {Blockly.TypeExpr}
  * @constructor
  * @param {string} name
- * @param {TypeExpr} val
+ * @param {Blockly.TypeExpr} val
  * @param {string=} opt_color
- * @return {TypeExpr}
+ * @return {Blockly.TypeExpr}
  */
-TypeExpr.TVAR = function(name, val, opt_color) {
+Blockly.TypeExpr.TVAR = function(name, val, opt_color) {
   /** @type {string} */
   this.name = name;
-  /** @type {TypeExpr} */
+  /** @type {Blockly.TypeExpr} */
   this.val = val;
   /** @type {Type} */
   this.type = type;
   /** @type {string} */
-  this.color = opt_color ? opt_color : TypeExpr.generateColor();
-  TypeExpr.call(this, TypeExpr.prototype.TVAR);
+  this.color = opt_color ? opt_color : Blockly.TypeExpr.generateColor();
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.TVAR);
 }
-goog.inherits(TypeExpr.TVAR, TypeExpr);
+goog.inherits(Blockly.TypeExpr.TVAR, Blockly.TypeExpr);
 
 /**
  * @override
  * @param {boolean=} opt_deref
  * @return {string}
  */
-TypeExpr.TVAR.prototype.toString = function(opt_deref) {
+Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
   var inst = opt_deref ? this.deref() : this;
-  if (inst.label == TypeExpr.prototype.TVAR) {
+  if (inst.label == Blockly.TypeExpr.prototype.TVAR) {
     var val_str = inst.val ? inst.val.toString(opt_deref) : "null";
     return "<" + inst.name + "=" + val_str + ">";
   } else {
@@ -175,23 +175,23 @@ TypeExpr.TVAR.prototype.toString = function(opt_deref) {
 }
 
 /**
- * @return {TypeExpr}
+ * @return {Blockly.TypeExpr}
  */
-TypeExpr.prototype.deref = function() {
+Blockly.TypeExpr.prototype.deref = function() {
   var t = this;
-  while (t.label == TypeExpr.prototype.TVAR && t.val != null)
+  while (t.label == Blockly.TypeExpr.prototype.TVAR && t.val != null)
     t = t.val;
   return t;
 }
 
-TypeExpr.prototype.gen_counter = 1;
+Blockly.TypeExpr.prototype.gen_counter = 1;
 
 /**
  * @static
  * @param {number} n
  * @return {string}
  */
-TypeExpr.ExcelColumn = function(n) {
+Blockly.TypeExpr.ExcelColumn = function(n) {
   var r = "";
   var acode = "A".charCodeAt(0);
   while (0 < n) {
@@ -209,28 +209,28 @@ TypeExpr.ExcelColumn = function(n) {
 
 /**
  * @static
- * @return {TypeExpr}
+ * @return {Blockly.TypeExpr}
  */
-TypeExpr.GenerateTypeVar = function() {
-  var name = TypeExpr.ExcelColumn(TypeExpr.prototype.gen_counter);
-  TypeExpr.prototype.gen_counter++;
-  return new TypeExpr.TVAR(name, null);
+Blockly.TypeExpr.generateTypeVar = function() {
+  var name = Blockly.TypeExpr.ExcelColumn(Blockly.TypeExpr.prototype.gen_counter);
+  Blockly.TypeExpr.prototype.gen_counter++;
+  return new Blockly.TypeExpr.TVAR(name, null);
 }
 
 /**
- * @param {TypeExpr} other
+ * @param {Blockly.TypeExpr} other
  */
-TypeExpr.prototype.unify = function(other) {
+Blockly.TypeExpr.prototype.unify = function(other) {
   var staq = [[this, other]];
   while (staq.length != 0) {
     var pair = staq.pop();
     var t1 = pair[0];
     var t2 = pair[1];
-    if (t1.label == TypeExpr.prototype.TVAR || t2.label == TypeExpr.prototype.TVAR) {
+    if (t1.label == Blockly.TypeExpr.prototype.TVAR || t2.label == Blockly.TypeExpr.prototype.TVAR) {
       var tvar, othr;
-      tvar = t1.label == TypeExpr.prototype.TVAR ? t1 : t2;
-      othr = t1.label == TypeExpr.prototype.TVAR ? t2 : t1;
-      if (othr.label == TypeExpr.prototype.TVAR && tvar.name == othr.name)
+      tvar = t1.label == Blockly.TypeExpr.prototype.TVAR ? t1 : t2;
+      othr = t1.label == Blockly.TypeExpr.prototype.TVAR ? t2 : t1;
+      if (othr.label == Blockly.TypeExpr.prototype.TVAR && tvar.name == othr.name)
         continue;
       if (tvar.val != null) {
         staq.push([tvar.val, othr]);
@@ -240,7 +240,7 @@ TypeExpr.prototype.unify = function(other) {
       }
     } else {
       goog.assert(t1.label == t2.label, 'Unify error: Cannot unify');
-      if (t1.label == TypeExpr.prototype.FUN) {
+      if (t1.label == Blockly.TypeExpr.prototype.FUN) {
         staq.push([t1.arg_type, t2.arg_type]);
         staq.push([t1.return_type, t2.return_type]);
       }
@@ -252,19 +252,19 @@ TypeExpr.prototype.unify = function(other) {
  * @param {string} name
  * @return {boolean}
  */
-TypeExpr.prototype.occur = function(name) {
+Blockly.TypeExpr.prototype.occur = function(name) {
   var staq = [this];
   while (staq.length != 0) {
     var t = staq.pop();
     switch (t.label) {
-    case TypeExpr.prototype.INT:
-    case TypeExpr.prototype.BOOL:
+    case Blockly.TypeExpr.prototype.INT:
+    case Blockly.TypeExpr.prototype.BOOL:
       break;
-    case TypeExpr.prototype.FUN:
+    case Blockly.TypeExpr.prototype.FUN:
       staq.push(t.arg_type);
       staq.push(t.return_type);
       break;
-    case TypeExpr.prototype.TVAR:
+    case Blockly.TypeExpr.prototype.TVAR:
       if (t.name == name)
         return true;
       if (t.val)
