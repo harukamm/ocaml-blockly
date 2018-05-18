@@ -105,6 +105,14 @@ Blockly.TypeExpr.prototype.getChildren = function() {
   return [];
 }
 
+/**
+ * Deeply clone the object
+ * @return {Type}
+ */
+Blockly.TypeExpr.prototype.clone = function() {
+  return Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+}
+
  /**
  * @static
  * @return {string}
@@ -460,4 +468,20 @@ Blockly.TypeExpr.prototype.occur = function(name) {
     }
   }
   return false;
+}
+
+/**
+ * Return whether it's possible to unify the object with the give one.
+ * @param {Type} other
+ * @return {boolean}
+ */
+Blockly.TypeExpr.prototype.ableToUnify = function(other) {
+  var t1 = this.clone();
+  var t2 = other.clone();
+  try {
+    t1.unify(t2);
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
