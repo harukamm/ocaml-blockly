@@ -419,10 +419,10 @@ Blockly.BlockSvg.typeVarHighlights_ = function(typeExpr, y, typeVarHighlights) {
         color: type.color,
         path: "m 0," + y + " " + Blockly.BlockSvg.typeVarShapes_["typeVar"]["highlight"]
       });
-    } else if (typeExpr.children.length != 0) {
-      var offsetsY = Blockly.BlockSvg.typeVarShapes_[name].offsetsY(typeExpr);
-      for (var i = 0; i < typeExpr.children.length; i++) {
-        Blockly.BlockSvg.typeVarHighlights_(typeExpr.children[i], 
+    } else if (type.children.length != 0) {
+      var offsetsY = Blockly.BlockSvg.typeVarShapes_[name].offsetsY(type);
+      for (var i = 0; i < type.children.length; i++) {
+        Blockly.BlockSvg.typeVarHighlights_(type.children[i],
                                             y + offsetsY[i],
                                             typeVarHighlights);
       }
