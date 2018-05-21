@@ -223,15 +223,6 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
     if (!parentConnection.typeExpr.ableToUnify(childConnection.typeExpr)) {
       throw 'Attempt to connect incompatible types.';
     }
-
-    var blocks = Blockly.mainWorkspace.getAllBlocks();
-    if (Blockly.mainWorkspace.flyout_) {
-      blocks = blocks.concat(Blockly.mainWorkspace.flyout_.workspace_.getAllBlocks());
-    }
-    parentConnection.typeExpr.unify(childConnection.typeExpr);
-    for (var i = 0; i < blocks.length; i++) {
-      blocks[i].render();
-    }
   }
 
   var event;
@@ -240,20 +231,17 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   }
   // Establish the connections.
   Blockly.Connection.connectReciprocally_(parentConnection, childConnection);
+
+  if (parentBlock.infer) {
+    parentBlock.infer();
+    Blockly.mainWorkspace.render();
+  }
+
   // Demote the inferior block so that one is a child of the superior one.
   childBlock.setParent(parentBlock);
   if (event) {
     event.recordNew();
     Blockly.Events.fire(event);
-  }
-
-  if (parentBlock.rendered && childBlock.rendered) {
-    // Sorin
-    if (parentConnection.typeExpr && childConnection.typeExpr) {
-      childBlock.render();
-      parentBlock.render();
-      return;
-    }
   }
 };
 
