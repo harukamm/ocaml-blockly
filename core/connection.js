@@ -234,7 +234,7 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
   if (parentBlock.infer) {
     parentBlock.infer();
-    Blockly.mainWorkspace.render();
+    parentBlock.workspace.render();
   }
 
   // Demote the inferior block so that one is a child of the superior one.
