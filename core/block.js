@@ -1503,6 +1503,20 @@ Blockly.Block.prototype.makeConnection_ = function(type) {
 };
 
 /**
+ * Call the Infer function indirectly if it exists.
+ * @param {string} name The name of the input
+ * @param {Object<string, Blockly.TypeExpr>=} opt_env
+ * @return {Blockly.TypeExpr|null}
+ */
+Blockly.Block.prototype.callInfer_ = function(name, opt_env) {
+  var input = this.getInput(name);
+  goog.asserts.assert(!!input, 'Invalid input name');
+  var childBlock = input.connection.targetBlock();
+  var env = opt_env ? opt_env : {};
+  return childBlock && childBlock.infer && childBlock.infer(env);
+};
+
+/**
  * Recursively checks whether all statement and value inputs are filled with
  * blocks. Also checks all following statement blocks in this stack.
  * @param {boolean=} opt_shadowBlocksAreFilled An optional argument controlling
@@ -1631,6 +1645,21 @@ Blockly.Blocks['logic_compare_typed'] = {
       };
       return TOOLTIPS[op];
     });
+  },
+
+  clearTypes: function() {
+    this.getInput('A').connection.typeExpr.clear();
+  },
+
+  infer: function(env) {
+    var expected_left = this.getInput('A').connection.typeExpr;
+    var left = this.callInfer_('A', env);
+    var right = this.callInfer_('B', env);
+    if (left)
+      left.unify(expected_left);
+    if (right)
+      right.unify(expected_left);
+    return new Blockly.TypeExpr.BOOL();
   }
 };
 
@@ -1657,6 +1686,25 @@ Blockly.Blocks['logic_ternary_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.LOGIC_TERNARY_TOOLTIP);
+  },
+
+  clearTypes: function() {
+    this.outputConnection.typeExpr.clear();
+  },
+
+  infer: function(env) {
+    var cond_expected = new Blockly.TypeExpr.BOOL();
+    var cond_type = this.callInfer_('IF', env);
+    if (cond_type)
+      cond_type.unify(cond_expected);
+    var expected = this.outputConnection.typeExpr;
+    var then_type = this.callInfer_('THEN', env);
+    var else_type = this.callInfer_('ELSE', env);
+    if (then_type)
+      then_type.unify(expected);
+    if (else_type)
+      else_type.unify(expected);
+    return expected;
   }
 };
 
@@ -1716,6 +1764,20 @@ Blockly.Blocks['int_arithmetic_typed'] = {
       };
       return TOOLTIPS[mode];
     });
+  },
+
+  clearTypes: function() {
+  },
+
+  infer: function(env) {
+    var expected_left = new Blockly.TypeExpr.INT();
+    var left = this.callInfer_('A', env);
+    var right = this.callInfer_('B', env);
+    if (left)
+      left.unify(expected_left);
+    if (right)
+      right.unify(expected_left);
+    return expected_left;
   }
 };
 

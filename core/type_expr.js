@@ -106,6 +106,13 @@ Blockly.TypeExpr.prototype.getChildren = function() {
 }
 
 /**
+ * Clear a type resolution.
+ */
+Blockly.TypeExpr.prototype.clear = function() {
+  return;
+};
+
+/**
  * Deeply clone the object
  * @return {Type}
  */
@@ -355,6 +362,15 @@ Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
     return "" + inst.toString(opt_deref);
   }
 }
+
+/**
+ * Clear a type resolution.
+ * @override
+ */
+Blockly.TypeExpr.prototype.clear = function() {
+  this.val = null;
+  return;
+};
 
 /**
  * @return {Blockly.TypeExpr}
