@@ -411,9 +411,12 @@ Blockly.TypeExpr.prototype.unify = function(other) {
     var t2 = pair[1];
     if (t1.label == Blockly.TypeExpr.prototype.TVAR_ ||
         t2.label == Blockly.TypeExpr.prototype.TVAR_) {
-      var tvar, othr;
-      tvar = t1.label == Blockly.TypeExpr.prototype.TVAR_ ? t1 : t2;
-      othr = t1.label == Blockly.TypeExpr.prototype.TVAR_ ? t2 : t1;
+      var t1_is_tvar = t1.label == Blockly.TypeExpr.prototype.TVAR_;
+      if (t1_is_tvar && t2.label == Blockly.TypeExpr.prototype.TVAR_)
+        t1_is_tvar = t1.val != null;
+
+      var tvar = t1_is_tvar ? t1 : t2;
+      var othr = t1_is_tvar ? t2 : t1;
       if (othr.label == Blockly.TypeExpr.prototype.TVAR_ &&
           tvar.name == othr.name)
         continue;
