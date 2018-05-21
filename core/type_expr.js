@@ -423,7 +423,8 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       if (tvar.val != null) {
         staq.push([tvar.val, othr]);
       } else {
-        goog.asserts.assert(!othr.occur(tvar.name), 'Unify error: variable occurrace');
+        goog.asserts.assert(!othr.occur(tvar.name),
+            'Unify error: variable occurrace');
         tvar.val = othr;
       }
     } else {
