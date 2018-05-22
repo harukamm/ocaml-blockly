@@ -1860,6 +1860,22 @@ Blockly.Blocks['float_arithmetic_typed'] = {
       };
       return TOOLTIPS[mode];
     });
+  },
+
+  clearTypes: function() {
+    this.callClearTypes_('A');
+    this.callClearTypes_('B');
+  },
+
+  infer: function(env) {
+    var expected_left = new Blockly.TypeExpr.FLOAT();
+    var left = this.callInfer_('A', env);
+    var right = this.callInfer_('B', env);
+    if (left)
+      left.unify(expected_left);
+    if (right)
+      right.unify(expected_left);
+    return expected_left;
   }
 };
 
@@ -2293,7 +2309,21 @@ Blockly.Blocks['variables_get_typed'] = {
       }
       return undefined;
     };
+  },
+
+  clearTypes: function() {
+    console.log('hoge');
+    this.outputConnection.typeExpr.clear();
+  },
+
+  infer: function(env) {
+    var var_name = this.getFieldValue('VAR');
+    var expected = this.outputConnection.typeExpr;
+    if (var_name in env)
+      env[var_name].unify(expected);
+    return expected;
   }
+
 };
 
 Blockly.Blocks['let_typed'] = {
@@ -2376,6 +2406,30 @@ Blockly.Blocks['let_typed'] = {
       }
       return undefined;
     };
+  },
+
+  clearTypes: function() {
+    this.getInput('EXP1').connection.typeExpr.clear();
+    this.getInput('EXP2').connection.typeExpr.clear();
+    this.callClearTypes_('EXP1');
+    this.callClearTypes_('EXP2');
+  },
+
+  infer: function(env) {
+    var var_name = this.getFieldValue('VAR');
+    var expected_exp1 = this.getInput('EXP1').connection.typeExpr;
+    var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
+    var exp1 = this.callInfer_('EXP1', env);
+    var env2 = Object.assign({}, env);
+    env2[var_name] = expected_exp1;
+    var exp2 = this.callInfer_('EXP2', env2);
+
+    if (exp1)
+      exp1.unify(expected_exp1);
+    if (exp2)
+      exp2.unify(expected_exp2);
+
+    return expected_exp1;
   }
 };
 
