@@ -396,6 +396,14 @@ Blockly.TypeExpr.FUN.prototype.clone = function() {
 }
 
 /**
+ * @override
+ * @return {Array<Type>}
+ */
+Blockly.TypeExpr.FUN.prototype.getChildren = function() {
+  return [this.arg_type, this.return_type];
+}
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @param {string} name
@@ -427,6 +435,14 @@ Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
   } else {
     return "" + inst.toString(opt_deref);
   }
+}
+
+/**
+ * @override
+ * @return {Array<Type>}
+ */
+Blockly.TypeExpr.TVAR.prototype.getChildren = function() {
+  return this.val ? [this.val] : [];
 }
 
 /**
@@ -521,9 +537,14 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       }
     } else {
       goog.asserts.assert(t1.label == t2.label, 'Unify error: Cannot unify');
-      if (t1.label == Blockly.TypeExpr.prototype.FUN_) {
-        staq.push([t1.arg_type, t2.arg_type]);
-        staq.push([t1.return_type, t2.return_type]);
+      var children1 = t1.getChildren();
+      var children2 = t2.getChildren();
+      goog.asserts.assert(children1.length == children2.length,
+          'Unify error: Not matched children length');
+      for (var i = 0; i < children1.length; i++) {
+        var child1 = children1[i];
+        var child2 = children2[i];
+        staq.push([child1, child2]);
       }
     }
   }
@@ -537,31 +558,11 @@ Blockly.TypeExpr.prototype.occur = function(name) {
   var staq = [this];
   while (staq.length != 0) {
     var t = staq.pop();
-    switch (t.label) {
-    case Blockly.TypeExpr.prototype.INT_:
-    case Blockly.TypeExpr.prototype.FLOAT_:
-    case Blockly.TypeExpr.prototype.BOOL_:
-      break;
-    case Blockly.TypeExpr.prototype.LIST_:
-      staq.push(t.element_type);
-      break;
-    case Blockly.TypeExpr.prototype.PAIR_:
-      staq.push(t.first_type);
-      staq.push(t.second_type);
-      break;
-    case Blockly.TypeExpr.prototype.FUN_:
-      staq.push(t.arg_type);
-      staq.push(t.return_type);
-      break;
-    case Blockly.TypeExpr.prototype.TVAR_:
-      if (t.name == name)
-        return true;
-      if (t.val)
-        staq.push(t.val);
-      break;
-    default:
-      goog.asserts.assert(false, 'This should not happen.');
-    }
+    if (t.label == Blockly.TypeExpr.prototype.TVAR_ && t.name == name)
+      return true;
+    var children = t.getChildren();
+    for (var i = 0; i < children.length; i++)
+      staq.push(children[i]);
   }
   return false;
 }
