@@ -2239,6 +2239,23 @@ Blockly.Blocks['lambda_typed'] = {
     var result = {};
     result[this.argName] = this.outputConnection.typeExpr.arg_type;
     return result;
+  },
+
+  clearTypes: function() {
+    this.outputConnection.typeExpr.arg_type.clear();
+    this.outputConnection.typeExpr.return_type.clear();
+    this.callClearTypes_('RETURN');
+  },
+
+  infer: function(env) {
+    var var_name = this.argName;
+    var expected = this.outputConnection.typeExpr;
+    var env2 = Object.assign({}, env);
+    env2[var_name] = expected.arg_type;
+    var return_type = this.callInfer_('RETURN', env2);
+    if (return_type)
+      return_type.unify(expected.return_type);
+    return expected;
   }
 }
 

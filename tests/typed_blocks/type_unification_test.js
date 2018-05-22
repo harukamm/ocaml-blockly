@@ -185,6 +185,27 @@ function test_type_unification_pairStructure() {
   }
 }
 
+function test_type_unification_lambdaStructure() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('lambda_typed');
+    var arg_name = block.argName;
+    var var1 = workspace.newBlock('variables_get_typed');
+    // Set same variable name with `arg_name`
+    var variableId = workspace.getVariable('i').getId();
+    workspace.renameVariableById(variableId, arg_name);
+    var1.getField('VAR').setValue(variableId);
+    assertEquals(var1.getField('VAR').getText(), arg_name);
+    block.getInput('RETURN').connection.connect(var1.outputConnection);
+    assertTrue(block.outputConnection.typeExpr.return_type.deref() ===
+        var1.outputConnection.typeExpr.deref());
+    assertTrue(block.outputConnection.typeExpr.arg_type.deref() ==
+        var1.outputConnection.typeExpr.deref());
+  } finally {
+    workspace.dispose();
+  }
+}
+
 function test_type_unification_logicCompareStructure() {
   var workspace = new Blockly.Workspace();
   try {
