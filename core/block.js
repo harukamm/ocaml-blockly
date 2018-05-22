@@ -2123,6 +2123,22 @@ Blockly.Blocks['pair_second_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
+  },
+
+  clearTypes: function() {
+    this.outputConnection.typeExpr.clear();
+    this.callClearTypes_('SECOND');
+  },
+
+  infer: function(env) {
+    var expected = this.outputConnection.typeExpr;
+    var expected_arg = this.getInput('SECOND').connection.typeExpr;
+    var arg = this.callInfer_('SECOND', env);
+    if (arg) {
+      arg.first_type.unify(expected_arg.first_type);
+      arg.second_type.unify(expected_arg.second_type);
+    }
+    return expected;
   }
 };
 
