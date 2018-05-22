@@ -2014,7 +2014,7 @@ Blockly.Blocks['lists_create_with_typed'] = {
   },
 
   clearTypes: function() {
-    this.outputConnection.typeExpr.clear();
+    this.outputConnection.typeExpr.element_type.clear();
     for (var x = 0; x < this.itemCount_; x++)
       this.callClearTypes_('ADD' + x);
   },

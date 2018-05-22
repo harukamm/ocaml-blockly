@@ -117,7 +117,7 @@ Blockly.TypeExpr.prototype.clear = function() {
  * @return {Type}
  */
 Blockly.TypeExpr.prototype.clone = function() {
-  return new Blockly.TypeExpr(this.label);
+  goog.asserts.assert(false, 'Not implemented.');
 }
 
  /**
@@ -168,6 +168,15 @@ Blockly.TypeExpr.INT.prototype.toString = function(opt_deref) {
 }
 
 /**
+ * Deeply clone the object
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.INT.prototype.clone = function() {
+  return new Blockly.TypeExpr.INT();
+}
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @return {Blockly.TypeExpr}
@@ -187,6 +196,15 @@ Blockly.TypeExpr.FLOAT.prototype.toString = function(opt_deref) {
 }
 
 /**
+ * Deeply clone the object
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.FLOAT.prototype.clone = function() {
+  return new Blockly.TypeExpr.FLOAT();
+}
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @return {Blockly.TypeExpr}
@@ -203,6 +221,15 @@ goog.inherits(Blockly.TypeExpr.BOOL, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.BOOL.prototype.toString = function(opt_deref) {
   return "BOOL";
+}
+
+/**
+ * Deeply clone the object
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.BOOL.prototype.clone = function() {
+  return new Blockly.TypeExpr.BOOL();
 }
 
 /**
@@ -407,7 +434,7 @@ Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
  * @override
  * @return {Blockly.TypeExpr}
  */
-Blockly.TypeExpr.PAIR.prototype.clone = function() {
+Blockly.TypeExpr.TVAR.prototype.clone = function() {
   return new Blockly.TypeExpr.TVAR(this.name,
       this.val ? this.val.clone() : null);
 }

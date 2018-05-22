@@ -19,7 +19,29 @@ function test_type_unification_ifThenElseStructure() {
   }
 }
 
-function test_type_unification_clearTypeVariableWhenDisconnectingBlocks() {
+function test_type_unification_clearTypeVariableWhenDisconnectingListTypedBlocks() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('lists_create_with_typed');
+    var int1 = workspace.newBlock('int_typed');
+    var float1 = workspace.newBlock('float_typed');
+    block.getInput('ADD0').connection.connect(int1.outputConnection);
+    assertFalse(block.getInput('ADD1').connection.checkType_(
+        float1.outputConnection));
+    assertEquals(Blockly.TypeExpr.prototype.INT_,
+        block.outputConnection.typeExpr.element_type.deref().label);
+    block.getInput('ADD0').connection.disconnect(int1.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+        block.outputConnection.typeExpr.element_type.deref().label);
+    block.getInput('ADD1').connection.connect(float1.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.FLOAT_,
+        block.outputConnection.typeExpr.element_type.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
+
+function test_type_unification_clearTypeVariableWhenDisconnectingLetTypedBlocks() {
   var workspace = new Blockly.Workspace();
   try {
     var block = workspace.newBlock('let_typed');
