@@ -49,3 +49,23 @@ function test_type_unification_clearTypeVariableWhenDisconnectingBlocks() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_deeplyCloningTypes() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('logic_ternary_typed');
+    var float1 = workspace.newBlock('float_typed');
+
+    block.getInput('THEN').connection.connect(float1.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+        block.getInput('THEN').connection.typeExpr.label);
+    assertEquals(Blockly.TypeExpr.prototype.FLOAT_,
+        block.getInput('THEN').connection.typeExpr.val.label);
+    assertTrue(block.getInput('THEN').connection.typeExpr.val ===
+        float1.outputConnection.typeExpr);
+    var clonedThenType = block.getInput('THEN').connection.typeExpr.clone();
+    assertFalse(clonedThenType.val === float1.outputConnection.typeExpr);
+  } finally {
+    workspace.dispose();
+  }
+}

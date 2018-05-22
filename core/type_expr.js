@@ -117,7 +117,7 @@ Blockly.TypeExpr.prototype.clear = function() {
  * @return {Type}
  */
 Blockly.TypeExpr.prototype.clone = function() {
-  return Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+  return new Blockly.TypeExpr(this.label);
 }
 
  /**
@@ -236,6 +236,15 @@ Blockly.TypeExpr.LIST.prototype.getChildren = function() {
 }
 
 /**
+ * Deeply clone the object
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.LIST.prototype.clone = function() {
+  return new Blockly.TypeExpr.LIST(this.element_type.clone());
+}
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @param {Type} first_type
@@ -267,6 +276,16 @@ Blockly.TypeExpr.PAIR.prototype.toString = function(opt_deref) {
  */
 Blockly.TypeExpr.PAIR.prototype.getChildren = function() {
   return [this.first_type, this.second_type];
+}
+
+/**
+ * Deeply clone the object
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.PAIR.prototype.clone = function() {
+  return new Blockly.TypeExpr.PAIR(this.first_type.clone(),
+      this.second_type.clone());
 }
 
 /**
@@ -304,6 +323,16 @@ Blockly.TypeExpr.SUM.prototype.getChildren = function() {
 }
 
 /**
+ * Deeply clone the object
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.SUM.prototype.clone = function() {
+  return new Blockly.TypeExpr.SUM(this.left_type.clone(),
+      this.right_type.clone());
+}
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @param {Blockly.TypeExpr} arg_type
@@ -327,6 +356,16 @@ goog.inherits(Blockly.TypeExpr.FUN, Blockly.TypeExpr);
 Blockly.TypeExpr.FUN.prototype.toString = function(opt_deref) {
   return "FUN((" + this.arg_type.toString(opt_deref) + ") -> (" +
       this.return_type.toString(opt_deref) + "))";
+}
+
+/**
+ * Deeply clone the object
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.FUN.prototype.clone = function() {
+  return new Blockly.TypeExpr.FUN(this.arg_type.clone(),
+      this.return_type.clone());
 }
 
 /**
@@ -361,6 +400,16 @@ Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
   } else {
     return "" + inst.toString(opt_deref);
   }
+}
+
+/**
+ * Deeply clone the object
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.PAIR.prototype.clone = function() {
+  return new Blockly.TypeExpr.TVAR(this.name,
+      this.val ? this.val.clone() : null);
 }
 
 /**
