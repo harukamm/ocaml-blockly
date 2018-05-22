@@ -233,7 +233,7 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   Blockly.Connection.connectReciprocally_(parentConnection, childConnection);
 
   if (parentBlock.infer) {
-    parentBlock.infer();
+    parentBlock.infer({});
     parentBlock.workspace.render();
   }
 
@@ -586,7 +586,7 @@ Blockly.Connection.prototype.disconnectInternal_ = function(parentBlock,
   if (parentBlock.clearTypes)
     parentBlock.clearTypes();
   if (parentBlock.infer)
-    parentBlock.infer();
+    parentBlock.infer({});
   if (event) {
     event.recordNew();
     Blockly.Events.fire(event);
