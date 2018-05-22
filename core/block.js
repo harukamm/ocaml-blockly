@@ -2312,7 +2312,6 @@ Blockly.Blocks['variables_get_typed'] = {
   },
 
   clearTypes: function() {
-    console.log('hoge');
     this.outputConnection.typeExpr.clear();
   },
 
