@@ -1521,6 +1521,18 @@ Blockly.Block.prototype.callInfer_ = function(name, env) {
 };
 
 /**
+ * Call the clearTypes function indirectly if it exists.
+ * @param {string} name The name of the input
+ */
+Blockly.Block.prototype.callClearTypes_ = function(name) {
+  var input = this.getInput(name);
+  goog.asserts.assert(!!input, 'Invalid input name');
+  var childBlock = input.connection.targetBlock();
+  if (childBlock && childBlock.clearTypes)
+    childBlock.clearTypes();
+};
+
+/**
  * Recursively checks whether all statement and value inputs are filled with
  * blocks. Also checks all following statement blocks in this stack.
  * @param {boolean=} opt_shadowBlocksAreFilled An optional argument controlling
@@ -1653,6 +1665,8 @@ Blockly.Blocks['logic_compare_typed'] = {
 
   clearTypes: function() {
     this.getInput('A').connection.typeExpr.clear();
+    this.callClearTypes_('A');
+    this.callClearTypes_('B');
   },
 
   infer: function(env) {
@@ -1694,6 +1708,9 @@ Blockly.Blocks['logic_ternary_typed'] = {
 
   clearTypes: function() {
     this.outputConnection.typeExpr.clear();
+    this.callClearTypes_('IF');
+    this.callClearTypes_('THEN');
+    this.callClearTypes_('ELSE');
   },
 
   infer: function(env) {
@@ -1771,6 +1788,8 @@ Blockly.Blocks['int_arithmetic_typed'] = {
   },
 
   clearTypes: function() {
+    this.callClearTypes_('A');
+    this.callClearTypes_('B');
   },
 
   infer: function(env) {
