@@ -2012,6 +2012,22 @@ Blockly.Blocks['lists_create_with_typed'] = {
       itemBlock = itemBlock.nextConnection &&
           itemBlock.nextConnection.targetBlock();
     }
+  },
+
+  clearTypes: function() {
+    this.outputConnection.typeExpr.clear();
+    for (var x = 0; x < this.itemCount_; x++)
+      this.callClearTypes_('ADD' + x);
+  },
+
+  infer: function(env) {
+    var expected = this.outputConnection.typeExpr;
+    for (var x = 0; x < this.itemCount_; x++) {
+      var type = this.callInfer_('ADD' + x, env);
+      if (type)
+        type.unify(expected.element_type);
+    }
+    return expected;
   }
 };
 

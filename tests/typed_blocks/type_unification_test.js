@@ -69,3 +69,20 @@ function test_type_unification_deeplyCloningTypes() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_listStructure() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('lists_create_with_typed');
+    var intArith1 = workspace.newBlock('int_arithmetic_typed');
+    block.getInput('ADD0').connection.connect(intArith1.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.INT_,
+        block.outputConnection.typeExpr.element_type.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.INT_,
+        block.getInput('ADD1').connection.typeExpr.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.INT_,
+        block.getInput('ADD2').connection.typeExpr.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
