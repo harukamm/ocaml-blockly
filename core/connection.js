@@ -232,9 +232,10 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   // Establish the connections.
   Blockly.Connection.connectReciprocally_(parentConnection, childConnection);
 
-  if (parentBlock.infer) {
-    parentBlock.infer({});
-    parentBlock.workspace.render();
+  var rootBlock = parentBlock.getRootBlock();
+  if (rootBlock.infer) {
+    rootBlock.infer({});
+    rootBlock.workspace.render && rootBlock.workspace.render();
   }
 
   // Demote the inferior block so that one is a child of the superior one.
