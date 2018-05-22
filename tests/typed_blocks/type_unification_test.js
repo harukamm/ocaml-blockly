@@ -86,3 +86,72 @@ function test_type_unification_listStructure() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_intArithmeticStructure() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('int_arithmetic_typed');
+    var var1 = workspace.newBlock('variables_get_typed');
+    var var2 = workspace.newBlock('variables_get_typed');
+    // Set a variable `i`
+    var variableId = workspace.getVariable('i').getId();
+    var1.getField('VAR').setValue(variableId);
+    // Set a variable `j`
+    var variableId = workspace.getVariable('j').getId();
+    var2.getField('VAR').setValue(variableId);
+
+    block.getInput('A').connection.connect(var1.outputConnection);
+    block.getInput('B').connection.connect(var2.outputConnection);
+    assertEquals(var1.outputConnection.typeExpr.deref().label,
+        var2.outputConnection.typeExpr.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.INT_,
+        var1.outputConnection.typeExpr.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
+
+function test_type_unification_floatArithmeticStructure() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('float_arithmetic_typed');
+    var var1 = workspace.newBlock('variables_get_typed');
+    var var2 = workspace.newBlock('variables_get_typed');
+    // Set a variable `i`
+    var variableId = workspace.getVariable('i').getId();
+    var1.getField('VAR').setValue(variableId);
+    // Set a variable `j`
+    var variableId = workspace.getVariable('j').getId();
+    var2.getField('VAR').setValue(variableId);
+
+    block.getInput('A').connection.connect(var1.outputConnection);
+    block.getInput('B').connection.connect(var2.outputConnection);
+    assertEquals(var1.outputConnection.typeExpr.deref().label,
+        var2.outputConnection.typeExpr.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.FLOAT_,
+        var1.outputConnection.typeExpr.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
+
+function test_type_unification_logicCompareStructure() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('logic_compare_typed');
+    var ifBlock = workspace.newBlock('logic_ternary_typed');
+    var bool1 = workspace.newBlock('logic_boolean_typed');
+    block.getField('OP').setValue('=');
+
+    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+        block.outputConnection.typeExpr.label);
+    block.getInput('A').connection.connect(ifBlock.outputConnection);
+    ifBlock.getInput('THEN').connection.connect(bool1.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+        block.getInput('A').connection.typeExpr.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+        block.getInput('B').connection.typeExpr.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
