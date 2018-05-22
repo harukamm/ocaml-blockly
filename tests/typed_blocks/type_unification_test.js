@@ -1,6 +1,6 @@
 'use strict';
 
-function test_type_unification_structure() {
+function test_type_unification_ifThenElseStructure() {
   var workspace = new Blockly.Workspace();
   try {
     var block = workspace.newBlock('logic_ternary_typed');
