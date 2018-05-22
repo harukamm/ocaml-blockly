@@ -2051,6 +2051,24 @@ Blockly.Blocks['pair_create_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.TypeExpr.PAIR(A, B));
     this.setInputsInline(true);
+  },
+
+  clearTypes: function() {
+    this.outputConnection.typeExpr.first_type.clear();
+    this.outputConnection.typeExpr.second_type.clear();
+    this.callClearTypes_('FIRST');
+    this.callClearTypes_('SECOND');
+  },
+
+  infer: function(env) {
+    var expected = this.outputConnection.typeExpr;
+    var first = this.callInfer_('FIRST', env);
+    var second = this.callInfer_('SECOND', env);
+    if (first)
+      first.unify(expected.first_type);
+    if (second)
+      second.unify(expected.second_type);
+    return expected;
   }
 };
 

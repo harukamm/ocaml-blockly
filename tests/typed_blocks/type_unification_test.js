@@ -135,6 +135,27 @@ function test_type_unification_floatArithmeticStructure() {
   }
 }
 
+function test_type_unification_pairStructure() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('pair_create_typed');
+    var firstBlock = workspace.newBlock('pair_first_typed');
+    var secondBlock = workspace.newBlock('pair_second_typed');
+    var int1 = workspace.newBlock('int_typed');
+    var bool1 = workspace.newBlock('logic_boolean_typed');
+    block.getInput('FIRST').connection.connect(int1.outputConnection);
+    block.getInput('SECOND').connection.connect(bool1.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.PAIR_,
+        block.outputConnection.typeExpr.label);
+    assertEquals(Blockly.TypeExpr.prototype.INT_,
+        block.outputConnection.typeExpr.first_type.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+        block.outputConnection.typeExpr.second_type.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
+
 function test_type_unification_logicCompareStructure() {
   var workspace = new Blockly.Workspace();
   try {
