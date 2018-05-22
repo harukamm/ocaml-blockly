@@ -2284,6 +2284,24 @@ Blockly.Blocks['lambda_app_typed'] = {
 
   getVarsWithTypes: function() {
     goog.asserts.assert(false, 'No implemented.');
+  },
+
+  clearTypes: function() {
+    this.outputConnection.typeExpr.clear();
+    this.callClearTypes_('FUN');
+    this.callClearTypes_('ARG');
+  },
+
+  infer: function(env) {
+    var expected = this.outputConnection.typeExpr;
+    var fun_expected = this.getInput('FUN').connection.typeExpr;
+    var fun_type = this.callInfer_('FUN', env);
+    var arg_type = this.callInfer_('ARG', env);
+    if (fun_type)
+      fun_type.unify(fun_expected);
+    if (arg_type)
+      arg_type.unify(fun_expected.arg_type);
+    return expected;
   }
 }
 

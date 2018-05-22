@@ -206,6 +206,33 @@ function test_type_unification_lambdaStructure() {
   }
 }
 
+function test_type_unification_lambdaAppStructure() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('lambda_app_typed');
+    var lambdaBlock = workspace.newBlock('lambda_typed');
+    var int1 = workspace.newBlock('int_typed');
+    block.getInput('FUN').connection.connect(lambdaBlock.outputConnection);
+    block.getInput('ARG').connection.connect(int1.outputConnection);
+    var arg_name = lambdaBlock.argName;
+    var var1 = workspace.newBlock('variables_get_typed');
+    // Set same variable name with `arg_name`
+    var variableId = workspace.getVariable('i').getId();
+    workspace.renameVariableById(variableId, arg_name);
+    var1.getField('VAR').setValue(variableId);
+    assertEquals(var1.getField('VAR').getText(), arg_name);
+    lambdaBlock.getInput('RETURN').connection.connect(var1.outputConnection);
+    assertTrue(block.outputConnection.typeExpr.deref() ===
+        lambdaBlock.outputConnection.typeExpr.return_type.deref());
+    assertEquals(Blockly.TypeExpr.prototype.INT_,
+        lambdaBlock.outputConnection.typeExpr.arg_type.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.INT_,
+        var1.outputConnection.typeExpr.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
+
 function test_type_unification_logicCompareStructure() {
   var workspace = new Blockly.Workspace();
   try {
