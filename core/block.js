@@ -2329,7 +2329,7 @@ Blockly.Blocks['variables_get_typed'] = {
    * @this Blockly.Block
    */
   getVars: function() {
-    return [this.getFieldValue('VAR')];
+    return [this.getField('VAR').getText()];
   },
   /**
    * Notification that a variable is renaming.
@@ -2339,7 +2339,7 @@ Blockly.Blocks['variables_get_typed'] = {
    * @this Blockly.Block
    */
   renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+    if (Blockly.Names.equals(oldName, this.getField('VAR').getText())) {
       this.setFieldValue(newName, 'VAR');
     }
   },
@@ -2350,7 +2350,7 @@ Blockly.Blocks['variables_get_typed'] = {
    */
   customContextMenu: function(options) {
     var option = {enabled: true};
-    var name = this.getFieldValue('VAR');
+    var name = this.getField('VAR').getText();
     option.text = this.contextMenuMsg_.replace('%1', name);
     var xmlField = goog.dom.createDom('field', null, name);
     xmlField.setAttribute('name', 'VAR');
@@ -2381,7 +2381,7 @@ Blockly.Blocks['variables_get_typed'] = {
   },
 
   infer: function(env) {
-    var var_name = this.getFieldValue('VAR');
+    var var_name = this.getField('VAR').getText();
     var expected = this.outputConnection.typeExpr;
     if (var_name in env)
       env[var_name].unify(expected);
@@ -2423,7 +2423,7 @@ Blockly.Blocks['let_typed'] = {
    * @this Blockly.Block
    */
   getVars: function() {
-    return [this.getFieldValue('VAR')];
+    return [this.getField('VAR').getText()];
   },
 
   /**
@@ -2434,7 +2434,7 @@ Blockly.Blocks['let_typed'] = {
    * @this Blockly.Block
    */
   renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+    if (Blockly.Names.equals(oldName, this.getField('VAR').getText())) {
       this.setFieldValue(newName, 'VAR');
     }
   },
@@ -2446,7 +2446,7 @@ Blockly.Blocks['let_typed'] = {
    */
   customContextMenu: function(options) {
     var option = {enabled: true};
-    var name = this.getFieldValue('VAR');
+    var name = this.getField('VAR').getText();
     option.text = this.contextMenuMsg_.replace('%1', name);
     var xmlField = goog.dom.createDom('field', null, name);
     xmlField.setAttribute('name', 'VAR');
@@ -2480,7 +2480,7 @@ Blockly.Blocks['let_typed'] = {
   },
 
   infer: function(env) {
-    var var_name = this.getFieldValue('VAR');
+    var var_name = this.getField('VAR').getText();
     var expected_exp1 = this.getInput('EXP1').connection.typeExpr;
     var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
     var exp1 = this.callInfer_('EXP1', env);
