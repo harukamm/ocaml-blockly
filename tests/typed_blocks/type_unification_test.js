@@ -173,6 +173,9 @@ function test_type_unification_pairStructure() {
         block.outputConnection.typeExpr.first_type.deref().label);
     assertEquals(Blockly.TypeExpr.prototype.BOOL_,
         block.outputConnection.typeExpr.second_type.deref().label);
+    firstBlock.getInput('FIRST').connection.connect(block.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.INT_,
+        firstBlock.outputConnection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
   }
