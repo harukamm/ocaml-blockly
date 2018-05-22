@@ -1664,7 +1664,6 @@ Blockly.Blocks['logic_compare_typed'] = {
   },
 
   clearTypes: function() {
-    this.getInput('A').connection.typeExpr.clear();
     this.callClearTypes_('A');
     this.callClearTypes_('B');
   },
