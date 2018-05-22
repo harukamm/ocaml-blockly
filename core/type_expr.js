@@ -251,7 +251,7 @@ goog.inherits(Blockly.TypeExpr.LIST, Blockly.TypeExpr);
  * @return {string}
  */
 Blockly.TypeExpr.LIST.prototype.toString = function(opt_deref) {
-  return "LIST[" + this.element_type.toString() + "]";
+  return "LIST[" + this.element_type.toString(opt_deref) + "]";
 }
 
 /**
@@ -293,8 +293,8 @@ goog.inherits(Blockly.TypeExpr.PAIR, Blockly.TypeExpr);
  * @return {string}
  */
 Blockly.TypeExpr.PAIR.prototype.toString = function(opt_deref) {
-  return "PAIR[" + this.first_type.toString() + " * " +
-      this.second_type.toString() + "]";
+  return "PAIR[" + this.first_type.toString(opt_deref) + " * " +
+      this.second_type.toString(opt_deref) + "]";
 }
 
 /**
@@ -337,8 +337,8 @@ goog.inherits(Blockly.TypeExpr.SUM, Blockly.TypeExpr);
  * @return {string}
  */
 Blockly.TypeExpr.SUM.prototype.toString = function(opt_deref) {
-  return "SUM[" + this.left_type.toString() + " * " +
-      this.right_type.toString() + "]";
+  return "SUM[" + this.left_type.toString(opt_deref) + " * " +
+      this.right_type.toString(opt_deref) + "]";
 }
 
 /**
