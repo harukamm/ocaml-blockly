@@ -584,10 +584,10 @@ Blockly.Connection.prototype.disconnectInternal_ = function(parentBlock,
   otherConnection.targetConnection = null;
   this.targetConnection = null;
   childBlock.setParent(null);
-  if (parentBlock.clearTypes)
-    parentBlock.clearTypes();
-  if (parentBlock.infer)
-    parentBlock.infer({});
+  parentBlock.clearTypes && parentBlock.clearTypes();
+  parentBlock.infer && parentBlock.infer({});
+  childBlock.clearTypes && childBlock.clearTypes();
+  childBlock.infer && childBlock.infer({});
   if (event) {
     event.recordNew();
     Blockly.Events.fire(event);
