@@ -2287,7 +2287,8 @@ Blockly.Blocks['lambda_app_typed'] = {
   },
 
   clearTypes: function() {
-    this.outputConnection.typeExpr.clear();
+    this.getInput('FUN').connection.typeExpr.arg_type.clear();
+    this.getInput('FUN').connection.typeExpr.return_type.clear();
     this.callClearTypes_('FUN');
     this.callClearTypes_('ARG');
   },

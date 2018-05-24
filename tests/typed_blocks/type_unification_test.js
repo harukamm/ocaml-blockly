@@ -72,6 +72,32 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLetTypedBlocks(
   }
 }
 
+function test_type_unification_clearTypeVariableWhenDisconnectingLambdaAppTypedBlocks() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('lambda_app_typed');
+    var lambdaBlock = workspace.newBlock('lambda_typed');
+    var bool1 = workspace.newBlock('logic_boolean_typed');
+    block.getInput('FUN').connection.connect(lambdaBlock.outputConnection);
+    block.getInput('ARG').connection.connect(bool1.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+        lambdaBlock.outputConnection.typeExpr.arg_type.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+        block.getInput('FUN').connection.typeExpr.arg_type.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+        block.getInput('ARG').connection.typeExpr.deref().label);
+    block.getInput('ARG').connection.disconnect(bool1.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+        lambdaBlock.outputConnection.typeExpr.arg_type.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+        block.getInput('FUN').connection.typeExpr.arg_type.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+        block.getInput('ARG').connection.typeExpr.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
+
 function test_type_unification_deeplyCloningTypes() {
   var workspace = new Blockly.Workspace();
   try {
