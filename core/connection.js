@@ -233,10 +233,8 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   Blockly.Connection.connectReciprocally_(parentConnection, childConnection);
 
   var rootBlock = parentBlock.getRootBlock();
-  if (rootBlock.infer) {
-    rootBlock.infer({});
-    rootBlock.workspace.render && rootBlock.workspace.render();
-  }
+  rootBlock.updateTypeInference();
+  rootBlock.workspace.render && rootBlock.workspace.render();
 
   // Demote the inferior block so that one is a child of the superior one.
   childBlock.setParent(parentBlock);
@@ -584,10 +582,9 @@ Blockly.Connection.prototype.disconnectInternal_ = function(parentBlock,
   otherConnection.targetConnection = null;
   this.targetConnection = null;
   childBlock.setParent(null);
-  parentBlock.clearTypes && parentBlock.clearTypes();
-  parentBlock.infer && parentBlock.infer({});
-  childBlock.clearTypes && childBlock.clearTypes();
-  childBlock.infer && childBlock.infer({});
+  var parentRootBlock = parentBlock.getRootBlock();
+  parentRootBlock.updateTypeInference(true);
+  childBlock.updateTypeInference(true);
   if (event) {
     event.recordNew();
     Blockly.Events.fire(event);

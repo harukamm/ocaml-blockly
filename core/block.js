@@ -1493,6 +1493,16 @@ Blockly.Block.prototype.moveBy = function(dx, dy) {
 };
 
 /**
+ * Update type inference for this block.
+ * @param {boolean=} opt_reset True if types should be reset first.
+ */
+Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
+  if (opt_reset)
+    this.clearTypes && this.clearTypes();
+  this.infer && this.infer({});
+};
+
+/**
  * Create a connection of the specified type.
  * @param {number} type The type of the connection to create.
  * @return {!Blockly.Connection} A new connection of the specified type.

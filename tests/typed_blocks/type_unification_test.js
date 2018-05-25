@@ -124,6 +124,30 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLambdaTypedBloc
   }
 }
 
+function test_type_unification_clearTypeVariableWhenNestedLambdaTypedBlocks() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('lambda_app_typed');
+    var lambdaBlock = workspace.newBlock('lambda_typed');
+    var ifBlock = workspace.newBlock('logic_ternary_typed');
+    var float1 = workspace.newBlock('float_typed');
+    block.getInput('FUN').connection.connect(lambdaBlock.outputConnection);
+    ifBlock.getInput('THEN').connection.connect(float1.outputConnection);
+    lambdaBlock.getInput('RETURN').connection.connect(ifBlock.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.FLOAT_,
+        lambdaBlock.outputConnection.typeExpr.return_type.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.FLOAT_,
+        block.outputConnection.typeExpr.deref().label);
+    ifBlock.getInput('THEN').connection.disconnect(float1.outputConnection);
+    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+        lambdaBlock.outputConnection.typeExpr.return_type.deref().label);
+    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+        block.outputConnection.typeExpr.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
+
 function test_type_unification_deeplyCloningTypes() {
   var workspace = new Blockly.Workspace();
   try {
