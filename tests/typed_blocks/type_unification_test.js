@@ -148,6 +148,20 @@ function test_type_unification_clearTypeVariableWhenNestedLambdaTypedBlocks() {
   }
 }
 
+function test_type_unification_clearTypeVariableWhenNestedLetTypedBlocks() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var lambdaBlock = workspace.newBlock('lambda_typed');
+    var letBlock = workspace.newBlock('let_typed');
+    lambdaBlock.getInput('RETURN').connection.connect(
+        letBlock.outputConnection);
+    assertTrue(lambdaBlock.outputConnection.typeExpr.return_type.deref() ===
+        letBlock.outputConnection.typeExpr.deref());
+  } finally {
+    workspace.dispose();
+  }
+}
+
 function test_type_unification_deeplyCloningTypes() {
   var workspace = new Blockly.Workspace();
   try {

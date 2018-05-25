@@ -2539,7 +2539,7 @@ Blockly.Blocks['let_typed'] = {
     if (exp2)
       exp2.unify(expected_exp2);
 
-    return expected_exp1;
+    return expected_exp2;
   }
 };
 
