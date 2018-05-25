@@ -144,8 +144,13 @@ Blockly.TypeExpr.generateColor = function() {
  * @return {boolean} True if the object is a type variable.
  */
 Blockly.TypeExpr.prototype.isTypeVar = function() {
-  var t = this.deref();
-  return t.label == Blockly.TypeExpr.prototype.TVAR_;
+  var t = this;
+  while (t.label == Blockly.TypeExpr.prototype.TVAR_) {
+    if (t.val == null)
+      return false;
+    t = t.val;
+  }
+  return true;
 }
 
 /**
