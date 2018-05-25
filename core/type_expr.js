@@ -120,7 +120,25 @@ Blockly.TypeExpr.prototype.clone = function() {
   goog.asserts.assert(false, 'Not implemented.');
 }
 
- /**
+/**
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.prototype.deref = function() {
+  var t = this;
+  while (t.label == Blockly.TypeExpr.prototype.TVAR_ && t.val != null)
+    t = t.val;
+  return t;
+}
+
+/**
+ * Returns the object which is dereferenced recursively.
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.prototype.deepDeref = function() {
+  return this;
+}
+
+/**
  * @static
  * @return {string}
  */
@@ -277,6 +295,15 @@ Blockly.TypeExpr.LIST.prototype.clone = function() {
 }
 
 /**
+ * Returns the object which is dereferenced recursively.
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.LIST.prototype.deepDeref = function() {
+  return new Blockly.TypeExpr.LIST(this.element_type.deepDeref());
+}
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @param {Type} first_type
@@ -318,6 +345,16 @@ Blockly.TypeExpr.PAIR.prototype.getChildren = function() {
 Blockly.TypeExpr.PAIR.prototype.clone = function() {
   return new Blockly.TypeExpr.PAIR(this.first_type.clone(),
       this.second_type.clone());
+}
+
+/**
+ * Returns the object which is dereferenced recursively.
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.PAIR.prototype.deepDeref = function() {
+  return new Blockly.TypeExpr.PAIR(this.first_type.deepDeref(),
+      this.second_type.deepDeref());
 }
 
 /**
@@ -365,6 +402,16 @@ Blockly.TypeExpr.SUM.prototype.clone = function() {
 }
 
 /**
+ * Returns the object which is dereferenced recursively.
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.SUM.prototype.deepDeref = function() {
+  return new Blockly.TypeExpr.SUM(this.left_type.deepDeref(),
+      this.right_type.deepDeref());
+}
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @param {Blockly.TypeExpr} arg_type
@@ -406,6 +453,16 @@ Blockly.TypeExpr.FUN.prototype.clone = function() {
  */
 Blockly.TypeExpr.FUN.prototype.getChildren = function() {
   return [this.arg_type, this.return_type];
+}
+
+/**
+ * Returns the object which is dereferenced recursively.
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.FUN.prototype.deepDeref = function() {
+  return new Blockly.TypeExpr.FUN(this.arg_type.deepDeref(),
+      this.return_type.deepDeref());
 }
 
 /**
@@ -461,6 +518,18 @@ Blockly.TypeExpr.TVAR.prototype.clone = function() {
 }
 
 /**
+ * Returns the object which is dereferenced recursively.
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.TVAR.prototype.deepDeref = function() {
+  var t = this;
+  while (t.val != null && Blockly.TypeExpr.prototype.TVAR_ == t.val.label)
+    t = t.val;
+  return t.val != null ? t.val.deepDeref() : t;
+}
+
+/**
  * Clear a type resolution.
  * @override
  */
@@ -468,16 +537,6 @@ Blockly.TypeExpr.TVAR.prototype.clear = function() {
   this.val = null;
   return;
 };
-
-/**
- * @return {Blockly.TypeExpr}
- */
-Blockly.TypeExpr.prototype.deref = function() {
-  var t = this;
-  while (t.label == Blockly.TypeExpr.prototype.TVAR_ && t.val != null)
-    t = t.val;
-  return t;
-}
 
 Blockly.TypeExpr.prototype.gen_counter = 1;
 

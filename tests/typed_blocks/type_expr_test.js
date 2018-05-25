@@ -68,3 +68,42 @@ function test_type_expr_typesToString() {
   assertEquals(fun1.toString(), 'FUN((<A=BOOL>) -> (<B=<A=BOOL>>))');
   assertEquals(fun1.toString(true), 'FUN((BOOL) -> (BOOL))');
 }
+
+function test_type_expr_derefereceWithSideEffect() {
+  function assertValueEquals(t1, t2) {
+    assertEquals(t1.label, t2.label);
+    if (t1.label == Blockly.TypeExpr.prototype.TVAR_)
+      assertEquals(t1.name, t2.name);
+    var children1 = t1.getChildren();
+    var children2 = t2.getChildren();
+    for (var i = 0; i < children1.length; i++) {
+      var child1 = children1[i];
+      var child2 = children2[i];
+      assertValueEquals(child1, child2);
+    }
+  }
+  var int1 = new Blockly.TypeExpr.INT();
+  var float1 = new Blockly.TypeExpr.FLOAT();
+  var bool1 = new Blockly.TypeExpr.BOOL();
+  var tvarX = new Blockly.TypeExpr.TVAR('X', null);
+  var tvarToInt1 = new Blockly.TypeExpr.TVAR('A', int1);
+  var tvarToInt2 = new Blockly.TypeExpr.TVAR('B', tvarToInt1);
+  var tvarToFloat1 = new Blockly.TypeExpr.TVAR('C', float1);
+  var tvarToFloat2 = new Blockly.TypeExpr.TVAR('D', tvarToFloat1);
+  var tvarToBool1 = new Blockly.TypeExpr.TVAR('E', bool1);
+  var tvarToBool2 = new Blockly.TypeExpr.TVAR('F', tvarToBool1);
+  var tvarToX1 = new Blockly.TypeExpr.TVAR('G', tvarX);
+  var tvarToX2 = new Blockly.TypeExpr.TVAR('H', tvarToX1);
+  var list1 = new Blockly.TypeExpr.LIST(tvarToInt2);
+  var list1Expected = new Blockly.TypeExpr.LIST(int1);
+  assertValueEquals(list1.deepDeref(), list1Expected);
+  var pair1 = new Blockly.TypeExpr.PAIR(tvarToFloat1, tvarToBool1);
+  var pair1Expected = new Blockly.TypeExpr.PAIR(float1, bool1);
+  assertValueEquals(pair1.deepDeref(), pair1Expected);
+  var sum1 = new Blockly.TypeExpr.SUM(tvarToFloat2, tvarToX2);
+  var sum1Expected = new Blockly.TypeExpr.SUM(float1, tvarX);
+  assertValueEquals(sum1.deepDeref(), sum1Expected);
+  var fun1 = new Blockly.TypeExpr.FUN(tvarToBool2, tvarToInt1);
+  var fun1Expected = new Blockly.TypeExpr.FUN(bool1, int1);
+  assertValueEquals(fun1.deepDeref(), fun1Expected);
+}
