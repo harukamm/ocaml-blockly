@@ -1,5 +1,24 @@
 'use strict';
 
+function test_type_expr_clearTypes() {
+  var int1 = new Blockly.TypeExpr.INT();
+  var bool1 = new Blockly.TypeExpr.BOOL();
+  int1.clear();
+  bool1.clear();
+  assertTrue(typeof int1.val === 'undefined');
+  assertTrue(typeof bool1.val === 'undefined');
+  assertTrue(Blockly.TypeExpr.prototype.INT_ == int1.label);
+  assertTrue(Blockly.TypeExpr.prototype.BOOL_ == bool1.label);
+  var p = new Blockly.TypeExpr.TVAR('P', null);
+  var q = new Blockly.TypeExpr.TVAR('Q', null);
+  var pair1 = new Blockly.TypeExpr.PAIR(p, q);
+  var ptr1 = new Blockly.TypeExpr.TVAR('R', pair1);
+  var ptr2 = new Blockly.TypeExpr.TVAR('S', ptr1);
+  ptr2.clear();
+  assertTrue(ptr2.val == null);
+  assertTrue(ptr1.val === pair1);
+}
+
 function test_type_expr_unifyPairType() {
   var p = new Blockly.TypeExpr.TVAR('P', null);
   var q = new Blockly.TypeExpr.TVAR('Q', null);

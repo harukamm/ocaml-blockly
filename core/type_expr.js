@@ -464,7 +464,7 @@ Blockly.TypeExpr.TVAR.prototype.clone = function() {
  * Clear a type resolution.
  * @override
  */
-Blockly.TypeExpr.prototype.clear = function() {
+Blockly.TypeExpr.TVAR.prototype.clear = function() {
   this.val = null;
   return;
 };
