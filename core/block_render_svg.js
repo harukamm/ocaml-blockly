@@ -412,7 +412,7 @@ Blockly.BlockSvg.typeVarHighlights = function(typeExpr) {
  */
 Blockly.BlockSvg.typeVarHighlights_ = function(typeExpr, y, typeVarHighlights) {
   if (typeExpr) {
-    var type = typeExpr.deref();
+    var type = typeExpr.deepDeref();
     var children = type.getChildren();
     if (type.isTypeVar()) {
       typeVarHighlights.push({
@@ -445,7 +445,7 @@ Blockly.BlockSvg.getTypeExprHeight = function(typeExpr) {
   if (typeof(data) === 'number') {
     return data;
   } else {
-    return data(typeExpr);
+    return data(typeExpr.deepDeref());
   }
 }
 
@@ -455,7 +455,7 @@ Blockly.BlockSvg.renderTypeExpr = function(typeExpr, steps, updown) {
   if (typeof(data) === 'string') {
     steps.push(data);
   } else {
-    data(typeExpr, steps, updown);
+    data(typeExpr.deepDeref(), steps, updown);
   }
 }
 

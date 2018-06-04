@@ -162,6 +162,21 @@ function test_type_unification_clearTypeVariableWhenNestedLetTypedBlocks() {
   }
 }
 
+function test_type_unification_multiLevelNestedLambdaApp() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var appBlock1 = workspace.newBlock('lambda_app_typed');
+    var appBlock2 = workspace.newBlock('lambda_app_typed');
+    appBlock1.getInput('FUN').connection.connect(appBlock2.outputConnection);
+    assertTrue(appBlock1.getInput('FUN').connection.typeExpr.deref() ===
+        appBlock2.outputConnection.typeExpr.deref());
+    assertTrue(appBlock1.getInput('FUN').connection.typeExpr.deref() ===
+        appBlock2.outputConnection.typeExpr.deref());
+  } finally {
+    workspace.dispose();
+  }
+}
+
 function test_type_unification_deeplyCloningTypes() {
   var workspace = new Blockly.Workspace();
   try {
