@@ -332,7 +332,9 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function(parentBlock,
       parentBlock, childBlock);
   // Rerender the parent so that it may reflow.
   var rootBlock = parentBlock.getRootBlock();
-  rootBlock.workspace.render && rootBlock.workspace.render();
+  if (rootBlock.workspace) {
+    rootBlock.workspace.render && rootBlock.workspace.render();
+  }
   if (rootBlock.rendered) {
     rootBlock.render();
   }
