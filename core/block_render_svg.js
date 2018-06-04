@@ -716,7 +716,7 @@ Blockly.BlockSvg.prototype.renderDrawRight_ = function(steps, highlightSteps,
           inlineSteps.push('h', Blockly.BlockSvg.TAB_WIDTH - 2 -
                            input.renderWidth);
           // Sorin  
-          inlineSteps.push(Blockly.RenderedTypeExpr.getDownPath(input.connection));
+          inlineSteps.push(Blockly.RenderedTypeExpr.getDownPath(input.connection.typeExpr));
           var tabHeight = Blockly.RenderedTypeExpr.getTypeExprHeight(input.connection.typeExpr);
           inlineSteps.push('v', input.renderHeight + 1 -
                                 tabHeight);
@@ -790,7 +790,7 @@ Blockly.BlockSvg.prototype.renderDrawRight_ = function(steps, highlightSteps,
         }
       }
       this.renderFields_(input.fieldRow, fieldX, fieldY);
-      steps.push(Blockly.RenderedTypeExpr.getDownPath(input.connection));
+      steps.push(Blockly.RenderedTypeExpr.getDownPath(input.connection.typeExpr));
       tabHeight = Blockly.RenderedTypeExpr.getTypeExprHeight(input.connection.typeExpr);
       var v = row.height - tabHeight;
       steps.push('v', v);
@@ -986,7 +986,7 @@ Blockly.BlockSvg.prototype.renderDrawLeft_ = function(steps, highlightSteps) {
     var tabHeight = Blockly.RenderedTypeExpr.getTypeExprHeight(this.outputConnection.typeExpr);
     steps.push('V', tabHeight);
     // Sorin
-    steps.push(Blockly.RenderedTypeExpr.getUpPath(this.outputConnection));
+    steps.push(Blockly.RenderedTypeExpr.getUpPath(this.outputConnection.typeExpr));
     if (this.RTL) {
       highlightSteps.push('M', (Blockly.BlockSvg.TAB_WIDTH * -0.25) + ',8.4');
       highlightSteps.push('l', (Blockly.BlockSvg.TAB_WIDTH * -0.45) + ',-2.1');

@@ -220,17 +220,17 @@ Blockly.RenderedTypeExpr.renderDownTypeExpr = function(typeExpr, steps) {
   Blockly.RenderedTypeExpr.renderTypeExpr(typeExpr, steps, "down");
 }
 
-Blockly.RenderedTypeExpr.getPath = function(connection, updown) {
+Blockly.RenderedTypeExpr.getPath = function(typeExpr, updown) {
   var steps = [];
-  Blockly.RenderedTypeExpr.renderTypeExpr(connection.typeExpr, steps, updown);
+  Blockly.RenderedTypeExpr.renderTypeExpr(typeExpr, steps, updown);
   return steps.join(' ');
 }
 
-Blockly.RenderedTypeExpr.getUpPath = function(connection) {
-  return Blockly.RenderedTypeExpr.getPath(connection, "up");
+Blockly.RenderedTypeExpr.getUpPath = function(typeExpr) {
+  return Blockly.RenderedTypeExpr.getPath(typeExpr, "up");
 }
 
-Blockly.RenderedTypeExpr.getDownPath = function(connection) {
-  return Blockly.RenderedTypeExpr.getPath(connection, "down");
+Blockly.RenderedTypeExpr.getDownPath = function(typeExpr) {
+  return Blockly.RenderedTypeExpr.getPath(typeExpr, "down");
 }
 
