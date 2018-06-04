@@ -456,7 +456,7 @@ Blockly.Connection.prototype.addColor = function() {
   var steps;
   if (this.type == Blockly.INPUT_VALUE || this.type == Blockly.OUTPUT_VALUE) {
     // Sorin
-    steps = 'm 0,0 ' + Blockly.BlockSvg.getDownPath(this) +  ' v 5';
+    steps = 'm 0,0 ' + Blockly.RenderedTypeExpr.getDownPath(this) +  ' v 5';
     //steps = 'm 0,0 l -8,10 8,10 v 5';
     // var tabWidth = Blockly.RTL ? -Blockly.BlockSvg.TAB_WIDTH :
     //                              Blockly.BlockSvg.TAB_WIDTH;

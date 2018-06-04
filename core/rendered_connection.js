@@ -198,7 +198,7 @@ Blockly.RenderedConnection.prototype.closest = function(maxLimit, dx, dy) {
 Blockly.RenderedConnection.prototype.highlight = function() {
   var steps;
   if (this.type == Blockly.INPUT_VALUE || this.type == Blockly.OUTPUT_VALUE) {
-    steps = 'm 0,0 ' + Blockly.BlockSvg.getDownPath(this) +  ' v 5';
+    steps = 'm 0,0 ' + Blockly.RenderedTypeExpr.getDownPath(this) +  ' v 5';
   } else {
     steps = 'm -20,0 h 5 ' + Blockly.BlockSvg.NOTCH_PATH_LEFT + ' h 5';
   }
@@ -438,7 +438,7 @@ Blockly.RenderedConnection.prototype.renderTypeVarHighlights = function() {
   var x = this.x_ - xy.x;
   var y = this.y_ - xy.y;
   /** @type {Array<{color: string, path: string}>} */
-  var typeVarHighlights = Blockly.BlockSvg.typeVarHighlights(this.typeExpr);
+  var typeVarHighlights = Blockly.RenderedTypeExpr.typeVarHighlights(this.typeExpr);
   for (var i = 0; i < typeVarHighlights.length; i++) {
     var highlight = typeVarHighlights[i];
     this.typeVarPaths_.push(
