@@ -7,8 +7,8 @@ function test_type_expr_clearTypes() {
   bool1.clear();
   assertTrue(typeof int1.val === 'undefined');
   assertTrue(typeof bool1.val === 'undefined');
-  assertTrue(Blockly.TypeExpr.prototype.INT_ == int1.label);
-  assertTrue(Blockly.TypeExpr.prototype.BOOL_ == bool1.label);
+  assertTrue(Blockly.TypeExpr.INT_ == int1.label);
+  assertTrue(Blockly.TypeExpr.BOOL_ == bool1.label);
   var p = new Blockly.TypeExpr.TVAR('P', null);
   var q = new Blockly.TypeExpr.TVAR('Q', null);
   var pair1 = new Blockly.TypeExpr.PAIR(p, q);
@@ -72,7 +72,7 @@ function test_type_expr_typesToString() {
 function test_type_expr_derefereceWithSideEffect() {
   function assertValueEquals(t1, t2) {
     assertEquals(t1.label, t2.label);
-    if (t1.label == Blockly.TypeExpr.prototype.TVAR_)
+    if (t1.label == Blockly.TypeExpr.TVAR_)
       assertEquals(t1.name, t2.name);
     var children1 = t1.getChildren();
     var children2 = t2.getChildren();
@@ -106,4 +106,41 @@ function test_type_expr_derefereceWithSideEffect() {
   var fun1 = new Blockly.TypeExpr.FUN(tvarToBool2, tvarToInt1);
   var fun1Expected = new Blockly.TypeExpr.FUN(bool1, int1);
   assertValueEquals(fun1.deepDeref(), fun1Expected);
+}
+
+function test_type_expr_callFunctionsOfRenderedTypeExpr() {
+  function assertRenderedTypeExprFunctionsExist(obj) {
+    assertTrue(typeof(obj.typeVarHighlights) !== 'undefined');
+    assertTrue(typeof(obj.getTypeExprHeight) !== 'undefined');
+    assertTrue(typeof(obj.getChildren) !== 'undefined');
+    var children1 = obj.getChildren();
+    for (var i = 0; i < children1.length; i++) {
+      var child1 = children1[i];
+      assertRenderedTypeExprFunctionsExist(child1);
+    }
+  }
+  var int1 = new Blockly.RenderedTypeExpr.INT();
+  assertRenderedTypeExprFunctionsExist(int1);
+  assertRenderedTypeExprFunctionsExist(int1.clone());
+  var float1 = new Blockly.RenderedTypeExpr.FLOAT();
+  assertRenderedTypeExprFunctionsExist(float1);
+  assertRenderedTypeExprFunctionsExist(float1.clone());
+  var bool1 = new Blockly.RenderedTypeExpr.BOOL();
+  assertRenderedTypeExprFunctionsExist(bool1);
+  assertRenderedTypeExprFunctionsExist(bool1.clone());
+  var bool1 = new Blockly.RenderedTypeExpr.bool(bool1);
+  assertRenderedTypeExprFunctionsExist(list1);
+  assertRenderedTypeExprFunctionsExist(list1.clone());
+  var pair1 = new Blockly.RenderedTypeExpr.PAIR(int1, float1);
+  assertRenderedTypeExprFunctionsExist(pair1);
+  assertRenderedTypeExprFunctionsExist(pair1.clone());
+  var sum1 = new Blockly.RenderedTypeExpr.SUM(bool1, int1);
+  assertRenderedTypeExprFunctionsExist(sum1);
+  assertRenderedTypeExprFunctionsExist(sum1.clone());
+  var fun1 = new Blockly.RenderedTypeExpr.FUN(int1, bool1);
+  assertRenderedTypeExprFunctionsExist(fun1);
+  assertRenderedTypeExprFunctionsExist(fun1.clone());
+  var tvarX = new Blockly.RenderedTypeExpr.TVAR('X', fun1);
+  assertRenderedTypeExprFunctionsExist(tvarX);
+  assertRenderedTypeExprFunctionsExist(tvarX.clone());
 }

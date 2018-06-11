@@ -17,49 +17,49 @@ Blockly.TypeExpr = function(label) {
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.INT_ = 100;
+Blockly.TypeExpr.INT_ = 100;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.FLOAT_ = 105;
+Blockly.TypeExpr.FLOAT_ = 105;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.BOOL_ = 110;
+Blockly.TypeExpr.BOOL_ = 110;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.LIST_ = 115;
+Blockly.TypeExpr.LIST_ = 115;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.PAIR_ = 120;
+Blockly.TypeExpr.PAIR_ = 120;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.SUM_ = 125;
+Blockly.TypeExpr.SUM_ = 125;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.FUN_ = 130;
+Blockly.TypeExpr.FUN_ = 130;
 
 /**
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.prototype.TVAR_ = 135;
+Blockly.TypeExpr.TVAR_ = 135;
 
 /**
  * Convert the type instance into plan text.
@@ -76,21 +76,21 @@ Blockly.TypeExpr.prototype.toString = function(opt_deref) {
  */
 Blockly.TypeExpr.prototype.getTypeName = function() {
   switch (this.label) {
-    case Blockly.TypeExpr.prototype.INT_:
+    case Blockly.TypeExpr.INT_:
       return 'int';
-    case Blockly.TypeExpr.prototype.FLOAT_:
+    case Blockly.TypeExpr.FLOAT_:
       return 'float';
-    case Blockly.TypeExpr.prototype.BOOL_:
+    case Blockly.TypeExpr.BOOL_:
       return 'bool';
-    case Blockly.TypeExpr.prototype.LIST_:
+    case Blockly.TypeExpr.LIST_:
       return 'list';
-    case Blockly.TypeExpr.prototype.PAIR_:
+    case Blockly.TypeExpr.PAIR_:
       return 'pair';
-    case Blockly.TypeExpr.prototype.SUM_:
+    case Blockly.TypeExpr.SUM_:
       return 'sum';
-    case Blockly.TypeExpr.prototype.FUN_:
+    case Blockly.TypeExpr.FUN_:
       return 'fun';
-    case Blockly.TypeExpr.prototype.TVAR_:
+    case Blockly.TypeExpr.TVAR_:
       return 'typeVar';
     default:
       goog.asserts.assert(false, 'Not implemented.');
@@ -125,7 +125,7 @@ Blockly.TypeExpr.prototype.clone = function() {
  */
 Blockly.TypeExpr.prototype.deref = function() {
   var t = this;
-  while (t.label == Blockly.TypeExpr.prototype.TVAR_ && t.val != null)
+  while (t.label == Blockly.TypeExpr.TVAR_ && t.val != null)
     t = t.val;
   return t;
 }
@@ -163,7 +163,7 @@ Blockly.TypeExpr.generateColor = function() {
  */
 Blockly.TypeExpr.prototype.isTypeVar = function() {
   var t = this.deref();
-  return t.label == Blockly.TypeExpr.prototype.TVAR_;
+  return t.label == Blockly.TypeExpr.TVAR_;
 }
 
 /**
@@ -172,7 +172,7 @@ Blockly.TypeExpr.prototype.isTypeVar = function() {
  * @return {Blockly.TypeExpr}
  */
 Blockly.TypeExpr.INT = function() {
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.INT_);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.INT_);
 }
 goog.inherits(Blockly.TypeExpr.INT, Blockly.TypeExpr);
 
@@ -200,7 +200,7 @@ Blockly.TypeExpr.INT.prototype.clone = function() {
  * @return {Blockly.TypeExpr}
  */
 Blockly.TypeExpr.FLOAT = function() {
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.FLOAT_);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.FLOAT_);
 }
 goog.inherits(Blockly.TypeExpr.FLOAT, Blockly.TypeExpr);
 
@@ -228,7 +228,7 @@ Blockly.TypeExpr.FLOAT.prototype.clone = function() {
  * @return {Blockly.TypeExpr}
  */
 Blockly.TypeExpr.BOOL = function() {
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.BOOL_);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.BOOL_);
 }
 goog.inherits(Blockly.TypeExpr.BOOL, Blockly.TypeExpr);
 
@@ -259,7 +259,7 @@ Blockly.TypeExpr.BOOL.prototype.clone = function() {
 Blockly.TypeExpr.LIST = function(element_type) {
   /** @type {Type} */
   this.element_type = element_type;
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.LIST_);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.LIST_);
 }
 goog.inherits(Blockly.TypeExpr.LIST, Blockly.TypeExpr);
 
@@ -310,7 +310,7 @@ Blockly.TypeExpr.PAIR = function(first_type, second_type) {
   this.first_type = first_type;
   /** @type {Type} */
   this.second_type = second_type;
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.PAIR_);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.PAIR_);
 }
 goog.inherits(Blockly.TypeExpr.PAIR, Blockly.TypeExpr);
 
@@ -364,7 +364,7 @@ Blockly.TypeExpr.SUM = function(left_type, right_type) {
   this.left_type = left_type;
   /** @type {Type} */
   this.right_type = right_type;
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.SUM_);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.SUM_);
 }
 goog.inherits(Blockly.TypeExpr.SUM, Blockly.TypeExpr);
 
@@ -418,7 +418,7 @@ Blockly.TypeExpr.FUN = function(arg_type, return_type) {
   this.arg_type = arg_type;
   /** @type {Blockly.TypeExpr} */
   this.return_type = return_type;
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.FUN_);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.FUN_);
 }
 goog.inherits(Blockly.TypeExpr.FUN, Blockly.TypeExpr);
 
@@ -475,7 +475,7 @@ Blockly.TypeExpr.TVAR = function(name, val, opt_color) {
   this.val = val;
   /** @type {string} */
   this.color = opt_color ? opt_color : Blockly.TypeExpr.generateColor();
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.prototype.TVAR_);
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.TVAR_);
 }
 goog.inherits(Blockly.TypeExpr.TVAR, Blockly.TypeExpr);
 
@@ -486,7 +486,7 @@ goog.inherits(Blockly.TypeExpr.TVAR, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
   var inst = opt_deref ? this.deref() : this;
-  if (inst.label == Blockly.TypeExpr.prototype.TVAR_) {
+  if (inst.label == Blockly.TypeExpr.TVAR_) {
     var val_str = inst.val ? inst.val.toString(opt_deref) : "null";
     return "<" + inst.name + "=" + val_str + ">";
   } else {
@@ -519,7 +519,7 @@ Blockly.TypeExpr.TVAR.prototype.clone = function() {
  */
 Blockly.TypeExpr.TVAR.prototype.deepDeref = function() {
   var t = this;
-  while (t.val != null && Blockly.TypeExpr.prototype.TVAR_ == t.val.label)
+  while (t.val != null && Blockly.TypeExpr.TVAR_ == t.val.label)
     t = t.val;
   return t.val != null ? t.val.deepDeref() : t;
 }
@@ -533,7 +533,7 @@ Blockly.TypeExpr.TVAR.prototype.clear = function() {
   return;
 };
 
-Blockly.TypeExpr.prototype.gen_counter = 1;
+Blockly.TypeExpr.gen_counter = 1;
 
 /**
  * @static
@@ -563,8 +563,8 @@ Blockly.TypeExpr.ExcelColumn = function(n) {
  */
 Blockly.TypeExpr.generateTypeVarName_ = function() {
   var name = Blockly.TypeExpr.ExcelColumn(
-      Blockly.TypeExpr.prototype.gen_counter);
-  Blockly.TypeExpr.prototype.gen_counter++;
+      Blockly.TypeExpr.gen_counter);
+  Blockly.TypeExpr.gen_counter++;
   return name;
 }
 
@@ -577,15 +577,15 @@ Blockly.TypeExpr.prototype.unify = function(other) {
     var pair = staq.pop();
     var t1 = pair[0];
     var t2 = pair[1];
-    if (t1.label == Blockly.TypeExpr.prototype.TVAR_ ||
-        t2.label == Blockly.TypeExpr.prototype.TVAR_) {
-      var t1_is_tvar = t1.label == Blockly.TypeExpr.prototype.TVAR_;
-      if (t1_is_tvar && t2.label == Blockly.TypeExpr.prototype.TVAR_)
+    if (t1.label == Blockly.TypeExpr.TVAR_ ||
+        t2.label == Blockly.TypeExpr.TVAR_) {
+      var t1_is_tvar = t1.label == Blockly.TypeExpr.TVAR_;
+      if (t1_is_tvar && t2.label == Blockly.TypeExpr.TVAR_)
         t1_is_tvar = t1.val != null;
 
       var tvar = t1_is_tvar ? t1 : t2;
       var othr = t1_is_tvar ? t2 : t1;
-      if (othr.label == Blockly.TypeExpr.prototype.TVAR_ &&
+      if (othr.label == Blockly.TypeExpr.TVAR_ &&
           tvar.name == othr.name)
         continue;
       if (tvar.val != null) {
@@ -618,7 +618,7 @@ Blockly.TypeExpr.prototype.occur = function(name) {
   var staq = [this];
   while (staq.length != 0) {
     var t = staq.pop();
-    if (t.label == Blockly.TypeExpr.prototype.TVAR_ && t.name == name)
+    if (t.label == Blockly.TypeExpr.TVAR_ && t.name == name)
       return true;
     var children = t.getChildren();
     for (var i = 0; i < children.length; i++)

@@ -7,9 +7,9 @@ function test_type_unification_ifThenElseStructure() {
     var int1 = workspace.newBlock('int_typed');
     assertEquals(3, block.inputList && block.inputList.length);
     assertEquals(1, block.getInput('IF').connection.check_.length);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('IF').connection.typeExpr.label);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         block.getInput('THEN').connection.typeExpr.label);
     assertEquals(null, block.getInput('THEN').connection.typeExpr.val);
     assertEquals(block.getInput('THEN').connection.typeExpr,
@@ -28,13 +28,13 @@ function test_type_unification_clearTypeVariableWhenDisconnectingListTypedBlocks
     block.getInput('ADD0').connection.connect(int1.outputConnection);
     assertFalse(block.getInput('ADD1').connection.checkType_(
         float1.outputConnection));
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         block.outputConnection.typeExpr.element_type.deref().label);
     block.getInput('ADD0').connection.disconnect(int1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         block.outputConnection.typeExpr.element_type.deref().label);
     block.getInput('ADD1').connection.connect(float1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.FLOAT_,
+    assertEquals(Blockly.TypeExpr.FLOAT_,
         block.outputConnection.typeExpr.element_type.deref().label);
   } finally {
     workspace.dispose();
@@ -54,18 +54,18 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLetTypedBlocks(
 
     block.getInput('EXP1').connection.connect(int1.outputConnection);
     block.getInput('EXP2').connection.connect(var1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         block.getInput('EXP1').connection.typeExpr.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         block.getInput('EXP2').connection.typeExpr.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         var1.outputConnection.typeExpr.deref().label);
     block.getInput('EXP1').connection.disconnect(int1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         block.getInput('EXP1').connection.typeExpr.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         block.getInput('EXP2').connection.typeExpr.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         var1.outputConnection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
@@ -80,18 +80,18 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLambdaAppTypedB
     var bool1 = workspace.newBlock('logic_boolean_typed');
     block.getInput('FUN').connection.connect(lambdaBlock.outputConnection);
     block.getInput('ARG').connection.connect(bool1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         lambdaBlock.outputConnection.typeExpr.arg_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('FUN').connection.typeExpr.arg_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('ARG').connection.typeExpr.deref().label);
     block.getInput('ARG').connection.disconnect(bool1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         lambdaBlock.outputConnection.typeExpr.arg_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         block.getInput('FUN').connection.typeExpr.arg_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         block.getInput('ARG').connection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
@@ -106,18 +106,18 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLambdaTypedBloc
     var bool1 = workspace.newBlock('logic_boolean_typed');
     block.getInput('FUN').connection.connect(lambdaBlock.outputConnection);
     block.getInput('ARG').connection.connect(bool1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         lambdaBlock.outputConnection.typeExpr.arg_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('FUN').connection.typeExpr.arg_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('ARG').connection.typeExpr.deref().label);
     block.getInput('FUN').connection.disconnect(lambdaBlock.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         lambdaBlock.outputConnection.typeExpr.arg_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('FUN').connection.typeExpr.arg_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('ARG').connection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
@@ -134,14 +134,14 @@ function test_type_unification_clearTypeVariableWhenNestedLambdaTypedBlocks() {
     block.getInput('FUN').connection.connect(lambdaBlock.outputConnection);
     ifBlock.getInput('THEN').connection.connect(float1.outputConnection);
     lambdaBlock.getInput('RETURN').connection.connect(ifBlock.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.FLOAT_,
+    assertEquals(Blockly.TypeExpr.FLOAT_,
         lambdaBlock.outputConnection.typeExpr.return_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.FLOAT_,
+    assertEquals(Blockly.TypeExpr.FLOAT_,
         block.outputConnection.typeExpr.deref().label);
     ifBlock.getInput('THEN').connection.disconnect(float1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         lambdaBlock.outputConnection.typeExpr.return_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         block.outputConnection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
@@ -184,9 +184,9 @@ function test_type_unification_deeplyCloningTypes() {
     var float1 = workspace.newBlock('float_typed');
 
     block.getInput('THEN').connection.connect(float1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.TVAR_,
+    assertEquals(Blockly.TypeExpr.TVAR_,
         block.getInput('THEN').connection.typeExpr.label);
-    assertEquals(Blockly.TypeExpr.prototype.FLOAT_,
+    assertEquals(Blockly.TypeExpr.FLOAT_,
         block.getInput('THEN').connection.typeExpr.val.label);
     assertTrue(block.getInput('THEN').connection.typeExpr.val ===
         float1.outputConnection.typeExpr);
@@ -203,11 +203,11 @@ function test_type_unification_listStructure() {
     var block = workspace.newBlock('lists_create_with_typed');
     var intArith1 = workspace.newBlock('int_arithmetic_typed');
     block.getInput('ADD0').connection.connect(intArith1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         block.outputConnection.typeExpr.element_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         block.getInput('ADD1').connection.typeExpr.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         block.getInput('ADD2').connection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
@@ -231,7 +231,7 @@ function test_type_unification_intArithmeticStructure() {
     block.getInput('B').connection.connect(var2.outputConnection);
     assertEquals(var1.outputConnection.typeExpr.deref().label,
         var2.outputConnection.typeExpr.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         var1.outputConnection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
@@ -255,7 +255,7 @@ function test_type_unification_floatArithmeticStructure() {
     block.getInput('B').connection.connect(var2.outputConnection);
     assertEquals(var1.outputConnection.typeExpr.deref().label,
         var2.outputConnection.typeExpr.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.FLOAT_,
+    assertEquals(Blockly.TypeExpr.FLOAT_,
         var1.outputConnection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
@@ -272,18 +272,18 @@ function test_type_unification_pairStructure() {
     var bool1 = workspace.newBlock('logic_boolean_typed');
     block.getInput('FIRST').connection.connect(int1.outputConnection);
     block.getInput('SECOND').connection.connect(bool1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.PAIR_,
+    assertEquals(Blockly.TypeExpr.PAIR_,
         block.outputConnection.typeExpr.label);
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         block.outputConnection.typeExpr.first_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.outputConnection.typeExpr.second_type.deref().label);
     firstBlock.getInput('FIRST').connection.connect(block.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         firstBlock.outputConnection.typeExpr.deref().label);
     firstBlock.getInput('FIRST').connection.disconnect(block.outputConnection);
     secondBlock.getInput('SECOND').connection.connect(block.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         secondBlock.outputConnection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
@@ -329,9 +329,9 @@ function test_type_unification_lambdaAppStructure() {
     lambdaBlock.getInput('RETURN').connection.connect(var1.outputConnection);
     assertTrue(block.outputConnection.typeExpr.deref() ===
         lambdaBlock.outputConnection.typeExpr.return_type.deref());
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         lambdaBlock.outputConnection.typeExpr.arg_type.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.INT_,
+    assertEquals(Blockly.TypeExpr.INT_,
         var1.outputConnection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
@@ -346,13 +346,13 @@ function test_type_unification_logicCompareStructure() {
     var bool1 = workspace.newBlock('logic_boolean_typed');
     block.getField('OP').setValue('=');
 
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.outputConnection.typeExpr.label);
     block.getInput('A').connection.connect(ifBlock.outputConnection);
     ifBlock.getInput('THEN').connection.connect(bool1.outputConnection);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('A').connection.typeExpr.deref().label);
-    assertEquals(Blockly.TypeExpr.prototype.BOOL_,
+    assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('B').connection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
