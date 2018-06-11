@@ -61,138 +61,205 @@ Blockly.RenderedTypeExpr.TVAR = function() {
 };
 goog.inherits(Blockly.RenderedTypeExpr.TVAR, Blockly.RenderedTypeExpr);
 
-Blockly.RenderedTypeExpr.typeVarShapes_ = {
-  list : { 
-    down: function (self, steps, updown) {
-      self.element_type.renderTypeExpr(steps, updown);
-      steps.push('l 0,3 -8,0 0,4, 8,0 0,3');
-    },
-    up: function (self, steps, updown) {
-      steps.push('l 0,-3 -8,0 0,-4, 8,0 0,-3');
-      self.element_type.renderTypeExpr(steps, updown);
-    },
-    height: function(self) {
-      return self.element_type.getTypeExprHeight() + 10;
-    },
-    offsetsY: function(self) {
-      return [0];
-    }
+Blockly.RenderedTypeExpr.prototype.shape = {
+  down: function(steps, updown) {
+    steps.push('v 5 c 0,10 -' + Blockly.BlockSvg.TAB_WIDTH +
+      ',-8 -' + Blockly.BlockSvg.TAB_WIDTH + ',7.5 s ' +
+      Blockly.BlockSvg.TAB_WIDTH + ',-2.5 ' +
+      Blockly.BlockSvg.TAB_WIDTH + ',7.5');
   },
 
-  pair : {
-    down: function (self, steps, updown) {
-      steps.push('l 0,3 -12,0 0,3 12,0');
-      self.first_type.renderTypeExpr(steps, updown);
-      steps.push('l -5,3 5,3');
-      self.second_type.renderTypeExpr(steps, updown);
-      steps.push('l -12,0 0,3 12,0 0,3');
-    },
-    up: function (self, steps, updown) {
-      steps.push('l 0,-3 -12,0 0,-3 12,0');
-      self.second_type.renderTypeExpr(steps, updown);
-      steps.push('l -5,-3 5,-3');
-      self.first_type.renderTypeExpr(steps, updown);
-      steps.push('l -12,0 0,-3 12,0 0,-3');
-    },
-    height: function(self) {
-      return self.first_type.getTypeExprHeight() +
-             self.second_type.getTypeExprHeight() +
-             18;
-    },
-    offsetsY: function(self) {
-      return [6, self.first_type.getTypeExprHeight() + 12];
-    }
+  up: function(stesp, updown) {
+    steps.push('c 0,-10 -' + Blockly.BlockSvg.TAB_WIDTH + ',8 -' +
+      Blockly.BlockSvg.TAB_WIDTH + ',-7.5 s ' + Blockly.BlockSvg.TAB_WIDTH +
+      ',2.5 ' + Blockly.BlockSvg.TAB_WIDTH + ',-7.5');
   },
 
-  sum : {
-    down: function (self, steps, updown) {
-      steps.push('l 0,3 -12,0 0,3 12,0');
-      self.left_type.renderTypeExpr(steps, updown);
-      steps.push('l 0,1 -5,0 0,4 5,0, 0,1');
-      self.right_type.renderTypeExpr(steps, updown);
-      steps.push('l -12,0 0,3 12,0 0,3');
-    },
-    up: function (self, steps, updown) {
-      steps.push('l 0,-3 -12,0 0,-3 12,0');
-      self.right_type.renderTypeExpr(steps, updown);
-      steps.push('l 0,-1 -5,0 0,-4 5,0, 0,-1');
-      self.left_type.renderTypeExpr(steps, updown);
-      steps.push('l -12,0 0,-3 12,0 0,-3');
-    },
-    height: function(self) {
-      return self.left_type.getTypeExprHeight() +
-             self.right_type.getTypeExprHeight() +
-             18;
-    },
-    offsetsY: function(self) {
-      return [6, self.left_type.getTypeExprHeight() + 12];
-    }
+  height: function() {
+    return Blockly.BlockSvg.TAB_HEIGHT;
   },
 
-  fun : {
-    down: function (self, steps, updown) {
-      steps.push('l 0,3 -12,0 0,3 12,0');
-      self.arg_type.renderTypeExpr(steps, updown);
-      steps.push('l 5,3 -5,3');
-      self.return_type.renderTypeExpr(steps, updown);
-      steps.push('l -12,0 0,3 12,0 0,3');
-    },
-    up: function (self, steps, updown) {
-      steps.push('l 0,-3 -12,0 0,-3 12,0');
-      self.return_type.renderTypeExpr(steps, updown);
-      steps.push('l 5,-3 -5,-3');
-      self.arg_type.renderTypeExpr(steps, updown);
-      steps.push('l -12,0 0,-3 12,0 0,-3');
-    },
-    height: function(self) {
-      return self.arg_type.getTypeExprHeight() +
-             self.return_type.getTypeExprHeight() +
-             18;
-    },
-    offsetsY: function(self) {
-      return [6, self.arg_type.getTypeExprHeight() + 12];
-    }
-  },
-
-  int : { 
-    down: 'l 0,5 a 6,6,0,0,0,0,12 l 0,3',
-    up: 'l 0,-3 a 6,6,0,0,1,0,-12 l 0,-5',
-    height: 20
-  },
-
-  float : {
-    down: 'l 0,5 -6,0 3,6 -3,6 6,0 0,3',
-    up: 'l 0,-3 -6,0 3,-6 -3,-6 6,0 0,-5',
-    height: 20
-  },
-
-  bool : {
-    down: 'l 0,5 -8,7.5 8,7.5',
-    up: 'l -8,-7.5 8,-7.5 0,-5',
-    height: 20
-  },
-
-  typeVar : { 
-    down: 'l 0,5 -8,0 0,15 8,0 0,5',
-    up: 'l 0,-5 -8,0 0,-15 8,0 0,-5',
-    highlight: 'm 0,5 l -8,0 0,15 8,0',
-    height: 25
-  },
-
-  original : {
-    down: 
-    'v 5 c 0,10 -' + Blockly.BlockSvg.TAB_WIDTH +
-    ',-8 -' + Blockly.BlockSvg.TAB_WIDTH + ',7.5 s ' +
-    Blockly.BlockSvg.TAB_WIDTH + ',-2.5 ' + Blockly.BlockSvg.TAB_WIDTH + ',7.5',
-
-    up: 
-    'c 0,-10 -' + Blockly.BlockSvg.TAB_WIDTH + ',8 -' +
-    Blockly.BlockSvg.TAB_WIDTH + ',-7.5 s ' + Blockly.BlockSvg.TAB_WIDTH +
-    ',2.5 ' + Blockly.BlockSvg.TAB_WIDTH + ',-7.5',
-
-    height: Blockly.BlockSvg.TAB_HEIGHT
+  offsetY: function() {
+    return [];
   }
-}
+};
+
+Blockly.RenderedTypeExpr.LIST.prototype.shape = {
+  down: function(steps, updown) {
+    this.element_type.renderTypeExpr(steps, updown);
+    steps.push('l 0,3 -8,0 0,4, 8,0 0,3');
+  },
+
+  up: function(steps, updown) {
+    steps.push('l 0,-3 -8,0 0,-4, 8,0 0,-3');
+    this.element_type.renderTypeExpr(steps, updown);
+  },
+
+  height: function() {
+    return this.element_type.getTypeExprHeight() + 10;
+  },
+
+  offsetsY: function() {
+    return [0];
+  }
+};
+
+Blockly.RenderedTypeExpr.PAIR.prototype.shape = {
+  down: function(steps, updown) {
+    steps.push('l 0,3 -12,0 0,3 12,0');
+    this.first_type.renderTypeExpr(steps, updown);
+    steps.push('l -5,3 5,3');
+    this.second_type.renderTypeExpr(steps, updown);
+    steps.push('l -12,0 0,3 12,0 0,3');
+  },
+
+  up: function(steps, updown) {
+    steps.push('l 0,-3 -12,0 0,-3 12,0');
+    this.second_type.renderTypeExpr(steps, updown);
+    steps.push('l -5,-3 5,-3');
+    this.first_type.renderTypeExpr(steps, updown);
+    steps.push('l -12,0 0,-3 12,0 0,-3');
+  },
+
+  height: function() {
+    return this.first_type.getTypeExprHeight() +
+        this.second_type.getTypeExprHeight() + 18;
+  },
+
+  offsetsY: function() {
+    return [6, this.first_type.getTypeExprHeight() + 12];
+  }
+};
+
+Blockly.RenderedTypeExpr.SUM.prototype.shape = {
+  down: function(steps, updown) {
+    steps.push('l 0,3 -12,0 0,3 12,0');
+    this.left_type.renderTypeExpr(steps, updown);
+    steps.push('l 0,1 -5,0 0,4 5,0, 0,1');
+    this.right_type.renderTypeExpr(steps, updown);
+    steps.push('l -12,0 0,3 12,0 0,3');
+  },
+
+  up: function(steps, updown) {
+    steps.push('l 0,-3 -12,0 0,-3 12,0');
+    this.right_type.renderTypeExpr(steps, updown);
+    steps.push('l 0,-1 -5,0 0,-4 5,0, 0,-1');
+    this.left_type.renderTypeExpr(steps, updown);
+    steps.push('l -12,0 0,-3 12,0 0,-3');
+  },
+
+  height: function() {
+    return this.left_type.getTypeExprHeight() +
+        this.right_type.getTypeExprHeight() + 18;
+  },
+
+  offsetsY: function() {
+    return [6, this.left_type.getTypeExprHeight() + 12];
+  }
+};
+
+Blockly.RenderedTypeExpr.FUN.prototype.shape = {
+  down: function(steps, updown) {
+    steps.push('l 0,3 -12,0 0,3 12,0');
+    this.arg_type.renderTypeExpr(steps, updown);
+    steps.push('l 5,3 -5,3');
+    this.return_type.renderTypeExpr(steps, updown);
+    steps.push('l -12,0 0,3 12,0 0,3');
+  },
+
+  up: function(steps, updown) {
+    steps.push('l 0,-3 -12,0 0,-3 12,0');
+    this.return_type.renderTypeExpr(steps, updown);
+    steps.push('l 5,-3 -5,-3');
+    this.arg_type.renderTypeExpr(steps, updown);
+    steps.push('l -12,0 0,-3 12,0 0,-3');
+  },
+
+  height: function() {
+    return this.arg_type.getTypeExprHeight() +
+        this.return_type.getTypeExprHeight() + 18;
+  },
+
+  offsetsY: function() {
+    return [6, this.arg_type.getTypeExprHeight() + 12];
+  }
+};
+
+Blockly.RenderedTypeExpr.INT.prototype.shape = {
+  down: function(steps, updown) {
+    steps.push('l 0,5 a 6,6,0,0,0,0,12 l 0,3');
+  },
+
+  up: function(steps, updown) {
+    steps.push('l 0,-3 a 6,6,0,0,1,0,-12 l 0,-5');
+  },
+
+  height: function() {
+    return 20;
+  },
+
+  offsetsY: function() {
+    return [];
+  },
+};
+
+Blockly.RenderedTypeExpr.FLOAT.prototype.shape = {
+  down: function(steps, updown) {
+    steps.push('l 0,5 -6,0 3,6 -3,6 6,0 0,3');
+  },
+
+  up: function(steps, updown) {
+    steps.push('l 0,-3 -6,0 3,-6 -3,-6 6,0 0,-5');
+  },
+
+  height: function() {
+    return 20;
+  },
+
+  offsetsY: function() {
+    return [];
+  },
+};
+
+Blockly.RenderedTypeExpr.BOOL.prototype.shape = {
+  down: function(steps, updown) {
+    steps.push('l 0,5 -8,7.5 8,7.5');
+  },
+
+  up: function(steps, updown) {
+    steps.push('l -8,-7.5 8,-7.5 0,-5');
+  },
+
+  height: function() {
+    return 20;
+  },
+
+  offsetsY: function() {
+    return [];
+  },
+};
+
+Blockly.RenderedTypeExpr.TVAR.prototype.shape = {
+  down: function(steps, updown) {
+    steps.push('l 0,5 -8,0 0,15 8,0 0,5');
+  },
+
+  up: function(steps, updown) {
+    steps.push('l 0,-5 -8,0 0,-15 8,0 0,-5');
+  },
+
+  height: function() {
+    return 25;
+  },
+
+  offsetsY: function() {
+    return [];
+  },
+
+  highlight: function() {
+    return 'm 0,5 l -8,0 0,15 8,0';
+  }
+};
 
 /**
  * @static
@@ -224,11 +291,11 @@ Blockly.RenderedTypeExpr.prototype.typeVarHighlights_ = function(y, typeVarHighl
   if (type.isTypeVar()) {
     typeVarHighlights.push({
       color: type.color,
-      path: "m 0," + y + " " + Blockly.RenderedTypeExpr.typeVarShapes_["typeVar"]["highlight"]
+      path: "m 0," + y + " " + type.shape.highlight.call(type)
     });
   } else if (children.length != 0) {
     var name = type.getTypeName();
-    var offsetsY = Blockly.RenderedTypeExpr.typeVarShapes_[name].offsetsY(type);
+    var offsetsY = type.shape.offsetsY.call(type);
     for (var i = 0; i < children.length; i++) {
       children[i].typeVarHighlights_(y + offsetsY[i], typeVarHighlights);
     }
@@ -238,23 +305,18 @@ Blockly.RenderedTypeExpr.prototype.typeVarHighlights_ = function(y, typeVarHighl
 Blockly.RenderedTypeExpr.prototype.getTypeExprHeight = function() {
   var type = this.deref();
   var typeName = type.getTypeName();
-  var data = Blockly.RenderedTypeExpr.typeVarShapes_[typeName].height;
-  if (typeof(data) === 'number') {
-    return data;
-  } else {
-    return data(type);
-  }
+  return type.shape.height.call(type);
 }
 
+/**
+ * @param {!Array.<string>} steps Path of block outline.
+ * @param {string} updown 'up' or 'down' that indicates which to render.
+ */
 Blockly.RenderedTypeExpr.prototype.renderTypeExpr = function(steps, updown) {
   var type = this.deref();
   var typeName = type.getTypeName();
-  var data = Blockly.RenderedTypeExpr.typeVarShapes_[typeName][updown];
-  if (typeof(data) === 'string') {
-    steps.push(data);
-  } else {
-    data(type, steps, updown);
-  }
+  goog.asserts.assert(updown == 'up' || updown == 'down');
+  type.shape[updown].call(type, steps, updown);
 }
 
 Blockly.RenderedTypeExpr.prototype.renderUpTypeExpr = function(steps) {
