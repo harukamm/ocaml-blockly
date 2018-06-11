@@ -1,19 +1,67 @@
 'use strict';
 
 goog.provide('Blockly.RenderedTypeExpr');
-// 
-goog.require('Blockly.BlockSvg');
-// 
-// goog.require('goog.userAgent');
 
-// Sorin
+/**
+ * Class for a type expression of blocks that may be rendered on screen.
+ * @extends {Blockly.TypeExpr}
+ * @constructor
+ */
+Blockly.RenderedTypeExpr = function(prototypeName, args) {
+  goog.asserts.assertString(prototypeName, 'type-expr type must be given');
+  var ctor = Blockly.TypeExpr[prototypeName];
+  goog.asserts.assertObject(ctor,
+      'Error: Unknown type-expr type "%s".', prototypeName);
+  goog.mixin(this, ctor.prototype);
+  ctor.apply(this, args);
+};
+
+Blockly.RenderedTypeExpr.INT = function() {
+  Blockly.RenderedTypeExpr.INT.superClass_.constructor.call(this, 'INT');
+};
+goog.inherits(Blockly.RenderedTypeExpr.INT, Blockly.RenderedTypeExpr);
+
+Blockly.RenderedTypeExpr.FLOAT = function() {
+  Blockly.RenderedTypeExpr.FLOAT.superClass_.constructor.call(this, 'FLOAT');
+};
+goog.inherits(Blockly.RenderedTypeExpr.FLOAT, Blockly.RenderedTypeExpr);
+
+Blockly.RenderedTypeExpr.BOOL = function() {
+  Blockly.RenderedTypeExpr.BOOL.superClass_.constructor.call(this, 'BOOL');
+};
+goog.inherits(Blockly.RenderedTypeExpr.BOOL, Blockly.RenderedTypeExpr);
+
+Blockly.RenderedTypeExpr.LIST = function() {
+  Blockly.RenderedTypeExpr.LIST.superClass_.constructor.call(this, 'LIST',
+      arguments);
+};
+goog.inherits(Blockly.RenderedTypeExpr.LIST, Blockly.RenderedTypeExpr);
+
+Blockly.RenderedTypeExpr.PAIR = function() {
+  Blockly.RenderedTypeExpr.PAIR.superClass_.constructor.call(this, 'PAIR',
+      arguments);
+};
+goog.inherits(Blockly.RenderedTypeExpr.PAIR, Blockly.RenderedTypeExpr);
+
+Blockly.RenderedTypeExpr.SUM = function() {
+  Blockly.RenderedTypeExpr.SUM.superClass_.constructor.call(this, 'SUM',
+      arguments);
+};
+goog.inherits(Blockly.RenderedTypeExpr.SUM, Blockly.RenderedTypeExpr);
+
+Blockly.RenderedTypeExpr.FUN = function() {
+  Blockly.RenderedTypeExpr.FUN.superClass_.constructor.call(this, 'FUN',
+      arguments);
+};
+goog.inherits(Blockly.RenderedTypeExpr.FUN, Blockly.RenderedTypeExpr);
+
+Blockly.RenderedTypeExpr.TVAR = function() {
+  Blockly.RenderedTypeExpr.TVAR.superClass_.constructor.call(this, 'TVAR',
+      arguments);
+};
+goog.inherits(Blockly.RenderedTypeExpr.TVAR, Blockly.RenderedTypeExpr);
+
 Blockly.RenderedTypeExpr.typeVarShapes_ = {
-  // jagged
-  // int : 
-  // { down: 'l -8,0 0,20 8,0',
-  //   up: 'l 0,-2 -6,0 -3,-2 3,-2 -3,-2 3,-2 -3,-2 3,-2 -3,-2 3,-2 6,0 0,-2'
-  // },
-
   list : { 
     down: function (self, steps, updown) {
       Blockly.RenderedTypeExpr.renderTypeExpr(self.element_type, steps, updown);
@@ -147,90 +195,90 @@ Blockly.RenderedTypeExpr.typeVarShapes_ = {
 }
 
 /**
- * Create a list of record to present highlights for the given type expression.
- * @param {Blockly.TypeExpr} typeExpr
+ * @static
+ * @return {Blockly.RenderedTypeExpr}
+ */
+Blockly.RenderedTypeExpr.generateTypeVar = function() {
+  var name = Blockly.TypeExpr.generateTypeVarName_();
+  return new Blockly.RenderedTypeExpr.TVAR(name, null);
+}
+
+/**
+ * Create a list of record to present highlights for the type expression.
  * @return {Array<{color: string, path: string}>}
  */
-Blockly.RenderedTypeExpr.typeVarHighlights = function(typeExpr) {
+Blockly.RenderedTypeExpr.prototype.typeVarHighlights = function() {
   var typeVarHighlights = [];
-  Blockly.RenderedTypeExpr.typeVarHighlights_(typeExpr, 0, typeVarHighlights);
+  this.typeVarHighlights_(0, typeVarHighlights);
   return typeVarHighlights;
 }
 
 /**
  * Helper function to create a highlight for type variable
- * @param {Blockly.TypeExpr} typeExpr
  * @param {number} y
  * @param {Array<{color: string, path: string}>} typeVarHightlights
  */
-Blockly.RenderedTypeExpr.typeVarHighlights_ = function(typeExpr, y, typeVarHighlights) {
-  if (typeExpr) {
-    var type = typeExpr.deepDeref();
-    var children = type.getChildren();
-    if (type.isTypeVar()) {
-      typeVarHighlights.push({
-        color: type.color,
-        path: "m 0," + y + " " + Blockly.RenderedTypeExpr.typeVarShapes_["typeVar"]["highlight"]
-      });
-    } else if (children.length != 0) {
-      var name = type.getTypeName();
-      var offsetsY = Blockly.RenderedTypeExpr.typeVarShapes_[name].offsetsY(type);
-      for (var i = 0; i < children.length; i++) {
-        Blockly.RenderedTypeExpr.typeVarHighlights_(children[i],
-                                            y + offsetsY[i],
-                                            typeVarHighlights);
-      }
+Blockly.RenderedTypeExpr.prototype.typeVarHighlights_ = function(y, typeVarHighlights) {
+  var type = this.deepDeref();
+  var children = type.getChildren();
+  if (type.isTypeVar()) {
+    typeVarHighlights.push({
+      color: type.color,
+      path: "m 0," + y + " " + Blockly.RenderedTypeExpr.typeVarShapes_["typeVar"]["highlight"]
+    });
+  } else if (children.length != 0) {
+    var name = type.getTypeName();
+    var offsetsY = Blockly.RenderedTypeExpr.typeVarShapes_[name].offsetsY(type);
+    for (var i = 0; i < children.length; i++) {
+      children[i].typeVarHighlights_(y + offsetsY[i], typeVarHighlights);
     }
   }
 }
 
-Blockly.RenderedTypeExpr.getTypeName = function(typeExpr) {
-  if (typeExpr) {
-    return typeExpr.deref().getTypeName();
-  } else {
-    return "original";
-  }
+Blockly.RenderedTypeExpr.prototype.getTypeName = function() {
+  return Blockly.RenderedTypeExpr.superClass_.getTypeName.call(this,
+      this.deref());
 }
 
-Blockly.RenderedTypeExpr.getTypeExprHeight = function(typeExpr) {
-  var typeName = Blockly.RenderedTypeExpr.getTypeName(typeExpr);
+Blockly.RenderedTypeExpr.prototype.getTypeExprHeight = function() {
+  var typeName = this.getTypeName();
   var data = Blockly.RenderedTypeExpr.typeVarShapes_[typeName].height;
   if (typeof(data) === 'number') {
     return data;
   } else {
-    return data(typeExpr.deepDeref());
+    return data(this.deepDeref());
   }
 }
 
-Blockly.RenderedTypeExpr.renderTypeExpr = function(typeExpr, steps, updown) {
-  var typeName = Blockly.RenderedTypeExpr.getTypeName(typeExpr);
+Blockly.RenderedTypeExpr.prototype.renderTypeExpr = function(steps, updown) {
+  var typeName = this.getTypeName();
   var data = Blockly.RenderedTypeExpr.typeVarShapes_[typeName][updown];
   if (typeof(data) === 'string') {
     steps.push(data);
   } else {
-    data(typeExpr.deepDeref(), steps, updown);
+    data(this.deepDeref(), steps, updown);
   }
 }
 
-Blockly.RenderedTypeExpr.renderUpTypeExpr = function(typeExpr, steps) {
-  Blockly.RenderedTypeExpr.renderTypeExpr(typeExpr, steps, "up");
+Blockly.RenderedTypeExpr.prototype.renderUpTypeExpr = function(steps) {
+  this.renderTypeExpr(steps, "up");
 }
 
-Blockly.RenderedTypeExpr.renderDownTypeExpr = function(typeExpr, steps) {
-  Blockly.RenderedTypeExpr.renderTypeExpr(typeExpr, steps, "down");
+Blockly.RenderedTypeExpr.prototype.renderDownTypeExpr = function(steps) {
+  this.renderTypeExpr(steps, "down");
 }
 
-Blockly.RenderedTypeExpr.getPath = function(typeExpr, updown) {
+Blockly.RenderedTypeExpr.prototype.getPath = function(updown) {
   var steps = [];
-  Blockly.RenderedTypeExpr.renderTypeExpr(typeExpr, steps, updown);
+  this.renderTypeExpr(steps, updown);
   return steps.join(' ');
 }
 
-Blockly.RenderedTypeExpr.getUpPath = function(typeExpr) {
-  return Blockly.RenderedTypeExpr.getPath(typeExpr, "up");
+Blockly.RenderedTypeExpr.prototype.getUpPath = function() {
+  return this.getPath("up");
 }
 
-Blockly.RenderedTypeExpr.getDownPath = function(typeExpr) {
-  return Blockly.RenderedTypeExpr.getPath(typeExpr, "down");
+Blockly.RenderedTypeExpr.prototype.getDownPath = function() {
+  return this.getPath("down");
 }
 

@@ -558,13 +558,14 @@ Blockly.TypeExpr.ExcelColumn = function(n) {
 
 /**
  * @static
- * @return {Blockly.TypeExpr}
+ * @private
+ * @return {string}
  */
-Blockly.TypeExpr.generateTypeVar = function() {
+Blockly.TypeExpr.generateTypeVarName_ = function() {
   var name = Blockly.TypeExpr.ExcelColumn(
       Blockly.TypeExpr.prototype.gen_counter);
   Blockly.TypeExpr.prototype.gen_counter++;
-  return new Blockly.TypeExpr.TVAR(name, null);
+  return name;
 }
 
 /**

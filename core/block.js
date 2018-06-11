@@ -1515,8 +1515,8 @@ Blockly.Block.prototype.makeConnection_ = function(type) {
 /**
  * Call the Infer function indirectly if it exists.
  * @param {string} name The name of the input
- * @param {Object<string, Blockly.TypeExpr>} env
- * @return {Blockly.TypeExpr} type expression of the input
+ * @param {Object<string, Blockly.RenderedTypeExpr>} env
+ * @return {Blockly.RenderedTypeExpr} type expression of the input
  */
 Blockly.Block.prototype.callInfer_ = function(name, env) {
   var input = this.getInput(name);
@@ -1617,7 +1617,7 @@ Blockly.Blocks['logic_boolean_typed'] = {
     this.setColour(210);
     this.setOutput(true, 'Boolean');
     // Sorin
-    this.setOutputTypeExpr(new Blockly.TypeExpr.BOOL());
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.BOOL());
     this.appendDummyInput()
         .appendField(new Blockly.FieldDropdown(BOOLEANS), 'BOOL');
     this.setTooltip(Blockly.Msg.LOGIC_BOOLEAN_TOOLTIP);
@@ -1649,8 +1649,8 @@ Blockly.Blocks['logic_compare_typed'] = {
     this.setColour(210);
     this.setOutput(true, 'Boolean');
     // Sorin
-    this.setOutputTypeExpr(new Blockly.TypeExpr.BOOL());
-    var A = Blockly.TypeExpr.generateTypeVar();
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.BOOL());
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendValueInput('A')
         .setTypeExpr(A);
     this.appendValueInput('B')
@@ -1686,7 +1686,7 @@ Blockly.Blocks['logic_compare_typed'] = {
       left.unify(expected_left);
     if (right)
       right.unify(expected_left);
-    return new Blockly.TypeExpr.BOOL();
+    return new Blockly.RenderedTypeExpr.BOOL();
   }
 };
 
@@ -1698,10 +1698,10 @@ Blockly.Blocks['logic_ternary_typed'] = {
   init: function() {
     this.setHelpUrl(Blockly.Msg.LOGIC_TERNARY_HELPURL);
     this.setColour(210);
-    var A = Blockly.TypeExpr.generateTypeVar();
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendValueInput('IF')
         .setCheck('Boolean')
-        .setTypeExpr(new Blockly.TypeExpr.BOOL())
+        .setTypeExpr(new Blockly.RenderedTypeExpr.BOOL())
         .appendField('if')
     this.appendValueInput('THEN')
         .setTypeExpr(A)
@@ -1723,7 +1723,7 @@ Blockly.Blocks['logic_ternary_typed'] = {
   },
 
   infer: function(env) {
-    var cond_expected = new Blockly.TypeExpr.BOOL();
+    var cond_expected = new Blockly.RenderedTypeExpr.BOOL();
     var cond_type = this.callInfer_('IF', env);
     if (cond_type)
       cond_type.unify(cond_expected);
@@ -1752,7 +1752,7 @@ Blockly.Blocks['int_typed'] = {
         Blockly.FieldTextInput.intValidator), 'INT');
     this.setOutput(true, 'Int');
     // Sorin
-    this.setOutputTypeExpr(new Blockly.TypeExpr.INT());
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.INT());
     this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
   }
 };
@@ -1773,12 +1773,12 @@ Blockly.Blocks['int_arithmetic_typed'] = {
     this.setColour(230);
     this.setOutput(true, 'Int');
     // Sorin
-    this.setOutputTypeExpr(new Blockly.TypeExpr.INT());
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.INT());
     this.appendValueInput('A')
-        .setTypeExpr(new Blockly.TypeExpr.INT())
+        .setTypeExpr(new Blockly.RenderedTypeExpr.INT())
         .setCheck('Int');
     this.appendValueInput('B')
-        .setTypeExpr(new Blockly.TypeExpr.INT())
+        .setTypeExpr(new Blockly.RenderedTypeExpr.INT())
         .setCheck('Int')
         .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP_INT');
     this.setInputsInline(true);
@@ -1802,7 +1802,7 @@ Blockly.Blocks['int_arithmetic_typed'] = {
   },
 
   infer: function(env) {
-    var expected_left = new Blockly.TypeExpr.INT();
+    var expected_left = new Blockly.RenderedTypeExpr.INT();
     var left = this.callInfer_('A', env);
     var right = this.callInfer_('B', env);
     if (left)
@@ -1827,7 +1827,7 @@ Blockly.Blocks['float_typed'] = {
         Blockly.FieldTextInput.floatValidator), 'Float');
     this.setOutput(true, 'Float');
     // Sorin
-    this.setOutputTypeExpr(new Blockly.TypeExpr.FLOAT());
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.FLOAT());
     this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
   }
 };
@@ -1848,12 +1848,12 @@ Blockly.Blocks['float_arithmetic_typed'] = {
     this.setColour(100);
     this.setOutput(true, 'Float');
     // Sorin
-    this.setOutputTypeExpr(new Blockly.TypeExpr.FLOAT());
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.FLOAT());
     this.appendValueInput('A')
-        .setTypeExpr(new Blockly.TypeExpr.FLOAT())
+        .setTypeExpr(new Blockly.RenderedTypeExpr.FLOAT())
         .setCheck('Float');
     this.appendValueInput('B')
-        .setTypeExpr(new Blockly.TypeExpr.FLOAT())
+        .setTypeExpr(new Blockly.RenderedTypeExpr.FLOAT())
         .setCheck('Float')
         .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP_FLOAT');
     this.setInputsInline(true);
@@ -1877,7 +1877,7 @@ Blockly.Blocks['float_arithmetic_typed'] = {
   },
 
   infer: function(env) {
-    var expected_left = new Blockly.TypeExpr.FLOAT();
+    var expected_left = new Blockly.RenderedTypeExpr.FLOAT();
     var left = this.callInfer_('A', env);
     var right = this.callInfer_('B', env);
     if (left)
@@ -1897,7 +1897,7 @@ Blockly.Blocks['lists_create_with_typed'] = {
    */
   init: function() {
     this.setColour(260);
-    var element_type = Blockly.TypeExpr.generateTypeVar();
+    var element_type = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendDummyInput('LPAREN')
         .appendField('[');
     this.appendValueInput('ADD0')
@@ -1911,7 +1911,7 @@ Blockly.Blocks['lists_create_with_typed'] = {
     this.appendDummyInput('RPAREN')
         .appendField(']');
     this.setOutput(true, 'Array');
-    this.setOutputTypeExpr(new Blockly.TypeExpr.LIST(element_type));
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.LIST(element_type));
     this.setMutator(new Blockly.Mutator(['lists_create_with_item']));
     this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_TOOLTIP);
     this.itemCount_ = 3;
@@ -2048,8 +2048,8 @@ Blockly.Blocks['pair_create_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var B = Blockly.TypeExpr.generateTypeVar();
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
+    var B = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendValueInput('FIRST')
         .setTypeExpr(A)
         .appendField('(');
@@ -2059,7 +2059,7 @@ Blockly.Blocks['pair_create_typed'] = {
     this.appendDummyInput()
         .appendField(')');
     this.setOutput(true);
-    this.setOutputTypeExpr(new Blockly.TypeExpr.PAIR(A, B));
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.PAIR(A, B));
     this.setInputsInline(true);
   },
 
@@ -2087,9 +2087,9 @@ Blockly.Blocks['pair_first_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var B = Blockly.TypeExpr.generateTypeVar();
-    var pair_t = new Blockly.TypeExpr.PAIR(A, B);
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
+    var B = Blockly.RenderedTypeExpr.generateTypeVar();
+    var pair_t = new Blockly.RenderedTypeExpr.PAIR(A, B);
     this.appendValueInput('FIRST')
         .setTypeExpr(pair_t)
         .appendField('first (');
@@ -2122,9 +2122,9 @@ Blockly.Blocks['pair_second_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var B = Blockly.TypeExpr.generateTypeVar();
-    var pair_t = new Blockly.TypeExpr.PAIR(A, B);
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
+    var B = Blockly.RenderedTypeExpr.generateTypeVar();
+    var pair_t = new Blockly.RenderedTypeExpr.PAIR(A, B);
     this.appendValueInput('SECOND')
         .setTypeExpr(pair_t)
         .appendField('second (');
@@ -2160,8 +2160,8 @@ Blockly.Blocks['sum_first_create_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var B = Blockly.TypeExpr.generateTypeVar();
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
+    var B = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendValueInput('FIRST')
         .setTypeExpr(A)
         .appendField("create first sum with");
@@ -2169,7 +2169,7 @@ Blockly.Blocks['sum_first_create_typed'] = {
         .setTypeExpr(B)
         .appendField("and other type");
     this.setOutput(true);
-    this.setOutputTypeExpr(new Blockly.TypeExpr.SUM(A, B));
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.SUM(A, B));
   }
 };
 
@@ -2178,8 +2178,8 @@ Blockly.Blocks['sum_second_create_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var B = Blockly.TypeExpr.generateTypeVar();
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
+    var B = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendValueInput('FIRST')
         .setTypeExpr(A)
         .appendField("create second sum with");
@@ -2187,7 +2187,7 @@ Blockly.Blocks['sum_second_create_typed'] = {
         .setTypeExpr(B)
         .appendField("and other type");
     this.setOutput(true);
-    this.setOutputTypeExpr(new Blockly.TypeExpr.SUM(B, A));
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.SUM(B, A));
   }
 };
 
@@ -2196,17 +2196,17 @@ Blockly.Blocks['sum_case_typed'] = {
    */
   init: function() {
     this.setColour(210);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var B = Blockly.TypeExpr.generateTypeVar();
-    var C = Blockly.TypeExpr.generateTypeVar();
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
+    var B = Blockly.RenderedTypeExpr.generateTypeVar();
+    var C = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendValueInput('VALUE')
-        .setTypeExpr(new Blockly.TypeExpr.SUM(A, B))
+        .setTypeExpr(new Blockly.RenderedTypeExpr.SUM(A, B))
         .appendField("case on");
     this.appendValueInput('FIRST')
-        .setTypeExpr(new Blockly.TypeExpr.FUN(A, C))
+        .setTypeExpr(new Blockly.RenderedTypeExpr.FUN(A, C))
         .appendField("if first");
     this.appendValueInput('SECOND')
-        .setTypeExpr(new Blockly.TypeExpr.FUN(B, C))
+        .setTypeExpr(new Blockly.RenderedTypeExpr.FUN(B, C))
         .appendField("if second");
     this.setInputsInline(true);
     this.setOutput(true);
@@ -2226,8 +2226,8 @@ Blockly.Blocks['lambda_typed'] = {
    */
   init: function() {
     this.setColour(290);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var B = Blockly.TypeExpr.generateTypeVar();
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
+    var B = Blockly.RenderedTypeExpr.generateTypeVar();
     this.argName = 'X' + Blockly.Blocks.lambda_id;
     Blockly.Blocks.lambda_id++;
     this.appendDummyInput()
@@ -2238,7 +2238,7 @@ Blockly.Blocks['lambda_typed'] = {
         .appendField('->');
     this.setInputsInline(true);
     this.setOutput(true);
-    this.setOutputTypeExpr(new Blockly.TypeExpr.FUN(A, B));
+    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.FUN(A, B));
   },
 
   getVars: function () {
@@ -2274,10 +2274,10 @@ Blockly.Blocks['lambda_app_typed'] = {
    */
   init: function() {
     this.setColour(290);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var B = Blockly.TypeExpr.generateTypeVar();
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
+    var B = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendValueInput('FUN')
-        .setTypeExpr(new Blockly.TypeExpr.FUN(A, B))
+        .setTypeExpr(new Blockly.RenderedTypeExpr.FUN(A, B))
     this.appendValueInput('ARG')
         .setTypeExpr(A)
         .setAlign(Blockly.ALIGN_RIGHT)
@@ -2321,7 +2321,7 @@ Blockly.Blocks['match_typed'] = {
    */
   init: function() {
     this.setColour(290);
-    var A = Blockly.TypeExpr.generateTypeVar();
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendDummyInput()
         .appendField('match');
     this.appendValueInput('INPUT')
@@ -2363,7 +2363,7 @@ Blockly.Blocks['variables_get_typed'] = {
           Blockly.Msg.VARIABLES_GET_ITEM, this.createDropDownChangeFunction()), 'VAR')
         .appendField(Blockly.Msg.VARIABLES_GET_TAIL);
     this.setOutput(true);
-    var A = Blockly.TypeExpr.generateTypeVar();
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
     this.contextMenuMsg_ = Blockly.Msg.VARIABLES_GET_CREATE_SET;
@@ -2444,8 +2444,8 @@ Blockly.Blocks['let_typed'] = {
   init: function() {
     this.setHelpUrl(Blockly.Msg.VARIABLES_SET_HELPURL);
     this.setColour(330);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var B = Blockly.TypeExpr.generateTypeVar();
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
+    var B = Blockly.RenderedTypeExpr.generateTypeVar();
     var variable_field = new Blockly.FieldVariable(
         Blockly.Msg.VARIABLES_GET_ITEM,
         this.createDropDownChangeFunction());
