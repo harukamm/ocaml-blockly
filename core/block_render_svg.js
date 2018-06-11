@@ -419,7 +419,7 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
     }
 
     // Sorin: expand based on connection height
-    if (input.connection) {
+    if (input.connection && input.connection.typeExpr) {
       input.renderHeight = Math.max(input.renderHeight,
           input.connection.typeExpr.getTypeExprHeight());
     }
