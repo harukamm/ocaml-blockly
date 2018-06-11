@@ -84,6 +84,60 @@ Blockly.RenderedTypeExpr.prototype.shape = {
   }
 };
 
+Blockly.RenderedTypeExpr.INT.prototype.shape = {
+  down: function(steps) {
+    steps.push('l 0,5 a 6,6,0,0,0,0,12 l 0,3');
+  },
+
+  up: function(steps) {
+    steps.push('l 0,-3 a 6,6,0,0,1,0,-12 l 0,-5');
+  },
+
+  height: function() {
+    return 20;
+  },
+
+  offsetsY: function() {
+    return [];
+  },
+};
+
+Blockly.RenderedTypeExpr.FLOAT.prototype.shape = {
+  down: function(steps) {
+    steps.push('l 0,5 -6,0 3,6 -3,6 6,0 0,3');
+  },
+
+  up: function(steps) {
+    steps.push('l 0,-3 -6,0 3,-6 -3,-6 6,0 0,-5');
+  },
+
+  height: function() {
+    return 20;
+  },
+
+  offsetsY: function() {
+    return [];
+  },
+};
+
+Blockly.RenderedTypeExpr.BOOL.prototype.shape = {
+  down: function(steps) {
+    steps.push('l 0,5 -8,7.5 8,7.5');
+  },
+
+  up: function(steps) {
+    steps.push('l -8,-7.5 8,-7.5 0,-5');
+  },
+
+  height: function() {
+    return 20;
+  },
+
+  offsetsY: function() {
+    return [];
+  },
+};
+
 Blockly.RenderedTypeExpr.LIST.prototype.shape = {
   down: function(steps) {
     this.element_type.renderTypeExpr(steps, 1);
@@ -183,60 +237,6 @@ Blockly.RenderedTypeExpr.FUN.prototype.shape = {
   offsetsY: function() {
     return [6, this.arg_type.getTypeExprHeight() + 12];
   }
-};
-
-Blockly.RenderedTypeExpr.INT.prototype.shape = {
-  down: function(steps) {
-    steps.push('l 0,5 a 6,6,0,0,0,0,12 l 0,3');
-  },
-
-  up: function(steps) {
-    steps.push('l 0,-3 a 6,6,0,0,1,0,-12 l 0,-5');
-  },
-
-  height: function() {
-    return 20;
-  },
-
-  offsetsY: function() {
-    return [];
-  },
-};
-
-Blockly.RenderedTypeExpr.FLOAT.prototype.shape = {
-  down: function(steps) {
-    steps.push('l 0,5 -6,0 3,6 -3,6 6,0 0,3');
-  },
-
-  up: function(steps) {
-    steps.push('l 0,-3 -6,0 3,-6 -3,-6 6,0 0,-5');
-  },
-
-  height: function() {
-    return 20;
-  },
-
-  offsetsY: function() {
-    return [];
-  },
-};
-
-Blockly.RenderedTypeExpr.BOOL.prototype.shape = {
-  down: function(steps) {
-    steps.push('l 0,5 -8,7.5 8,7.5');
-  },
-
-  up: function(steps) {
-    steps.push('l -8,-7.5 8,-7.5 0,-5');
-  },
-
-  height: function() {
-    return 20;
-  },
-
-  offsetsY: function() {
-    return [];
-  },
 };
 
 Blockly.RenderedTypeExpr.TVAR.prototype.shape = {
