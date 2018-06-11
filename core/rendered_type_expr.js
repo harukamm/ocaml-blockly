@@ -2,6 +2,8 @@
 
 goog.provide('Blockly.RenderedTypeExpr');
 
+goog.require('Blockly.TypeExpr');
+
 /**
  * Class for a type expression of blocks that may be rendered on screen.
  * @extends {Blockly.TypeExpr}
