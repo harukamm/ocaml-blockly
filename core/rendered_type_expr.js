@@ -219,7 +219,7 @@ Blockly.RenderedTypeExpr.prototype.typeVarHighlights = function() {
  * @param {Array<{color: string, path: string}>} typeVarHightlights
  */
 Blockly.RenderedTypeExpr.prototype.typeVarHighlights_ = function(y, typeVarHighlights) {
-  var type = this.deepDeref();
+  var type = this.deref();
   var children = type.getChildren();
   if (type.isTypeVar()) {
     typeVarHighlights.push({
@@ -235,28 +235,25 @@ Blockly.RenderedTypeExpr.prototype.typeVarHighlights_ = function(y, typeVarHighl
   }
 }
 
-Blockly.RenderedTypeExpr.prototype.getTypeName = function() {
-  return Blockly.RenderedTypeExpr.superClass_.getTypeName.call(this,
-      this.deref());
-}
-
 Blockly.RenderedTypeExpr.prototype.getTypeExprHeight = function() {
-  var typeName = this.getTypeName();
+  var type = this.deref();
+  var typeName = type.getTypeName();
   var data = Blockly.RenderedTypeExpr.typeVarShapes_[typeName].height;
   if (typeof(data) === 'number') {
     return data;
   } else {
-    return data(this.deepDeref());
+    return data(type);
   }
 }
 
 Blockly.RenderedTypeExpr.prototype.renderTypeExpr = function(steps, updown) {
-  var typeName = this.getTypeName();
+  var type = this.deref();
+  var typeName = type.getTypeName();
   var data = Blockly.RenderedTypeExpr.typeVarShapes_[typeName][updown];
   if (typeof(data) === 'string') {
     steps.push(data);
   } else {
-    data(this.deepDeref(), steps, updown);
+    data(type, steps, updown);
   }
 }
 
