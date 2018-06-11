@@ -64,15 +64,15 @@ goog.inherits(Blockly.RenderedTypeExpr.TVAR, Blockly.RenderedTypeExpr);
 Blockly.RenderedTypeExpr.typeVarShapes_ = {
   list : { 
     down: function (self, steps, updown) {
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.element_type, steps, updown);
+      self.element_type.renderTypeExpr(steps, updown);
       steps.push('l 0,3 -8,0 0,4, 8,0 0,3');
     },
     up: function (self, steps, updown) {
       steps.push('l 0,-3 -8,0 0,-4, 8,0 0,-3');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.element_type, steps, updown);
+      self.element_type.renderTypeExpr(steps, updown);
     },
     height: function(self) {
-      return Blockly.RenderedTypeExpr.getTypeExprHeight(self.element_type) + 10;
+      return self.element_type.getTypeExprHeight() + 10;
     },
     offsetsY: function(self) {
       return [0];
@@ -82,75 +82,75 @@ Blockly.RenderedTypeExpr.typeVarShapes_ = {
   pair : {
     down: function (self, steps, updown) {
       steps.push('l 0,3 -12,0 0,3 12,0');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.first_type, steps, updown);
+      self.first_type.renderTypeExpr(steps, updown);
       steps.push('l -5,3 5,3');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.second_type, steps, updown);
+      self.second_type.renderTypeExpr(steps, updown);
       steps.push('l -12,0 0,3 12,0 0,3');
     },
     up: function (self, steps, updown) {
       steps.push('l 0,-3 -12,0 0,-3 12,0');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.second_type, steps, updown);
+      self.second_type.renderTypeExpr(steps, updown);
       steps.push('l -5,-3 5,-3');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.first_type, steps, updown);
+      self.first_type.renderTypeExpr(steps, updown);
       steps.push('l -12,0 0,-3 12,0 0,-3');
     },
     height: function(self) {
-      return Blockly.RenderedTypeExpr.getTypeExprHeight(self.first_type) + 
-             Blockly.RenderedTypeExpr.getTypeExprHeight(self.second_type) + 
+      return self.first_type.getTypeExprHeight() +
+             self.second_type.getTypeExprHeight() +
              18;
     },
     offsetsY: function(self) {
-      return [6, Blockly.RenderedTypeExpr.getTypeExprHeight(self.first_type) + 12];
+      return [6, self.first_type.getTypeExprHeight() + 12];
     }
   },
 
   sum : {
     down: function (self, steps, updown) {
       steps.push('l 0,3 -12,0 0,3 12,0');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.left_type, steps, updown);
+      self.left_type.renderTypeExpr(steps, updown);
       steps.push('l 0,1 -5,0 0,4 5,0, 0,1');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.right_type, steps, updown);
+      self.right_type.renderTypeExpr(steps, updown);
       steps.push('l -12,0 0,3 12,0 0,3');
     },
     up: function (self, steps, updown) {
       steps.push('l 0,-3 -12,0 0,-3 12,0');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.right_type, steps, updown);
+      self.right_type.renderTypeExpr(steps, updown);
       steps.push('l 0,-1 -5,0 0,-4 5,0, 0,-1');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.left_type, steps, updown);
+      self.left_type.renderTypeExpr(steps, updown);
       steps.push('l -12,0 0,-3 12,0 0,-3');
     },
     height: function(self) {
-      return Blockly.RenderedTypeExpr.getTypeExprHeight(self.left_type) + 
-             Blockly.RenderedTypeExpr.getTypeExprHeight(self.right_type) + 
+      return self.left_type.getTypeExprHeight() +
+             self.right_type.getTypeExprHeight() +
              18;
     },
     offsetsY: function(self) {
-      return [6, Blockly.RenderedTypeExpr.getTypeExprHeight(self.left_type) + 12];
+      return [6, self.left_type.getTypeExprHeight() + 12];
     }
   },
 
   fun : {
     down: function (self, steps, updown) {
       steps.push('l 0,3 -12,0 0,3 12,0');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.arg_type, steps, updown);
+      self.arg_type.renderTypeExpr(steps, updown);
       steps.push('l 5,3 -5,3');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.return_type, steps, updown);
+      self.return_type.renderTypeExpr(steps, updown);
       steps.push('l -12,0 0,3 12,0 0,3');
     },
     up: function (self, steps, updown) {
       steps.push('l 0,-3 -12,0 0,-3 12,0');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.return_type, steps, updown);
+      self.return_type.renderTypeExpr(steps, updown);
       steps.push('l 5,-3 -5,-3');
-      Blockly.RenderedTypeExpr.renderTypeExpr(self.arg_type, steps, updown);
+      self.arg_type.renderTypeExpr(steps, updown);
       steps.push('l -12,0 0,-3 12,0 0,-3');
     },
     height: function(self) {
-      return Blockly.RenderedTypeExpr.getTypeExprHeight(self.arg_type) + 
-             Blockly.RenderedTypeExpr.getTypeExprHeight(self.return_type) + 
+      return self.arg_type.getTypeExprHeight() +
+             self.return_type.getTypeExprHeight() +
              18;
     },
     offsetsY: function(self) {
-      return [6, Blockly.RenderedTypeExpr.getTypeExprHeight(self.arg_type) + 12];
+      return [6, self.arg_type.getTypeExprHeight() + 12];
     }
   },
 
