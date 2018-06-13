@@ -1980,12 +1980,10 @@ Blockly.Blocks['lists_create_with_typed'] = {
   compose: function(containerBlock) {
     // Disconnect all input blocks and remove all inputs.
     this.removeInput('RPAREN');
-    if (this.itemCount_ != 0) {
-      for (var x = this.itemCount_ - 1; x >= 0; x--) {
-        this.removeInput('ADD' + x);
-      }
+    for (; 0 < this.itemCount_; this.itemCount_--) {
+      var index = this.itemCount_ - 1;
+      this.removeInput('ADD' + index);
     }
-    this.itemCount_ = 0;
     // Rebuild the block's inputs.
     var itemBlock = containerBlock.getInputTargetBlock('STACK');
     var element_type = this.outputConnection.typeExpr.element_type;
@@ -1996,10 +1994,13 @@ Blockly.Blocks['lists_create_with_typed'] = {
         input.appendField(';');
       }
       // Reconnect any child blocks.
+      this.itemCount_++;
+      // The length of items should be updated in advance of connecting two
+      // blocks. This is because type inference, which depends on the length
+      // of items, occurs when connecting two blocks.
       if (itemBlock.valueConnection_) {
         input.connection.connect(itemBlock.valueConnection_);
       }
-      this.itemCount_++;
       itemBlock = itemBlock.nextConnection &&
           itemBlock.nextConnection.targetBlock();
     }
