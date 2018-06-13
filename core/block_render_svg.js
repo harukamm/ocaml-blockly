@@ -715,9 +715,13 @@ Blockly.BlockSvg.prototype.renderDrawRight_ = function(steps, highlightSteps,
                            ',' + (cursorY + Blockly.BlockSvg.INLINE_PADDING_Y));
           inlineSteps.push('h', Blockly.BlockSvg.TAB_WIDTH - 2 -
                            input.renderWidth);
-          // Sorin  
-          inlineSteps.push(input.connection.typeExpr.getDownPath());
-          var tabHeight = input.connection.typeExpr.getTypeExprHeight();
+          var tabHeight = Blockly.BlockSvg.TAB_HEIGHT;
+          if (input.connection.typeExpr) {
+            inlineSteps.push(input.connection.typeExpr.getDownPath());
+            tabHeight = input.connection.typeExpr.getTypeExprHeight();
+          } else {
+            inlineSteps.push(Blockly.BlockSvg.TAB_PATH_DOWN);
+          }
           inlineSteps.push('v', input.renderHeight + 1 -
                                 tabHeight);
           inlineSteps.push('h', input.renderWidth + 2 -
@@ -790,8 +794,13 @@ Blockly.BlockSvg.prototype.renderDrawRight_ = function(steps, highlightSteps,
         }
       }
       this.renderFields_(input.fieldRow, fieldX, fieldY);
-      steps.push(input.connection.typeExpr.getDownPath());
-      tabHeight = input.connection.typeExpr.getTypeExprHeight();
+      var tabHeight = Blockly.BlockSvg.TAB_HEIGHT;
+      if (input.connection.typeExpr) {
+        steps.push(input.connection.typeExpr.getDownPath());
+        tabHeight = input.connection.typeExpr.getTypeExprHeight();
+      } else {
+        steps.push(Blockly.BlockSvg.TAB_PATH_DOWN);
+      }
       var v = row.height - tabHeight;
       steps.push('v', v);
       if (this.RTL) {
@@ -916,7 +925,7 @@ Blockly.BlockSvg.prototype.renderDrawRight_ = function(steps, highlightSteps,
     }
   }
   // Sorin: adjust height to display output
-  if (this.outputConnection) {
+  if (this.outputConnection && this.outputConnection.typeExpr) {
     var out_height = this.outputConnection.typeExpr.getTypeExprHeight();
     var padding = out_height - cursorY;
     if (padding > 0) {
@@ -983,10 +992,14 @@ Blockly.BlockSvg.prototype.renderDrawLeft_ = function(steps, highlightSteps) {
   if (this.outputConnection) {
     // Create output connection.
     this.outputConnection.setOffsetInBlock(0, 0);
-    var tabHeight = this.outputConnection.typeExpr.getTypeExprHeight();
-    steps.push('V', tabHeight);
-    // Sorin
-    steps.push(this.outputConnection.typeExpr.getUpPath());
+    var tabHeight = Blockly.BlockSvg.TAB_HEIGHT;
+    if (this.outputConnection.typeExpr) {
+      tabHeight = this.outputConnection.typeExpr.getTypeExprHeight();
+      steps.push('V', tabHeight);
+      steps.push(this.outputConnection.typeExpr.getUpPath());
+    } else {
+      steps.push('V', Blockly.BlockSvg.TAB_HEIGHT);
+    }
     if (this.RTL) {
       highlightSteps.push('M', (Blockly.BlockSvg.TAB_WIDTH * -0.25) + ',8.4');
       highlightSteps.push('l', (Blockly.BlockSvg.TAB_WIDTH * -0.45) + ',-2.1');

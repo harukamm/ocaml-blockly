@@ -427,6 +427,8 @@ Blockly.RenderedConnection.prototype.onCheckChanged_ = function() {
 };
 
 Blockly.RenderedConnection.prototype.renderTypeVarHighlights = function() {
+  if (!this.typeExpr)
+    return;
   if (this.typeVarPaths_) {
     for (var i = 0; i < this.typeVarPaths_.length; i++) {
       goog.dom.removeNode(this.typeVarPaths_[i]);
