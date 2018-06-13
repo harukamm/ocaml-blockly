@@ -108,39 +108,3 @@ function test_type_expr_derefereceWithSideEffect() {
   assertValueEquals(fun1.deepDeref(), fun1Expected);
 }
 
-function test_type_expr_callFunctionsOfRenderedTypeExpr() {
-  function assertRenderedTypeExprFunctionsExist(obj) {
-    assertTrue(typeof(obj.typeVarHighlights) !== 'undefined');
-    assertTrue(typeof(obj.getTypeExprHeight) !== 'undefined');
-    assertTrue(typeof(obj.getChildren) !== 'undefined');
-    var children1 = obj.getChildren();
-    for (var i = 0; i < children1.length; i++) {
-      var child1 = children1[i];
-      assertRenderedTypeExprFunctionsExist(child1);
-    }
-  }
-  var int1 = new Blockly.RenderedTypeExpr.INT();
-  assertRenderedTypeExprFunctionsExist(int1);
-  assertRenderedTypeExprFunctionsExist(int1.clone());
-  var float1 = new Blockly.RenderedTypeExpr.FLOAT();
-  assertRenderedTypeExprFunctionsExist(float1);
-  assertRenderedTypeExprFunctionsExist(float1.clone());
-  var bool1 = new Blockly.RenderedTypeExpr.BOOL();
-  assertRenderedTypeExprFunctionsExist(bool1);
-  assertRenderedTypeExprFunctionsExist(bool1.clone());
-  var bool1 = new Blockly.RenderedTypeExpr.bool(bool1);
-  assertRenderedTypeExprFunctionsExist(list1);
-  assertRenderedTypeExprFunctionsExist(list1.clone());
-  var pair1 = new Blockly.RenderedTypeExpr.PAIR(int1, float1);
-  assertRenderedTypeExprFunctionsExist(pair1);
-  assertRenderedTypeExprFunctionsExist(pair1.clone());
-  var sum1 = new Blockly.RenderedTypeExpr.SUM(bool1, int1);
-  assertRenderedTypeExprFunctionsExist(sum1);
-  assertRenderedTypeExprFunctionsExist(sum1.clone());
-  var fun1 = new Blockly.RenderedTypeExpr.FUN(int1, bool1);
-  assertRenderedTypeExprFunctionsExist(fun1);
-  assertRenderedTypeExprFunctionsExist(fun1.clone());
-  var tvarX = new Blockly.RenderedTypeExpr.TVAR('X', fun1);
-  assertRenderedTypeExprFunctionsExist(tvarX);
-  assertRenderedTypeExprFunctionsExist(tvarX.clone());
-}
