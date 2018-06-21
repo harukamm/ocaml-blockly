@@ -2323,26 +2323,64 @@ Blockly.Blocks['match_typed'] = {
   init: function() {
     this.setColour(290);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
+    var B = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendDummyInput()
         .appendField('match');
     this.appendValueInput('INPUT')
-        .setTypeExpr(A)
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setTypeExpr(A);
     this.appendDummyInput()
-        .appendField('with');
+        .appendField('with')
+        .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('PATTERN1')
-        .setTypeExpr(A)
-        .appendField('->');
+        .setTypeExpr(A);
+    this.appendValueInput('OUTPUT1')
+        .setTypeExpr(B)
+        .appendField('->')
+        .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('PATTERN2')
-        .setTypeExpr(A)
-        .appendField('->');
+        .setTypeExpr(A);
+    this.appendValueInput('OUTPUT2')
+        .setTypeExpr(B)
+        .appendField('->')
+        .setAlign(Blockly.ALIGN_RIGHT);
     this.setOutput(true);
-    this.setOutputTypeExpr(A);
-    //this.setInputsInline(true);
+    this.setOutputTypeExpr(B);
+    this.setInputsInline(false);
   },
 
   getVarsWithTypes: function() {
     goog.asserts.assert(false, 'No implemented.');
+  },
+
+  clearTypes: function() {
+    this.outputConnection.typeExpr.clear();
+    this.getInput('INPUT').connection.typeExpr.clear();
+    this.callClearTypes_('INPUT');
+    this.callClearTypes_('PATTERN1');
+    this.callClearTypes_('PATTERN2');
+    this.callClearTypes_('OUTPUT1');
+    this.callClearTypes_('OUTPUT2');
+  },
+
+  infer: function(env) {
+    var expected = this.outputConnection.typeExpr;
+    var input_expected = this.getInput('INPUT').connection.typeExpr;
+    var input_type = this.callInfer_('INPUT', env);
+    var pattern1_type = this.callInfer_('PATTERN1', env);
+    var pattern2_type = this.callInfer_('PATTERN2', env);
+    var output1_type = this.callInfer_('OUTPUT1', env);
+    var output2_type = this.callInfer_('OUTPUT2', env);
+    if (input_type)
+      input_type.unify(input_expected);
+    if (pattern1_type)
+      pattern1_type.unify(input_expected);
+    if (pattern2_type)
+      pattern2_type.unify(input_expected);
+    if (output1_type)
+      output1_type.unify(expected);
+    if (output2_type)
+      output2_type.unify(expected);
+    return expected;
   }
 }
 

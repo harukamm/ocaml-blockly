@@ -358,3 +358,23 @@ function test_type_unification_logicCompareStructure() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_matchStructure() {
+  var workspace = new Blockly.Workspace();
+  try {
+    var block = workspace.newBlock('match_typed');
+    var intInput = workspace.newBlock('int_typed');
+    var intPtn = workspace.newBlock('int_typed');
+    var boolOutput = workspace.newBlock('logic_boolean_typed');
+    block.getInput('INPUT').connection.connect(intInput.outputConnection);
+    block.getInput('PATTERN1').connection.connect(intPtn.outputConnection);
+    block.getInput('OUTPUT1').connection.connect(boolOutput.outputConnection);
+
+    assertEquals(Blockly.TypeExpr.BOOL_,
+        block.outputConnection.typeExpr.deref().label);
+    assertEquals(Blockly.TypeExpr.INT_,
+        block.getInput('INPUT').connection.typeExpr.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
