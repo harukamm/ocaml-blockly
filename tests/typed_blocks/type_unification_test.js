@@ -345,7 +345,6 @@ function test_type_unification_logicCompareStructure() {
     var ifBlock = workspace.newBlock('logic_ternary_typed');
     var bool1 = workspace.newBlock('logic_boolean_typed');
     block.getField('OP').setValue('=');
-
     assertEquals(Blockly.TypeExpr.BOOL_,
         block.outputConnection.typeExpr.label);
     block.getInput('A').connection.connect(ifBlock.outputConnection);
@@ -354,6 +353,9 @@ function test_type_unification_logicCompareStructure() {
         block.getInput('A').connection.typeExpr.deref().label);
     assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('B').connection.typeExpr.deref().label);
+    block.getInput('A').connection.disconnect(ifBlock.outputConnection);
+    assertEquals(Blockly.TypeExpr.TVAR_,
+        block.getInput('A').connection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
   }
