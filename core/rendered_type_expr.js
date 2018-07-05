@@ -71,7 +71,7 @@ Blockly.RenderedTypeExpr.prototype.shape = {
       Blockly.BlockSvg.TAB_WIDTH + ',7.5');
   },
 
-  up: function(stesp) {
+  up: function(steps) {
     steps.push('c 0,-10 -' + Blockly.BlockSvg.TAB_WIDTH + ',8 -' +
       Blockly.BlockSvg.TAB_WIDTH + ',-7.5 s ' + Blockly.BlockSvg.TAB_WIDTH +
       ',2.5 ' + Blockly.BlockSvg.TAB_WIDTH + ',-7.5');
