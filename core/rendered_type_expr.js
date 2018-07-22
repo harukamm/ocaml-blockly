@@ -285,7 +285,7 @@ Blockly.RenderedTypeExpr.prototype.typeVarHighlights = function() {
 /**
  * Helper function to create a highlight for type variable
  * @param {number} y
- * @param {Array<{color: string, path: string}>} typeVarHightlights
+ * @param {Array<{color: string, path: string}>} typeVarHighlights
  */
 Blockly.RenderedTypeExpr.prototype.typeVarHighlights_ = function(y, typeVarHighlights) {
   var type = this.deref();
