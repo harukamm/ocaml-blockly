@@ -311,7 +311,7 @@ Blockly.RenderedTypeExpr.prototype.getTypeExprHeight = function() {
 
 /**
  * @param {!Array.<string>} steps Path of block outline.
- * @param {number} n Specify down or up (1 or 2).
+ * @param {number} n Specify down, up or highlight (1, 2, or 3).
  */
 Blockly.RenderedTypeExpr.prototype.renderTypeExpr = function(steps, n) {
   var type = this.deref();
@@ -322,13 +322,21 @@ Blockly.RenderedTypeExpr.prototype.renderTypeExpr = function(steps, n) {
     case 2:
       type.shape.up.call(type, steps);
       break;
+    case 3:
+      type.shape.down.call(type, steps);
+      var height = type.shape.height.call(type, steps);
+      var diff = Blockly.BlockSvg.MIN_BLOCK_Y - height;
+      if (0 < diff) {
+        steps.push('v ' + diff);
+      }
+      break;
     default:
       goog.asserts.assert(false);
   }
 }
 
 /**
- * @param {number} n Specify down or up (1 or 2).
+ * @param {number} n Specify down, up, or highlight (1, 2, or 3).
  * @return {string}
  */
 Blockly.RenderedTypeExpr.prototype.getPath = function(n) {
@@ -345,3 +353,6 @@ Blockly.RenderedTypeExpr.prototype.getUpPath = function() {
   return this.getPath(2);
 }
 
+Blockly.RenderedTypeExpr.prototype.getHighlightedPath = function() {
+  return this.getPath(3);
+}

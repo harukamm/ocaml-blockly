@@ -198,7 +198,7 @@ Blockly.RenderedConnection.prototype.closest = function(maxLimit, dx, dy) {
 Blockly.RenderedConnection.prototype.highlight = function() {
   var steps;
   if (this.type == Blockly.INPUT_VALUE || this.type == Blockly.OUTPUT_VALUE) {
-    steps = 'm 0,0 ' + this.typeExpr.getDownPath() +  ' v 5';
+    steps = 'm 0,0 ' + this.typeExpr.getHighlightedPath();
   } else {
     steps = 'm -20,0 h 5 ' + Blockly.BlockSvg.NOTCH_PATH_LEFT + ' h 5';
   }
