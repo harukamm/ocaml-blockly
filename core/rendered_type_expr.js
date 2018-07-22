@@ -306,7 +306,6 @@ Blockly.RenderedTypeExpr.prototype.typeVarHighlights_ = function(y, typeVarHighl
 
 Blockly.RenderedTypeExpr.prototype.getTypeExprHeight = function() {
   var type = this.deref();
-  var typeName = type.getTypeName();
   return type.shape.height.call(type);
 }
 
@@ -316,7 +315,6 @@ Blockly.RenderedTypeExpr.prototype.getTypeExprHeight = function() {
  */
 Blockly.RenderedTypeExpr.prototype.renderTypeExpr = function(steps, n) {
   var type = this.deref();
-  var typeName = type.getTypeName();
   switch (n) {
     case 1:
       type.shape.down.call(type, steps);
@@ -327,14 +325,6 @@ Blockly.RenderedTypeExpr.prototype.renderTypeExpr = function(steps, n) {
     default:
       goog.asserts.assert(false);
   }
-}
-
-Blockly.RenderedTypeExpr.prototype.renderDownTypeExpr = function(steps) {
-  this.renderTypeExpr(steps, 1);
-}
-
-Blockly.RenderedTypeExpr.prototype.renderUpTypeExpr = function(steps) {
-  this.renderTypeExpr(steps, 2);
 }
 
 /**
