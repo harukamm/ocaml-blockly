@@ -258,7 +258,7 @@ Blockly.RenderedTypeExpr.TVAR.prototype.shape = {
     return [];
   },
 
-  highlight: function() {
+  tvarHighlight: function() {
     return 'm 0,5 l -8,0 0,15 8,0';
   }
 };
@@ -293,7 +293,7 @@ Blockly.RenderedTypeExpr.prototype.typeVarHighlights_ = function(y, typeVarHighl
   if (type.isTypeVar()) {
     typeVarHighlights.push({
       color: type.color,
-      path: "m 0," + y + " " + type.shape.highlight.call(type)
+      path: "m 0," + y + " " + type.shape.tvarHighlight.call(type)
     });
   } else if (children.length != 0) {
     var name = type.getTypeName();
