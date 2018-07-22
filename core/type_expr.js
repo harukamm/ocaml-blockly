@@ -47,12 +47,6 @@ Blockly.TypeExpr.PAIR_ = 120;
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.SUM_ = 125;
-
-/**
- * @type {number}
- * @private
- */
 Blockly.TypeExpr.FUN_ = 130;
 
 /**
@@ -86,8 +80,6 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'list';
     case Blockly.TypeExpr.PAIR_:
       return 'pair';
-    case Blockly.TypeExpr.SUM_:
-      return 'sum';
     case Blockly.TypeExpr.FUN_:
       return 'fun';
     case Blockly.TypeExpr.TVAR_:
@@ -350,60 +342,6 @@ Blockly.TypeExpr.PAIR.prototype.clone = function() {
 Blockly.TypeExpr.PAIR.prototype.deepDeref = function() {
   return new Blockly.TypeExpr.PAIR(this.first_type.deepDeref(),
       this.second_type.deepDeref());
-}
-
-/**
- * @extends {Blockly.TypeExpr}
- * @constructor
- * @param {Type} left_type
- * @param {Type} right_type
- * @return {Blockly.TypeExpr}
- */
-Blockly.TypeExpr.SUM = function(left_type, right_type) {
-  /** @type {Type} */
-  this.left_type = left_type;
-  /** @type {Type} */
-  this.right_type = right_type;
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.SUM_);
-}
-goog.inherits(Blockly.TypeExpr.SUM, Blockly.TypeExpr);
-
-/**
- * @override
- * @param {boolean=} opt_deref
- * @return {string}
- */
-Blockly.TypeExpr.SUM.prototype.toString = function(opt_deref) {
-  return "SUM[" + this.left_type.toString(opt_deref) + " * " +
-      this.right_type.toString(opt_deref) + "]";
-}
-
-/**
- * @override
- * @return {Array<Type>}
- */
-Blockly.TypeExpr.SUM.prototype.getChildren = function() {
-  return [this.left_type, this.right_type];
-}
-
-/**
- * Deeply clone the object
- * @override
- * @return {Blockly.TypeExpr}
- */
-Blockly.TypeExpr.SUM.prototype.clone = function() {
-  return new Blockly.TypeExpr.SUM(this.left_type.clone(),
-      this.right_type.clone());
-}
-
-/**
- * Returns the object which is dereferenced recursively.
- * @override
- * @return {Blockly.TypeExpr}
- */
-Blockly.TypeExpr.SUM.prototype.deepDeref = function() {
-  return new Blockly.TypeExpr.SUM(this.left_type.deepDeref(),
-      this.right_type.deepDeref());
 }
 
 /**

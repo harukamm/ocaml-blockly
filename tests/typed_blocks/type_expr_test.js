@@ -38,10 +38,10 @@ function test_type_expr_occurTypeName() {
   var n = new Blockly.TypeExpr.TVAR('N', null);
   var o = new Blockly.TypeExpr.TVAR('O', null);
   var pair2 = new Blockly.TypeExpr.PAIR(n, o);
-  var sum = new Blockly.TypeExpr.SUM(pair1, pair2);
-  assertTrue(sum.occur('P'));
-  assertTrue(sum.occur('O'));
-  assertFalse(sum.occur('xx'));
+  var pair3 = new Blockly.TypeExpr.PAIR(pair1, pair2);
+  assertTrue(pair3.occur('P'));
+  assertTrue(pair3.occur('O'));
+  assertFalse(pair3.occur('xx'));
 }
 
 function test_type_expr_typesToString() {
@@ -59,10 +59,6 @@ function test_type_expr_typesToString() {
   var pair1 = new Blockly.TypeExpr.PAIR(int1, tvar2);
   assertEquals(pair1.toString(), 'PAIR[INT * <B=<A=INT>>]');
   assertEquals(pair1.toString(true), 'PAIR[INT * INT]');
-  tvar1.val = float1;
-  var sum1 = new Blockly.TypeExpr.SUM(float1, tvar2);
-  assertEquals(sum1.toString(), 'SUM[FLOAT * <B=<A=FLOAT>>]');
-  assertEquals(sum1.toString(true), 'SUM[FLOAT * FLOAT]');
   tvar1.val = bool1;
   var fun1 = new Blockly.TypeExpr.FUN(tvar1, tvar2);
   assertEquals(fun1.toString(), 'FUN((<A=BOOL>) -> (<B=<A=BOOL>>))');
@@ -100,9 +96,6 @@ function test_type_expr_derefereceWithSideEffect() {
   var pair1 = new Blockly.TypeExpr.PAIR(tvarToFloat1, tvarToBool1);
   var pair1Expected = new Blockly.TypeExpr.PAIR(float1, bool1);
   assertValueEquals(pair1.deepDeref(), pair1Expected);
-  var sum1 = new Blockly.TypeExpr.SUM(tvarToFloat2, tvarToX2);
-  var sum1Expected = new Blockly.TypeExpr.SUM(float1, tvarX);
-  assertValueEquals(sum1.deepDeref(), sum1Expected);
   var fun1 = new Blockly.TypeExpr.FUN(tvarToBool2, tvarToInt1);
   var fun1Expected = new Blockly.TypeExpr.FUN(bool1, int1);
   assertValueEquals(fun1.deepDeref(), fun1Expected);

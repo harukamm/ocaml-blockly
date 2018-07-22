@@ -2155,72 +2155,8 @@ Blockly.Blocks['pair_second_typed'] = {
 };
 
 /**
- * Sums
- */
-Blockly.Blocks['sum_first_create_typed'] = {
-  /**
-   */
-  init: function() {
-    this.setColour(210);
-    var A = Blockly.RenderedTypeExpr.generateTypeVar();
-    var B = Blockly.RenderedTypeExpr.generateTypeVar();
-    this.appendValueInput('FIRST')
-        .setTypeExpr(A)
-        .appendField("create first sum with");
-    this.appendValueInput('SECOND')
-        .setTypeExpr(B)
-        .appendField("and other type");
-    this.setOutput(true);
-    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.SUM(A, B));
-  }
-};
-
-Blockly.Blocks['sum_second_create_typed'] = {
-  /**
-   */
-  init: function() {
-    this.setColour(210);
-    var A = Blockly.RenderedTypeExpr.generateTypeVar();
-    var B = Blockly.RenderedTypeExpr.generateTypeVar();
-    this.appendValueInput('FIRST')
-        .setTypeExpr(A)
-        .appendField("create second sum with");
-    this.appendValueInput('SECOND')
-        .setTypeExpr(B)
-        .appendField("and other type");
-    this.setOutput(true);
-    this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.SUM(B, A));
-  }
-};
-
-Blockly.Blocks['sum_case_typed'] = {
-  /**
-   */
-  init: function() {
-    this.setColour(210);
-    var A = Blockly.RenderedTypeExpr.generateTypeVar();
-    var B = Blockly.RenderedTypeExpr.generateTypeVar();
-    var C = Blockly.RenderedTypeExpr.generateTypeVar();
-    this.appendValueInput('VALUE')
-        .setTypeExpr(new Blockly.RenderedTypeExpr.SUM(A, B))
-        .appendField("case on");
-    this.appendValueInput('FIRST')
-        .setTypeExpr(new Blockly.RenderedTypeExpr.FUN(A, C))
-        .appendField("if first");
-    this.appendValueInput('SECOND')
-        .setTypeExpr(new Blockly.RenderedTypeExpr.FUN(B, C))
-        .appendField("if second");
-    this.setInputsInline(true);
-    this.setOutput(true);
-    this.setOutputTypeExpr(C);
-  }
-};
-
-
-/**
  * First class functions
  */
-
 Blockly.Blocks.lambda_id = 0;
 
 Blockly.Blocks['lambda_typed'] = {
