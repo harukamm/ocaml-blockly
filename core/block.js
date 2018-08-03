@@ -2342,8 +2342,6 @@ Blockly.Blocks['variables_get_typed'] = {
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
-    this.contextMenuMsg_ = Blockly.Msg.VARIABLES_GET_CREATE_SET;
-    this.contextMenuType_ = 'variables_set';
   },
   /**
    * Return all variables referenced by this block.
@@ -2373,11 +2371,11 @@ Blockly.Blocks['variables_get_typed'] = {
   customContextMenu: function(options) {
     var option = {enabled: true};
     var name = this.getField('VAR').getText();
-    option.text = this.contextMenuMsg_.replace('%1', name);
+    option.text = Blockly.Msg.VARIABLES_SET_CREATE_GET.replace('%1', name);
     var xmlField = goog.dom.createDom('field', null, name);
     xmlField.setAttribute('name', 'VAR');
     var xmlBlock = goog.dom.createDom('block', null, xmlField);
-    xmlBlock.setAttribute('type', this.contextMenuType_);
+    xmlBlock.setAttribute('type', 'variables_get_typed');
     option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
     options.push(option);
   },
@@ -2469,11 +2467,11 @@ Blockly.Blocks['let_typed'] = {
   customContextMenu: function(options) {
     var option = {enabled: true};
     var name = this.getField('VAR').getText();
-    option.text = this.contextMenuMsg_.replace('%1', name);
+    option.text = Blockly.Msg.VARIABLES_GET_CREATE_SET.replace('%1', name);
     var xmlField = goog.dom.createDom('field', null, name);
     xmlField.setAttribute('name', 'VAR');
     var xmlBlock = goog.dom.createDom('block', null, xmlField);
-    xmlBlock.setAttribute('type', this.contextMenuType_);
+    xmlBlock.setAttribute('type', 'let_typed');
     option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
     options.push(option);
   },
