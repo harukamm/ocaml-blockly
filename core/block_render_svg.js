@@ -183,7 +183,9 @@ Blockly.BlockSvg.JAGGED_TEETH_WIDTH = 15;
  * SVG path for drawing a horizontal puzzle tab from top to bottom.
  * @const
  */
-Blockly.BlockSvg.TAB_PATH_DOWN = 'l -8,10 8,10';
+Blockly.BlockSvg.TAB_PATH_DOWN = 'v 5 c 0,10 -' + Blockly.BlockSvg.TAB_WIDTH +
+    ',-8 -' + Blockly.BlockSvg.TAB_WIDTH + ',7.5 s ' +
+    Blockly.BlockSvg.TAB_WIDTH + ',-2.5 ' + Blockly.BlockSvg.TAB_WIDTH + ',7.5';
 /**
  * SVG path for drawing a horizontal puzzle tab from top to bottom with
  * highlighting from the upper-right.
@@ -833,6 +835,9 @@ Blockly.BlockSvg.prototype.renderDrawLeft_ = function(pathObject) {
       steps.push(this.outputConnection.typeExpr.getUpPath());
     } else {
       steps.push('V', Blockly.BlockSvg.TAB_HEIGHT);
+      steps.push('c 0,-10 -' + Blockly.BlockSvg.TAB_WIDTH + ',8 -' +
+          Blockly.BlockSvg.TAB_WIDTH + ',-7.5 s ' + Blockly.BlockSvg.TAB_WIDTH +
+          ',2.5 ' + Blockly.BlockSvg.TAB_WIDTH + ',-7.5');
     }
     if (this.RTL) {
       highlightSteps.push('M', (Blockly.BlockSvg.TAB_WIDTH * -0.25) + ',8.4');
