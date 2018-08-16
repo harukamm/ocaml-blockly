@@ -158,6 +158,8 @@ function getToolboxFormIndex(id) {
     return 1;
   } else if (id == 'toolbox-simple') {
     return 2;
+  } else if (id == 'toolbox-typed-blocks') {
+    return 4;
   }
   // Didn't recognize it.
   return 0;
@@ -328,6 +330,7 @@ h1 {
       <option value="categories-typed-variables">Categories (typed variables)</option>
       <option value="simple">Simple</option>
       <option value="test-blocks">Test Blocks</option>
+      <option value="typed-blocks">Typed Blocks</option>
     </select>
     <select name="side" onchange="document.forms.options.submit()">
       <option value="start">Start</option>
@@ -1197,5 +1200,38 @@ h1 {
       </block>
     </category>
   </xml>
+
+  <!-- typed block -->
+  <xml id="toolbox-typed-blocks" style="display: none">
+    <category name="Logic">
+      <block type="logic_boolean_typed"></block>
+      <block type="logic_ternary_typed"></block>
+      <block type="logic_compare_typed"></block>
+    </category>
+    <category name="Lists">
+      <block type="lists_create_with_typed"></block>
+    </category>
+    <category name="Math">
+      <block type="int_typed"></block>
+      <block type="float_typed"></block>
+      <block type="int_arithmetic_typed"></block>
+      <block type="float_arithmetic_typed"></block>
+    </category>
+    <category name="Pairs">
+      <block type="pair_create_typed"></block>
+      <block type="pair_first_typed"></block>
+      <block type="pair_second_typed"></block>
+    </category>
+    <category name="Functions">
+      <block type="lambda_typed"></block>
+      <block type="lambda_app_typed"></block>
+      <block type="match_typed"></block>
+    </category>
+    <category name="Variables">
+      <block type="variables_get_typed"></block>
+      <block type="let_typed"></block>
+    </category>
+  </xml>
+
 </body>
 </html>
