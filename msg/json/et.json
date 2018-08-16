@@ -2,7 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"Aivarannamaa",
-			"Hasso"
+			"Hasso",
+			"Puik",
+			"Ilmarine"
 		]
 	},
 	"VARIABLES_DEFAULT_NAME": "objekt",
@@ -74,6 +76,9 @@
 	"CONTROLS_IF_IF_TOOLTIP": "Selle „kui“ ploki muutmine sektsioonide lisamise, eemaldamise ja järjestamisega.",
 	"CONTROLS_IF_ELSEIF_TOOLTIP": "Lisab „kui“ plokile tingimuse.",
 	"CONTROLS_IF_ELSE_TOOLTIP": "Lisab „kui“ plokile lõpliku tingimuseta koodiploki.",
+	"IOS_VARIABLES_DELETE_BUTTON": "Kustuta",
+	"IOS_VARIABLES_VARIABLE_NAME": "Muutuja nimi",
+	"IOS_VARIABLES_EMPTY_NAME_ERROR": "Tühja muutuja nime ei saa kasutada.",
 	"LOGIC_COMPARE_HELPURL": "https://en.wikipedia.org/wiki/Inequality_(mathematics)",
 	"LOGIC_COMPARE_TOOLTIP_EQ": "Tagastab „tõene“, kui avaldiste väärtused on võrdsed.",
 	"LOGIC_COMPARE_TOOLTIP_NEQ": "Tagastab „tõene“, kui avaldiste väärtused pole võrdsed.",
@@ -211,6 +216,7 @@
 	"TEXT_PROMPT_TYPE_NUMBER": "kasutajalt küsitud arv teatega",
 	"TEXT_PROMPT_TOOLTIP_NUMBER": "Küsib kasutajalt teadet näidates mingit arvu.",
 	"TEXT_PROMPT_TOOLTIP_TEXT": "Küsib kasutajalt teadet näidates mingit teksti.",
+	"TEXT_COUNT_TOOLTIP": "Loenda, mitu korda mingi tekst esineb teise teksti sees.",
 	"LISTS_CREATE_EMPTY_TITLE": "tühi loend",
 	"LISTS_CREATE_EMPTY_TOOLTIP": "Tagastab loendi, mille pikkus on 0 ja milles pole ühtegi elementi.",
 	"LISTS_CREATE_WITH_TOOLTIP": "Tekitab mistahes arvust elementidest loendi.",
@@ -296,9 +302,9 @@
 	"PROCEDURES_DEFRETURN_TOOLTIP": "Tekitab funktsiooni, mis tagastab midagi.",
 	"PROCEDURES_ALLOW_STATEMENTS": "kood plokis",
 	"PROCEDURES_DEF_DUPLICATE_WARNING": "Hoiatus: Sel funktsioonil on mitu sama nimega sisendit.",
-	"PROCEDURES_CALLNORETURN_HELPURL": "https://en.wikipedia.org/wiki/Procedure_%28computer_science%29",
+	"PROCEDURES_CALLNORETURN_HELPURL": "https://et.wikipedia.org/wiki/Alamprogramm",
 	"PROCEDURES_CALLNORETURN_TOOLTIP": "Käivitab kasutaja defineeritud funktsiooni '%1'.",
-	"PROCEDURES_CALLRETURN_HELPURL": "https://en.wikipedia.org/wiki/Procedure_%28computer_science%29",
+	"PROCEDURES_CALLRETURN_HELPURL": "https://et.wikipedia.org/wiki/Alamprogramm",
 	"PROCEDURES_CALLRETURN_TOOLTIP": "Run the user-defined function '%1' and use its output.",
 	"PROCEDURES_MUTATORCONTAINER_TITLE": "sisendid",
 	"PROCEDURES_MUTATORCONTAINER_TOOLTIP": "Funktsiooni sisendite lisamine, eemaldamine või järjestuse muutmine.",

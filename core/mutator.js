@@ -28,9 +28,10 @@
 goog.provide('Blockly.Mutator');
 
 goog.require('Blockly.Bubble');
+goog.require('Blockly.Events.BlockChange');
+goog.require('Blockly.Events.Ui');
 goog.require('Blockly.Icon');
 goog.require('Blockly.WorkspaceSvg');
-goog.require('goog.Timer');
 goog.require('goog.dom');
 
 
@@ -247,6 +248,8 @@ Blockly.Mutator.prototype.setVisible = function(visible) {
     this.bubble_ = new Blockly.Bubble(
         /** @type {!Blockly.WorkspaceSvg} */ (this.block_.workspace),
         this.createEditor_(), this.block_.svgPath_, this.iconXY_, null, null);
+    // Expose this mutator's block's ID on its top-level SVG group.
+    this.bubble_.setSvgId(this.block_.id);
     var tree = this.workspace_.options.languageTree;
     if (tree) {
       this.workspace_.flyout_.init(this.workspace_);
@@ -254,7 +257,7 @@ Blockly.Mutator.prototype.setVisible = function(visible) {
     }
 
     this.rootBlock_ = this.block_.decompose(this.workspace_);
-    var blocks = this.rootBlock_.getDescendants();
+    var blocks = this.rootBlock_.getDescendants(false);
     for (var i = 0, child; child = blocks[i]; i++) {
       child.render();
     }
@@ -420,7 +423,7 @@ Blockly.Mutator.reconnect = function(connectionChild, block, inputName) {
  * account whether it is a flyout.
  * @param {?Blockly.Workspace} workspace The workspace that is inside a mutator.
  * @return {?Blockly.Workspace} The mutator's parent workspace or null.
- * @package
+ * @public
  */
 Blockly.Mutator.findParentWs = function(workspace) {
   var outerWs = null;

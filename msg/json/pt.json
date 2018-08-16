@@ -21,6 +21,7 @@
 	"DUPLICATE_BLOCK": "Duplicar",
 	"ADD_COMMENT": "Adicionar Comentário",
 	"REMOVE_COMMENT": "Remover Comentário",
+	"DUPLICATE_COMMENT": "Duplicar comentário",
 	"EXTERNAL_INPUTS": "Entradas Externas",
 	"INLINE_INPUTS": "Entradas Em Linhas",
 	"DELETE_BLOCK": "Eliminar Bloco",
@@ -40,9 +41,13 @@
 	"RENAME_VARIABLE": "Renomear variável...",
 	"RENAME_VARIABLE_TITLE": "Renomear todas as variáveis '%1' para:",
 	"NEW_VARIABLE": "Criar variável…",
+	"NEW_STRING_VARIABLE": "Criar variável de segmentos de texto...",
+	"NEW_NUMBER_VARIABLE": "Criar variável numérica...",
+	"NEW_COLOUR_VARIABLE": "Criar variável colorida...",
+	"NEW_VARIABLE_TYPE_TITLE": "Tipo da nova variável:",
 	"NEW_VARIABLE_TITLE": "Nome da nova variável:",
 	"VARIABLE_ALREADY_EXISTS": "Já existe uma variável com o nome de '%1'.",
-	"VARIABLE_ALREADY_EXISTS_FOR_ANOTHER_TYPE": "Já existe uma variável chamada '%1' para outra variável do tipo '%2'.",
+	"VARIABLE_ALREADY_EXISTS_FOR_ANOTHER_TYPE": "Já existe uma variável chamada '%1' para outra do tipo: '%2'.",
 	"DELETE_VARIABLE_CONFIRMATION": "Eliminar %1 utilizações da variável '%2'?",
 	"CANNOT_DELETE_VARIABLE_PROCEDURE": "Não se pode eliminar a variável '%1' porque faz parte da definição da função '%2'",
 	"DELETE_VARIABLE": "Eliminar a variável '%1'",
@@ -364,5 +369,6 @@
 	"PROCEDURES_HIGHLIGHT_DEF": "Destacar definição da função",
 	"PROCEDURES_CREATE_DO": "Criar \"%1\"",
 	"PROCEDURES_IFRETURN_TOOLTIP": "se o valor é verdadeiro, então retorna um segundo valor.",
-	"PROCEDURES_IFRETURN_WARNING": "Atenção: Este bloco só pode ser utilizado dentro da definição de uma função."
+	"PROCEDURES_IFRETURN_WARNING": "Atenção: Este bloco só pode ser utilizado dentro da definição de uma função.",
+	"WORKSPACE_COMMENT_DEFAULT_TEXT": "Diz algo..."
 }

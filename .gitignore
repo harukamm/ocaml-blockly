@@ -1,3 +1,4 @@
+blockly_node_javascript_en.js
 node_modules
 npm-debug.log
 .DS_Store
@@ -9,3 +10,5 @@ npm-debug.log
 
 tests/compile/main_compressed.js
 tests/compile/*compiler*.jar
+local_build/*compiler*.jar
+local_build/local_blockly_compressed.js

@@ -32,6 +32,7 @@ goog.provide('Blockly.Procedures');
 
 goog.require('Blockly.Blocks');
 goog.require('Blockly.constants');
+goog.require('Blockly.Events.BlockChange');
 goog.require('Blockly.Field');
 goog.require('Blockly.Names');
 goog.require('Blockly.Workspace');
@@ -174,7 +175,7 @@ Blockly.Procedures.rename = function(name) {
 
 /**
  * Construct the blocks required by the flyout for the procedure category.
- * @param {!Blockly.Workspace} workspace The workspace contianing procedures.
+ * @param {!Blockly.Workspace} workspace The workspace containing procedures.
  * @return {!Array.<!Element>} Array of XML block elements.
  */
 Blockly.Procedures.flyoutCategory = function(workspace) {
@@ -187,7 +188,7 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
     block.setAttribute('type', 'procedures_defnoreturn');
     block.setAttribute('gap', 16);
     var nameField = goog.dom.createDom('field', null,
-        Blockly.Msg.PROCEDURES_DEFNORETURN_PROCEDURE);
+        Blockly.Msg['PROCEDURES_DEFNORETURN_PROCEDURE']);
     nameField.setAttribute('name', 'NAME');
     block.appendChild(nameField);
     xmlList.push(block);
@@ -200,7 +201,7 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
     block.setAttribute('type', 'procedures_defreturn');
     block.setAttribute('gap', 16);
     var nameField = goog.dom.createDom('field', null,
-        Blockly.Msg.PROCEDURES_DEFRETURN_PROCEDURE);
+        Blockly.Msg['PROCEDURES_DEFRETURN_PROCEDURE']);
     nameField.setAttribute('name', 'NAME');
     block.appendChild(nameField);
     xmlList.push(block);

@@ -26,7 +26,9 @@
 
 goog.provide('Blockly.BlockDragger');
 
+goog.require('Blockly.BlockAnimations');
 goog.require('Blockly.DraggedConnectionManager');
+goog.require('Blockly.Events.BlockMove');
 
 goog.require('goog.math.Coordinate');
 goog.require('goog.asserts');
@@ -35,7 +37,7 @@ goog.require('goog.asserts');
 /**
  * Class for a block dragger.  It moves blocks around the workspace when they
  * are being dragged by a mouse or touch.
- * @param {!Blockly.Block} block The block to drag.
+ * @param {!Blockly.BlockSvg} block The block to drag.
  * @param {!Blockly.WorkspaceSvg} workspace The workspace to drag on.
  * @constructor
  */
@@ -123,7 +125,7 @@ Blockly.BlockDragger.prototype.dispose = function() {
 Blockly.BlockDragger.initIconData_ = function(block) {
   // Build a list of icons that need to be moved and where they started.
   var dragIconData = [];
-  var descendants = block.getDescendants();
+  var descendants = block.getDescendants(false);
   for (var i = 0, descendant; descendant = descendants[i]; i++) {
     var icons = descendant.getIcons();
     for (var j = 0; j < icons.length; j++) {
@@ -143,23 +145,26 @@ Blockly.BlockDragger.initIconData_ = function(block) {
  * Start dragging a block.  This includes moving it to the drag surface.
  * @param {!goog.math.Coordinate} currentDragDeltaXY How far the pointer has
  *     moved from the position at mouse down, in pixel units.
+ * @param {boolean} healStack whether or not to heal the stack after disconnecting
  * @package
  */
-Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY) {
+Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY, healStack) {
   if (!Blockly.Events.getGroup()) {
     Blockly.Events.setGroup(true);
   }
 
   this.workspace_.setResizesEnabled(false);
-  Blockly.BlockSvg.disconnectUiStop_();
+  Blockly.BlockAnimations.disconnectUiStop();
 
-  if (this.draggingBlock_.getParent()) {
-    this.draggingBlock_.unplug();
+  if (this.draggingBlock_.getParent() ||
+      (healStack && this.draggingBlock_.nextConnection &&
+      this.draggingBlock_.nextConnection.targetBlock())) {
+    this.draggingBlock_.unplug(healStack);
     var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
     var newLoc = goog.math.Coordinate.sum(this.startXY_, delta);
 
     this.draggingBlock_.translate(newLoc.x, newLoc.y);
-    this.draggingBlock_.disconnectUiEffect();
+    Blockly.BlockAnimations.disconnectUiEffect(this.draggingBlock_);
   }
   this.draggingBlock_.setDragging(true);
   // For future consideration: we may be able to put moveToDragSurface inside
@@ -167,10 +172,11 @@ Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY) {
   // surface.
   this.draggingBlock_.moveToDragSurface_();
 
-  if (this.workspace_.toolbox_) {
+  var toolbox = this.workspace_.getToolbox();
+  if (toolbox) {
     var style = this.draggingBlock_.isDeletable() ? 'blocklyToolboxDelete' :
         'blocklyToolboxGrab';
-    this.workspace_.toolbox_.addStyle(style);
+    toolbox.addStyle(style);
   }
 };
 
@@ -207,7 +213,7 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
   this.dragBlock(e, currentDragDeltaXY);
   this.dragIconData_ = [];
 
-  Blockly.BlockSvg.disconnectUiStop_();
+  Blockly.BlockAnimations.disconnectUiStop();
 
   var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
   var newLoc = goog.math.Coordinate.sum(this.startXY_, delta);
@@ -218,17 +224,22 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
     // These are expensive and don't need to be done if we're deleting.
     this.draggingBlock_.moveConnections_(delta.x, delta.y);
     this.draggingBlock_.setDragging(false);
-    this.draggedConnectionManager_.applyConnections();
-    this.draggingBlock_.render();
     this.fireMoveEvent_();
+    if (this.draggedConnectionManager_.wouldConnectBlock()) {
+      // Applying connections also rerenders the relevant blocks.
+      this.draggedConnectionManager_.applyConnections();
+    } else {
+      this.draggingBlock_.render();
+    }
     this.draggingBlock_.scheduleSnapAndBump();
   }
   this.workspace_.setResizesEnabled(true);
 
-  if (this.workspace_.toolbox_) {
+  var toolbox = this.workspace_.getToolbox();
+  if (toolbox) {
     var style = this.draggingBlock_.isDeletable() ? 'blocklyToolboxDelete' :
         'blocklyToolboxGrab';
-    this.workspace_.toolbox_.removeStyle(style);
+    toolbox.removeStyle(style);
   }
   Blockly.Events.setGroup(false);
 };
@@ -255,7 +266,7 @@ Blockly.BlockDragger.prototype.maybeDeleteBlock_ = function() {
 
   if (this.wouldDeleteBlock_) {
     if (trashcan) {
-      goog.Timer.callOnce(trashcan.close, 100, trashcan);
+      setTimeout(trashcan.close.bind(trashcan), 100);
     }
     // Fire a move event, so we know where to go back to for an undo.
     this.fireMoveEvent_();

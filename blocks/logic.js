@@ -35,15 +35,11 @@ goog.provide('Blockly.Constants.Logic');
 goog.require('Blockly.Blocks');
 goog.require('Blockly');
 
-
 /**
- * Common HSV hue for all blocks in this category.
- * Should be the same as Blockly.Msg.LOGIC_HUE.
- * @readonly
+ * Unused constant for the common HSV hue for all blocks in this category.
+ * @deprecated Use Blockly.Msg['LOGIC_HUE']. (2018 April 5)
  */
 Blockly.Constants.Logic.HUE = 210;
-/** @deprecated Use Blockly.Constants.Logic.HUE */
-Blockly.Blocks.logic.HUE = Blockly.Constants.Logic.HUE;
 
 Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for boolean data type: true and false.
@@ -137,10 +133,10 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         "options": [
           ["=", "EQ"],
           ["\u2260", "NEQ"],
-          ["<", "LT"],
-          ["\u2264", "LTE"],
-          [">", "GT"],
-          ["\u2265", "GTE"]
+          ["\u200F<", "LT"],
+          ["\u200F\u2264", "LTE"],
+          ["\u200F>", "GT"],
+          ["\u200F\u2265", "GTE"]
         ]
       },
       {
@@ -449,13 +445,13 @@ Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN = {
     for (var i = 1; i <= this.elseifCount_; i++) {
       this.appendValueInput('IF' + i)
           .setCheck('Boolean')
-          .appendField(Blockly.Msg.CONTROLS_IF_MSG_ELSEIF);
+          .appendField(Blockly.Msg['CONTROLS_IF_MSG_ELSEIF']);
       this.appendStatementInput('DO' + i)
-          .appendField(Blockly.Msg.CONTROLS_IF_MSG_THEN);
+          .appendField(Blockly.Msg['CONTROLS_IF_MSG_THEN']);
     }
     if (this.elseCount_) {
       this.appendStatementInput('ELSE')
-          .appendField(Blockly.Msg.CONTROLS_IF_MSG_ELSE);
+          .appendField(Blockly.Msg['CONTROLS_IF_MSG_ELSE']);
     }
   }
 };
@@ -473,13 +469,13 @@ Blockly.Constants.Logic.CONTROLS_IF_TOOLTIP_EXTENSION = function() {
 
   this.setTooltip(function() {
     if (!this.elseifCount_ && !this.elseCount_) {
-      return Blockly.Msg.CONTROLS_IF_TOOLTIP_1;
+      return Blockly.Msg['CONTROLS_IF_TOOLTIP_1'];
     } else if (!this.elseifCount_ && this.elseCount_) {
-      return Blockly.Msg.CONTROLS_IF_TOOLTIP_2;
+      return Blockly.Msg['CONTROLS_IF_TOOLTIP_2'];
     } else if (this.elseifCount_ && !this.elseCount_) {
-      return Blockly.Msg.CONTROLS_IF_TOOLTIP_3;
+      return Blockly.Msg['CONTROLS_IF_TOOLTIP_3'];
     } else if (this.elseifCount_ && this.elseCount_) {
-      return Blockly.Msg.CONTROLS_IF_TOOLTIP_4;
+      return Blockly.Msg['CONTROLS_IF_TOOLTIP_4'];
     }
     return '';
   }.bind(this));
@@ -489,43 +485,14 @@ Blockly.Extensions.register('controls_if_tooltip',
     Blockly.Constants.Logic.CONTROLS_IF_TOOLTIP_EXTENSION);
 
 /**
- * Corrects the logic_compare dropdown label with respect to language direction.
- * @this Blockly.Block
- * @package
- */
-Blockly.Constants.Logic.fixLogicCompareRtlOpLabels =
-  function() {
-    var rtlOpLabels = {
-      'LT': '\u200F<\u200F',
-      'LTE': '\u200F\u2264\u200F',
-      'GT': '\u200F>\u200F',
-      'GTE': '\u200F\u2265\u200F'
-    };
-    var opDropdown = this.getField('OP');
-    if (opDropdown) {
-      var options = opDropdown.getOptions();
-      for (var i = 0; i < options.length; ++i) {
-        var tuple = options[i];
-        var op = tuple[1];
-        var rtlLabel = rtlOpLabels[op];
-        if (goog.isString(tuple[0]) && rtlLabel) {
-          // Replace LTR text label
-          tuple[0] = rtlLabel;
-        }
-      }
-    }
-  };
-
-/**
- * Adds dynamic type validation for the left and right sides of a logic_compare block.
+ * Adds dynamic type validation for the left and right sides of a logic_compare
+ * block.
  * @mixin
  * @augments Blockly.Block
  * @package
  * @readonly
  */
 Blockly.Constants.Logic.LOGIC_COMPARE_ONCHANGE_MIXIN = {
-  prevBlocks_: [null, null],
-
   /**
    * Called whenever anything on the workspace changes.
    * Prevent mismatched types from being compared.
@@ -533,42 +500,50 @@ Blockly.Constants.Logic.LOGIC_COMPARE_ONCHANGE_MIXIN = {
    * @this Blockly.Block
    */
   onchange: function(e) {
+    if (!this.prevBlocks_) {
+      this.prevBlocks_ = [null, null];
+    }
+
     var blockA = this.getInputTargetBlock('A');
     var blockB = this.getInputTargetBlock('B');
     // Disconnect blocks that existed prior to this change if they don't match.
     if (blockA && blockB &&
         !blockA.outputConnection.checkType_(blockB.outputConnection)) {
-      // Mismatch between two inputs.  Disconnect previous and bump it away.
-      // Ensure that any disconnections are grouped with the causing event.
+      // Mismatch between two inputs.  Revert the block connections,
+      // bumping away the newly connected block(s).
       Blockly.Events.setGroup(e.group);
-      for (var i = 0; i < this.prevBlocks_.length; i++) {
-        var block = this.prevBlocks_[i];
-        if (block === blockA || block === blockB) {
-          block.unplug();
-          block.bumpNeighbours_();
+      var prevA = this.prevBlocks_[0];
+      if (prevA !== blockA) {
+        blockA.unplug();
+        if (prevA && !prevA.isShadow()) {
+          // The shadow block is automatically replaced during unplug().
+          this.getInput('A').connection.connect(prevA.outputConnection);
         }
       }
+      var prevB = this.prevBlocks_[1];
+      if (prevB !== blockB) {
+        blockB.unplug();
+        if (prevB && !prevB.isShadow()) {
+          // The shadow block is automatically replaced during unplug().
+          this.getInput('B').connection.connect(prevB.outputConnection);
+        }
+      }
+      this.bumpNeighbours_();
       Blockly.Events.setGroup(false);
     }
-    this.prevBlocks_[0] = blockA;
-    this.prevBlocks_[1] = blockB;
+    this.prevBlocks_[0] = this.getInputTargetBlock('A');
+    this.prevBlocks_[1] = this.getInputTargetBlock('B');
   }
 };
 
 /**
- * "logic_compare" extension function. Corrects direction of operators in the
- * dropdown labels, and adds type left and right side type checking to
- * "logic_compare" blocks.
+ * "logic_compare" extension function. Adds type left and right side type
+ * checking to "logic_compare" blocks.
  * @this Blockly.Block
  * @package
  * @readonly
  */
 Blockly.Constants.Logic.LOGIC_COMPARE_EXTENSION = function() {
-  // Fix operator labels in RTL.
-  if (this.RTL) {
-    Blockly.Constants.Logic.fixLogicCompareRtlOpLabels.apply(this);
-  }
-
   // Add onchange handler to ensure types are compatible.
   this.mixin(Blockly.Constants.Logic.LOGIC_COMPARE_ONCHANGE_MIXIN);
 };
