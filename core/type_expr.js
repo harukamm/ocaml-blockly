@@ -106,7 +106,7 @@ Blockly.TypeExpr.prototype.clear = function() {
 
 /**
  * Deeply clone the object
- * @return {Type}
+ * @return {Blockly.TypeExpr}
  */
 Blockly.TypeExpr.prototype.clone = function() {
   goog.asserts.assert(false, 'Not implemented.');
@@ -245,11 +245,11 @@ Blockly.TypeExpr.BOOL.prototype.clone = function() {
 /**
  * @extends {Blockly.TypeExpr}
  * @constructor
- * @param {Type} element_type
+ * @param {Blockly.TypeExpr} element_type
  * @return {Blockly.TypeExpr}
  */
 Blockly.TypeExpr.LIST = function(element_type) {
-  /** @type {Type} */
+  /** @type {Blockly.TypeExpr} */
   this.element_type = element_type;
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.LIST_);
 }
@@ -293,14 +293,14 @@ Blockly.TypeExpr.LIST.prototype.deepDeref = function() {
 /**
  * @extends {Blockly.TypeExpr}
  * @constructor
- * @param {Type} first_type
- * @param {Type} second_type
+ * @param {Blockly.TypeExpr} first_type
+ * @param {Blockly.TypeExpr} second_type
  * @return {Blockly.TypeExpr}
  */
 Blockly.TypeExpr.PAIR = function(first_type, second_type) {
-  /** @type {Type} */
+  /** @type {Blockly.TypeExpr} */
   this.first_type = first_type;
-  /** @type {Type} */
+  /** @type {Blockly.TypeExpr} */
   this.second_type = second_type;
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.PAIR_);
 }
@@ -567,7 +567,7 @@ Blockly.TypeExpr.prototype.occur = function(name) {
 
 /**
  * Return whether it's possible to unify the object with the give one.
- * @param {Type} other
+ * @param {Blockly.TypeExpr} other
  * @return {boolean}
  */
 Blockly.TypeExpr.prototype.ableToUnify = function(other) {
