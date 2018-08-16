@@ -328,19 +328,22 @@ Blockly.RenderedConnection.prototype.isConnectionAllowed = function(candidate,
  */
 Blockly.RenderedConnection.prototype.disconnectInternal_ = function(parentBlock,
     childBlock) {
+  var hasTypeExpr = !!this.targetConnection.typeExpr;
   Blockly.RenderedConnection.superClass_.disconnectInternal_.call(this,
       parentBlock, childBlock);
-  // Rerender the parent so that it may reflow.
-  var rootBlock = parentBlock.getRootBlock();
-  if (rootBlock.workspace) {
-    rootBlock.workspace.render && rootBlock.workspace.render();
-  }
-  if (rootBlock.rendered) {
-    rootBlock.render();
-  }
-  if (childBlock.rendered) {
-    childBlock.updateDisabled();
-    childBlock.render();
+
+  if (hasTypeExpr && parentBlock.rendered && childBlock.rendered) {
+    // All blocks must be re-rendered if type expression maybe change.
+    parentBlock.workspace.render();
+  } else {
+    // Rerender the parent so that it may reflow.
+    if (parentBlock.rendered) {
+      parentBlock.render();
+    }
+    if (childBlock.rendered) {
+      childBlock.updateDisabled();
+      childBlock.render();
+    }
   }
 };
 
@@ -399,7 +402,10 @@ Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
     childBlock.updateDisabled();
   }
   if (parentBlock.rendered && childBlock.rendered) {
-    if (parentConnection.type == Blockly.NEXT_STATEMENT ||
+    if (!!parentConnection.typeExpr && !!childConnection.typeExpr) {
+      // All blocks must be re-rendered if type expression maybe change.
+      parentBlock.workspace.render();
+    } else if (parentConnection.type == Blockly.NEXT_STATEMENT ||
         parentConnection.type == Blockly.PREVIOUS_STATEMENT) {
       // Child block may need to square off its corners if it is in a stack.
       // Rendering a child will render its parent.

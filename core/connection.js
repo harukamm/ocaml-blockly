@@ -234,7 +234,6 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
   var rootBlock = parentBlock.getRootBlock();
   rootBlock.updateTypeInference();
-  rootBlock.workspace.render && rootBlock.workspace.render();
 
   // Demote the inferior block so that one is a child of the superior one.
   childBlock.setParent(parentBlock);
