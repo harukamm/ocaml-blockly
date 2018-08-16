@@ -90,7 +90,18 @@
   <script>
     Blockly.inject(document.getElementById('blocklyDiv'),
         {path: '../../', toolbox: document.getElementById('toolbox'),
-        collapse: false});
+         grid:
+             {spacing: 25,
+              length: 3,
+              colour: '#ccc',
+              snap: true},
+         media: '../../media/',
+         rtl: false, /*not support RTL */
+         zoom:
+             {controls: true,
+              wheel: true},
+         collapse: false
+        });
 
     function showCode() {
       // Generate TypedLang code and display it.
