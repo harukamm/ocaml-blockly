@@ -594,6 +594,18 @@ Blockly.Workspace.prototype.getVariableMap = function() {
 };
 
 /**
+ * Return the top-most workspace in this workspace's tree.
+ * @return {!Blockly.Workspace} The top-most workspace
+ */
+Blockly.Workspace.prototype.getMainWorkspace = function() {
+  var mainWorkspace = this;
+  while (mainWorkspace.options.parentWorkspace) {
+    mainWorkspace = mainWorkspace.options.parentWorkspace;
+  }
+  return mainWorkspace;
+};
+
+/**
  * Database of all workspaces.
  * @private
  */

@@ -361,18 +361,32 @@ Blockly.BlockSvg.prototype.translate = function(x, y) {
  * @private
  */
 Blockly.BlockSvg.prototype.moveToDragSurface_ = function() {
-  if (!this.useDragSurface_) {
+  if (!this.useDragSurface_ && !this.isTransferable()) {
     return;
   }
+  var dragSurface;
+  if (this.isTransferable()) {
+    // This block may transfer another workspace. Move this block to the
+    // surface of the main workspace so that dragging blocks are displayed in
+    // frontmost.
+    var mainWS = this.workspace.getMainWorkspace();
+    goog.asserts.assert(
+        Blockly.utils.is3dSupported() && !!mainWS.blockDragSurface_,
+        'The main workspace must have a dragSurface.');
+    dragSurface = mainWS.blockDragSurface_;
+  } else {
+    dragSurface = this.workspace.blockDragSurface_;
+  }
+
   // The translation for drag surface blocks,
   // is equal to the current relative-to-surface position,
   // to keep the position in sync as it move on/off the surface.
   // This is in workspace coordinates.
   var xy = this.getRelativeToSurfaceXY();
   this.clearTransformAttributes_();
-  this.workspace.blockDragSurface_.translateSurface(xy.x, xy.y);
+  dragSurface.translateSurface(xy.x, xy.y);
   // Execute the move on the top-level SVG component
-  this.workspace.blockDragSurface_.setBlocksAndShow(this.getSvgRoot());
+  dragSurface.setBlocksAndShow(this.getSvgRoot());
 };
 
 /**
