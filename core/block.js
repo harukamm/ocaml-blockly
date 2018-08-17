@@ -127,6 +127,12 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
    */
   this.collapsed_ = false;
 
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.transferable_ = false;
+
   /** @type {string|Blockly.Comment} */
   this.comment = null;
 
@@ -1016,6 +1022,22 @@ Blockly.Block.prototype.setCollapsed = function(collapsed) {
         this, 'collapsed', null, this.collapsed_, collapsed));
     this.collapsed_ = collapsed;
   }
+};
+
+/**
+ * Get whether the block is able to transfer workspace.
+ * @return {boolean} True if transferable.
+ */
+Blockly.Block.prototype.isTransferable = function() {
+  return this.transferable_;
+};
+
+/**
+ * Set whether the block is able to transfer workspace.
+ * @param {boolean} transferable True if transferable.
+ */
+Blockly.Block.prototype.setTransferable = function(transferable) {
+  this.transferable_ = transferable;
 };
 
 /**
