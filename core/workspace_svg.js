@@ -847,6 +847,32 @@ Blockly.WorkspaceSvg.prototype.getMainBlockDragSurface = function() {
 };
 
 /**
+ * Return the coordinates of the top-left corner of this element relative to
+ * the main surface's origin (0, 0).
+ * @return {!goog.math.Coordinate} Object with .x and .y properties in
+ *     workspace coordinates.
+ * @package
+ */
+Blockly.WorkspaceSvg.prototype.getRelativeToMainSurfaceXY = function() {
+  var mainWorkspace = this.getMainWorkspace();
+  var x = 0;
+  var y = 0;
+  var element = this.getCanvas();
+
+  while (element) {
+    if (element == mainWorkspace.getCanvas() ||
+        element == mainWorkspace.getBubbleCanvas()) {
+      break;
+    }
+    var xy = Blockly.utils.getRelativeXY(element);
+    x += xy.x;
+    y += xy.y;
+    element = element.parentNode;
+  }
+  return new goog.math.Coordinate(x, y);
+};
+
+/**
  * Returns the horizontal offset of the workspace.
  * Intended for LTR/RTL compatibility in XML.
  * @return {number} Width.

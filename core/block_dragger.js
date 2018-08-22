@@ -115,18 +115,14 @@ Blockly.BlockDragger = function(block, workspace) {
  *     coordinates of workspace whose surface is being used.
  */
 Blockly.BlockDragger.prototype.getDragStartXY = function() {
-  var xy = this.draggingBlock_.getRelativeToSurfaceXY();
   if (!this.draggingBlock_.isTransferable()) {
-    return xy;
+    return this.startXY_;
   }
-  var element = this.draggingBlock_.workspace.getCanvas();
-  while (element && element != Blockly.mainWorkspace.getBubbleCanvas()) {
-    var parentXY = Blockly.utils.getRelativeXY(element);
-    xy.x += parentXY.x;
-    xy.y += parentXY.y;
-    element = element.parentNode;
-  }
-  return xy;
+  // The dragging block will use the main workspace's surface.
+  // Include the translation of the dragging block's workspace to the main
+  // workspace.
+  var xy = this.draggingBlock_.workspace.getRelativeToMainSurfaceXY();
+  return goog.math.Coordinate.sum(this.startXY_, xy);
 };
 
 /**
