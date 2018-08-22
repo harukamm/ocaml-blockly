@@ -1168,6 +1168,15 @@ Blockly.WorkspaceSvg.prototype.isDeleteArea = function(e) {
 };
 
 /**
+ * Is the mouse event inside the flyout.
+ * @return {boolean} True if inside the flyout.
+ */
+Blockly.WorkspaceSvg.prototype.isFlyoutArea = function(e) {
+  var xy = new goog.math.Coordinate(e.clientX, e.clientY);
+  return !!this.flyout_ && this.flyout_.getBoundingRectangle().contains(xy);
+};
+
+/**
  * Handle a mouse-down on SVG drawing surface.
  * @param {!Event} e Mouse down event.
  * @private

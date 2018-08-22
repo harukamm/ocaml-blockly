@@ -299,26 +299,21 @@ Blockly.VerticalFlyout.prototype.isDragTowardWorkspace = function(
 };
 
 /**
- * Return the deletion rectangle for this flyout in viewport coordinates.
- * @return {goog.math.Rect} Rectangle in which to delete.
+ * Return the rectangle for this flyout in viewport coordinates.
+ * @return {goog.math.Rect} Rectangle which contains this flyout.
  */
-Blockly.VerticalFlyout.prototype.getClientRect = function() {
+Blockly.VerticalFlyout.prototype.getBoundingRectangle = function() {
   if (!this.svgGroup_) {
     return null;
   }
 
   var flyoutRect = this.svgGroup_.getBoundingClientRect();
-  // BIG_NUM is offscreen padding so that blocks dragged beyond the shown flyout
-  // area are still deleted.  Must be larger than the largest screen size,
-  // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
-  var BIG_NUM = 1000000000;
   var x = flyoutRect.left;
+  var y = flyoutRect.top;
   var width = flyoutRect.width;
+  var height = flyoutRect.height;
 
-  if (this.toolboxPosition_ == Blockly.TOOLBOX_AT_LEFT) {
-    return new goog.math.Rect(x - BIG_NUM, -BIG_NUM, BIG_NUM + width,
-        BIG_NUM * 2);
-  } else {  // Right
+  if (this.toolboxPosition_ == Blockly.TOOLBOX_AT_RIGHT) {
     // Firefox sometimes reports the wrong value for the client rect.
     // See https://github.com/google/blockly/issues/1425 and
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1066435
@@ -343,7 +338,31 @@ Blockly.VerticalFlyout.prototype.getClientRect = function() {
         x = x + this.leftEdge_ * scale;
       }
     }
-    return new goog.math.Rect(x, -BIG_NUM, BIG_NUM + width, BIG_NUM * 2);
+  }
+  return new goog.math.Rect(x, y, width, height);
+};
+
+/**
+ * Return the deletion rectangle for this flyout in viewport coordinates.
+ * @return {goog.math.Rect} Rectangle in which to delete.
+ */
+Blockly.VerticalFlyout.prototype.getClientRect = function() {
+  if (!this.svgGroup_) {
+    return null;
+  }
+
+  // BIG_NUM is offscreen padding so that blocks dragged beyond the shown flyout
+  // area are still deleted.  Must be larger than the largest screen size,
+  // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
+  var BIG_NUM = 1000000000;
+  var rect = this.getBoundingRectangle();
+
+  if (this.toolboxPosition_ == Blockly.TOOLBOX_AT_LEFT) {
+    return new goog.math.Rect(rect.left - BIG_NUM, -BIG_NUM,
+        BIG_NUM + rect.width, BIG_NUM * 2);
+  } else {  // Right
+    return new goog.math.Rect(rect.left, -BIG_NUM, BIG_NUM + rect.width,
+        BIG_NUM * 2);
   }
 };
 
