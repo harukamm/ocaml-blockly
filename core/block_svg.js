@@ -379,9 +379,9 @@ Blockly.BlockSvg.prototype.moveToDragSurface_ = function() {
     // frontmost.
     var mainWS = this.workspace.getMainWorkspace();
     goog.asserts.assert(
-        Blockly.utils.is3dSupported() && !!mainWS.blockDragSurface_,
+        Blockly.utils.is3dSupported() && !!mainWS.getBlockDragSurface(),
         'The main workspace must have a dragSurface.');
-    dragSurface = mainWS.blockDragSurface_;
+    dragSurface = mainWS.getBlockDragSurface();
   } else {
     dragSurface = this.workspace.blockDragSurface_;
   }
