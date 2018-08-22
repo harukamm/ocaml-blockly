@@ -838,6 +838,15 @@ Blockly.WorkspaceSvg.prototype.getBlockDragSurface = function() {
 };
 
 /**
+ * @return {?Blockly.BlockDragSurfaceSvg} The block drag surface of
+ *     top-most workspace of this workspace, if one is in use.
+ * @package
+ */
+Blockly.WorkspaceSvg.prototype.getMainBlockDragSurface = function() {
+  return this.getMainWorkspace().getBlockDragSurface();
+};
+
+/**
  * Returns the horizontal offset of the workspace.
  * Intended for LTR/RTL compatibility in XML.
  * @return {number} Width.

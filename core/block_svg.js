@@ -377,11 +377,11 @@ Blockly.BlockSvg.prototype.moveToDragSurface_ = function() {
     // This block may transfer another workspace. Move this block to the
     // surface of the main workspace so that dragging blocks are displayed in
     // frontmost.
-    var mainWS = this.workspace.getMainWorkspace();
+    var mainSurface = this.workspace.getMainBlockDragSurface();
     goog.asserts.assert(
-        Blockly.utils.is3dSupported() && !!mainWS.getBlockDragSurface(),
+        Blockly.utils.is3dSupported() && !!mainSurface,
         'The main workspace must have a dragSurface.');
-    dragSurface = mainWS.getBlockDragSurface();
+    dragSurface = mainSurface;
   } else {
     dragSurface = this.workspace.blockDragSurface_;
   }
