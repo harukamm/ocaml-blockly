@@ -81,12 +81,22 @@ Blockly.BlockDragger = function(block, workspace) {
   this.wouldDeleteBlock_ = false;
 
   /**
-   * The location of the top left corner of the dragging block at the beginning
-   * of the drag in workspace coordinates.
+   * The location of the top left corner of the dragging block just before the
+   * the drag in workspace coordinates.
    * @type {!goog.math.Coordinate}
    * @private
    */
   this.startXY_ = this.draggingBlock_.getRelativeToSurfaceXY();
+
+  /**
+   * The location of the top left corner of the dragging block at the beginning
+   * of the drag in coordinates of workspace whose drag surface is being used.
+   * The value is same with startXY_ unless the dragging block is transferable
+   * between workspace.
+   * @type {!goog.math.Coordinate}
+   * @private
+   */
+  this.dragStartXY_ = this.getDragStartXY();
 
   /**
    * A list of all of the icons (comment, warning, and mutator) that are
@@ -96,6 +106,27 @@ Blockly.BlockDragger = function(block, workspace) {
    * @private
    */
   this.dragIconData_ = Blockly.BlockDragger.initIconData_(block);
+};
+
+/**
+ * Return the coordinates of the top-left corner of the dragging block
+ * relative to workspace of surface.
+ * @return {!goog.math.Coordinate} Object with .x and .y properties in
+ *     coordinates of workspace whose surface is being used.
+ */
+Blockly.BlockDragger.prototype.getDragStartXY = function() {
+  var xy = this.draggingBlock_.getRelativeToSurfaceXY();
+  if (!this.draggingBlock_.isTransferable()) {
+    return xy;
+  }
+  var element = this.draggingBlock_.workspace.getCanvas();
+  while (element && element != Blockly.mainWorkspace.getBubbleCanvas()) {
+    var parentXY = Blockly.utils.getRelativeXY(element);
+    xy.x += parentXY.x;
+    xy.y += parentXY.y;
+    element = element.parentNode;
+  }
+  return xy;
 };
 
 /**
@@ -161,7 +192,7 @@ Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY, hea
       this.draggingBlock_.nextConnection.targetBlock())) {
     this.draggingBlock_.unplug(healStack);
     var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
-    var newLoc = goog.math.Coordinate.sum(this.startXY_, delta);
+    var newLoc = goog.math.Coordinate.sum(this.dragStartXY_, delta);
 
     this.draggingBlock_.translate(newLoc.x, newLoc.y);
     Blockly.BlockAnimations.disconnectUiEffect(this.draggingBlock_);
@@ -190,7 +221,7 @@ Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY, hea
  */
 Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
   var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
-  var newLoc = goog.math.Coordinate.sum(this.startXY_, delta);
+  var newLoc = goog.math.Coordinate.sum(this.dragStartXY_, delta);
 
   this.draggingBlock_.moveDuringDrag(newLoc);
   this.dragIcons_(delta);
