@@ -479,7 +479,7 @@ Blockly.WorkspaceSvg.prototype.createDom = function(opt_backgroundClass) {
     this.grid_.update(this.scale);
   }
   this.recordDeleteAreas();
-  this.recordBoundingBox();
+  this.recordBoundingBoxes();
   return this.svgGroup_;
 };
 
@@ -655,7 +655,7 @@ Blockly.WorkspaceSvg.prototype.getToolbox = function() {
 Blockly.WorkspaceSvg.prototype.updateScreenCalculations_ = function() {
   this.updateInverseScreenCTM();
   this.recordDeleteAreas();
-  this.recordBoundingBox();
+  this.recordBoundingBoxes();
 };
 
 /**
@@ -1153,10 +1153,12 @@ Blockly.WorkspaceSvg.prototype.recordDeleteAreas = function() {
 };
 
 /**
- * Make the bounding box which contains this flyout. This is necessary to
- * detect if mouse is over the element.
+ * Make the bounding boxes which contain this workspace and flyout. These are
+ * necessary to detect if mouse is over the elements.
  */
-Blockly.WorkspaceSvg.prototype.recordBoundingBox = function() {
+Blockly.WorkspaceSvg.prototype.recordBoundingBoxes = function() {
+  var workspaceRect = this.svgGroup_.getBoundingClientRect();
+  this.workspaceBoundingBox_ = goog.math.Rect.createFromBox(workspaceRect);
   if (this.flyout_) {
     this.flyoutBoundingBox_ = this.flyout_.getBoundingRectangle();
   }
@@ -1186,6 +1188,24 @@ Blockly.WorkspaceSvg.prototype.isDeleteArea = function(e) {
 Blockly.WorkspaceSvg.prototype.isFlyoutArea = function(e) {
   var xy = new goog.math.Coordinate(e.clientX, e.clientY);
   return !!this.flyoutBoundingBox_ && this.flyoutBoundingBox_.contains(xy);
+};
+
+/**
+ * Detect which workspace the mouse event occurs inside. If it occurs beyond
+ * this workspace, check for the parent workspace if this has the parent,
+ * return null otherwise.
+ * @param {!Event} e The mouseup/touchend event.
+ * @return {?Blockly.WorkspaceSvg} The workspace where mouse event occurs.
+ */
+Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
+  var xy = new goog.math.Coordinate(e.clientX, e.clientY);
+  var isInThisWorkspace = !!this.workspaceBoundingBox_ &&
+      this.workspaceBoundingBox_.contains(xy);
+  if (isInThisWorkspace) {
+    return this;
+  }
+  var parentWorksapce = this.options.parentWorkspace;
+  return parentWorksapce ? parentWorksapce.detectWorkspace(e) : null;
 };
 
 /**
