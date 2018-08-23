@@ -283,6 +283,14 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
 };
 
 /**
+ * if needed.
+ */
+Blockly.BlockDragger.prototype.transferWorkspace = function(e) {
+  var newWorkspace = null;
+  this.draggingBlock_.transferWorkspace(newWorkspace);
+};
+
+/**
  * Fire a move event at the end of a block drag.
  * @private
  */

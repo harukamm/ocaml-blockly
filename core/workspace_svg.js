@@ -479,6 +479,7 @@ Blockly.WorkspaceSvg.prototype.createDom = function(opt_backgroundClass) {
     this.grid_.update(this.scale);
   }
   this.recordDeleteAreas();
+  this.recordBoundingBox();
   return this.svgGroup_;
 };
 
@@ -654,6 +655,7 @@ Blockly.WorkspaceSvg.prototype.getToolbox = function() {
 Blockly.WorkspaceSvg.prototype.updateScreenCalculations_ = function() {
   this.updateInverseScreenCTM();
   this.recordDeleteAreas();
+  this.recordBoundingBox();
 };
 
 /**
@@ -1151,6 +1153,16 @@ Blockly.WorkspaceSvg.prototype.recordDeleteAreas = function() {
 };
 
 /**
+ * Make the bounding box which contains this flyout. This is necessary to
+ * detect if mouse is over the element.
+ */
+Blockly.WorkspaceSvg.prototype.recordBoundingBox = function() {
+  if (this.flyout_) {
+    this.flyoutBoundingBox_ = this.flyout_.getBoundingRectangle();
+  }
+};
+
+/**
  * Is the mouse event over a delete area (toolbox or non-closing flyout)?
  * @param {!Event} e Mouse move event.
  * @return {?number} Null if not over a delete area, or an enum representing
@@ -1173,7 +1185,7 @@ Blockly.WorkspaceSvg.prototype.isDeleteArea = function(e) {
  */
 Blockly.WorkspaceSvg.prototype.isFlyoutArea = function(e) {
   var xy = new goog.math.Coordinate(e.clientX, e.clientY);
-  return !!this.flyout_ && this.flyout_.getBoundingRectangle().contains(xy);
+  return !!this.flyoutBoundingBox_ && this.flyoutBoundingBox_.contains(xy);
 };
 
 /**
