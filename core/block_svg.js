@@ -1397,3 +1397,41 @@ Blockly.BlockSvg.prototype.scheduleSnapAndBump = function() {
     Blockly.Events.setGroup(false);
   }, Blockly.BUMP_DELAY);
 };
+
+/**
+ * Transfer to another workspace.
+ * @param {!Blockly.Workspace} The next workspace of this block.
+ */
+Blockly.BlockSvg.prototype.transferWorkspace = function(newWorkspace) {
+  goog.asserts.assert(this.isTransferable(), 'This block is not transferable.');
+  if (this.workspace == newWorkspace) {
+    return;
+  }
+  var connList = this.getConnections_(true);
+  var oldWorkspace = this.workspace;
+  oldWorkspace.removeTopBlock(this);
+  for (var i = 0; i < connList.length; i++) {
+    var conn = connList[i];
+    var oldDB = oldWorkspace.connectionDBList[conn.type];
+    var newDB = newWorkspace.connectionDBList[conn.type];
+    var newOppDB = newWorkspace.connectionDBList[Blockly.OPPOSITE_TYPE[conn.type]];
+    oldDB.removeConnection_(conn);
+    newDB.addConnection(conn);
+    conn.db_ = newDB;
+    conn.dbOpposite_ = newOppDB;
+  }
+  // Remove blocks from block database.
+  delete oldWorkspace.blockDB_[this.id];
+  newWorkspace.blockDB_[this.id] = this;
+  newWorkspace.addTopBlock(this);
+  this.workspace = newWorkspace;
+  // Append the root node of this block at the new canvas.
+  var newBlockCanvas = newWorkspace.getCanvas();
+  newBlockCanvas.appendChild(this.getSvgRoot());
+  // Aline this block according to the new surface.
+  goog.asserts.assert(newWorkspace == oldWorkspace.getMainWorkspace(),
+      'Currently cannot calculate the coordinate relative to another ' +
+      'surface except the main surface.');
+  var xy = oldWorkspace.getRelativeToMainSurfaceXY();
+  this.moveBy(xy.x, xy.y);
+}

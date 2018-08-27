@@ -256,6 +256,7 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
   var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
   var newLoc = goog.math.Coordinate.sum(this.startXY_, delta);
   this.draggingBlock_.moveOffDragSurface_(newLoc);
+  this.transferWorkspace(e);
 
   var deleted = this.maybeDeleteBlock_();
   if (!deleted) {
@@ -283,11 +284,24 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
 };
 
 /**
- * if needed.
+ * Let the dragging block transfer to the workspace where the mouse event
+ * happens inside. If the event occurs outside the all workspaces, the block
+ * will be transferred to the top-most workspace (the main workspace).
+ * @param {!Event} e The mouseup/touchend event.
  */
 Blockly.BlockDragger.prototype.transferWorkspace = function(e) {
-  var newWorkspace = null;
-  this.draggingBlock_.transferWorkspace(newWorkspace);
+  if (!this.draggingBlock_.isTransferable()) {
+    return;
+  }
+  var newWorkspace = this.workspace_.detectWorkspace(e);
+  if (!newWorkspace) {
+    // If the mouse event occurs beyond all the workspaces, the top-most
+    // workspace handles it.
+    newWorkspace = this.workspace_.getMainWorkspace();
+  }
+  if (newWorkspace != this.workspace) {
+    this.draggingBlock_.transferWorkspace(newWorkspace);
+  }
 };
 
 /**
