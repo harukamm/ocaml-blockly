@@ -299,9 +299,17 @@ Blockly.BlockDragger.prototype.transferWorkspace = function(e) {
     // workspace handles it.
     newWorkspace = this.workspace_.getMainWorkspace();
   }
-  if (newWorkspace != this.workspace) {
-    this.draggingBlock_.transferWorkspace(newWorkspace);
+  if (newWorkspace == this.workspace) {
+    return;
   }
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.setGroup(true);
+    // Fire a create event for the new workspace.
+    var event = new Blockly.Events.Create(this.draggingBlock_);
+    event.workspaceId = newWorkspace.id;
+    Blockly.Events.fire(event);
+  }
+  this.draggingBlock_.transferWorkspace(newWorkspace);
 };
 
 /**
