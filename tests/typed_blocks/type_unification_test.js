@@ -220,15 +220,24 @@ function test_type_unification_intArithmeticStructure() {
     var block = workspace.newBlock('int_arithmetic_typed');
     var var1 = workspace.newBlock('variables_get_typed');
     var var2 = workspace.newBlock('variables_get_typed');
+    var letVar1 = workspace.newBlock('let_typed');
+    var letVar2 = workspace.newBlock('let_typed');
     // Set a variable `i`
     var variableId = workspace.getVariable('i').getId();
     var1.getField('VAR').setValue(variableId);
+    letVar1.getField('VAR').setValue(variableId);
     // Set a variable `j`
     var variableId = workspace.getVariable('j').getId();
     var2.getField('VAR').setValue(variableId);
+    letVar2.getField('VAR').setValue(variableId);
+    // Define variables `i` and `j`
+    letVar1.getInput('EXP2').connection.connect(var1.outputConnection);
+    letVar2.getInput('EXP2').connection.connect(var2.outputConnection);
 
-    block.getInput('A').connection.connect(var1.outputConnection);
-    block.getInput('B').connection.connect(var2.outputConnection);
+    block.getInput('A').connection.connect(letVar1.outputConnection);
+    block.getInput('B').connection.connect(letVar2.outputConnection);
+    assertEquals(letVar1.getInput('EXP1').connection.typeExpr.deref().label,
+        letVar2.getInput('EXP1').connection.typeExpr.deref().label);
     assertEquals(var1.outputConnection.typeExpr.deref().label,
         var2.outputConnection.typeExpr.deref().label);
     assertEquals(Blockly.TypeExpr.INT_,
@@ -244,15 +253,24 @@ function test_type_unification_floatArithmeticStructure() {
     var block = workspace.newBlock('float_arithmetic_typed');
     var var1 = workspace.newBlock('variables_get_typed');
     var var2 = workspace.newBlock('variables_get_typed');
+    var letVar1 = workspace.newBlock('let_typed');
+    var letVar2 = workspace.newBlock('let_typed');
     // Set a variable `i`
     var variableId = workspace.getVariable('i').getId();
     var1.getField('VAR').setValue(variableId);
+    letVar1.getField('VAR').setValue(variableId);
     // Set a variable `j`
     var variableId = workspace.getVariable('j').getId();
     var2.getField('VAR').setValue(variableId);
+    letVar2.getField('VAR').setValue(variableId);
+    // Define variables `i` and `j`
+    letVar1.getInput('EXP2').connection.connect(var1.outputConnection);
+    letVar2.getInput('EXP2').connection.connect(var2.outputConnection);
 
-    block.getInput('A').connection.connect(var1.outputConnection);
-    block.getInput('B').connection.connect(var2.outputConnection);
+    block.getInput('A').connection.connect(letVar1.outputConnection);
+    block.getInput('B').connection.connect(letVar2.outputConnection);
+    assertEquals(letVar1.getInput('EXP1').connection.typeExpr.deref().label,
+        letVar2.getInput('EXP1').connection.typeExpr.deref().label);
     assertEquals(var1.outputConnection.typeExpr.deref().label,
         var2.outputConnection.typeExpr.deref().label);
     assertEquals(Blockly.TypeExpr.FLOAT_,

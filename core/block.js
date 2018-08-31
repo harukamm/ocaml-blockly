@@ -1553,6 +1553,50 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
 };
 
 /**
+ * Check if the variable this getter block refers to is declared in another
+ * block.
+ * @param {!Blockly.Connection} parentConnection connection this block is trying
+ *      to connect to.
+ * @param {boolean} True if the variable this getter block is bound to is
+ *     properly declared in the target blocks.
+ */
+Blockly.Block.prototype.isValidGetter = function(parentConnection) {
+  if (!this.isGetter) {
+    return true;
+  }
+  var block = parentConnection.getSourceBlock();
+  var env = block.allVisibleVariables(parentConnection);
+  var getterVariables = this.getVars();
+  for (var i = 0, name; name = getterVariables[i]; i++) {
+    if (!(name in env)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+/**
+ * Return all type expressions of variables which is declared in this block or
+ * its ancestor block, and can be used later the given connection's input.
+ * @param {!Blockly.Connection} connection Connection to specify a scope.
+ * @return {Object} Object mapping variable name to its type expression.
+ */
+Blockly.Block.prototype.allVisibleVariables = function(conn) {
+  var env = {};
+  if (conn.getSourceBlock() == this) {
+    if (this.parentBlock_) {
+      var targetConnection = this.outputConnection.targetConnection;
+      env = this.parentBlock_.allVisibleVariables(targetConnection);
+    }
+    if (goog.isFunction(this.getVisibleVariables)) {
+      var scopeVariables = this.getVisibleVariables(conn);
+      env = Object.assign(scopeVariables, env);
+    }
+  }
+  return env;
+};
+
+/**
  * Create a connection of the specified type.
  * @param {number} type The type of the connection to create.
  * @return {!Blockly.Connection} A new connection of the specified type.
@@ -2394,6 +2438,10 @@ Blockly.Blocks['variables_get_typed'] = {
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
   },
   /**
+   * Whether this block is for variable getter.
+   */
+  isGetter: true,
+  /**
    * Return all variables referenced by this block.
    * @return {!Array.<string>} List of variable names.
    * @this Blockly.Block
@@ -2494,6 +2542,23 @@ Blockly.Blocks['let_typed'] = {
    */
   getVars: function() {
     return [this.getField('VAR').getText()];
+  },
+
+  /**
+   * Return all type expressions of variables which is declared in this block,
+   * and can be used later the given connection's input.
+   * @param {!Blockly.Connection} connection Connection to specify a scope.
+   * @return {Object} Object mapping variable name to its type expression.
+   */
+  getVisibleVariables: function(conn) {
+    var exp2 = this.getInput('EXP2');
+    var map = {};
+    if (exp2.connection == conn) {
+      var name = this.getField('VAR').getText();
+      var typ = this.getInput('EXP1').connection.typeExpr;
+      map[name] = typ;
+    }
+    return map;
   },
 
   /**
