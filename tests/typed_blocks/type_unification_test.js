@@ -315,8 +315,9 @@ function test_type_unification_lambdaStructure() {
     var arg_name = block.argName;
     var var1 = workspace.newBlock('variables_get_typed');
     // Set same variable name with `arg_name`
-    var variableId = workspace.getVariable('i').getId();
-    workspace.renameVariableById(variableId, arg_name);
+    var variable = workspace.getVariable(arg_name) ||
+        workspace.createVariable(arg_name);
+    var variableId = variable.getId();
     var1.getField('VAR').setValue(variableId);
     assertEquals(var1.getField('VAR').getText(), arg_name);
     block.getInput('RETURN').connection.connect(var1.outputConnection);
@@ -340,7 +341,9 @@ function test_type_unification_lambdaAppStructure() {
     var arg_name = lambdaBlock.argName;
     var var1 = workspace.newBlock('variables_get_typed');
     // Set same variable name with `arg_name`
-    var variableId = workspace.getVariable('i').getId();
+    var variable = workspace.getVariable(arg_name) ||
+        workspace.createVariable(arg_name);
+    var variableId = variable.getId();
     workspace.renameVariableById(variableId, arg_name);
     var1.getField('VAR').setValue(variableId);
     assertEquals(var1.getField('VAR').getText(), arg_name);

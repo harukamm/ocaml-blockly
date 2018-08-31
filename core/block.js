@@ -2283,6 +2283,22 @@ Blockly.Blocks['lambda_typed'] = {
     return result;
   },
 
+  /**
+   * Return all type expressions of variables which is declared in this block,
+   * and can be used later the given connection's input.
+   * @param {!Blockly.Connection} connection Connection to specify a scope.
+   * @return {Object} Object mapping variable name to its type expression.
+   */
+  getVisibleVariables: function(conn) {
+    var returnInput = this.getInput('RETURN');
+    var map = {};
+    if (returnInput.connection == conn) {
+      var typ = this.outputConnection.typeExpr.arg_type;
+      map[this.argName] = typ;
+    }
+    return map;
+  },
+
   clearTypes: function() {
     this.outputConnection.typeExpr.arg_type.clear();
     this.outputConnection.typeExpr.return_type.clear();
