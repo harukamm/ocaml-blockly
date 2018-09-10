@@ -36,6 +36,7 @@ goog.require('Blockly.Events.BlockMove');
 goog.require('Blockly.Extensions');
 goog.require('Blockly.Input');
 goog.require('Blockly.Mutator');
+goog.require('Blockly.Workbench');
 goog.require('Blockly.Warning');
 goog.require('Blockly.Workspace');
 goog.require('Blockly.Xml');
@@ -2546,6 +2547,7 @@ Blockly.Blocks['let_typed'] = {
     this.appendValueInput('EXP2')
         .setTypeExpr(B)
         .appendField('in');
+    this.setMutator(new Blockly.Workbench());
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
@@ -2588,6 +2590,43 @@ Blockly.Blocks['let_typed'] = {
     if (Blockly.Names.equals(oldName, this.getField('VAR').getText())) {
       this.setFieldValue(newName, 'VAR');
     }
+  },
+
+  /**
+   * Create XML to represent list inputs.
+   * @return {Element} XML storage element.
+   * @this Blockly.Block
+   */
+  mutationToDom: function() {
+    var container = document.createElement('mutation');
+    return container;
+  },
+  /**
+   * Parse XML to restore the list inputs.
+   * @param {!Element} xmlElement XML storage element.
+   * @this Blockly.Block
+   */
+  domToMutation: function(xmlElement) {
+    goog.asserts.assert(false, 'Not implemented');
+  },
+  /**
+   * Populate the mutator's dialog with this block's components.
+   * @param {!Blockly.Workspace} workspace Mutator's workspace.
+   * @return {!Blockly.Block} Root block in mutator.
+   * @this Blockly.Block
+   */
+  decompose: function(workspace) {
+    var dummyBlock = workspace.newBlock('logic_boolean_typed');
+    dummyBlock.initSvg();
+    return dummyBlock;
+  },
+  /**
+   * Reconfigure this block based on the mutator dialog's components.
+   * @param {!Blockly.Block} containerBlock Root block in mutator.
+   * @this Blockly.Block
+   */
+   compose: function(containerBlock) {
+    // NOP.
   },
 
   /**
