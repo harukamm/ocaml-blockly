@@ -1713,7 +1713,8 @@ Blockly.Blocks['logic_boolean_typed'] = {
     this.setHelpUrl(Blockly.Msg.LOGIC_BOOLEAN_HELPURL);
     this.setColour(210);
     this.setOutput(true, 'Boolean');
-    // Sorin
+    // TODO: Define a function to create a type expression in the same way as
+    // makeConnection_ in block.js and block_svg.js.
     this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.BOOL());
     this.appendDummyInput()
         .appendField(new Blockly.FieldDropdown(BOOLEANS), 'BOOL');
