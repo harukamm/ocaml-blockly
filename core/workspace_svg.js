@@ -601,7 +601,8 @@ Blockly.WorkspaceSvg.prototype.addFlyout_ = function(tagName) {
     RTL: this.RTL,
     oneBasedIndex: this.options.oneBasedIndex,
     horizontalLayout: this.horizontalLayout,
-    toolboxPosition: this.options.toolboxPosition
+    toolboxPosition: this.options.toolboxPosition,
+    typedVersion: this.options.typedVersion
   };
   /**
    * @type {!Blockly.Flyout}

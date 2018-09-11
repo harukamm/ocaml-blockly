@@ -694,6 +694,8 @@ Blockly.Connection.prototype.setCheck = function(check) {
 
 // Sorin
 Blockly.Connection.prototype.setTypeExpr = function(t) {
+  goog.asserts.assert(this.workspace.options.typedVersion,
+      'Allow to have types only in a workspace of typedBlockly version.');
   this.typeExpr = t;
   return this;
 }

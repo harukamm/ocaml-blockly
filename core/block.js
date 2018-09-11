@@ -934,6 +934,8 @@ Blockly.Block.prototype.setOutput = function(newBoolean, opt_check) {
 
 // Sorin
 Blockly.Block.prototype.setOutputTypeExpr = function(typeExpr) {
+  goog.asserts.assert(this.workspace.options.typedVersion,
+      'Allow to have types only in a workspace of typedBlockly version.');
   this.outputConnection.setTypeExpr(typeExpr);
 }
 

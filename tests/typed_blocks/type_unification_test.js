@@ -1,7 +1,14 @@
 'use strict';
 
+function create_typed_workspace() {
+  var workspaceOptions = {
+    typedVersion: true
+  };
+  return new Blockly.Workspace(workspaceOptions);
+}
+
 function test_type_unification_ifThenElseStructure() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('logic_ternary_typed');
     var int1 = workspace.newBlock('int_typed');
@@ -20,7 +27,7 @@ function test_type_unification_ifThenElseStructure() {
 }
 
 function test_type_unification_clearTypeVariableWhenDisconnectingListTypedBlocks() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('lists_create_with_typed');
     var int1 = workspace.newBlock('int_typed');
@@ -42,7 +49,7 @@ function test_type_unification_clearTypeVariableWhenDisconnectingListTypedBlocks
 }
 
 function test_type_unification_clearTypeVariableWhenDisconnectingLetTypedBlocks() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('let_typed');
     var int1 = workspace.newBlock('int_typed');
@@ -73,7 +80,7 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLetTypedBlocks(
 }
 
 function test_type_unification_clearTypeVariableWhenDisconnectingLambdaAppTypedBlocks() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('lambda_app_typed');
     var lambdaBlock = workspace.newBlock('lambda_typed');
@@ -99,7 +106,7 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLambdaAppTypedB
 }
 
 function test_type_unification_clearTypeVariableWhenDisconnectingLambdaTypedBlocks() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('lambda_app_typed');
     var lambdaBlock = workspace.newBlock('lambda_typed');
@@ -125,7 +132,7 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLambdaTypedBloc
 }
 
 function test_type_unification_clearTypeVariableWhenNestedLambdaTypedBlocks() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('lambda_app_typed');
     var lambdaBlock = workspace.newBlock('lambda_typed');
@@ -149,7 +156,7 @@ function test_type_unification_clearTypeVariableWhenNestedLambdaTypedBlocks() {
 }
 
 function test_type_unification_clearTypeVariableWhenNestedLetTypedBlocks() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var lambdaBlock = workspace.newBlock('lambda_typed');
     var letBlock = workspace.newBlock('let_typed');
@@ -163,7 +170,7 @@ function test_type_unification_clearTypeVariableWhenNestedLetTypedBlocks() {
 }
 
 function test_type_unification_multiLevelNestedLambdaApp() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var appBlock1 = workspace.newBlock('lambda_app_typed');
     var appBlock2 = workspace.newBlock('lambda_app_typed');
@@ -178,7 +185,7 @@ function test_type_unification_multiLevelNestedLambdaApp() {
 }
 
 function test_type_unification_deeplyCloningTypes() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('logic_ternary_typed');
     var float1 = workspace.newBlock('float_typed');
@@ -198,7 +205,7 @@ function test_type_unification_deeplyCloningTypes() {
 }
 
 function test_type_unification_listStructure() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('lists_create_with_typed');
     var intArith1 = workspace.newBlock('int_arithmetic_typed');
@@ -215,7 +222,7 @@ function test_type_unification_listStructure() {
 }
 
 function test_type_unification_intArithmeticStructure() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('int_arithmetic_typed');
     var var1 = workspace.newBlock('variables_get_typed');
@@ -248,7 +255,7 @@ function test_type_unification_intArithmeticStructure() {
 }
 
 function test_type_unification_floatArithmeticStructure() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('float_arithmetic_typed');
     var var1 = workspace.newBlock('variables_get_typed');
@@ -281,7 +288,7 @@ function test_type_unification_floatArithmeticStructure() {
 }
 
 function test_type_unification_pairStructure() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('pair_create_typed');
     var firstBlock = workspace.newBlock('pair_first_typed');
@@ -309,7 +316,7 @@ function test_type_unification_pairStructure() {
 }
 
 function test_type_unification_lambdaStructure() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('lambda_typed');
     var arg_name = block.argName;
@@ -331,7 +338,7 @@ function test_type_unification_lambdaStructure() {
 }
 
 function test_type_unification_lambdaAppStructure() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('lambda_app_typed');
     var lambdaBlock = workspace.newBlock('lambda_typed');
@@ -360,7 +367,7 @@ function test_type_unification_lambdaAppStructure() {
 }
 
 function test_type_unification_logicCompareStructure() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('logic_compare_typed');
     var ifBlock = workspace.newBlock('logic_ternary_typed');
@@ -383,7 +390,7 @@ function test_type_unification_logicCompareStructure() {
 }
 
 function test_type_unification_matchStructure() {
-  var workspace = new Blockly.Workspace();
+  var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('match_typed');
     var intInput = workspace.newBlock('int_typed');

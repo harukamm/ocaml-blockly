@@ -80,6 +80,10 @@ Blockly.Options = function(options) {
   } else {
     toolboxAtStart = true;
   }
+  var typedVersion = !!options['typedVersion'];
+  if (typedVersion == undefined) {
+    typedVersion = false;
+  }
 
   if (horizontalLayout) {
     var toolboxPosition = toolboxAtStart ?
@@ -128,6 +132,7 @@ Blockly.Options = function(options) {
   this.gridOptions = Blockly.Options.parseGridOptions_(options);
   this.zoomOptions = Blockly.Options.parseZoomOptions_(options);
   this.toolboxPosition = toolboxPosition;
+  this.typedVersion = typedVersion;
 };
 
 /**
