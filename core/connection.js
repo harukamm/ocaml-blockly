@@ -222,8 +222,11 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
   // Sorin
   if (parentConnection.typeExpr && childConnection.typeExpr) {
-    if (childBlock.isGetter && !childBlock.isValidGetter(parentConnection)) {
-      throw 'Connecting these blocks will occur invalid variable reference.';
+    if (childBlock.isGetter) {
+      var variable = childBlock.findValue(parentConnection);
+      if (!variable) {
+        throw 'Connecting these blocks will occur invalid variable reference.';
+      }
     }
     if (!parentConnection.typeExpr.ableToUnify(childConnection.typeExpr)) {
       throw 'Attempt to connect incompatible types.';
@@ -636,8 +639,11 @@ Blockly.Connection.prototype.targetBlock = function() {
 Blockly.Connection.prototype.checkType_ = function(otherConnection) {
   // Sorin
   if (this.typeExpr && otherConnection.typeExpr) {
-    return this.sourceBlock_.isValidGetter(otherConnection) &&
-        this.typeExpr.ableToUnify(otherConnection.typeExpr);
+    if (!this.typeExpr.ableToUnify(otherConnection.typeExpr)) {
+      return false;
+    }
+    var childBlock = this.sourceBlock_;
+    return !childBlock.isGetter || childBlock.findValue(otherConnection);
   }
   if (!this.typeExpr && otherConnection.typeExpr) {
     return false;

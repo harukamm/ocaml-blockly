@@ -1556,16 +1556,15 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
 };
 
 /**
- * Check if the variable this getter block refers to is declared in another
- * block.
+ * Find the value this getter refers to.
  * @param {!Blockly.Connection} parentConnection connection this block is trying
- *      to connect to.
- * @param {boolean} True if the variable this getter block is bound to is
- *     properly declared in the target blocks.
+ *     to connect to.
+ * @return {?Blockly.Blockly.TypedVariableValue} Variable representation this
+ *     getter is bound to.
  */
-Blockly.Block.prototype.isValidGetter = function(parentConnection) {
+Blockly.Block.prototype.findValue = function(parentConnection) {
   if (!this.isGetter) {
-    return true;
+    return null;
   }
   var block = parentConnection.getSourceBlock();
   var env = block.allVisibleVariables(parentConnection);
@@ -1578,11 +1577,18 @@ Blockly.Block.prototype.isValidGetter = function(parentConnection) {
   return true;
 };
 
+Blockly.Block.prototype.registerValue = function(value) {
+  if (!this.valueMap_) {
+    this.valueMap_ = {};
+  }
+  this.valueMap_[value.fieldName] = value;
+};
+
 /**
- * Return all type expressions of variables which is declared in this block or
- * its ancestor block, and can be used later the given connection's input.
+ * Return all variables which is declared in this block or its ancestor block,
+ * and can be used later the given connection's input.
  * @param {!Blockly.Connection} connection Connection to specify a scope.
- * @return {Object} Object mapping variable name to its type expression.
+ * @return {Object} Object mapping variable name to its variable representation.
  */
 Blockly.Block.prototype.allVisibleVariables = function(conn) {
   var env = {};
@@ -2288,12 +2294,14 @@ Blockly.Blocks['lambda_typed'] = {
   },
 
   /**
-   * Return all type expressions of variables which is declared in this block,
-   * and can be used later the given connection's input.
+   * Return all variables of which is declared in this block, and can be used
+   * later the given connection's input.
    * @param {!Blockly.Connection} connection Connection to specify a scope.
-   * @return {Object} Object mapping variable name to its type expression.
+   * @return {Object} Object mapping variable name to its variable
+   *     representations.
    */
   getVisibleVariables: function(conn) {
+    goog.asserts.assert(false);
     var returnInput = this.getInput('RETURN');
     var map = {};
     if (returnInput.connection == conn) {
@@ -2554,6 +2562,7 @@ Blockly.Blocks['let_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
+    this.registerValue(new Blockly.TypedVariableValue(this, 'VAR', 'EXP2'));
   },
 
   /**
@@ -2566,18 +2575,19 @@ Blockly.Blocks['let_typed'] = {
   },
 
   /**
-   * Return all type expressions of variables which is declared in this block,
-   * and can be used later the given connection's input.
+   * Return all variables of which is declared in this block, and can be used
+   * later the given connection's input.
    * @param {!Blockly.Connection} connection Connection to specify a scope.
-   * @return {Object} Object mapping variable name to its type expression.
+   * @return {Object} Object mapping variable name to its variable
+   *     representations.
    */
   getVisibleVariables: function(conn) {
     var exp2 = this.getInput('EXP2');
     var map = {};
     if (exp2.connection == conn) {
-      var name = this.getField('VAR').getText();
-      var typ = this.getInput('EXP1').connection.typeExpr;
-      map[name] = typ;
+      var variable = this.valueMap_['VAR'];
+      var name = variable.getName();
+      map[name] = variable;
     }
     return map;
   },
