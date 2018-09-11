@@ -633,6 +633,15 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace) {
   var id = xmlBlock.getAttribute('id');
   block = workspace.newBlock(prototypeName, id);
 
+  var sourceId = xmlBlock.getAttribute('data-source');
+  if (sourceId) {
+    var sourceBlock = workspace.getBlockById(sourceId);
+    if (!sourceBlock || sourceBlock.type != block.type) {
+      throw Error('Can\'t copy from the block: ' + sourceId);
+    }
+    block.copyFrom(source);
+  }
+
   var blockChild = null;
   for (var i = 0, xmlChild; xmlChild = xmlBlock.childNodes[i]; i++) {
     if (xmlChild.nodeType == 3) {

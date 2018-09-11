@@ -18,7 +18,6 @@ goog.require('goog.dom');
  */
 Blockly.Workbench = function() {
   Blockly.Workbench.superClass_.constructor.call(this, null);
-  this.quarkNames_ = quarkNames;
 };
 goog.inherits(Blockly.Workbench, Blockly.Icon);
 
@@ -102,17 +101,9 @@ Blockly.Workbench.prototype.createEditor_ = function() {
   this.svgDialog_ = Blockly.utils.createSvgElement('svg',
       {'x': Blockly.Bubble.BORDER_WIDTH, 'y': Blockly.Bubble.BORDER_WIDTH},
       null);
-  // Convert the list of names into a list of XML objects for the flyout.
-  if (this.quarkNames_.length) {
-    var quarkXml = goog.dom.createDom('xml');
-    for (var i = 0, quarkName; quarkName = this.quarkNames_[i]; i++) {
-      quarkXml.appendChild(goog.dom.createDom('block', {'type': quarkName}));
-    }
-  } else {
-    var quarkXml = null;
-  }
   var workspaceOptions = {
-    languageTree: quarkXml,
+    languageTree: null,
+      // TODO: Specify the tree. Workbench can accept blocks of any type.
     parentWorkspace: this.block_.workspace,
     pathToMedia: this.block_.workspace.options.pathToMedia,
     RTL: this.block_.RTL,
@@ -225,11 +216,9 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
         this.createEditor_(), this.block_.svgPath_, this.iconXY_, null, null);
     // Expose this mutator's block's ID on its top-level SVG group.
     this.bubble_.setSvgId(this.block_.id);
-    var tree = this.workspace_.options.languageTree;
-    if (tree) {
-      this.workspace_.flyout_.init(this.workspace_);
-      this.workspace_.flyout_.show(tree.childNodes);
-    }
+    var tree = this.block_.flyoutBlocks();
+    this.workspace_.flyout_.init(this.workspace_);
+    this.workspace_.flyout_.show(tree.childNodes);
 
     this.rootBlock_ = this.block_.decompose(this.workspace_);
     var blocks = this.rootBlock_.getDescendants(false);

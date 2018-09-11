@@ -2593,6 +2593,35 @@ Blockly.Blocks['let_typed'] = {
   },
 
   /**
+   * Return a list of XML block to show in the workbench's flyout.
+   * @return {!Array} List of XML blocks.
+   */
+  flyoutBlocks: function() {
+    var xml = goog.dom.createDom('xml');
+    var env = this.allVisibleVariables(this.outputConnection);
+    var thisVariableName = this.getField('VAR').getText();
+    env[thisVariableName] = this.outputConnection.typeExpr;
+
+    var variables = Object.keys(env);
+    for (var i = 0, variable; variable = variables[i]; i++) {
+      var sourceId = null; // TODO: Get the id of the source block.
+      goog.asserts.assert(sourceId, 'The source id is not given.');
+      var dom = goog.dom.createDom('block', {
+         'type': 'variables_get_typed', 'data-source': sourceId});
+      xml.appendChild(dom);
+    }
+    return xml;
+  },
+
+  copyFrom: function(sourceBlock) {
+    var newName = sourceBlock.getField('VAR').getText();
+    var newTypeExpr = sourceBlock.outputConnection.typeExpr;
+    this.setFieldValue(newName, 'VAR');
+    delete this.outputConnection.typeExpr;
+    this.setOutputTypeExpr(newTypeExpr);
+  },
+
+  /**
    * Create XML to represent list inputs.
    * @return {Element} XML storage element.
    * @this Blockly.Block
