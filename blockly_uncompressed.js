@@ -91,6 +91,8 @@ goog.addDependency("../../../" + dir + "/core/touch.js", ['Blockly.Touch'], ['go
 goog.addDependency("../../../" + dir + "/core/touch_gesture.js", ['Blockly.TouchGesture'], ['Blockly.Gesture', 'goog.asserts', 'goog.math.Coordinate']);
 goog.addDependency("../../../" + dir + "/core/trashcan.js", ['Blockly.Trashcan'], ['goog.dom', 'goog.math', 'goog.math.Rect']);
 goog.addDependency("../../../" + dir + "/core/type_expr.js", ['Blockly.TypeExpr'], ['goog.asserts', 'goog.dom']);
+goog.addDependency("../../../" + dir + "/core/typed_variable_value.js", ['Blockly.TypedVariableValue'], ['goog.string']);
+goog.addDependency("../../../" + dir + "/core/typed_variable_value_reference.js", ['Blockly.TypedVariableValueReference'], ['Blockly.TypedVariableValue', 'goog.string']);
 goog.addDependency("../../../" + dir + "/core/ui_events.js", ['Blockly.Events.Ui'], ['Blockly.Events', 'Blockly.Events.Abstract', 'goog.array', 'goog.math.Coordinate']);
 goog.addDependency("../../../" + dir + "/core/ui_menu_utils.js", ['Blockly.utils.uiMenu'], []);
 goog.addDependency("../../../" + dir + "/core/utils.js", ['Blockly.utils'], ['Blockly.Touch', 'goog.dom', 'goog.events.BrowserFeature', 'goog.math.Coordinate', 'goog.userAgent']);
@@ -1775,6 +1777,8 @@ goog.require('Blockly.Touch');
 goog.require('Blockly.TouchGesture');
 goog.require('Blockly.Trashcan');
 goog.require('Blockly.TypeExpr');
+goog.require('Blockly.TypedVariableValue');
+goog.require('Blockly.TypedVariableValueReference');
 goog.require('Blockly.VariableMap');
 goog.require('Blockly.VariableModel');
 goog.require('Blockly.Variables');
