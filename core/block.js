@@ -2571,6 +2571,17 @@ Blockly.Blocks['variables_get_typed'] = {
     }
     this.setBoundValue(value);
   },
+
+  /**
+   * Copy the variable's name and type expression from the given block.
+   * @param {!Blockly.Block} sourceBlock Block to be copied.
+   */
+  copyFrom: function(sourceBlock) {
+    var typeExpr = sourceBlock.outputConnection.typeExpr;
+    delete this.outputConnection.typeExpr;
+    this.setOutputTypeExpr(typeExpr);
+  },
+
   /**
    * Add menu option to create getter/setter block for this setter/getter.
    * @param {!Array} options List of menu options to add to.

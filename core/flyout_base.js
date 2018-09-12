@@ -808,5 +808,13 @@ Blockly.Flyout.prototype.placeNewBlock_ = function(oldBlock) {
   var finalOffsetMainWs = finalOffsetPixels.scale(1 / targetWorkspace.scale);
 
   block.moveBy(finalOffsetMainWs.x, finalOffsetMainWs.y);
+
+  // Copy the components from the old block if necessary.
+  if (block.copyFrom) {
+    block.copyFrom(oldBlock);
+    block.render(false);
+    // TODO: Restore the old block's components at the time of calling
+    // Blockly.Xml.domToBlock to avoid rerendering.
+  }
   return block;
 };
