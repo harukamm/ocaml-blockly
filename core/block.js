@@ -2278,6 +2278,7 @@ Blockly.Blocks['lambda_typed'] = {
         .setTypeExpr(B)
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField('->');
+    this.setMutator(new Blockly.Workbench());
     this.setInputsInline(true);
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.FUN(A, B));
@@ -2300,6 +2301,65 @@ Blockly.Blocks['lambda_typed'] = {
       map[name] = variable;
     }
     return map;
+  },
+
+  /**
+   * Return a DOM tree of blocks to show in the workbench's flyout.
+   * @return {Node} DOM tree of blocks.
+   */
+  getTreeInFlyout: function() {
+    var xml = goog.dom.createDom('xml');
+    var returnInput = this.getInput('RETURN');
+    var env = this.allVisibleVariables(returnInput.connection);
+
+    var names = Object.keys(env);
+    for (var i = 0, name; name = names[i]; i++) {
+      var variable = env[name];
+      var dom = goog.dom.createDom('block', {
+         'type': 'variables_get_typed',
+         'data-workspace': this.workspace.id,
+         'data-source': variable.getId()
+        });
+      xml.appendChild(dom);
+    }
+    return xml;
+  },
+
+  /**
+   * Create XML to represent list inputs.
+   * @return {Element} XML storage element.
+   * @this Blockly.Block
+   */
+  mutationToDom: function() {
+    var container = document.createElement('mutation');
+    return container;
+  },
+  /**
+   * Parse XML to restore the list inputs.
+   * @param {!Element} xmlElement XML storage element.
+   * @this Blockly.Block
+   */
+  domToMutation: function(xmlElement) {
+    goog.asserts.assert(false, 'Not implemented');
+  },
+  /**
+   * Populate the mutator's dialog with this block's components.
+   * @param {!Blockly.Workspace} workspace Mutator's workspace.
+   * @return {!Blockly.Block} Root block in mutator.
+   * @this Blockly.Block
+   */
+  decompose: function(workspace) {
+    var dummyBlock = workspace.newBlock('logic_boolean_typed');
+    dummyBlock.initSvg();
+    return dummyBlock;
+  },
+  /**
+   * Reconfigure this block based on the mutator dialog's components.
+   * @param {!Blockly.Block} containerBlock Root block in mutator.
+   * @this Blockly.Block
+   */
+  compose: function(containerBlock) {
+    // NOP.
   },
 
   clearTypes: function() {

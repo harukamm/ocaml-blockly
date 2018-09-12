@@ -7,6 +7,27 @@ function create_typed_workspace() {
   return new Blockly.Workspace(workspaceOptions);
 }
 
+function isVariableOf(varBlock, block) {
+  var name1, name2, checkType;
+  switch (block.type) {
+    case: 'let_typed':
+      name1 = varBlock.getField('VAR').getText();
+      name2 = letBlock.getField('VAR').getText();
+      checkType = varBlock.outputConnection.typeExpr ==
+          letBlock.getInput('EXP1').connection.typeExpr;
+      break;
+    case: 'lambda_typed':
+      name1 = varBlock.getField('VAR').getText();
+      name2 = lambdaBlock.getField('VAR').getText();
+      checkType = varBlock.outputConnection.typeExpr ==
+          lambdaBlock.outputConnection.typeExpr.arg_type;
+      break;
+    default:
+      return false;
+  }
+  return checkType && Blockly.Names.equals(name1, name2);
+}
+
 function test_type_unification_ifThenElseStructure() {
   var workspace = create_typed_workspace();
   try {
@@ -409,13 +430,6 @@ function test_type_unification_matchStructure() {
 function test_type_unification_useWorkbenchWithinLetTypedBlock() {
   var workspace = create_typed_workspace();
   try {
-    function isVariableOf(varBlock, letBlock) {
-      var name1 = varBlock.getField('VAR').getText();
-      var name2 = letBlock.getField('VAR').getText();
-      var checkType = varBlock.outputConnection.typeExpr ==
-          letBlock.getInput('EXP1').connection.typeExpr;
-      return checkType && Blockly.Names.equals(name1, name2);
-    }
     // Inner let typed block.
     var innerLetBlock = workspace.newBlock('let_typed');
     // Outer let typed block.
@@ -446,6 +460,41 @@ function test_type_unification_useWorkbenchWithinLetTypedBlock() {
     innerLetBlock.getInput('EXP1').connection.connect(float1.outputConnection);
     assertEquals(Blockly.TypeExpr.FLOAT_,
         innersVars.outputConnection.typeExpr.deref().label);
+  } finally {
+    workspace.dispose();
+  }
+}
+
+function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
+  var workspace = create_typed_workspace();
+  try {
+    // Inner lambda typed block.
+    var innerLambdaBlock = workspace.newBlock('lambda_typed');
+    // Outer let typed block.
+    var outerLetBlock = workspace.newBlock('lambda_typed');
+    // Set a variable `j`
+    var variable2 = Blockly.Variables.getOrCreateVariablePackage(
+        workspace, null, 'j', '');
+    innerLambdaBlock.getField('VAR').setValue(variable2.getId());
+    // Set a variable `i`
+    var variable1 = Blockly.Variables.getOrCreateVariablePackage(
+        workspace, null, 'i', '');
+    outerLetBlock.getField('VAR').setValue(variable1.getId());
+
+    outerLetBlock.getInput('EXP2').connection.connect(
+        innerLambdaBlock.outputConnection);
+    var xml = innerLambdaBlock.getTreeInFlyout();
+    var childNodes = xml.childNodes;
+    assertEquals(childNodes.length, 2);
+    var innersVars = Blockly.Xml.domToBlock(childNodes[0], workspace);
+    var outersVar = Blockly.Xml.domToBlock(childNodes[1], workspace);
+    assertTrue(isVariableOf(innersVars, innerLambdaBlock));
+    assertTrue(isVariableOf(outersVar, outerLetBlock));
+
+    var int1 = workspace.newBlock('int_typed');
+    outerLetBlock.getInput('EXP1').connection.connect(int1.outputConnection);
+    assertEquals(Blockly.TypeExpr.INT_,
+        outersVar.outputConnection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
   }
