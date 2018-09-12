@@ -1578,9 +1578,13 @@ Blockly.Block.prototype.findValue = function(parentConnection) {
 };
 
 Blockly.Block.prototype.registerValue = function(value) {
+  if (!this.workspace.valueMap_) {
+    this.workspace.valueMap_ = {};
+  }
   if (!this.valueMap_) {
     this.valueMap_ = {};
   }
+  this.workspace.valueMap_[value.getId()] = value;
   this.valueMap_[value.fieldName] = value;
 };
 
@@ -2489,6 +2493,38 @@ Blockly.Blocks['variables_get_typed'] = {
       this.setFieldValue(newName, 'VAR');
     }
   },
+
+  /**
+   * Make this getter block bound to the given variable value.
+   * @param {!Blockly.TypedVariableValue} value The value bound to by this
+   *     getter.
+   */
+  setBoundValue: function(value) {
+    var name = value.getName()
+    var typeExpr = value.typeExpr;
+    var model = Blockly.Variables.getOrCreateVariablePackage(
+        this.workspace, null, name, '');
+    this.setFieldValue(model.getId(), 'VAR');
+    delete this.outputConnection.typeExpr;
+    this.setOutputTypeExpr(typeExpr);
+  },
+
+  /**
+   * Parse XML to copy the value reference.
+   * @param {!Element} xmlElement XML element.
+   * @this Blockly.Block
+   */
+  domToReference: function(xmlElement) {
+    var workspaceId = xmlElement.getAttribute('data-workspace') ||
+        this.workspace.id;
+    var valueId = xmlElement.getAttribute('data-source');
+    var workspace = Blockly.Workspace.getById(workspaceId);
+    var value = workspace.valueMap_[valueId];
+    if (!value) {
+      goog.asserts.asset(false);
+    }
+    this.setBoundValue(value);
+  },
   /**
    * Add menu option to create getter/setter block for this setter/getter.
    * @param {!Array} options List of menu options to add to.
@@ -2562,7 +2598,7 @@ Blockly.Blocks['let_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
-    this.registerValue(new Blockly.TypedVariableValue(this, 'VAR', 'EXP2'));
+    this.registerValue(new Blockly.TypedVariableValue(this, A, 'VAR', 'EXP2'));
   },
 
   /**
@@ -2611,27 +2647,20 @@ Blockly.Blocks['let_typed'] = {
    */
   flyoutBlocks: function() {
     var xml = goog.dom.createDom('xml');
-    var env = this.allVisibleVariables(this.outputConnection);
-    var thisVariableName = this.getField('VAR').getText();
-    env[thisVariableName] = this.outputConnection.typeExpr;
+    var exp2 = this.getInput('EXP2');
+    var env = this.allVisibleVariables(exp2.connection);
 
-    var variables = Object.keys(env);
-    for (var i = 0, variable; variable = variables[i]; i++) {
-      var sourceId = null; // TODO: Get the id of the source block.
-      goog.asserts.assert(sourceId, 'The source id is not given.');
+    var names = Object.keys(env);
+    for (var i = 0, name; name = names[i]; i++) {
+      var variable = env[name];
       var dom = goog.dom.createDom('block', {
-         'type': 'variables_get_typed', 'data-source': sourceId});
+         'type': 'variables_get_typed',
+         'data-workspace': this.workspace.id,
+         'data-source': variable.getId()
+        });
       xml.appendChild(dom);
     }
     return xml;
-  },
-
-  copyFrom: function(sourceBlock) {
-    var newName = sourceBlock.getField('VAR').getText();
-    var newTypeExpr = sourceBlock.outputConnection.typeExpr;
-    this.setFieldValue(newName, 'VAR');
-    delete this.outputConnection.typeExpr;
-    this.setOutputTypeExpr(newTypeExpr);
   },
 
   /**
