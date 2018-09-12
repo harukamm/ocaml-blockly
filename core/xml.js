@@ -238,6 +238,9 @@ Blockly.Xml.blockToDom = function(block, opt_noId) {
   if (block.isCollapsed()) {
     element.setAttribute('collapsed', true);
   }
+  if (block.isTransferable()) {
+    element.setAttribute('transferable', true);
+  }
   if (block.disabled) {
     element.setAttribute('disabled', true);
   }
@@ -778,6 +781,10 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace) {
   var collapsed = xmlBlock.getAttribute('collapsed');
   if (collapsed) {
     block.setCollapsed(collapsed == 'true');
+  }
+  var transferable = xmlBlock.getAttribute('transferable');
+  if (transferable) {
+    block.setTransferable(transferable == 'true');
   }
   if (xmlBlock.nodeName.toLowerCase() == 'shadow') {
     // Ensure all children are also shadows.
