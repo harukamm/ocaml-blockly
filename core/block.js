@@ -1577,15 +1577,22 @@ Blockly.Block.prototype.findValue = function(parentConnection) {
   return true;
 };
 
+/**
+ * Register the variable value to this block so that getter blocks can refer to
+ * the value.
+ * @param {!Blockly.TypedVariableValue} value The value to register.
+ */
 Blockly.Block.prototype.registerValue = function(value) {
-  if (!this.workspace.valueMap_) {
-    this.workspace.valueMap_ = {};
-  }
   if (!this.valueMap_) {
     this.valueMap_ = {};
   }
-  this.workspace.valueMap_[value.getId()] = value;
   this.valueMap_[value.fieldName] = value;
+  // Store the value to the workspace, and blocks in another workspace also can
+  // refer to it.
+  if (!this.workspace.valueMap_) {
+    this.workspace.valueMap_ = {};
+  }
+  this.workspace.valueMap_[value.getId()] = value;
 };
 
 /**
