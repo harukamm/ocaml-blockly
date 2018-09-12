@@ -2353,14 +2353,6 @@ Blockly.Blocks['lambda_typed'] = {
     dummyBlock.initSvg();
     return dummyBlock;
   },
-  /**
-   * Reconfigure this block based on the mutator dialog's components.
-   * @param {!Blockly.Block} containerBlock Root block in mutator.
-   * @this Blockly.Block
-   */
-  compose: function(containerBlock) {
-    // NOP.
-  },
 
   clearTypes: function() {
     this.outputConnection.typeExpr.arg_type.clear();
@@ -2737,14 +2729,6 @@ Blockly.Blocks['let_typed'] = {
     var dummyBlock = workspace.newBlock('logic_boolean_typed');
     dummyBlock.initSvg();
     return dummyBlock;
-  },
-  /**
-   * Reconfigure this block based on the mutator dialog's components.
-   * @param {!Blockly.Block} containerBlock Root block in mutator.
-   * @this Blockly.Block
-   */
-   compose: function(containerBlock) {
-    // NOP.
   },
 
   /**

@@ -34,6 +34,18 @@ Blockly.Workbench.prototype.workspaceWidth_ = 0;
 Blockly.Workbench.prototype.workspaceHeight_ = 0;
 
 /**
+ * Minimum width of workspace.
+ * @private
+ */
+Blockly.Workbench.MINIMUM_WIDTH_ = 180;
+
+/**
+ * Minimum height of workspace.
+ * @private
+ */
+Blockly.Workbench.MINIMUM_HEIGHT_ = 100;
+
+/**
  * Draw the mutator icon.
  * @param {!Element} group The icon group.
  * @private
@@ -175,9 +187,13 @@ Blockly.Workbench.prototype.resizeBubble_ = function() {
   var height = workspaceSize.height + doubleBorderWidth * 3;
   if (this.workspace_.flyout_) {
     var flyoutMetrics = this.workspace_.flyout_.getMetrics_();
+    width = Math.max(width, flyoutMetrics.contentWidth + 10);
     height = Math.max(height, flyoutMetrics.contentHeight + 20);
   }
   width += doubleBorderWidth * 3;
+  // Minimum size of a workbench workspace.
+  width = Math.max(width, Blockly.Workbench.MINIMUM_WIDTH_);
+  height = Math.max(height, Blockly.Workbench.MINIMUM_HEIGHT_);
   // Only resize if the size difference is significant.  Eliminates shuddering.
   if (Math.abs(this.workspaceWidth_ - width) > doubleBorderWidth ||
       Math.abs(this.workspaceHeight_ - height) > doubleBorderWidth) {
@@ -220,35 +236,6 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
     var tree = this.getFlyoutLanguageTree_();
     this.workspace_.flyout_.init(this.workspace_);
     this.workspace_.flyout_.show(tree.childNodes);
-
-    this.rootBlock_ = this.block_.decompose(this.workspace_);
-    var blocks = this.rootBlock_.getDescendants(false);
-    for (var i = 0, child; child = blocks[i]; i++) {
-      child.render();
-    }
-    // The root block should not be dragable or deletable.
-    this.rootBlock_.setMovable(false);
-    this.rootBlock_.setDeletable(false);
-    if (this.workspace_.flyout_) {
-      var margin = this.workspace_.flyout_.CORNER_RADIUS * 2;
-      var x = this.workspace_.flyout_.width_ + margin;
-    } else {
-      var margin = 16;
-      var x = margin;
-    }
-    if (this.block_.RTL) {
-      x = -x;
-    }
-    this.rootBlock_.moveBy(x, margin);
-    // Save the initial connections, then listen for further changes.
-    if (this.block_.saveConnections) {
-      var thisMutator = this;
-      this.block_.saveConnections(this.rootBlock_);
-      this.sourceListener_ = function() {
-        thisMutator.block_.saveConnections(thisMutator.rootBlock_);
-      };
-      this.block_.workspace.addChangeListener(this.sourceListener_);
-    }
     this.resizeBubble_();
     // When the mutator's workspace changes, update the source block.
     this.workspace_.addChangeListener(this.workspaceChanged_.bind(this));
@@ -258,7 +245,6 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
     this.svgDialog_ = null;
     this.workspace_.dispose();
     this.workspace_ = null;
-    this.rootBlock_ = null;
     this.bubble_.dispose();
     this.bubble_ = null;
     this.workspaceWidth_ = 0;
@@ -288,45 +274,6 @@ Blockly.Workbench.prototype.workspaceChanged_ = function() {
         block.moveBy(0, MARGIN - blockHW.height - blockXY.y);
       }
     }
-  }
-
-  // When the mutator's workspace changes, update the source block.
-  if (this.rootBlock_.workspace == this.workspace_) {
-    Blockly.Events.setGroup(true);
-    var block = this.block_;
-    var oldMutationDom = block.mutationToDom();
-    var oldMutation = oldMutationDom && Blockly.Xml.domToText(oldMutationDom);
-    // Switch off rendering while the source block is rebuilt.
-    var savedRendered = block.rendered;
-    block.rendered = false;
-    // Allow the source block to rebuild itself.
-    block.compose(this.rootBlock_);
-    // Restore rendering and show the changes.
-    block.rendered = savedRendered;
-    // Mutation may have added some elements that need initializing.
-    block.initSvg();
-    var newMutationDom = block.mutationToDom();
-    var newMutation = newMutationDom && Blockly.Xml.domToText(newMutationDom);
-    if (oldMutation != newMutation) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-          block, 'mutation', null, oldMutation, newMutation));
-      // Ensure that any bump is part of this mutation's event group.
-      var group = Blockly.Events.getGroup();
-      setTimeout(function() {
-        Blockly.Events.setGroup(group);
-        block.bumpNeighbours_();
-        Blockly.Events.setGroup(false);
-      }, Blockly.BUMP_DELAY);
-    }
-    if (block.rendered) {
-      block.render();
-    }
-    // Don't update the bubble until the drag has ended, to avoid moving blocks
-    // under the cursor.
-    if (!this.workspace_.isDragging()) {
-      this.resizeBubble_();
-    }
-    Blockly.Events.setGroup(false);
   }
 };
 
