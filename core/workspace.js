@@ -107,6 +107,8 @@ Blockly.Workspace = function(opt_options) {
    * @private
    */
   this.potentialVariableMap_ = null;
+
+  Blockly.WorkspaceTree.add(this);
 };
 
 /**
@@ -135,6 +137,7 @@ Blockly.Workspace.prototype.MAX_UNDO = 1024;
 Blockly.Workspace.prototype.dispose = function() {
   this.listeners_.length = 0;
   this.clear();
+  Blockly.WorkspaceTree.remove(this);
   // Remove from workspace database.
   delete Blockly.Workspace.WorkspaceDB_[this.id];
 };
