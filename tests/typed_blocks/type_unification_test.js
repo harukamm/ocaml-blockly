@@ -10,17 +10,17 @@ function create_typed_workspace() {
 function isVariableOf(varBlock, block) {
   var name1, name2, checkType;
   switch (block.type) {
-    case: 'let_typed':
+    case 'let_typed':
       name1 = varBlock.getField('VAR').getText();
-      name2 = letBlock.getField('VAR').getText();
+      name2 = block.getField('VAR').getText();
       checkType = varBlock.outputConnection.typeExpr ==
-          letBlock.getInput('EXP1').connection.typeExpr;
+          block.getInput('EXP1').connection.typeExpr;
       break;
-    case: 'lambda_typed':
+    case 'lambda_typed':
       name1 = varBlock.getField('VAR').getText();
-      name2 = lambdaBlock.getField('VAR').getText();
+      name2 = block.getField('VAR').getText();
       checkType = varBlock.outputConnection.typeExpr ==
-          lambdaBlock.outputConnection.typeExpr.arg_type;
+          block.outputConnection.typeExpr.arg_type;
       break;
     default:
       return false;
@@ -471,7 +471,7 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
     // Inner lambda typed block.
     var innerLambdaBlock = workspace.newBlock('lambda_typed');
     // Outer let typed block.
-    var outerLetBlock = workspace.newBlock('lambda_typed');
+    var outerLetBlock = workspace.newBlock('let_typed');
     // Set a variable `j`
     var variable2 = Blockly.Variables.getOrCreateVariablePackage(
         workspace, null, 'j', '');
