@@ -217,7 +217,7 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
         this.createEditor_(), this.block_.svgPath_, this.iconXY_, null, null);
     // Expose this mutator's block's ID on its top-level SVG group.
     this.bubble_.setSvgId(this.block_.id);
-    var tree = this.block_.getTreeInFlyout();
+    var tree = this.getFlyoutLanguageTree_();
     this.workspace_.flyout_.init(this.workspace_);
     this.workspace_.flyout_.show(tree.childNodes);
 
@@ -348,6 +348,23 @@ Blockly.Workbench.prototype.getFlyoutMetrics_ = function() {
     absoluteTop: 0,
     absoluteLeft: 0
   };
+};
+
+/**
+ * Return a DOM tree of blocks to show in a flyout.
+ * @return {Node} DOM tree of blocks.
+ */
+Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
+  // Decide which blocks to show in a flyout depending on this blocks status.
+  var tree = this.block_.getTreeInFlyout();
+  for (var i = 0, childNode; childNode = tree.childNodes[i]; i++) {
+    var tagName = childNode.tagName.toUpperCase();
+    if (tagName == 'BLOCK') {
+      // All blocks in a workbench should be transferable.
+      childNode.setAttribute('transferable', true);
+    }
+  }
+  return tree;
 };
 
 /**
