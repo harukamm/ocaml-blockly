@@ -2281,6 +2281,7 @@ Blockly.Blocks['lambda_typed'] = {
     this.setInputsInline(true);
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.FUN(A, B));
+    this.registerValue(new Blockly.TypedVariableValue(this, A, 'VAR', 'RETURN'));
   },
 
   /**
@@ -2291,12 +2292,12 @@ Blockly.Blocks['lambda_typed'] = {
    *     representations.
    */
   getVisibleVariables: function(conn) {
-    goog.asserts.assert(false);
     var returnInput = this.getInput('RETURN');
     var map = {};
     if (returnInput.connection == conn) {
-      var typ = this.outputConnection.typeExpr.arg_type;
-      map[this.argName] = typ;
+      var variable = this.valueMap_['VAR'];
+      var name = variable.getName();
+      map[name] = variable;
     }
     return map;
   },
