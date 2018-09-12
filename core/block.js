@@ -2262,11 +2262,6 @@ Blockly.Blocks['pair_second_typed'] = {
   }
 };
 
-/**
- * First class functions
- */
-Blockly.Blocks.lambda_id = 0;
-
 Blockly.Blocks['lambda_typed'] = {
   /**
    */
@@ -2274,10 +2269,11 @@ Blockly.Blocks['lambda_typed'] = {
     this.setColour(290);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     var B = Blockly.RenderedTypeExpr.generateTypeVar();
-    this.argName = 'X' + Blockly.Blocks.lambda_id;
-    Blockly.Blocks.lambda_id++;
+    var variable_field = new Blockly.FieldVariable(
+        Blockly.Msg.VARIABLES_GET_ITEM);
     this.appendDummyInput()
-        .appendField('λ ' + this.argName);
+        .appendField('λ')
+        .appendField(variable_field, 'VAR');
     this.appendValueInput('RETURN')
         .setTypeExpr(B)
         .setAlign(Blockly.ALIGN_RIGHT)
@@ -2285,16 +2281,6 @@ Blockly.Blocks['lambda_typed'] = {
     this.setInputsInline(true);
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.FUN(A, B));
-  },
-
-  getVars: function () {
-    return [this.argName];
-  },
-
-  getVarsWithTypes: function() {
-    var result = {};
-    result[this.argName] = this.outputConnection.typeExpr.arg_type;
-    return result;
   },
 
   /**
@@ -2322,7 +2308,7 @@ Blockly.Blocks['lambda_typed'] = {
   },
 
   infer: function(env) {
-    var var_name = this.argName;
+    var var_name = this.getField('VAR').getText();
     var expected = this.outputConnection.typeExpr;
     var env2 = Object.assign({}, env);
     env2[var_name] = expected.arg_type;

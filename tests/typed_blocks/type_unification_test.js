@@ -319,15 +319,14 @@ function test_type_unification_lambdaStructure() {
   var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('lambda_typed');
-    var arg_name = block.argName;
     var var1 = workspace.newBlock('variables_get_typed');
-    // Set same variable name with `arg_name`
-    var variable = workspace.getVariable(arg_name) ||
-        workspace.createVariable(arg_name);
+    // Set the same variable name with the name of lambda's argument.
+    var variable = block.getField('VAR').getVariable();
     var variableId = variable.getId();
     var1.getField('VAR').setValue(variableId);
-    assertEquals(var1.getField('VAR').getText(), arg_name);
     block.getInput('RETURN').connection.connect(var1.outputConnection);
+    assertEquals(var1.getField('VAR').getText(),
+        block.getField('VAR').getText());
     assertTrue(block.outputConnection.typeExpr.return_type.deref() ===
         var1.outputConnection.typeExpr.deref());
     assertTrue(block.outputConnection.typeExpr.arg_type.deref() ==
@@ -345,15 +344,13 @@ function test_type_unification_lambdaAppStructure() {
     var int1 = workspace.newBlock('int_typed');
     block.getInput('FUN').connection.connect(lambdaBlock.outputConnection);
     block.getInput('ARG').connection.connect(int1.outputConnection);
-    var arg_name = lambdaBlock.argName;
     var var1 = workspace.newBlock('variables_get_typed');
-    // Set same variable name with `arg_name`
-    var variable = workspace.getVariable(arg_name) ||
-        workspace.createVariable(arg_name);
+    // Set the same variable name with the name of lambda's argument.
+    var variable = lambdaBlock.getField('VAR').getVariable();
     var variableId = variable.getId();
-    workspace.renameVariableById(variableId, arg_name);
     var1.getField('VAR').setValue(variableId);
-    assertEquals(var1.getField('VAR').getText(), arg_name);
+    assertEquals(var1.getField('VAR').getText(),
+        lambdaBlock.getField('VAR').getText());
     lambdaBlock.getInput('RETURN').connection.connect(var1.outputConnection);
     assertTrue(block.outputConnection.typeExpr.deref() ===
         lambdaBlock.outputConnection.typeExpr.return_type.deref());
