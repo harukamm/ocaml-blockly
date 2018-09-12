@@ -2642,10 +2642,10 @@ Blockly.Blocks['let_typed'] = {
   },
 
   /**
-   * Return a list of XML block to show in the workbench's flyout.
-   * @return {!Array} List of XML blocks.
+   * Return a DOM tree of blocks to show in the workbench's flyout.
+   * @return {Node} DOM tree of blocks.
    */
-  flyoutBlocks: function() {
+  getTreeInFlyout: function() {
     var xml = goog.dom.createDom('xml');
     var exp2 = this.getInput('EXP2');
     var env = this.allVisibleVariables(exp2.connection);

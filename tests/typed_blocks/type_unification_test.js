@@ -433,7 +433,7 @@ function test_type_unification_useWorkbenchWithinLetTypedBlock() {
     outerLetBlock.getField('VAR').setValue(variable1.getId());
 
     outerLetBlock.getInput('EXP2').connection.connect(innerLetBlock.outputConnection);
-    var xml = innerLetBlock.flyoutBlocks();
+    var xml = innerLetBlock.getTreeInFlyout();
     var childNodes = xml.childNodes;
     assertEquals(childNodes.length, 2);
     var innersVars = Blockly.Xml.domToBlock(childNodes[0], workspace);

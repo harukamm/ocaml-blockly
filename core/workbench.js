@@ -217,7 +217,7 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
         this.createEditor_(), this.block_.svgPath_, this.iconXY_, null, null);
     // Expose this mutator's block's ID on its top-level SVG group.
     this.bubble_.setSvgId(this.block_.id);
-    var tree = this.block_.flyoutBlocks();
+    var tree = this.block_.getTreeInFlyout();
     this.workspace_.flyout_.init(this.workspace_);
     this.workspace_.flyout_.show(tree.childNodes);
 
