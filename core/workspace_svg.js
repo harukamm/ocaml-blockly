@@ -1165,7 +1165,15 @@ Blockly.WorkspaceSvg.prototype.recordDeleteAreas = function() {
  * necessary to detect if mouse is over the elements.
  */
 Blockly.WorkspaceSvg.prototype.recordBoundingBoxes = function() {
-  var workspaceRect = this.svgGroup_.getBoundingClientRect();
+  var group = this.svgGroup_;
+  if (this.isFlyout) {
+    var parent = group.parentNode;
+    if (parent) {
+      goog.asserts.assert(Blockly.utils.hasClass(parent, 'blocklyFlyout'));
+      group = parent;
+    }
+  }
+  var workspaceRect = group.getBoundingClientRect();
   this.workspaceBoundingBox_ = goog.math.Rect.createFromBox(workspaceRect);
   if (this.flyout_) {
     this.flyoutBoundingBox_ = this.flyout_.getBoundingRectangle();
