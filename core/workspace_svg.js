@@ -144,6 +144,13 @@ Blockly.WorkspaceSvg.prototype.rendered = true;
 Blockly.WorkspaceSvg.prototype.isFlyout = false;
 
 /**
+ * In a flyout, this workspace is visible.
+ * Otherwise, null.
+ * @type {=boolean}
+ */
+Blockly.WorkspaceSvg.prototype.isVisibleFlyout = null;
+
+/**
  * Is this workspace the surface for a mutator?
  * @type {boolean}
  * @package
@@ -1227,21 +1234,29 @@ Blockly.WorkspaceSvg.prototype.inFrontOf = function(other) {
 };
 
 /**
- * Detect which workspace the mouse event occurs inside. If it occurs beyond
- * this workspace, check for the parent workspace if this has the parent,
- * return null otherwise.
+ * Detect which workspace the mouse event occurs inside.
  * @param {!Event} e The mouseup/touchend event.
  * @return {?Blockly.WorkspaceSvg} The workspace where mouse event occurs.
  */
 Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
   var xy = new goog.math.Coordinate(e.clientX, e.clientY);
-  var isInThisWorkspace = !!this.workspaceBoundingBox_ &&
-      this.workspaceBoundingBox_.contains(xy);
-  if (isInThisWorkspace) {
-    return this;
+  var mainWS = this.getMainWorkspace();
+  var children = Blockly.WorkspaceTree.getChildren(mainWS);
+  var targetWS = mainWS;
+  for (var i = 0, child; child = children[i]; i++) {
+    var ws = children.pop();
+    var visible = ws.rendered && (!ws.isFlyout || ws.isVisibleFlyout);
+    var isInside = !!ws.workspaceBoundingBox_ &&
+        ws.workspaceBoundingBox_.contains(xy);
+    if (!visible || !isInside) {
+      continue;
+    }
+    // Check the layout order for workspace.
+    if (ws.inFrontOf(targetWS)) {
+      targetWS = ws;
+    }
   }
-  var parentWorksapce = this.options.parentWorkspace;
-  return parentWorksapce ? parentWorksapce.detectWorkspace(e) : null;
+  return targetWS;
 };
 
 /**
