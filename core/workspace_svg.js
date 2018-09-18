@@ -1192,6 +1192,41 @@ Blockly.WorkspaceSvg.prototype.isFlyoutArea = function(e) {
 };
 
 /**
+ * Return whether this workspace is displayed in front of another workspace.
+ * @param {!Blockly.WorkspaceSvg} other
+ * @return {boolean} True if this workspace appears in front of another.
+ */
+Blockly.WorkspaceSvg.prototype.inFrontOf = function(other) {
+  var commonWs = Blockly.WorkspaceTree.lowestCommon(this, other);
+  goog.asserts.assert(commonWs,
+    'Can\'t check their layout order ' +
+    'because they are not related each other.');
+
+  // If a workspace is an ancestor of another, it's drawn below.
+  if (commonWs == this) {
+    return false;
+  } else if (commonWs == other) {
+    return true;
+  }
+  var ws1 = this.isFlyout ? this.options.parentWorkspace : this;
+  var ws2 = other.isFlyout ? other.options.parentWorkspace : other;
+  if (ws1.isMutator != ws2.isMutator) {
+    // If either one is a mutator workspace, it appears in front.
+    return ws1.isMutator;
+  }
+  goog.asserts.assert(ws1.isMutator, 'Only mutator workspace supported.');
+  // Both of workspace are mutator's.
+  var bubbleSvg1 = ws1.ownerMutator_.getBubble().getSvgRoot();
+  var bubbleSvg2 = ws2.ownerMutator_.getBubble().getSvgRoot();
+  var bubbleCanvas = commonWs.getBubbleCanvas();
+  goog.asserts.assert(bubbleCanvas == bubbleSvg1.parentNode &&
+      bubbleSvg1.parentNode == bubbleSvg2.parentNode);
+  var i1 = Array.prototype.indexOf.call(bubbleCanvas.childNodes, bubbleSvg1);
+  var i2 = Array.prototype.indexOf.call(bubbleCanvas.childNodes, bubbleSvg2);
+  return i2 < i1;
+};
+
+/**
  * Detect which workspace the mouse event occurs inside. If it occurs beyond
  * this workspace, check for the parent workspace if this has the parent,
  * return null otherwise.

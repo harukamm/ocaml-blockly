@@ -149,6 +149,7 @@ Blockly.Mutator.prototype.createEditor_ = function() {
   };
   this.workspace_ = new Blockly.WorkspaceSvg(workspaceOptions);
   this.workspace_.isMutator = true;
+  this.workspace_.ownerMutator_ = this;
 
   // Mutator flyouts go inside the mutator workspace's <g> rather than in
   // a top level svg. Instead of handling scale themselves, mutators
@@ -189,6 +190,14 @@ Blockly.Mutator.prototype.updateEditable = function() {
   }
   // Default behaviour for an icon.
   Blockly.Icon.prototype.updateEditable.call(this);
+};
+
+/**
+ * Return the mutator's bubble.
+ * @return {Blockly.Bubble} Bubble, or null.
+ */
+Blockly.Mutator.prototype.getBubble = function() {
+  return this.bubble_ ? this.bubble_ : null;
 };
 
 /**
