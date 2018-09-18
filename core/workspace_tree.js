@@ -9,6 +9,8 @@ Blockly.WorkspaceTree = function(workspace) {
 
 Blockly.WorkspaceTree.Root = new Blockly.WorkspaceTree(null);
 
+Blockly.WorkspaceTree.NodeMap_ = Object.create(null);
+
 /**
  * Add the workspace to the tree Blockly.WorkspaceTree.Root.
  * @param {!Blockly.Workspace} workspace Workspace to add to the root tree.
@@ -22,6 +24,7 @@ Blockly.WorkspaceTree.add = function(workspace) {
   }
   var newNode = new Blockly.WorkspaceTree(workspace);
   parentNode.children[workspace.id] = newNode;
+  Blockly.WorkspaceTree.NodeMap_[workspace.id] = newNode;
 };
 
 /**
@@ -30,16 +33,8 @@ Blockly.WorkspaceTree.add = function(workspace) {
  * @return {Blockly.WorkspaceTree}
  */
 Blockly.WorkspaceTree.find = function(id) {
-  var staq = [Blockly.WorkspaceTree.Root];
-  while (staq.length) {
-    var node = staq.pop();
-    if (id in node.children) {
-      return node.children[id];
-    }
-    var ids = Object.keys(node.children);
-    for (var i = 0, childId; childId = ids[i]; i++) {
-      staq.push(node.children[childId]);
-    }
+  if (id in Blockly.WorkspaceTree.NodeMap_) {
+    return Blockly.WorkspaceTree.NodeMap_[id];
   }
   return null;
 };
@@ -49,16 +44,14 @@ Blockly.WorkspaceTree.find = function(id) {
  * @param {!Blockly.Workspace} workspace The workspace to delete.
  */
 Blockly.WorkspaceTree.remove = function(workspace) {
-  var staq = [Blockly.WorkspaceTree.Root];
   var id = workspace.id;
-  while (staq.length) {
-    var node = staq.pop();
-    if (id in node.children) {
-      delete node.children[id];
-    }
-    var ids = Object.keys(node.children);
-    for (var i = 0, childId; childId = ids[i]; i++) {
-      staq.push(node.children[childId]);
-    }
+  var node = Blockly.WorkspaceTree.find(id);
+  if (!node) {
+    return;
+  }
+  delete Blockly.WorkspaceTree.NodeMap_[id];
+  var parentNode = node.getParent_();
+  if (parentNode) {
+    delete parentNode.children[id];
   }
 };
