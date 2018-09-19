@@ -621,12 +621,14 @@ Blockly.Flyout.prototype.createBlock = function(originalBlock) {
 
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.setGroup(true);
-    Blockly.Events.fire(new Blockly.Events.Create(newBlock));
     // Fire a VarCreate event for each (if any) new variable created.
     for (var i = 0; i < newVariables.length; i++) {
       var thisVariable = newVariables[i];
       Blockly.Events.fire(new Blockly.Events.VarCreate(thisVariable));
     }
+    // A Block Create event should be fired after VarCreate events for variables
+    // because the block refers to these variables.
+    Blockly.Events.fire(new Blockly.Events.Create(newBlock));
   }
   if (this.autoClose) {
     this.hide();
