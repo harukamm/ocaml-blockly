@@ -1244,7 +1244,7 @@ Blockly.WorkspaceSvg.prototype.inFrontOf = function(other) {
 /**
  * Detect which workspace the mouse event occurs inside.
  * @param {!Event} e The mouseup/touchend event.
- * @return {?Blockly.WorkspaceSvg} The workspace where mouse event occurs.
+ * @return {!Blockly.WorkspaceSvg} The workspace where mouse event occurs.
  */
 Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
   var xy = new goog.math.Coordinate(e.clientX, e.clientY);

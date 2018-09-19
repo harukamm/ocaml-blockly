@@ -294,12 +294,8 @@ Blockly.BlockDragger.prototype.transferWorkspace = function(e) {
     return;
   }
   var newWorkspace = this.workspace_.detectWorkspace(e);
-  if (!newWorkspace) {
-    // If the mouse event occurs beyond all the workspaces, the top-most
-    // workspace handles it.
-    newWorkspace = this.workspace_.getMainWorkspace();
-  }
   if (newWorkspace == this.workspace) {
+    // Does nothing f the mouse event occurs over this workspace.
     return;
   }
   if (Blockly.Events.isEnabled()) {
