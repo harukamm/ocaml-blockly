@@ -121,7 +121,9 @@ Blockly.BlockDragger.prototype.getDragStartXY = function() {
   // The dragging block will use the main workspace's surface.
   // Include the translation of the dragging block's workspace to the main
   // workspace.
-  var xy = this.draggingBlock_.workspace.getRelativeToMainSurfaceXY();
+  var mainWorkspace = this.draggingBlock_.workspace.getMainWorkspace();
+  var xy = this.draggingBlock_.workspace.getRelativeToWorkspaceXY(
+      mainWorkspace);
   return goog.math.Coordinate.sum(this.startXY_, xy);
 };
 

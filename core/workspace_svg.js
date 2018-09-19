@@ -858,28 +858,36 @@ Blockly.WorkspaceSvg.prototype.getMainBlockDragSurface = function() {
 
 /**
  * Return the coordinates of the top-left corner of this element relative to
- * the main surface's origin (0, 0).
+ * the given workspace surface's origin (0, 0).
+ * @param {!Blockly.Workspace} workspace The workspace for the origin.
  * @return {!goog.math.Coordinate} Object with .x and .y properties in
  *     workspace coordinates.
  * @package
  */
-Blockly.WorkspaceSvg.prototype.getRelativeToMainSurfaceXY = function() {
-  var mainWorkspace = this.getMainWorkspace();
-  var x = 0;
-  var y = 0;
-  var element = this.getCanvas();
-
-  while (element) {
-    if (element == mainWorkspace.getCanvas() ||
-        element == mainWorkspace.getBubbleCanvas()) {
-      break;
+Blockly.WorkspaceSvg.prototype.getRelativeToWorkspaceXY = function(
+    workspace) {
+  function relativeImpl(childWs, parentWs) {
+    var element = childWs.getCanvas();
+    var x = 0;
+    var y = 0;
+    while (element) {
+      if (element == parentWs.getCanvas() ||
+          element == parentWs.getBubbleCanvas()) {
+        break;
+      }
+      var xy = Blockly.utils.getRelativeXY(element);
+      x += xy.x;
+      y += xy.y;
+      element = element.parentNode;
     }
-    var xy = Blockly.utils.getRelativeXY(element);
-    x += xy.x;
-    y += xy.y;
-    element = element.parentNode;
+    return new goog.math.Coordinate(x, y);
   }
-  return new goog.math.Coordinate(x, y);
+  var commonWorkspace = Blockly.WorkspaceTree.lowestCommon(this, workspace);
+  var thisToCommonXY = relativeImpl(this, commonWorkspace);
+  var otherToCommonXY = relativeImpl(workspace, commonWorkspace);
+  return new goog.math.Coordinate(
+      thisToCommonXY.x - otherToCommonXY.x,
+      thisToCommonXY.y - otherToCommonXY.y);
 };
 
 /**

@@ -1429,9 +1429,6 @@ Blockly.BlockSvg.prototype.transferWorkspace = function(newWorkspace) {
   var newBlockCanvas = newWorkspace.getCanvas();
   newBlockCanvas.appendChild(this.getSvgRoot());
   // Aline this block according to the new surface.
-  goog.asserts.assert(newWorkspace == oldWorkspace.getMainWorkspace(),
-      'Currently cannot calculate the coordinate relative to another ' +
-      'surface except the main surface.');
-  var xy = oldWorkspace.getRelativeToMainSurfaceXY();
+  var xy = oldWorkspace.getRelativeToWorkspaceXY(newWorkspace);
   this.moveBy(xy.x, xy.y);
 }
