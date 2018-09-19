@@ -296,7 +296,7 @@ Blockly.BlockDragger.prototype.transferWorkspace = function(e) {
     return;
   }
   var newWorkspace = this.workspace_.detectWorkspace(e);
-  if (newWorkspace == this.workspace) {
+  if (newWorkspace == this.workspace_) {
     // Does nothing f the mouse event occurs over this workspace.
     return;
   }
