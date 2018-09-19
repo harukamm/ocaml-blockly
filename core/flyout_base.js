@@ -440,11 +440,15 @@ Blockly.Flyout.prototype.show = function(xmlList) {
   var contents = [];
   var gaps = [];
   this.permanentlyDisabled_.length = 0;
+  var isTypedVersion = this.workspace_.options.typedVersion;
   for (var i = 0, xml; xml = xmlList[i]; i++) {
     if (xml.tagName) {
       var tagName = xml.tagName.toUpperCase();
       var default_gap = this.horizontalLayout_ ? this.GAP_X : this.GAP_Y;
       if (tagName == 'BLOCK') {
+        if (isTypedVersion) {
+          xml.setAttribute('transferable', true);
+        }
         var curBlock = Blockly.Xml.domToBlock(xml, this.workspace_);
         if (curBlock.disabled) {
           // Record blocks that were initially disabled.
