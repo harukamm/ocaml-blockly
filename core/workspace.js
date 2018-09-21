@@ -41,7 +41,6 @@ goog.require('goog.math');
 Blockly.Workspace = function(opt_options) {
   /** @type {string} */
   this.id = Blockly.utils.genUid();
-  Blockly.Workspace.WorkspaceDB_[this.id] = this;
   /** @type {!Blockly.Options} */
   this.options = opt_options || {};
   /** @type {boolean} */
@@ -137,9 +136,8 @@ Blockly.Workspace.prototype.MAX_UNDO = 1024;
 Blockly.Workspace.prototype.dispose = function() {
   this.listeners_.length = 0;
   this.clear();
+  // Remove from workspace tree.
   Blockly.WorkspaceTree.remove(this);
-  // Remove from workspace database.
-  delete Blockly.Workspace.WorkspaceDB_[this.id];
 };
 
 /**
@@ -609,18 +607,12 @@ Blockly.Workspace.prototype.getMainWorkspace = function() {
 };
 
 /**
- * Database of all workspaces.
- * @private
- */
-Blockly.Workspace.WorkspaceDB_ = Object.create(null);
-
-/**
  * Find the workspace with the specified ID.
  * @param {string} id ID of workspace to find.
  * @return {Blockly.Workspace} The sought after workspace or null if not found.
  */
 Blockly.Workspace.getById = function(id) {
-  return Blockly.Workspace.WorkspaceDB_[id] || null;
+  return Blockly.WorkspaceTree.findWorkspace(id);
 };
 
 // Export symbols that would otherwise be renamed by Closure compiler.

@@ -10,6 +10,7 @@ Blockly.WorkspaceTree = function(workspace) {
 Blockly.WorkspaceTree.Root = new Blockly.WorkspaceTree(null);
 
 Blockly.WorkspaceTree.NodeMap_ = Object.create(null);
+Blockly.WorkspaceTree.NodeMap_['root'] = Blockly.WorkspaceTree.Root;
 
 /**
  * Return a nested list of ids of workspace that pass the given filtering
@@ -48,6 +49,16 @@ Blockly.WorkspaceTree.find = function(id) {
     return Blockly.WorkspaceTree.NodeMap_[id];
   }
   return null;
+};
+
+/**
+ * Find the workspace with the specified ID.
+ * @param {string} id ID of workspace to find.
+ * @return {Blockly.Workspace} The founded workspace, or null.
+ */
+Blockly.WorkspaceTree.findWorkspace = function(id) {
+  var node = Blockly.WorkspaceTree.find(id);
+  return node ? node.workspace : null;
 };
 
 /**
