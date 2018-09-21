@@ -12,6 +12,17 @@ Blockly.WorkspaceTree.Root = new Blockly.WorkspaceTree(null);
 Blockly.WorkspaceTree.NodeMap_ = Object.create(null);
 
 /**
+ * Return a nested list of ids of workspace that pass the given filtering
+ * rules.
+ * @param {!Function} pred The function for a filtering rule.
+ * @return {!Array} A list containing ids of workspace that pass the rule.
+ */
+Blockly.WorkspaceTree.filter = function(pred) {
+  var lst = Blockly.WorkspaceTree.getChildren({id: 'root'});
+  return lst.filter(pred);
+};
+
+/**
  * Add the workspace to the tree Blockly.WorkspaceTree.Root.
  * @param {!Blockly.Workspace} workspace Workspace to add to the root tree.
  */
