@@ -193,7 +193,8 @@ Blockly.Workbench.prototype.resizeBubble_ = function() {
   } else {
     width = workspaceSize.width + workspaceSize.x;
   }
-  var height = workspaceSize.height + doubleBorderWidth * 3;
+  var height = workspaceSize.height + workspaceSize.y +
+      doubleBorderWidth * 3;
   if (this.workspace_.flyout_) {
     var flyoutMetrics = this.workspace_.flyout_.getMetrics_();
     width = Math.max(width, flyoutMetrics.contentWidth + 10);
@@ -283,6 +284,11 @@ Blockly.Workbench.prototype.workspaceChanged_ = function() {
         block.moveBy(0, MARGIN - blockHW.height - blockXY.y);
       }
     }
+  }
+  // Don't update the bubble until the drag has ended, to avoid moving blocks
+  // under the cursor.
+  if (!this.workspace_.isDragging()) {
+    this.resizeBubble_();
   }
 };
 
