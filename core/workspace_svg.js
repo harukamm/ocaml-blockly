@@ -1261,7 +1261,8 @@ Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
   var targetWS = mainWS;
   for (var i = 0, child; child = children[i]; i++) {
     var ws = children.pop();
-    var visible = ws.rendered && (!ws.isFlyout || ws.isVisibleFlyout);
+    var visible = ws.rendered && (!ws.isFlyout || ws.isVisibleFlyout) &&
+        (!ws.isMutator || ws.ownerMutator_.isVisible());
     var isInside = !!ws.workspaceBoundingBox_ &&
         ws.workspaceBoundingBox_.contains(xy);
     if (!visible || !isInside) {
