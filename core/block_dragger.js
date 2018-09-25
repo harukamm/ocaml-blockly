@@ -300,6 +300,15 @@ Blockly.BlockDragger.prototype.transferWorkspace = function(e) {
     // Does nothing f the mouse event occurs over this workspace.
     return;
   }
+  var newWs = newWorkspace.isFlyout ?
+      newWorkspace.targetWorkspace : newWorkspace;
+  if (newWs.isMutator) {
+    var mutator = this.draggingBlock_.mutator;
+    if (mutator && mutator == newWs.ownerMutator_) {
+      // It's not allowed to transfer blocks to a mutator workspace of blocks' mutator.
+      return;
+    }
+  }
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.setGroup(true);
     // Fire a create event for the new workspace.
