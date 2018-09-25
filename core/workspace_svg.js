@@ -901,6 +901,15 @@ Blockly.WorkspaceSvg.prototype.getWidth = function() {
 };
 
 /**
+ * Is the workspace visible?
+ * @return {boolean} True if the workspace is visible.
+ */
+Blockly.WorkspaceSvg.prototype.isVisible = function() {
+  return this.rendered && (!this.isFlyout || this.isVisibleFlyout) &&
+      (!this.isMutator || this.ownerMutator_.isVisible());
+};
+
+/**
  * Toggles the visibility of the workspace.
  * Currently only intended for main workspace.
  * @param {boolean} isVisible True if workspace should be visible.
@@ -1261,11 +1270,9 @@ Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
   var targetWS = mainWS;
   for (var i = 0, child; child = children[i]; i++) {
     var ws = children.pop();
-    var visible = ws.rendered && (!ws.isFlyout || ws.isVisibleFlyout) &&
-        (!ws.isMutator || ws.ownerMutator_.isVisible());
     var isInside = !!ws.workspaceBoundingBox_ &&
         ws.workspaceBoundingBox_.contains(xy);
-    if (!visible || !isInside) {
+    if (!ws.isVisible() || !isInside) {
       continue;
     }
     // Check the layout order for workspace.
