@@ -1260,12 +1260,7 @@ Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
   var children = Blockly.WorkspaceTree.getChildren(mainWS);
   var targetWS = mainWS;
   for (var i = 0, ws; ws = children[i]; i++) {
-    // TODO: Use the workspaceArea_ instead of the dom API.
-    // workspaceArea_ is not updated instantly when the workspace is
-    // mutator.
-    var rect = goog.math.Rect.createFromBox(
-        ws.svgGroup_.getBoundingClientRect());
-    if (!ws.isVisible() || !rect.contains(xy)) {
+    if (!ws.isVisible() || !ws.workspaceArea_.contains(xy)) {
       continue;
     }
     // Check the layout order for workspace.
