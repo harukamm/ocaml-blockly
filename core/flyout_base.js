@@ -54,7 +54,7 @@ Blockly.Flyout = function(workspaceOptions) {
    */
   this.workspace_ = new Blockly.WorkspaceSvg(workspaceOptions);
   this.workspace_.isFlyout = true;
-  this.workspace_.isVisibleFlyout = true;
+  this.workspace_.ownerFlyout_ = this;
 
   /**
    * Is RTL vs LTR.
@@ -273,6 +273,7 @@ Blockly.Flyout.prototype.dispose = function() {
   }
   if (this.workspace_) {
     this.workspace_.targetWorkspace = null;
+    this.workspace_.ownerFlyout_ = null;
     this.workspace_.dispose();
     this.workspace_ = null;
   }
@@ -326,7 +327,6 @@ Blockly.Flyout.prototype.setVisible = function(visible) {
   var visibilityChanged = (visible != this.isVisible());
 
   this.isVisible_ = visible;
-  this.workspace_.isVisibleFlyout = visible;
   if (visibilityChanged) {
     this.updateDisplay_();
   }

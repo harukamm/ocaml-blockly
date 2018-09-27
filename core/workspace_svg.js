@@ -144,13 +144,6 @@ Blockly.WorkspaceSvg.prototype.rendered = true;
 Blockly.WorkspaceSvg.prototype.isFlyout = false;
 
 /**
- * In a flyout, this workspace is visible.
- * Otherwise, null.
- * @type {=boolean}
- */
-Blockly.WorkspaceSvg.prototype.isVisibleFlyout = null;
-
-/**
  * Is this workspace the surface for a mutator?
  * @type {boolean}
  * @package
@@ -905,7 +898,7 @@ Blockly.WorkspaceSvg.prototype.getWidth = function() {
  * @return {boolean} True if the workspace is visible.
  */
 Blockly.WorkspaceSvg.prototype.isVisible = function() {
-  return this.rendered && (!this.isFlyout || this.isVisibleFlyout) &&
+  return this.rendered && (!this.isFlyout || this.ownerFlyout_.isVisible()) &&
       (!this.isMutator || this.ownerMutator_.isVisible());
 };
 
@@ -1182,16 +1175,14 @@ Blockly.WorkspaceSvg.prototype.recordDeleteAreas = function() {
  * necessary to detect if mouse is over the elements.
  */
 Blockly.WorkspaceSvg.prototype.recordBoundingBoxes = function() {
-  var group = this.svgGroup_;
   if (this.isFlyout) {
-    var parent = group.parentNode;
-    if (parent) {
-      goog.asserts.assert(Blockly.utils.hasClass(parent, 'blocklyFlyout'));
-      group = parent;
-    }
+    var rect = this.ownerFlyout_.getBoundingRectangle();
+  } else {
+    var rect = goog.math.Rect.createFromBox(
+        this.svgGroup_.getBoundingClientRect());
   }
-  var workspaceRect = group.getBoundingClientRect();
-  this.workspaceBoundingBox_ = goog.math.Rect.createFromBox(workspaceRect);
+  this.workspaceBoundingBox_ = rect;
+
   if (this.flyout_) {
     this.flyoutBoundingBox_ = this.flyout_.getBoundingRectangle();
   }
