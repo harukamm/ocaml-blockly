@@ -1259,8 +1259,7 @@ Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
   var mainWS = this.getMainWorkspace();
   var children = Blockly.WorkspaceTree.getChildren(mainWS);
   var targetWS = mainWS;
-  for (var i = 0, child; child = children[i]; i++) {
-    var ws = children.pop();
+  for (var i = 0, ws; ws = children[i]; i++) {
     // TODO: Use the workspaceArea_ instead of the dom API.
     // workspaceArea_ is not updated instantly when the workspace is
     // mutator.
