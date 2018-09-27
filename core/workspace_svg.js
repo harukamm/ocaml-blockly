@@ -479,7 +479,7 @@ Blockly.WorkspaceSvg.prototype.createDom = function(opt_backgroundClass) {
     this.grid_.update(this.scale);
   }
   this.recordDeleteAreas();
-  this.recordBoundingBoxes();
+  this.recordWorkspaceAreas();
   return this.svgGroup_;
 };
 
@@ -656,7 +656,7 @@ Blockly.WorkspaceSvg.prototype.getToolbox = function() {
 Blockly.WorkspaceSvg.prototype.updateScreenCalculations_ = function() {
   this.updateInverseScreenCTM();
   this.recordDeleteAreas();
-  this.recordBoundingBoxes();
+  this.recordWorkspaceAreas();
 };
 
 /**
@@ -1171,20 +1171,20 @@ Blockly.WorkspaceSvg.prototype.recordDeleteAreas = function() {
 };
 
 /**
- * Make the bounding boxes which contain this workspace and flyout. These are
- * necessary to detect if mouse is over the elements.
+ * Make the bounding rectangles which contain this workspace and flyout. These
+ * are necessary to detect if mouse is over the elements.
  */
-Blockly.WorkspaceSvg.prototype.recordBoundingBoxes = function() {
+Blockly.WorkspaceSvg.prototype.recordWorkspaceAreas = function() {
   if (this.isFlyout) {
     var rect = this.ownerFlyout_.getBoundingRectangle();
   } else {
     var rect = goog.math.Rect.createFromBox(
         this.svgGroup_.getBoundingClientRect());
   }
-  this.workspaceBoundingBox_ = rect;
+  this.workspaceArea_ = rect;
 
   if (this.flyout_) {
-    this.flyoutBoundingBox_ = this.flyout_.getBoundingRectangle();
+    this.flyoutArea_ = this.flyout_.getBoundingRectangle();
   }
 };
 
@@ -1211,7 +1211,7 @@ Blockly.WorkspaceSvg.prototype.isDeleteArea = function(e) {
  */
 Blockly.WorkspaceSvg.prototype.isFlyoutArea = function(e) {
   var xy = new goog.math.Coordinate(e.clientX, e.clientY);
-  return !!this.flyoutBoundingBox_ && this.flyoutBoundingBox_.contains(xy);
+  return !!this.flyoutArea_ && this.flyoutArea_.contains(xy);
 };
 
 /**
@@ -1261,8 +1261,8 @@ Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
   var targetWS = mainWS;
   for (var i = 0, child; child = children[i]; i++) {
     var ws = children.pop();
-    // TODO: Use the workspaceBoundingBox_ instead of the dom API.
-    // workspaceBoundingBox_ is not updated instantly when the workspace is
+    // TODO: Use the workspaceArea_ instead of the dom API.
+    // workspaceArea_ is not updated instantly when the workspace is
     // mutator.
     var rect = goog.math.Rect.createFromBox(
         ws.svgGroup_.getBoundingClientRect());
