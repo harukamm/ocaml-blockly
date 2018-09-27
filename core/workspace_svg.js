@@ -1270,9 +1270,12 @@ Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
   var targetWS = mainWS;
   for (var i = 0, child; child = children[i]; i++) {
     var ws = children.pop();
-    var isInside = !!ws.workspaceBoundingBox_ &&
-        ws.workspaceBoundingBox_.contains(xy);
-    if (!ws.isVisible() || !isInside) {
+    // TODO: Use the workspaceBoundingBox_ instead of the dom API.
+    // workspaceBoundingBox_ is not updated instantly when the workspace is
+    // mutator.
+    var rect = goog.math.Rect.createFromBox(
+        ws.svgGroup_.getBoundingClientRect());
+    if (!ws.isVisible() || !rect.contains(xy)) {
       continue;
     }
     // Check the layout order for workspace.
