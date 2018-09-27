@@ -1232,8 +1232,15 @@ Blockly.WorkspaceSvg.prototype.inFrontOf = function(other) {
   var ws1 = this.isFlyout ? this.targetWorkspace : this;
   var ws2 = other.isFlyout ? other.targetWorkspace : other;
   if (ws1.isMutator != ws2.isMutator) {
-    // If either one is a mutator workspace, it appears in front.
-    return ws1.isMutator;
+    // Either one is in a mutator workspace.
+    var notMutator = ws1.isMutator ? other : this;
+    var mutatorIsInFront = true;
+    if (notMutator.isFlyout) {
+      // The mutator will be drawn below if the other one is a flyout of the
+      // common ancestor workspace.
+      mutatorIsInFront = notMutator.targetWorkspace != commonWs;
+    }
+    return ws1.isMutator ? mutatorIsInFront : !mutatorIsInFront;
   }
   goog.asserts.assert(ws1.isMutator || ws2.isMutator,
       'Not implemented for this case.');
