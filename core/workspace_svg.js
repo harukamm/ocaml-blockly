@@ -1226,18 +1226,17 @@ Blockly.WorkspaceSvg.prototype.inFrontOf = function(other) {
     'because they are not related each other.');
 
   // If a workspace is an ancestor of another, it's drawn below.
-  if (commonWs == this) {
-    return false;
-  } else if (commonWs == other) {
-    return true;
+  if (commonWs == this || commonWs == other) {
+    return commonWs == other;
   }
-  var ws1 = this.isFlyout ? this.options.parentWorkspace : this;
-  var ws2 = other.isFlyout ? other.options.parentWorkspace : other;
+  var ws1 = this.isFlyout ? this.targetWorkspace : this;
+  var ws2 = other.isFlyout ? other.targetWorkspace : other;
   if (ws1.isMutator != ws2.isMutator) {
     // If either one is a mutator workspace, it appears in front.
     return ws1.isMutator;
   }
-  goog.asserts.assert(ws1.isMutator, 'Only mutator workspace supported.');
+  goog.asserts.assert(ws1.isMutator || ws2.isMutator,
+      'Not implemented for this case.');
   // Both of workspace are mutator's.
   var bubbleSvg1 = ws1.ownerMutator_.getBubble().getSvgRoot();
   var bubbleSvg2 = ws2.ownerMutator_.getBubble().getSvgRoot();
