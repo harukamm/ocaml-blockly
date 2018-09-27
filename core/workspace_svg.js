@@ -1268,6 +1268,11 @@ Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
       targetWS = ws;
     }
   }
+  // Color the outside edge of all workspaces for debugging.
+  var workspaces = [mainWS];
+  Array.prototype.push.apply(workspaces, children);
+  Blockly.utils.showRects(workspaces, targetWS);
+
   return targetWS;
 };
 

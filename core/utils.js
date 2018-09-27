@@ -901,3 +901,40 @@ Blockly.utils.getViewportBBox = function() {
     left: scrollOffset.x
   };
 };
+
+/**
+ * Color the outside edge of each workspace in a list.
+ * @param {!Array.<Blockly.WorkspaceSvg>} workspaces A list of workspace to
+ *     show the edge.
+ * @param {=Blockly.WorkspaceSvg} opt_emphasize Workspace to especially
+ *     emphasize.
+ */
+Blockly.utils.showRects = function(workspaces, opt_emphasize) {
+  if (this.rectContainer_) {
+    var container = this.rectContainer_;
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+  } else {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    container.style.pointerEvents = 'none';
+    this.rectContainer_ = container;
+  }
+  for (var i = 0, ws; ws = workspaces[i]; i++) {
+    var element = document.createElement('div');
+    container.appendChild(element);
+    var rect = ws.workspaceArea_;
+    element.style.top = '' + Math.floor(rect.top) + 'px';
+    element.style.left = '' + Math.floor(rect.left) + 'px';
+    element.style.width = '' + Math.floor(rect.width) + 'px';
+    element.style.height = '' + Math.floor(rect.height) + 'px';
+    element.style.position = 'absolute';
+    if (opt_emphasize && opt_emphasize == ws) {
+      element.style.border = '2px solid #ff0000';
+    } else {
+      element.style.border = '1px dotted #000';
+    }
+    element.style.zIndex = '9999999';
+  }
+};
