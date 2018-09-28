@@ -1171,15 +1171,15 @@ Blockly.WorkspaceSvg.prototype.recordDeleteAreas = function() {
 };
 
 /**
- * Make the bounding rectangle which contains this workspace. These are
- * necessary to detect if mouse is over the elements.
+ * Make the bounding rectangle which contains the background of this workspace.
+ * These are necessary to detect if mouse is over the elements.
  */
 Blockly.WorkspaceSvg.prototype.recordWorkspaceArea = function() {
   if (this.isFlyout) {
     var rect = this.ownerFlyout_.getBoundingRectangle();
   } else {
     var rect = goog.math.Rect.createFromBox(
-        this.svgGroup_.getBoundingClientRect());
+        this.svgBackground_.getBoundingClientRect());
   }
   this.workspaceArea_ = rect;
 };
