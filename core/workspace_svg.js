@@ -479,7 +479,7 @@ Blockly.WorkspaceSvg.prototype.createDom = function(opt_backgroundClass) {
     this.grid_.update(this.scale);
   }
   this.recordDeleteAreas();
-  this.recordWorkspaceAreas();
+  this.recordWorkspaceArea();
   return this.svgGroup_;
 };
 
@@ -656,7 +656,7 @@ Blockly.WorkspaceSvg.prototype.getToolbox = function() {
 Blockly.WorkspaceSvg.prototype.updateScreenCalculations_ = function() {
   this.updateInverseScreenCTM();
   this.recordDeleteAreas();
-  this.recordWorkspaceAreas();
+  this.recordWorkspaceArea();
 };
 
 /**
@@ -1171,10 +1171,10 @@ Blockly.WorkspaceSvg.prototype.recordDeleteAreas = function() {
 };
 
 /**
- * Make the bounding rectangles which contain this workspace and flyout. These
- * are necessary to detect if mouse is over the elements.
+ * Make the bounding rectangle which contains this workspace. These are
+ * necessary to detect if mouse is over the elements.
  */
-Blockly.WorkspaceSvg.prototype.recordWorkspaceAreas = function() {
+Blockly.WorkspaceSvg.prototype.recordWorkspaceArea = function() {
   if (this.isFlyout) {
     var rect = this.ownerFlyout_.getBoundingRectangle();
   } else {
@@ -1182,10 +1182,6 @@ Blockly.WorkspaceSvg.prototype.recordWorkspaceAreas = function() {
         this.svgGroup_.getBoundingClientRect());
   }
   this.workspaceArea_ = rect;
-
-  if (this.flyout_) {
-    this.flyoutArea_ = this.flyout_.getBoundingRectangle();
-  }
 };
 
 /**
@@ -1211,7 +1207,8 @@ Blockly.WorkspaceSvg.prototype.isDeleteArea = function(e) {
  */
 Blockly.WorkspaceSvg.prototype.isFlyoutArea = function(e) {
   var xy = new goog.math.Coordinate(e.clientX, e.clientY);
-  return !!this.flyoutArea_ && this.flyoutArea_.contains(xy);
+  var rect = this.flyout_ && this.flyout_.getWorkspace().workspaceArea_;
+  return !!rect && rect.contains(xy);
 };
 
 /**
