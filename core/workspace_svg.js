@@ -903,6 +903,15 @@ Blockly.WorkspaceSvg.prototype.isVisible = function() {
 };
 
 /**
+ * Is the workspace for a mutator, or the target workspace is for a mutator?
+ * @return {boolean} True if the workspace or the target workspace is for a
+ *     mutator.
+ */
+Blockly.WorkspaceSvg.prototype.isInMutator = function() {
+  return this.isMutator || this.isFlyout && this.targetWorkspace.isMutator;
+};
+
+/**
  * Toggles the visibility of the workspace.
  * Currently only intended for main workspace.
  * @param {boolean} isVisible True if workspace should be visible.
@@ -1263,6 +1272,9 @@ Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
   var children = Blockly.WorkspaceTree.getChildren(mainWS);
   var targetWS = mainWS;
   for (var i = 0, ws; ws = children[i]; i++) {
+    if (ws.isInMutator()) {
+      ws.recordWorkspaceArea();
+    }
     if (!ws.isVisible() || !ws.workspaceArea_.contains(xy)) {
       continue;
     }
