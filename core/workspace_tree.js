@@ -148,3 +148,17 @@ Blockly.WorkspaceTree.getChildren = function(workspace) {
   }
   return childrenWS;
 };
+
+/**
+ * Return a list of all workspace related to the given workspace. Two workspace
+ * is related if they share the same main workspace.
+ * @param {!Blockly.Workspace} workspace Workspace whose related workspaces to
+ *     get.
+ * @return {!Array} List of related workspace.
+ */
+Blockly.WorkspaceTree.getFamily = function(workspace) {
+  var mainWorkspace = workspace.getMainWorkspace();
+  var children = Blockly.WorkspaceTree.getChildren(mainWorkspace);
+  var family = [mainWorkspace].concat(children);
+  return family;
+};

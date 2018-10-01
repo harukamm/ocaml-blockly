@@ -201,12 +201,7 @@ Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY, hea
   // surface.
   this.draggingBlock_.moveToDragSurface_();
 
-  var toolbox = this.workspace_.getToolbox();
-  if (toolbox) {
-    var style = this.draggingBlock_.isDeletable() ? 'blocklyToolboxDelete' :
-        'blocklyToolboxGrab';
-    toolbox.addStyle(style);
-  }
+  this.setToolboxCursorStyle_(true);
 };
 
 /**
@@ -281,12 +276,7 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
   }
   this.workspace_.setResizesEnabled(true);
 
-  var toolbox = this.workspace_.getToolbox();
-  if (toolbox) {
-    var style = this.draggingBlock_.isDeletable() ? 'blocklyToolboxDelete' :
-        'blocklyToolboxGrab';
-    toolbox.removeStyle(style);
-  }
+  this.setToolboxCursorStyle_(false);
   Blockly.Events.setGroup(false);
 };
 
@@ -375,6 +365,36 @@ Blockly.BlockDragger.prototype.updateCursorDuringBlockDrag_ = function() {
     this.draggingBlock_.setDeleteStyle(false);
     if (trashcan) {
       trashcan.setOpen_(false);
+    }
+  }
+};
+
+/**
+ * Toggle the cursor effect over toolboxes which affect the dragging block by
+ * adding or removing a class.
+ * @param {boolean} enable True if the cursor effect should be enabled, false
+ *   otherwise.
+ */
+Blockly.BlockDragger.prototype.setToolboxCursorStyle_ = function(enable) {
+  var workspaceList;
+  if (this.draggingBlock_.isTransferable()) {
+    // No only toolbox of this workspace but also that of other related
+    // workspace affect the block.
+    workspaceList = Blockly.WorkspaceTree.getFamily(this.workspace_);
+  } else {
+    // Only toolbox of this workspace affect the block.
+    workspaceList = [this.workspace_];
+  }
+  for (var i = 0, ws; ws = workspaceList[i]; i++) {
+    var toolbox = ws.getToolbox();
+    if (toolbox) {
+      var style = this.draggingBlock_.isDeletable() ? 'blocklyToolboxDelete' :
+          'blocklyToolboxGrab';
+      if (enable) {
+        toolbox.addStyle(style);
+      } else {
+        toolbox.removeStyle(style);
+      }
     }
   }
 };
