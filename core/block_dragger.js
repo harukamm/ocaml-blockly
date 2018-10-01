@@ -225,16 +225,21 @@ Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
   this.dragIcons_(delta);
 
   this.deleteArea_ = this.workspace_.isDeleteArea(e);
-  if (this.deleteArea_ == Blockly.DELETE_AREA_TOOLBOX &&
-      this.draggingBlock_.workspace.isMutator &&
-      this.draggingBlock_.isTransferable()) {
-    // When transferable blocks are dragged beyond the shown flyout, they may
-    // transfer another workspace. Don't delete them.
-    if (!this.workspace_.isFlyoutArea(e)) {
-      this.deleteArea_ = false;
+  if (this.draggingBlock_.isTransferable()) {
+    // If the dragging block is transferable, other delete areas of possible
+    // workspace to transfer also affect the block.
+    var mainWorkspace = this.workspace_.getMainWorkspace();
+    var isMainDeleteArea = mainWorkspace.isDeleteArea(e);
+    if (isMainDeleteArea) {
+      // If the block is over a delete area of the main workspace, the block
+      // should be deleted.
+      this.deleteArea_ = isMainDeleteArea;
+    } else {
+      // Blocks dragged inside any shown flyout should be deleted.
+      var pointedWorkspace = this.workspace_.detectWorkspace(e);
+      this.deleteArea_ = pointedWorkspace.isFlyout ?
+          Blockly.DELETE_AREA_TOOLBOX : null;
     }
-    // TODO: Blocks dragged inside any shown flyout should be deleted even if
-    // blocks are transferable.
   }
   this.draggedConnectionManager_.update(delta, this.deleteArea_);
 
