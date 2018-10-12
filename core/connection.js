@@ -321,7 +321,8 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target) {
     return Blockly.Connection.REASON_SELF_CONNECTION;
   } else if (target.type != Blockly.OPPOSITE_TYPE[this.type]) {
     return Blockly.Connection.REASON_WRONG_TYPE;
-  } else if (blockA && blockB && blockA.workspace !== blockB.workspace) {
+  } else if (blockA && blockB && blockA.workspace !== blockB.workspace &&
+      !blockA.isTransferable() && !blockB.isTransferable()) {
     return Blockly.Connection.REASON_DIFFERENT_WORKSPACES;
   } else if (!this.checkType_(target)) {
     return Blockly.Connection.REASON_CHECKS_FAILED;

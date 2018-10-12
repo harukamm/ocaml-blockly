@@ -79,6 +79,15 @@ Blockly.WorkspaceTree.remove = function(workspace) {
 };
 
 /**
+ * Is the workspace is the main one?
+ * @param {!Blockly.Workspace} workspace Workspace to test.
+ * @return {boolean} True if the workspace is main, false otherwise.
+ */
+Blockly.WorkspaceTree.isMain = function(workspace) {
+  return workspace.id in Blockly.WorkspaceTree.Root.children;
+};
+
+/**
  * Return the parent of this node.
  * @return {Blockly.WorkspaceTree} The parent of this node, or null.
  */

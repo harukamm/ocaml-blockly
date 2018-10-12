@@ -187,7 +187,26 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
  *     and 'radius' which is the distance.
  */
 Blockly.RenderedConnection.prototype.closest = function(maxLimit, dxy) {
-  return this.dbOpposite_.searchForClosest(this, maxLimit, dxy);
+  if (this.sourceBlock_.isTransferable()) {
+    var workspace = this.sourceBlock_.workspace;
+    var dbList = [];
+    if (workspace) {
+      var family = Blockly.WorkspaceTree.getFamily(workspace);
+      for (var i = 0, ws; ws = family[i]; i++) {
+        if (!ws.isFlyout) {
+          var oppositeType = Blockly.OPPOSITE_TYPE[this.type];
+          var db = ws.connectionDBList[oppositeType];
+          var surfaceDistance = workspace.getRelativeToWorkspaceXY(ws);
+          var relativeDxy = goog.math.Coordinate.sum(surfaceDistance, dxy);
+          dbList.push({db: db, dxy: relativeDxy});
+        }
+      }
+    }
+    return Blockly.ConnectionDB.searchForClosestFromDBList(
+        dbList, this, maxLimit, dxy);
+  } else {
+    return this.dbOpposite_.searchForClosest(this, maxLimit, dxy);
+  }
 };
 
 /**
