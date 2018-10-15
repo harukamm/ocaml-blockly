@@ -92,7 +92,7 @@ Blockly.WorkspaceTransferManager.prototype.checkTransferable_ = function() {
  * @package
  */
 Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
-  return !!this.pointedWorkspace_ && this.pointedWorkspace != this.workspace_;
+  return !!this.pointedWorkspace_ && this.pointedWorkspace_ != this.workspace_;
 };
 
 /**
@@ -101,7 +101,7 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
  * @package
  */
 Blockly.WorkspaceTransferManager.prototype.applyTransfer = function() {
-  if (!this.pointedWorkspace || this.pointedWorkspace_ == this.workspace_) {
+  if (!this.pointedWorkspace_ || this.pointedWorkspace_ == this.workspace_) {
     // Does nothing if the mouse event occurs over this workspace.
     return;
   }
