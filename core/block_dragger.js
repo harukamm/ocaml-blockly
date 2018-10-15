@@ -28,6 +28,7 @@ goog.provide('Blockly.BlockDragger');
 
 goog.require('Blockly.BlockAnimations');
 goog.require('Blockly.DraggedConnectionManager');
+goog.require('Blockly.WorkspaceTransferManager');
 goog.require('Blockly.Events.BlockMove');
 
 goog.require('goog.math.Coordinate');
@@ -57,12 +58,24 @@ Blockly.BlockDragger = function(block, workspace) {
   this.workspace_ = workspace;
 
   /**
+   * Object that keeps track of which workspace the dragged block would
+   * transfer to.
+   * @type {!Blockly.WorkspaceTransferManager}
+   * @private
+   */
+  this.workspaceTransferManager_ = new Blockly.WorkspaceTransferManager(
+      this.draggingBlock_);
+
+  /**
    * Object that keeps track of connections on dragged blocks.
    * @type {!Blockly.DraggedConnectionManager}
    * @private
    */
-  this.draggedConnectionManager_ = new Blockly.DraggedConnectionManager(
+  this.draggedConnectionManager_ = null;
+  if (this.draggingBlock_.isTransferable()) {
+    this.draggedConnectionManager_ = new Blockly.DraggedConnectionManager(
       this.draggingBlock_);
+  }
 
   /**
    * Which delete area the mouse pointer is over, if any.
@@ -137,6 +150,10 @@ Blockly.BlockDragger.prototype.dispose = function() {
   this.startWorkspace_ = null;
   this.dragIconData_.length = 0;
 
+  if (this.workspaceTransferManager_) {
+    this.workspaceTransferManager_.dispose();
+    this.workspaceTransferManager_ = null;
+  }
   if (this.draggedConnectionManager_) {
     this.draggedConnectionManager_.dispose();
     this.draggedConnectionManager_ = null;
@@ -220,7 +237,8 @@ Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
   this.dragIcons_(delta);
 
   this.deleteArea_ = this.workspace_.isDeleteArea(e);
-  if (this.draggingBlock_.isTransferable()) {
+  if (this.workspaceTransferManager_) {
+    this.workspaceTransferManager_.update(delta);
     // If the dragging block is transferable, other delete areas of possible
     // workspace to transfer also affect the block.
     var mainWorkspace = this.workspace_.getMainWorkspace();
