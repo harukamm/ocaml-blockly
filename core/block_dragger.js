@@ -128,7 +128,7 @@ Blockly.BlockDragger = function(block, workspace) {
  *     coordinates of workspace whose surface is being used.
  */
 Blockly.BlockDragger.prototype.getDragStartXY = function() {
-  if (!this.draggingBlock_.isTransferable()) {
+  if (!this.workspaceTransferManager_) {
     return this.startXY_;
   }
   // The dragging block will use the main workspace's surface.
@@ -351,7 +351,7 @@ Blockly.BlockDragger.prototype.updateCursorDuringBlockDrag_ = function() {
  */
 Blockly.BlockDragger.prototype.setToolboxCursorStyle_ = function(enable) {
   var workspaceList;
-  if (this.draggingBlock_.isTransferable()) {
+  if (this.workspaceTransferManager_) {
     // No only toolbox of this workspace but also that of other related
     // workspace affect the block.
     workspaceList = Blockly.WorkspaceTree.getFamily(this.workspace_);
