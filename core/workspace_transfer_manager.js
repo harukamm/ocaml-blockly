@@ -58,6 +58,16 @@ Blockly.WorkspaceTransferManager = function(block) {
    */
   this.pointedWorkspace_ = null;
 
+  /**
+   * Type of a delete area where the block is pointed at.  It's updated on
+   * every mouse move.
+   * One of {@link Blockly.DELETE_AREA_TOOLBOX}, or
+   * {@link Blockly.DELETE_AREA_NONE}.
+   * @type {?number}
+   * @private
+   */
+  this.deleteArea_ = null;
+
   this.checkTransferable_();
 };
 
@@ -71,6 +81,15 @@ Blockly.WorkspaceTransferManager.prototype.dispose = function() {
   this.mainWorkspace_ = null;
   this.availableWorkspaces_.length = 0;
   this.pointedWorkspace_ = null;
+};
+
+/**
+ * Returns whether the pointed workspace is in a flyout.
+ * @return {boolean} true if the pointed workspace is not null and it's in a
+ *     flyout, false otherwise.
+ */
+Blockly.WorkspaceTransferManager.prototype.isFlyoutPointed = function() {
+  return !!this.pointedWorkspace_ && this.pointedWorkspace_.isFlyout;
 };
 
 /**
@@ -132,6 +151,20 @@ Blockly.WorkspaceTransferManager.prototype.applyTransfer = function() {
  */
 Blockly.WorkspaceTransferManager.prototype.update = function(e) {
   this.pointedWorkspace_ = this.workspace_.detectWorkspace(e);
+
+  // Other delete areas of workspaces the block are able to transfer to also
+  // affect the block.
+  var isMainDeleteArea = this.mainWorkspace_.isDeleteArea(e);
+  if (isMainDeleteArea) {
+    // The block should be deleted if it's inside the deletion are of the main
+    // workspace (toolbox/trashcan).
+    this.deleteArea_ = isMainDeleteArea;
+  } else {
+    // The block is in the deletion are of toolbox if it has pointed at a
+    // flyout.
+    this.deleteArea_ = this.isFlyoutPointed() ?
+        Blockly.DELETE_AREA_TOOLBOX : null;
+  }
 };
 
 /**
