@@ -238,7 +238,7 @@ Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
 
   this.deleteArea_ = this.workspace_.isDeleteArea(e);
   if (this.workspaceTransferManager_) {
-    this.workspaceTransferManager_.update(delta);
+    this.workspaceTransferManager_.update(e);
     // If the dragging block is transferable, other delete areas of possible
     // workspace to transfer also affect the block.
     var mainWorkspace = this.workspace_.getMainWorkspace();
@@ -283,7 +283,9 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
     this.draggingBlock_.moveConnections_(delta.x, delta.y);
     this.draggingBlock_.setDragging(false);
     this.fireMoveEvent_();
-    this.transferWorkspace(e);
+    if (this.workspaceTransferManager_.wouldTransfer()) {
+      this.workspaceTransferManager_.transferWorkspace();
+    }
     if (this.draggedConnectionManager_.wouldConnectBlock()) {
       // Applying connections also rerenders the relevant blocks.
       this.draggedConnectionManager_.applyConnections();
@@ -296,40 +298,6 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
 
   this.setToolboxCursorStyle_(false);
   Blockly.Events.setGroup(false);
-};
-
-/**
- * Let the dragging block transfer to the workspace where the mouse event
- * happens inside. If the event occurs outside the all workspaces, the block
- * will be transferred to the top-most workspace (the main workspace).
- * @param {!Event} e The mouseup/touchend event.
- */
-Blockly.BlockDragger.prototype.transferWorkspace = function(e) {
-  if (!this.draggingBlock_.isTransferable()) {
-    return;
-  }
-  var newWorkspace = this.workspace_.detectWorkspace(e);
-  if (newWorkspace == this.workspace_) {
-    // Does nothing f the mouse event occurs over this workspace.
-    return;
-  }
-  var newWs = newWorkspace.isFlyout ?
-      newWorkspace.targetWorkspace : newWorkspace;
-  if (newWs.isMutator) {
-    var mutator = this.draggingBlock_.mutator;
-    if (mutator && mutator == newWs.ownerMutator_) {
-      // It's not allowed to transfer blocks to a mutator workspace of blocks' mutator.
-      return;
-    }
-  }
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.setGroup(true);
-    // Fire a create event for the new workspace.
-    var event = new Blockly.Events.Create(this.draggingBlock_);
-    event.workspaceId = newWorkspace.id;
-    Blockly.Events.fire(event);
-  }
-  this.draggingBlock_.transferWorkspace(newWorkspace);
 };
 
 /**

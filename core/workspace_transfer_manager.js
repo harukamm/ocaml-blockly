@@ -101,20 +101,37 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
  * @package
  */
 Blockly.WorkspaceTransferManager.prototype.applyTransfer = function() {
-  if (this.pointedWorkspace_) {
-    // TODO: Transfer to pointedWorkspace_ by calling
-    // topBlock_.transferWorkspace.
+  if (!this.pointedWorkspace || this.pointedWorkspace_ == this.workspace_) {
+    // Does nothing if the mouse event occurs over this workspace.
+    return;
   }
+  if (this.pointedWorkspace_.isInMutator()) {
+    var mutator = this.topBlock_.mutator;
+    var newWs = this.pointedWorkspace_.isFlyout ?
+        this.pointedWorkspace_.targetWorkspace : this.pointedWorkspace_;
+    if (mutator && mutator == newWs.ownerMutator_) {
+      // It's not allowed to transfer blocks to a mutator workspace of blocks'
+      // mutator.
+      return;
+    }
+  }
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.setGroup(true);
+    // Fire a create event for the new workspace.
+    var event = new Blockly.Events.Create(this.topBlock_);
+    event.workspaceId = this.pointedWorkspace_.id;
+    Blockly.Events.fire(event);
+  }
+  this.topBlock_.transferWorkspace(this.pointedWorkspace_);
 };
 
 /**
  * Update the pointed workspace based on the most recent move location.
- * @param {!goog.math.Coordinate} dxy Position relative to drag start,
- *     in workspace units.
+ * @param {!Event} e The mouseup/touchend event.
  * @package
  */
-Blockly.WorkspaceTransferManager.prototype.update = function(dxy) {
-  // TODO: Update the pointedWorkspace_.
+Blockly.WorkspaceTransferManager.prototype.update = function(e) {
+  this.pointedWorkspace_ = this.workspace_.detectWorkspace(e);
 };
 
 /**
