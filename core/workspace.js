@@ -28,6 +28,7 @@ goog.provide('Blockly.Workspace');
 
 goog.require('Blockly.VariableMap');
 goog.require('Blockly.WorkspaceComment');
+goog.require('Blockly.WorkspaceTree');
 goog.require('goog.array');
 goog.require('goog.math');
 
