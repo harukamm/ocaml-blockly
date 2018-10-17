@@ -60,22 +60,22 @@ Blockly.BlockDragger = function(block, workspace) {
   /**
    * Object that keeps track of which workspace the dragged block would
    * transfer to.
-   * @type {!Blockly.WorkspaceTransferManager}
+   * @type {Blockly.WorkspaceTransferManager}
    * @private
    */
-  this.workspaceTransferManager_ = new Blockly.WorkspaceTransferManager(
-      this.draggingBlock_);
+  this.workspaceTransferManager_ = null;
+  if (this.draggingBlock_.isTransferable()) {
+    this.workspaceTransferManager_ = new Blockly.WorkspaceTransferManager(
+        this.draggingBlock_);
+  }
 
   /**
    * Object that keeps track of connections on dragged blocks.
    * @type {!Blockly.DraggedConnectionManager}
    * @private
    */
-  this.draggedConnectionManager_ = null;
-  if (this.draggingBlock_.isTransferable()) {
-    this.draggedConnectionManager_ = new Blockly.DraggedConnectionManager(
+  this.draggedConnectionManager_ = new Blockly.DraggedConnectionManager(
       this.draggingBlock_);
-  }
 
   /**
    * Which delete area the mouse pointer is over, if any.
