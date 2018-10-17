@@ -276,7 +276,6 @@ Blockly.Blocks['lists_create_with_item'] = {
         .appendField(Blockly.Msg['LISTS_CREATE_WITH_ITEM_TITLE']);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setTransferable(true);
     this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_ITEM_TOOLTIP']);
     this.contextMenu = false;
   }

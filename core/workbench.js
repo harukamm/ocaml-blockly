@@ -318,15 +318,7 @@ Blockly.Workbench.prototype.getFlyoutMetrics_ = function() {
  */
 Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
   // Decide which blocks to show in a flyout depending on this blocks status.
-  var tree = this.block_.getTreeInFlyout();
-  for (var i = 0, childNode; childNode = tree.childNodes[i]; i++) {
-    var tagName = childNode.tagName.toUpperCase();
-    if (tagName == 'BLOCK') {
-      // All blocks in a workbench should be transferable.
-      childNode.setAttribute('transferable', true);
-    }
-  }
-  return tree;
+  return this.block_.getTreeInFlyout();
 };
 
 /**
