@@ -129,7 +129,8 @@ Blockly.WorkspaceTransferManager.prototype.isDeleteArea = function() {
  * @package
  */
 Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
-  return !!this.pointedWorkspace_ && this.pointedWorkspace_ != this.workspace_;
+  return !!this.pointedWorkspace_ && !this.isFlyoutPointed() &&
+      this.pointedWorkspace_ != this.workspace_;
 };
 
 /**
@@ -138,8 +139,7 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
  * @package
  */
 Blockly.WorkspaceTransferManager.prototype.applyTransfer = function() {
-  if (!this.pointedWorkspace_ || this.pointedWorkspace_ == this.workspace_) {
-    // Does nothing if the mouse event occurs over this workspace.
+  if (!this.wouldTransfer()) {
     return;
   }
   if (this.pointedWorkspace_.isInMutator()) {
