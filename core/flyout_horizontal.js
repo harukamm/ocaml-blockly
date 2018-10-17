@@ -318,6 +318,20 @@ Blockly.HorizontalFlyout.prototype.isDragTowardWorkspace = function(
 };
 
 /**
+ * Return the rectangle for this flyout in viewport coordinates.
+ * @return {goog.math.Rect} Rectangle which contains this flyout.
+ */
+Blockly.HorizontalFlyout.prototype.getBoundingRectangle = function() {
+  if (!this.svgGroup_) {
+    return null;
+  }
+
+  var flyoutRect = this.svgGroup_.getBoundingClientRect();
+  return new goog.math.Rect(flyoutRect.left, flyoutRect.top,
+      flyoutRect.width, flyoutRect.height);
+};
+
+/**
  * Return the deletion rectangle for this flyout in viewport coordinates.
  * @return {goog.math.Rect} Rectangle in which to delete.
  */
@@ -326,7 +340,7 @@ Blockly.HorizontalFlyout.prototype.getClientRect = function() {
     return null;
   }
 
-  var flyoutRect = this.svgGroup_.getBoundingClientRect();
+  var flyoutRect = this.getBoundingRectangle();
   // BIG_NUM is offscreen padding so that blocks dragged beyond the shown flyout
   // area are still deleted.  Must be larger than the largest screen size,
   // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
