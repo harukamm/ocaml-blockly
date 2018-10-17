@@ -105,6 +105,15 @@ Blockly.WorkspaceTransferManager.prototype.checkTransferable_ = function() {
 };
 
 /**
+ * Is the most recent mouse event over a delete area?
+ * @return {?number} Null if not over a delete area, or an enum representing
+ *     which delete area the event is over.
+ */
+Blockly.WorkspaceTransferManager.prototype.isDeleteArea = function() {
+  return this.deleteArea_;
+};
+
+/**
  * Return whether the block would transfer to another workspace if dropped
  * immediately, based on information from the most recent move event.
  * @return {boolean} true if the block would transfer if dropped immediately.
