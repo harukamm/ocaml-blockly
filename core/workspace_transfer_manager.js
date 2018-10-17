@@ -108,9 +108,6 @@ Blockly.WorkspaceTransferManager.prototype.isFlyoutPointed = function() {
  */
 Blockly.WorkspaceTransferManager.prototype.checkTransferable_ = function() {
   goog.asserts.assert(this.topBlock_.isTransferable());
-  var children = this.topBlock_.getChildren();
-  goog.asserts.assert(children.length == 0, 'Nested blocks are not ' +
-      'supported yet for workspace transfer.');
 };
 
 /**

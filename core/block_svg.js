@@ -1399,32 +1399,38 @@ Blockly.BlockSvg.prototype.scheduleSnapAndBump = function() {
 };
 
 /**
- * Transfer to another workspace.
+ * Transfer this block to another workspace. If this block has children blocks,
+ * also change their workspace.
  * @param {!Blockly.Workspace} The next workspace of this block.
  */
 Blockly.BlockSvg.prototype.transferWorkspace = function(newWorkspace) {
+  goog.asserts.assert(!this.parentBlock_, 'Block has parent.');
   goog.asserts.assert(this.isTransferable(), 'This block is not transferable.');
-  if (this.workspace == newWorkspace) {
-    return;
-  }
-  var connList = this.getConnections_(true);
+
   var oldWorkspace = this.workspace;
-  oldWorkspace.removeTopBlock(this);
-  for (var i = 0; i < connList.length; i++) {
-    var conn = connList[i];
-    var oldDB = oldWorkspace.connectionDBList[conn.type];
-    var newDB = newWorkspace.connectionDBList[conn.type];
-    var newOppDB = newWorkspace.connectionDBList[Blockly.OPPOSITE_TYPE[conn.type]];
-    oldDB.removeConnection_(conn);
-    newDB.addConnection(conn);
-    conn.db_ = newDB;
-    conn.dbOpposite_ = newOppDB;
+  var blocksToTransfer = [].concat(this.childBlocks_);
+  blocksToTransfer.push(this);
+  for (var i = 0, block; block = blocksToTransfer[i]; i++) {
+    // Change connections properties.
+    var connList = block.getConnections_(true);
+    for (var j = 0, conn; conn = connList[j]; j++) {
+      var oldDB = oldWorkspace.connectionDBList[conn.type];
+      var newDB = newWorkspace.connectionDBList[conn.type];
+      var oppositeType = Blockly.OPPOSITE_TYPE[conn.type];
+      var newOppDB = newWorkspace.connectionDBList[oppositeType];
+      oldDB.removeConnection_(conn);
+      newDB.addConnection(conn);
+      conn.db_ = newDB;
+      conn.dbOpposite_ = newOppDB;
+    }
+    // Remove blocks from block database.
+    delete oldWorkspace.blockDB_[block.id];
+
+    newWorkspace.blockDB_[block.id] = block;
+    block.workspace = newWorkspace;
   }
-  // Remove blocks from block database.
-  delete oldWorkspace.blockDB_[this.id];
-  newWorkspace.blockDB_[this.id] = this;
+  oldWorkspace.removeTopBlock(this);
   newWorkspace.addTopBlock(this);
-  this.workspace = newWorkspace;
   // Append the root node of this block at the new canvas.
   var newBlockCanvas = newWorkspace.getCanvas();
   newBlockCanvas.appendChild(this.getSvgRoot());
