@@ -84,6 +84,15 @@ Blockly.WorkspaceTransferManager.prototype.dispose = function() {
 };
 
 /**
+ * Returns the workspace pointed at by the dragged block based on the most
+ * recent move event.
+ * @return {Blockly.Workspace} The pointed workspace.
+ */
+Blockly.WorkspaceTransferManager.prototype.getPointedWorkspace = function() {
+  return this.pointedWorkspace_;
+};
+
+/**
  * Returns whether the pointed workspace is in a flyout.
  * @return {boolean} true if the pointed workspace is not null and it's in a
  *     flyout, false otherwise.

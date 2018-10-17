@@ -165,11 +165,14 @@ Blockly.DraggedConnectionManager.prototype.applyConnections = function() {
  *     in workspace units.
  * @param {?number} deleteArea One of {@link Blockly.DELETE_AREA_TRASH},
  *     {@link Blockly.DELETE_AREA_TOOLBOX}, or {@link Blockly.DELETE_AREA_NONE}.
+ * @param {Blockly.WorkspaceSvg=} opt_targetWorkspace Workspace to search for
+ *     the closest connection.
  * @package
  */
-Blockly.DraggedConnectionManager.prototype.update = function(dxy, deleteArea) {
+Blockly.DraggedConnectionManager.prototype.update = function(dxy, deleteArea,
+    opt_targetWorkspace) {
   var oldClosestConnection = this.closestConnection_;
-  var closestConnectionChanged = this.updateClosest_(dxy);
+  var closestConnectionChanged = this.updateClosest_(dxy, opt_targetWorkspace);
 
   if (closestConnectionChanged && oldClosestConnection) {
     oldClosestConnection.unhighlight();
@@ -236,10 +239,13 @@ Blockly.DraggedConnectionManager.prototype.initAvailableConnections_ = function(
  * Find the new closest connection, and update internal state in response.
  * @param {!goog.math.Coordinate} dxy Position relative to the drag start,
  *     in workspace units.
+ * @param {Blockly.WorkspaceSvg=} opt_targetWorkspace Workspace to search for
+ *     the closest connection.
  * @return {boolean} Whether the closest connection has changed.
  * @private
  */
-Blockly.DraggedConnectionManager.prototype.updateClosest_ = function(dxy) {
+Blockly.DraggedConnectionManager.prototype.updateClosest_ = function(dxy,
+    opt_targetWorkspace) {
   var oldClosestConnection = this.closestConnection_;
 
   this.closestConnection_ = null;
@@ -247,7 +253,8 @@ Blockly.DraggedConnectionManager.prototype.updateClosest_ = function(dxy) {
   this.radiusConnection_ = Blockly.SNAP_RADIUS;
   for (var i = 0; i < this.availableConnections_.length; i++) {
     var myConnection = this.availableConnections_[i];
-    var neighbour = myConnection.closest(this.radiusConnection_, dxy);
+    var neighbour =
+        myConnection.closest(this.radiusConnection_, dxy, opt_targetWorkspace);
     if (neighbour.connection) {
       this.closestConnection_ = neighbour.connection;
       this.localConnection_ = myConnection;

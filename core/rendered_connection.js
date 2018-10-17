@@ -182,31 +182,31 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
  * @param {number} maxLimit The maximum radius to another connection.
  * @param {!goog.math.Coordinate} dxy Offset between this connection's location
  *     in the database and the current location (as a result of dragging).
+ * @param {Blockly.WorkspaceSvg=} opt_targetWorkspace Workspace to search for
+ *     the closest connection.
  * @return {!{connection: ?Blockly.Connection, radius: number}} Contains two
  *     properties: 'connection' which is either another connection or null,
  *     and 'radius' which is the distance.
  */
-Blockly.RenderedConnection.prototype.closest = function(maxLimit, dxy) {
-  if (this.sourceBlock_.isTransferable()) {
-    var workspace = this.sourceBlock_.workspace;
-    var dbList = [];
-    if (workspace) {
-      var family = Blockly.WorkspaceTree.getFamily(workspace);
-      for (var i = 0, ws; ws = family[i]; i++) {
-        if (!ws.isFlyout) {
-          var oppositeType = Blockly.OPPOSITE_TYPE[this.type];
-          var db = ws.connectionDBList[oppositeType];
-          var surfaceDistance = workspace.getRelativeToWorkspaceXY(ws);
-          var relativeDxy = goog.math.Coordinate.sum(surfaceDistance, dxy);
-          dbList.push({db: db, dxy: relativeDxy});
-        }
-      }
+Blockly.RenderedConnection.prototype.closest = function(maxLimit, dxy,
+    opt_targetWorkspace) {
+  var db, offsetXY;
+  if (opt_targetWorkspace) {
+    if (!this.sourceBlock_.isTransferable()) {
+      throw 'Couldn\'t specify the workspace to search for the closest ' +
+          'connection unless the block is transferable.';
     }
-    return Blockly.ConnectionDB.searchForClosestFromDBList(
-        dbList, this, maxLimit, dxy);
+    var workspace = this.sourceBlock_.workspace;
+    var targetWorkspace = opt_targetWorkspace;
+    db = targetWorkspace.connectionDBList[Blockly.OPPOSITE_TYPE[this.type]];
+    // Translate dxy to a coordinate in targetWorkspace's units.
+    var surfaceXY = workspace.getRelativeToWorkspaceXY(opt_targetWorkspace);
+    offsetXY = goog.math.Coordinate.sum(surfaceXY, dxy);
   } else {
-    return this.dbOpposite_.searchForClosest(this, maxLimit, dxy);
+    db = this.dbOpposite_;
+    offsetXY = dxy;
   }
+  return db.searchForClosest(this, maxLimit, offsetXY);
 };
 
 /**

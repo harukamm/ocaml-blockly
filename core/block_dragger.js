@@ -236,13 +236,19 @@ Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
   this.draggingBlock_.moveDuringDrag(newLoc);
   this.dragIcons_(delta);
 
+  var targetWorkspace;
   if (this.workspaceTransferManager_) {
     this.workspaceTransferManager_.update(e);
     this.deleteArea_ = this.workspaceTransferManager_.isDeleteArea();
+    if (!this.workspaceTransferManager_.isFlyoutPointed()) {
+      // Enable the block to connect to blocks in the pointed workspace.
+      targetWorkspace = this.workspaceTransferManager_.getPointedWorkspace();
+    }
   } else {
     this.deleteArea_ = this.workspace_.isDeleteArea(e);
   }
-  this.draggedConnectionManager_.update(delta, this.deleteArea_);
+  this.draggedConnectionManager_.update(delta, this.deleteArea_,
+      targetWorkspace);
 
   this.updateCursorDuringBlockDrag_();
 };

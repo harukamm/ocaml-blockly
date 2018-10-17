@@ -286,38 +286,6 @@ Blockly.ConnectionDB.prototype.searchForClosest = function(conn, maxRadius,
 };
 
 /**
- * Find the closest compatible connection on this connection from the list of
- * connection databases.
- * @param {Array.<{db: !Blockly.ConnectionDB, dxy: !goog.math.Coordinate}>}
- *     propList List of objects which contain two properties: 'db' which is a
- *     connection DB to search, and 'dxy' which is the offset between this
- *     connection's location in the DB and the current location (as a result of
- *     dragging).
- * @param {!Blockly.Connection} conn The connection searching for a compatible
- *     mate.
- * @param {number} maxRadius The maximum radius to another connection.
- * @return {!{connection: ?Blockly.Connection, radius: number}} Contains two
- *     properties:' connection' which is either another connection or null,
- *     and 'radius' which is the distance.
- */
-Blockly.ConnectionDB.searchForClosestFromDBList = function(propList, conn,
-    maxRadius) {
-  var bestConnection = null;
-  var bestRadius = maxRadius;
-  for (var i = 0, prop; prop = propList[i]; i++) {
-      // TODO: Check the visibility of a workspace.
-      var db = prop.db;
-      var dxy = prop.dxy;
-      var closest = db.searchForClosest(conn, bestRadius, dxy);
-      if (closest.connection) {
-        bestConnection = closest.connection;
-        bestRadius = closest.radius;
-      }
-  }
-  return {connection: bestConnection, radius: bestRadius};
-};
-
-/**
  * Initialize a set of connection DBs for a specified workspace.
  * @param {!Blockly.Workspace} workspace The workspace this DB is for.
  */
