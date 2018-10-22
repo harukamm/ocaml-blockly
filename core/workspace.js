@@ -67,6 +67,11 @@ Blockly.Workspace = function(opt_options) {
    */
   this.commentDB_ = Object.create(null);
   /**
+   * @type {!Object}
+   * @private
+   */
+  this.valueDB_ = Object.create(null);
+  /**
    * @type {!Array.<!Function>}
    * @private
    */
@@ -243,6 +248,30 @@ Blockly.Workspace.prototype.getTopComments = function(ordered) {
     });
   }
   return comments;
+};
+
+/**
+ * Adds a value to the list of values.
+ * @param {!Blockly.TypedVariableValue}
+ */
+Blockly.Workspace.prototype.addValue = function(value) {
+  var id = value.getId();
+  if (this.valueDB_[id]) {
+    throw 'The value already exists in DB.';
+  }
+  this.valueDB_[id] = value;
+};
+
+/**
+ * Remove a value from the list of values.
+ * @param {!Blockly.TypedVariableValue}
+ */
+Blockly.Workspace.prototype.removeValue = function(value) {
+  var id = value.getId();
+  if (!this.valueDB_[id]) {
+    throw 'The value doesn\'t exist in DB.';
+  }
+  delete this.valueDB_[id];
 };
 
 /**
@@ -550,6 +579,15 @@ Blockly.Workspace.prototype.getBlockById = function(id) {
  */
 Blockly.Workspace.prototype.getCommentById = function(id) {
   return this.commentDB_[id] || null;
+};
+
+/**
+ * Find the value on this workspace with the specified ID.
+ * @param {string} id ID of workspace to find.
+ * @return {Blockly.TypedVariableValue} The sought after value or null.
+ */
+Blockly.Workspace.prototype.getValueById = function(id) {
+  return this.valueDB_[id] || null;
 };
 
 /**

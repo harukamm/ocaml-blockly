@@ -77,6 +77,8 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
   this.previousConnection = null;
   /** @type {!Array.<!Blockly.Input>} */
   this.inputList = [];
+  /** @type {!Object<string, !Blockly.TypedVariableValue>} */
+  this.typedValue = {};
   /** @type {boolean|undefined} */
   this.inputsInline = undefined;
   /** @type {boolean} */
@@ -1584,16 +1586,11 @@ Blockly.Block.prototype.findValue = function(parentConnection) {
  * @param {!Blockly.TypedVariableValue} value The value to register.
  */
 Blockly.Block.prototype.registerValue = function(value) {
-  if (!this.valueMap_) {
-    this.valueMap_ = {};
-  }
-  this.valueMap_[value.fieldName] = value;
+  this.typedValue[value.fieldName] = value;
+
   // Store the value to the workspace, and blocks in another workspace also can
   // refer to it.
-  if (!this.workspace.valueMap_) {
-    this.workspace.valueMap_ = {};
-  }
-  this.workspace.valueMap_[value.getId()] = value;
+  this.workspace.addValue(value);
 };
 
 /**
@@ -2304,7 +2301,7 @@ Blockly.Blocks['lambda_typed'] = {
     var returnInput = this.getInput('RETURN');
     var map = {};
     if (returnInput.connection == conn) {
-      var variable = this.valueMap_['VAR'];
+      var variable = this.typedValue['VAR'];
       var name = variable.getName();
       map[name] = variable;
     }
@@ -2566,7 +2563,7 @@ Blockly.Blocks['variables_get_typed'] = {
         this.workspace.id;
     var valueId = xmlElement.getAttribute('data-source');
     var workspace = Blockly.Workspace.getById(workspaceId);
-    var value = workspace.valueMap_[valueId];
+    var value = workspace.getValueById(valueId);
     if (!value) {
       goog.asserts.asset(false);
     }
@@ -2679,7 +2676,7 @@ Blockly.Blocks['let_typed'] = {
     var exp2 = this.getInput('EXP2');
     var map = {};
     if (exp2.connection == conn) {
-      var variable = this.valueMap_['VAR'];
+      var variable = this.typedValue['VAR'];
       var name = variable.getName();
       map[name] = variable;
     }
