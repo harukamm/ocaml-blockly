@@ -871,9 +871,14 @@ Blockly.WorkspaceSvg.prototype.getRelativeToWorkspaceXY = function(
     var element = childWs.getCanvas();
     var x = 0;
     var y = 0;
+    if (childWs.isMutator && parentWs.isMutator) {
+      var childBubbleCanvas = parentWs.getOwnerBubble().getChildBubbleCanvas();
+    }
+    var bubble = parentWs.getOwnerBubble();
     while (element) {
       if (element == parentWs.getCanvas() ||
-          element == parentWs.getBubbleCanvas()) {
+          element == parentWs.getBubbleCanvas() ||
+          element == childBubbleCanvas) {
         break;
       }
       var xy = Blockly.utils.getRelativeXY(element);
