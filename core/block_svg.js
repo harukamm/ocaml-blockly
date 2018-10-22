@@ -1423,6 +1423,13 @@ Blockly.BlockSvg.prototype.transferWorkspace = function(newWorkspace) {
       conn.db_ = newDB;
       conn.dbOpposite_ = newOppDB;
     }
+    // Move block's values to the new workspace.
+    var names = Object.keys(block.typedValue);
+    for (var j = 0, name; name = names[j]; j++) {
+      var value = block.typedValue[name];
+      oldWorkspace.removeValue(value);
+      newWorkspace.addValue(value);
+    }
     // Remove blocks from block database.
     delete oldWorkspace.blockDB_[block.id];
 
