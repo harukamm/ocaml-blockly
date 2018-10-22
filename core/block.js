@@ -2565,7 +2565,8 @@ Blockly.Blocks['variables_get_typed'] = {
     var workspace = Blockly.Workspace.getById(workspaceId);
     var value = workspace.getValueById(valueId);
     if (!value) {
-      goog.asserts.asset(false);
+      throw 'The value of ID "' + valueId + '" does not exist in ' +
+          'the workspace\'s value list.';
     }
     this.setBoundValue(value);
   },
