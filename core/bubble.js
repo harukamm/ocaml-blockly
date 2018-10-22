@@ -423,7 +423,7 @@ Blockly.Bubble.prototype.layoutBubble_ = function() {
   var relativeLeft = -this.width_ / 4;
   var relativeTop = -this.height_ - Blockly.BlockSvg.MIN_BLOCK_Y;
   // Prevent the bubble from being off-screen.
-  var metrics = this.workspace_.getMetrics();
+  var metrics = this.mainWorkspace_.getMetrics();
   metrics.viewWidth /= this.workspace_.scale;
   metrics.viewLeft /= this.workspace_.scale;
   var anchorX = this.anchorXY_.x;
