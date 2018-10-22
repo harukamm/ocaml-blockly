@@ -64,8 +64,7 @@ Blockly.Bubble = function(workspace, content, shape, anchorXY,
     // If we put nested ones onto a bubble canvas of the parent workspace,
     // they will hide inside the parent bubble. To avoid it, put nested ones
     // onto a bubble canvas of the parent bubble.
-    var parentMutator = this.workspace_.ownerMutator_;
-    var parentBubble = parentMutator.getBubble();
+    var parentBubble = this.workspace_.getOwnerBubble();
     canvas = parentBubble.getChildBubbleCanvas();
   } else {
     canvas = this.workspace_.getBubbleCanvas();

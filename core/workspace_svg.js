@@ -737,6 +737,14 @@ Blockly.WorkspaceSvg.prototype.getBubbleCanvas = function() {
 };
 
 /**
+ * Get the bubble which contains this workspace, or null.
+ * @return {Blockly.Bubble} Bubble, or null.
+ */
+Blockly.WorkspaceSvg.prototype.getOwnerBubble = function() {
+  return this.isMutator ? this.ownerMutator_.getBubble() : null;
+};
+
+/**
  * Get the SVG element that contains this workspace.
  * @return {Element} SVG element.
  */
