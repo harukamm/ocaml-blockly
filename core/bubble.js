@@ -49,6 +49,7 @@ goog.require('goog.userAgent');
 Blockly.Bubble = function(workspace, content, shape, anchorXY,
     bubbleWidth, bubbleHeight) {
   this.workspace_ = workspace;
+  this.mainWorkspace_ = workspace.getMainWorkspace();
   this.content_ = content;
   this.shape_ = shape;
 
@@ -58,7 +59,17 @@ Blockly.Bubble = function(workspace, content, shape, anchorXY,
   }
   this.arrow_radians_ = goog.math.toRadians(angle);
 
-  var canvas = workspace.getBubbleCanvas();
+  var canvas;
+  if (this.workspace_.isMutator) {
+    // If we put nested ones onto a bubble canvas of the parent workspace,
+    // they will hide inside the parent bubble. To avoid it, put nested ones
+    // onto a bubble canvas of the parent bubble.
+    var parentMutator = this.workspace_.ownerMutator_;
+    var parentBubble = parentMutator.getBubble();
+    canvas = parentBubble.getChildBubbleCanvas();
+  } else {
+    canvas = this.workspace_.getBubbleCanvas();
+  }
   canvas.appendChild(this.createDom_(content, !!(bubbleWidth && bubbleHeight)));
 
   this.setAnchorLocation(anchorXY);
@@ -220,11 +231,14 @@ Blockly.Bubble.prototype.createDom_ = function(content, hasResize) {
       <line class="blocklyResizeLine" x1="10" y1="14" x2="14" y2="10"/>
     </g>
     [...content goes here...]
+    <g class="blocklyChildBubbleCanvas"></g>
   </g>
   */
   this.bubbleGroup_ = Blockly.utils.createSvgElement('g', {}, null);
+  // Use a filter ID of the main workspace to allow nested bubble. The ID is
+  // generated only for the main one.
   var filter =
-      {'filter': 'url(#' + this.workspace_.options.embossFilterId + ')'};
+      {'filter': 'url(#' + this.mainWorkspace_.options.embossFilterId + ')'};
   if (goog.userAgent.getUserAgentString().indexOf('JavaFX') != -1) {
     // Multiple reports that JavaFX can't handle filters.  UserAgent:
     // Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.44
@@ -271,6 +285,9 @@ Blockly.Bubble.prototype.createDom_ = function(content, hasResize) {
     this.resizeGroup_ = null;
   }
   this.bubbleGroup_.appendChild(content);
+  this.childBubbleCanvas_ = Blockly.utils.createSvgElement('g',
+      {'class': 'blocklyChildBubbleCanvas'}, this.bubbleGroup_);
+
   return this.bubbleGroup_;
 };
 
@@ -612,6 +629,7 @@ Blockly.Bubble.prototype.dispose = function() {
   this.bubbleBack_ = null;
   this.resizeGroup_ = null;
   this.workspace_ = null;
+  this.mainWorkspace_ = null;
   this.content_ = null;
   this.shape_ = null;
 };
@@ -649,6 +667,14 @@ Blockly.Bubble.prototype.getRelativeToSurfaceXY = function() {
   return new goog.math.Coordinate(
       this.anchorXY_.x + this.relativeLeft_,
       this.anchorXY_.y + this.relativeTop_);
+};
+
+/**
+ * Get the SVG element that forms the nested bubble surface.
+ * @return {!SVGElement} SVG element.
+ */
+Blockly.Bubble.prototype.getChildBubbleCanvas = function() {
+  return this.childBubbleCanvas_;
 };
 
 /**
