@@ -126,8 +126,21 @@ Blockly.WorkspaceTransferManager.prototype.isDeleteArea = function() {
  * @package
  */
 Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
-  return !!this.pointedWorkspace_ && !this.isFlyoutPointed() &&
-      this.pointedWorkspace_ != this.workspace_;
+  if (!this.pointedWorkspace_ || this.isFlyoutPointed() ||
+      this.pointedWorkspace_ == this.workspace_) {
+    return false;
+  }
+  var mutator = this.topBlock_.mutator;
+  var mutatorWorkspace = mutator ? mutator.workspace_ : null;
+  if (mutatorWorkspace && this.pointedWorkspace_.isMutator) {
+    // It's not allowed to transfer blocks to a workspace of blocks' mutator
+    // and its child workspaces.
+    if (Blockly.WorkspaceTree.isChildOf(
+        this.pointedWorkspace_, mutatorWorkspace)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 /**
@@ -138,16 +151,6 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
 Blockly.WorkspaceTransferManager.prototype.applyTransfer = function() {
   if (!this.wouldTransfer()) {
     return;
-  }
-  if (this.pointedWorkspace_.isInMutator()) {
-    var mutator = this.topBlock_.mutator;
-    var newWs = this.pointedWorkspace_.isFlyout ?
-        this.pointedWorkspace_.targetWorkspace : this.pointedWorkspace_;
-    if (mutator && mutator == newWs.ownerMutator_) {
-      // It's not allowed to transfer blocks to a mutator workspace of blocks'
-      // mutator.
-      return;
-    }
   }
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.setGroup(true);

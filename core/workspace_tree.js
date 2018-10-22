@@ -136,6 +136,19 @@ Blockly.WorkspaceTree.lowestCommon = function(workspace1, workspace2) {
 };
 
 /**
+ * Get whether the first workspace is a child of the second one.
+ * @param {!Blockly.Workspace} childWs
+ * @param {!Blockly.Workspace} parentWs
+ * @return {Blockly.Workspace} The lowest common workspace, or null.
+ */
+Blockly.WorkspaceTree.isChildOf = function(childWs, parentWs) {
+  var childNode = Blockly.WorkspaceTree.find(childWs.id);
+  var parentNode = Blockly.WorkspaceTree.find(parentWs.id);
+  var lca = Blockly.WorkspaceTree.lca_(childNode, parentNode);
+  return childNode != parentNode && lca == parentNode;
+};
+
+/**
  * Return a list of workspace whose id is in the subtree.
  * @param {!Blockly.Workspace} workspace Workspace to specify the subtree.
  * @retrun {!Array} List of workspace.
