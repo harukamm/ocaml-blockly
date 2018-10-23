@@ -333,6 +333,14 @@ Blockly.Flyout.prototype.setVisible = function(visible) {
 };
 
 /**
+ * Is the container visible?
+ * @return {boolean} True if visible.
+ */
+Blockly.Flyout.prototype.isContainerVisible = function() {
+  return this.containerVisible_;
+};
+
+/**
  * Set whether this flyout's container is visible.
  * @param {boolean} visible Whether the container is visible.
  */

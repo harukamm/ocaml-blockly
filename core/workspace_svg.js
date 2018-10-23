@@ -911,8 +911,16 @@ Blockly.WorkspaceSvg.prototype.getWidth = function() {
  * @return {boolean} True if the workspace is visible.
  */
 Blockly.WorkspaceSvg.prototype.isVisible = function() {
-  return this.rendered && (!this.isFlyout || this.ownerFlyout_.isVisible()) &&
-      (!this.isMutator || this.ownerMutator_.isVisible());
+  if (!this.rendered) {
+    return false;
+  } else if (this.isFlyout) {
+    return this.ownerFlyout_.isVisible() &&
+        this.ownerFlyout_.isContainerVisible();
+  } else if (this.isMutator) {
+    return this.ownerMutator_.isVisible();
+  } else {
+    return true;
+  }
 };
 
 /**
