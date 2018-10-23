@@ -172,6 +172,12 @@ Blockly.Bubble.bubbleMouseUp_ = function(/*e*/) {
 Blockly.Bubble.prototype.rendered_ = false;
 
 /**
+ * Is the bubble visible?
+ * @private
+ */
+Blockly.Bubble.prototype.visible_ = true;
+
+/**
  * Absolute coordinate of anchor point, in workspace coordinates.
  * @type {goog.math.Coordinate}
  * @private
@@ -634,6 +640,26 @@ Blockly.Bubble.prototype.dispose = function() {
   this.mainWorkspace_ = null;
   this.content_ = null;
   this.shape_ = null;
+};
+
+/**
+ * Is the bubble visible?
+ * @return {boolean} True if visible.
+ */
+Blockly.Bubble.prototype.isVisible = function() {
+  return this.visible_;
+};
+
+/**
+ * Set whether the bubble is visible.
+ * @param {boolean} isVisible True if visible.
+ */
+Blockly.Bubble.prototype.setVisible = function(isVisible) {
+  if (this.isVisible() == isVisible) {
+    return;
+  }
+  this.visible_ = isVisible;
+  this.bubbleGroup_.style.display = isVisible ? '' : 'none';
 };
 
 /**

@@ -83,6 +83,7 @@ Blockly.Icon.prototype.createIcon = function() {
         /** @type {!Element} */ (this.iconGroup_), 'blocklyIconGroupReadonly');
   }
   this.drawIcon_(this.iconGroup_);
+  this.init();
 
   this.block_.getSvgRoot().appendChild(this.iconGroup_);
   Blockly.bindEventWithChecks_(
@@ -103,6 +104,12 @@ Blockly.Icon.prototype.dispose = function() {
 };
 
 /**
+ * Initialize the icon and its components.
+ */
+Blockly.Icon.prototype.init = function() {
+};
+
+/**
  * Add or remove the UI indicating if this icon may be clicked or not.
  */
 Blockly.Icon.prototype.updateEditable = function() {
@@ -113,7 +120,7 @@ Blockly.Icon.prototype.updateEditable = function() {
  * @return {boolean} True if the bubble is visible.
  */
 Blockly.Icon.prototype.isVisible = function() {
-  return !!this.bubble_;
+  return !!this.bubble_ && this.bubble_.isVisible();
 };
 
 /**

@@ -147,6 +147,27 @@ Blockly.Workbench.prototype.createEditor_ = function() {
 };
 
 /**
+ * Initialize the icon and its components.
+ */
+Blockly.Workbench.prototype.init = function() {
+  // Create the bubble.
+  var anchorXY = this.iconXY_ ? this.iconXY_ : new goog.math.Coordinate(0, 0);
+  this.bubble_ = new Blockly.Bubble(
+      /** @type {!Blockly.WorkspaceSvg} */ (this.block_.workspace),
+      this.createEditor_(), this.block_.svgPath_, anchorXY, null, null);
+  // Expose this mutator's block's ID on its top-level SVG group.
+  this.bubble_.setSvgId(this.block_.id);
+
+  var tree = this.getFlyoutLanguageTree_();
+  this.workspace_.flyout_.init(this.workspace_);
+  this.workspace_.flyout_.show(tree.childNodes);
+
+  // Hide the workspace and bubble. The mutator should not be shown until user
+  // clicks on the icon.
+  this.setVisible(false);
+};
+
+/**
  * Add or remove the UI indicating if this icon may be clicked or not.
  */
 Blockly.Workbench.prototype.updateEditable = function() {
@@ -236,33 +257,23 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
   }
   Blockly.Events.fire(
       new Blockly.Events.Ui(this.block_, 'mutatorOpen', !visible, visible));
+
+  // Show or hide the bubble. It also shows/hides the mutator because the
+  // bubble contains whole the mutator.
+  this.bubble_.setVisible(visible);
+  // Update the visibility of the workspace for its components.
+  this.workspace_.setVisible(visible);
+
   if (visible) {
-    // Create the bubble.
-    this.bubble_ = new Blockly.Bubble(
-        /** @type {!Blockly.WorkspaceSvg} */ (this.block_.workspace),
-        this.createEditor_(), this.block_.svgPath_, this.iconXY_, null, null);
-    // Expose this mutator's block's ID on its top-level SVG group.
-    this.bubble_.setSvgId(this.block_.id);
-    var tree = this.getFlyoutLanguageTree_();
-    this.workspace_.flyout_.init(this.workspace_);
-    this.workspace_.flyout_.show(tree.childNodes);
+    this.bubble_.setAnchorLocation(this.iconXY_);
     this.resizeBubble_();
-    // When the mutator's workspace changes, update the source block.
-    this.workspace_.addChangeListener(this.workspaceChanged_.bind(this));
+    this.changeListener_ = this.workspaceChanged_.bind(this);
+    this.workspace_.addChangeListener(this.changeListener_);
     this.updateColour();
   } else {
-    // Dispose of the bubble.
-    this.svgDialog_ = null;
-    this.workspace_.dispose();
-    this.workspace_ = null;
-    this.bubble_.dispose();
-    this.bubble_ = null;
     this.workspaceWidth_ = 0;
     this.workspaceHeight_ = 0;
-    if (this.sourceListener_) {
-      this.block_.workspace.removeChangeListener(this.sourceListener_);
-      this.sourceListener_ = null;
-    }
+    this.removeChangeListener();
   }
 };
 
@@ -327,6 +338,25 @@ Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
 Blockly.Workbench.prototype.dispose = function() {
   this.block_.mutator = null;
   Blockly.Icon.prototype.dispose.call(this);
+
+  this.svgDialog_ = null;
+  this.removeChangeListener();
+  this.workspace_.dispose();
+  this.workspace_ = null;
+  this.bubble_.dispose();
+  this.bubble_ = null;
+  this.workspaceWidth_ = 0;
+  this.workspaceHeight_ = 0;
+};
+
+/**
+ * Remove a change listener for the mutator workspace.
+ */
+Blockly.Workbench.prototype.removeChangeListener = function() {
+  if (this.changeListener_) {
+    this.workspace_.removeChangeListener(this.changeListener_);
+    this.changeListener_ = null;
+  }
 };
 
 /**
