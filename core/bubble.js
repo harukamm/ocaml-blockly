@@ -423,10 +423,13 @@ Blockly.Bubble.prototype.layoutBubble_ = function() {
   var relativeLeft = -this.width_ / 4;
   var relativeTop = -this.height_ - Blockly.BlockSvg.MIN_BLOCK_Y;
   // Prevent the bubble from being off-screen.
-  var metrics = this.workspace_.getMetrics();
-  metrics.viewWidth /= this.workspace_.scale;
-  metrics.viewLeft /= this.workspace_.scale;
-  var anchorX = this.anchorXY_.x;
+  var metrics = this.mainWorkspace_.getMetrics();
+  metrics.viewWidth /= this.mainWorkspace_.scale;
+  metrics.viewLeft /= this.mainWorkspace_.scale;
+  var surfaceXY =
+      this.workspace_.getRelativeToWorkspaceXY(this.mainWorkspace_);
+  var anchorX = this.anchorXY_.x + surfaceXY.x;
+  var anchorY = this.anchorXY_.y + surfaceXY.y;
   if (this.workspace_.RTL) {
     if (anchorX - metrics.viewLeft - relativeLeft - this.width_ <
         Blockly.Scrollbar.scrollbarThickness) {
@@ -451,7 +454,7 @@ Blockly.Bubble.prototype.layoutBubble_ = function() {
           this.width_ - Blockly.Scrollbar.scrollbarThickness;
     }
   }
-  if (this.anchorXY_.y + relativeTop < metrics.viewTop) {
+  if (anchorY + relativeTop < metrics.viewTop) {
     // Slide the bubble below the block.
     var bBox = /** @type {SVGLocatable} */ (this.shape_).getBBox();
     relativeTop = bBox.height;
