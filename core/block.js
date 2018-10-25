@@ -81,6 +81,8 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
   this.inputList = [];
   /** @type {!Object<string, !Blockly.TypedVariableValue>} */
   this.typedValue = {};
+  /** @type {?Blockly.TypedVariableValueReference} */
+  this.valueReference = null;
   /** @type {boolean|undefined} */
   this.inputsInline = undefined;
   /** @type {boolean} */
@@ -292,6 +294,15 @@ Blockly.Block.prototype.dispose = function(healStack) {
         connection.disconnect();
       }
       connections[i].dispose();
+    }
+
+    // Dispose the references and all of values.
+    if (this.valueReference) {
+      this.valueReference.dispose();
+    }
+    var fieldNames = Object.keys(this.typedValue);
+    for (var i = 0, name; name = fieldNames[i]; i++) {
+      this.typedValue[name].dispose();
     }
   } finally {
     Blockly.Events.enable();
@@ -1583,6 +1594,15 @@ Blockly.Block.prototype.findValue = function(parentConnection) {
 };
 
 /**
+ * Register the reference to this block.
+ * @param {!Blockly.TypedVariableValue} reference The reference to store to
+ *     this block.
+ */
+Blockly.Block.prototype.registerReference = function(reference) {
+  this.valueReference = reference;
+};
+
+/**
  * Register the variable value to this block so that getter blocks can refer to
  * the value.
  * @param {!Blockly.TypedVariableValue} value The value to register.
@@ -2511,17 +2531,12 @@ Blockly.Blocks['variables_get_typed'] = {
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
-    this.valueReference = new Blockly.TypedVariableValueReference(null, this);
+    this.registerReference(new Blockly.TypedVariableValueReference(null, this));
   },
   /**
    * Whether this block is for variable getter.
    */
   isGetter: true,
-  /**
-   * Object representing a reference of variable for this getter block.
-   * @type {Blockly.TypedVariableValueReference}
-   */
-  valueReference: null,
   /**
    * Return all variables referenced by this block.
    * @return {!Array.<string>} List of variable names.

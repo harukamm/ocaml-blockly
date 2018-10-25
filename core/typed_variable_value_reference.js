@@ -55,3 +55,12 @@ Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
 
   this.block_.referenceChanged();
 };
+
+/**
+ * Dispose of this reference.
+ */
+Blockly.TypedVariableValueReference.prototype.dispose = function() {
+  this.block_.valueReference = null;
+  this.block_ = null;
+  this.value_ = null;
+};

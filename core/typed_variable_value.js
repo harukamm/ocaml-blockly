@@ -90,6 +90,19 @@ Blockly.TypedVariableValue.prototype.getId = function() {
 };
 
 /**
+ * Dispose of this value.
+ */
+Blockly.TypedVariableValue.prototype.dispose = function() {
+  this.referenceList_.length = 0;
+  if (this.sourceBlock_.workspace) {
+    this.sourceBlock_.workspace.removeValue(this);
+  }
+  delete this.sourceBlock_.typedValue[this.fieldName];
+  this.sourceBlock_ = null;
+  this.typeExpr = null;
+};
+
+/**
  * Store the reference to a list of references.
  * @param {!Blockly.TypedVariableValueReference} reference The reference to
  *     store a list of references.
