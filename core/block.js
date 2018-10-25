@@ -1588,11 +1588,8 @@ Blockly.Block.prototype.findValue = function(parentConnection) {
  * @param {!Blockly.TypedVariableValue} value The value to register.
  */
 Blockly.Block.prototype.registerValue = function(value) {
-  this.typedValue[value.fieldName] = value;
-
-  // Store the value to the workspace, and blocks in another workspace also can
-  // refer to it.
-  this.workspace.addValue(value);
+  // NOP.
+  // Value registration is done in the value's constructor.
 };
 
 /**

@@ -59,6 +59,9 @@ Blockly.TypedVariableValue = function(block, typeExpr, fieldName, scopeInputName
    */
   this.referenceList_ = [];
 
+  this.sourceBlock_.typedValue[this.fieldName] = this;
+  this.sourceBlock_.workspace.addValue(this);
+
   // TODO: Register an event for the variable creation.
   // Blockly.Events.fire(new Blockly.Events.VarCreate(this));
 };
