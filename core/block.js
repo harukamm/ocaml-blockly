@@ -36,6 +36,8 @@ goog.require('Blockly.Events.BlockMove');
 goog.require('Blockly.Extensions');
 goog.require('Blockly.Input');
 goog.require('Blockly.Mutator');
+goog.require('Blockly.TypedVariableValue');
+goog.require('Blockly.TypedVariableValueReference');
 goog.require('Blockly.Workbench');
 goog.require('Blockly.Warning');
 goog.require('Blockly.Workspace');
@@ -2512,11 +2514,17 @@ Blockly.Blocks['variables_get_typed'] = {
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
+    this.valueReference = new Blockly.TypedVariableValueReference(null, this);
   },
   /**
    * Whether this block is for variable getter.
    */
   isGetter: true,
+  /**
+   * Object representing a reference of variable for this getter block.
+   * @type {Blockly.TypedVariableValueReference}
+   */
+  valueReference: null,
   /**
    * Return all variables referenced by this block.
    * @return {!Array.<string>} List of variable names.
@@ -2539,11 +2547,10 @@ Blockly.Blocks['variables_get_typed'] = {
   },
 
   /**
-   * Make this getter block bound to the given variable value.
-   * @param {!Blockly.TypedVariableValue} value The value bound to by this
-   *     getter.
+   * Apply the reference's change to this block.
    */
-  setBoundValue: function(value) {
+  referenceChanged: function() {
+    var value = this.valueReference.getBoundValue();
     var name = value.getName()
     var typeExpr = value.typeExpr;
     var model = Blockly.Variables.getOrCreateVariablePackage(
@@ -2568,7 +2575,7 @@ Blockly.Blocks['variables_get_typed'] = {
       throw 'The value of ID "' + valueId + '" does not exist in ' +
           'the workspace\'s value list.';
     }
-    this.setBoundValue(value);
+    this.valueReference.setBoundValue(value);
   },
 
   /**
