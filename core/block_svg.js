@@ -1406,6 +1406,8 @@ Blockly.BlockSvg.prototype.transferWorkspace = function(newWorkspace) {
   goog.asserts.assert(!this.parentBlock_, 'Block has parent.');
   goog.asserts.assert(this.isTransferable(), 'This block is not transferable.');
 
+  // TODO: Recreate blocks through XML. It's not safe to manually change the
+  // workspace of all components (Connection/Comment/VariableModel/etc..).
   var oldWorkspace = this.workspace;
   var blocksToTransfer = [].concat(this.childBlocks_);
   blocksToTransfer.push(this);
