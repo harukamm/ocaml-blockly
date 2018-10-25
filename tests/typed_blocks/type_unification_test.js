@@ -7,25 +7,26 @@ function create_typed_workspace() {
   return new Blockly.Workspace(workspaceOptions);
 }
 
-function isVariableOf(varBlock, block) {
+function isVariableOf(varBlock, block, opt_variableName) {
   var name1, name2, checkType;
   switch (block.type) {
     case 'let_typed':
       name1 = varBlock.getField('VAR').getText();
       name2 = block.getField('VAR').getText();
-      checkType = varBlock.outputConnection.typeExpr ==
-          block.getInput('EXP1').connection.typeExpr;
+      checkType = varBlock.outputConnection.typeExpr.deref() ==
+          block.getInput('EXP1').connection.typeExpr.deref();
       break;
     case 'lambda_typed':
       name1 = varBlock.getField('VAR').getText();
       name2 = block.getField('VAR').getText();
-      checkType = varBlock.outputConnection.typeExpr ==
-          block.outputConnection.typeExpr.arg_type;
+      checkType = varBlock.outputConnection.typeExpr.deref() ==
+          block.outputConnection.typeExpr.arg_type.deref();
       break;
     default:
       return false;
   }
-  return checkType && Blockly.Names.equals(name1, name2);
+  return checkType && name1 === name2 &&
+      (!opt_variableName || opt_variableName === name1);
 }
 
 function test_type_unification_ifThenElseStructure() {
@@ -449,8 +450,8 @@ function test_type_unification_useWorkbenchWithinLetTypedBlock() {
     assertEquals(childNodes.length, 2);
     var innersVars = Blockly.Xml.domToBlock(childNodes[0], workspace);
     var outersVar = Blockly.Xml.domToBlock(childNodes[1], workspace);
-    assertTrue(isVariableOf(innersVars, innerLetBlock));
-    assertTrue(isVariableOf(outersVar, outerLetBlock));
+    assertTrue(isVariableOf(innersVars, innerLetBlock, 'j'));
+    assertTrue(isVariableOf(outersVar, outerLetBlock, 'i'));
 
     var int1 = workspace.newBlock('int_typed');
     outerLetBlock.getInput('EXP1').connection.connect(int1.outputConnection);
@@ -488,8 +489,8 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
     assertEquals(childNodes.length, 2);
     var innersVars = Blockly.Xml.domToBlock(childNodes[0], workspace);
     var outersVar = Blockly.Xml.domToBlock(childNodes[1], workspace);
-    assertTrue(isVariableOf(innersVars, innerLambdaBlock));
-    assertTrue(isVariableOf(outersVar, outerLetBlock));
+    assertTrue(isVariableOf(innersVars, innerLambdaBlock, 'j'));
+    assertTrue(isVariableOf(outersVar, outerLetBlock, 'i'));
 
     var int1 = workspace.newBlock('int_typed');
     outerLetBlock.getInput('EXP1').connection.connect(int1.outputConnection);
