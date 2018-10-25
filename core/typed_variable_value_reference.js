@@ -51,5 +51,7 @@ Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
     throw 'The bound value has already been resolved.';
   }
   this.value_ = value;
+  value.storeReference(this);
+
   this.block_.referenceChanged();
 };

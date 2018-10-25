@@ -52,6 +52,13 @@ Blockly.TypedVariableValue = function(block, typeExpr, fieldName, scopeInputName
    */
   this.id_ = Blockly.utils.genUid();
 
+  /**
+   * A list of references that refer to this value.
+   * @type {!Array.<Blockly.TypedVariableValueReference>}
+   * @private
+   */
+  this.referenceList_ = [];
+
   // TODO: Register an event for the variable creation.
   // Blockly.Events.fire(new Blockly.Events.VarCreate(this));
 };
@@ -79,3 +86,27 @@ Blockly.TypedVariableValue.prototype.getId = function() {
   return this.id_;
 };
 
+/**
+ * Store the reference to a list of references.
+ * @param {!Blockly.TypedVariableValueReference} reference The reference to
+ *     store a list of references.
+ */
+Blockly.TypedVariableValue.prototype.storeReference = function(reference) {
+  if (this.referenceList_.indexOf(reference) != -1) {
+    throw 'Duplicated references.';
+  }
+  this.referenceList_.push(reference);
+};
+
+/**
+ * Remove the reference from a list of references.
+ * @param {!Blockly.TypedVariableValueReference} reference The reference to
+ *     remove from a list of references.
+ */
+Blockly.TypedVariableValue.prototype.removeReference = function(reference) {
+  var removalIndex = this.referenceList_.indexOf(reference);
+  if (removalIndex == -1) {
+    throw 'Unable to find the reference.';
+  }
+  this.referenceList_.splice(removalIndex, 1);
+};
