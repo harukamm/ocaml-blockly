@@ -37,7 +37,6 @@ goog.require('Blockly.Extensions');
 goog.require('Blockly.Input');
 goog.require('Blockly.Mutator');
 goog.require('Blockly.TypedVariableValue');
-goog.require('Blockly.TypedVariableValueReference');
 goog.require('Blockly.Workbench');
 goog.require('Blockly.Warning');
 goog.require('Blockly.Workspace');
@@ -81,8 +80,6 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
   this.inputList = [];
   /** @type {!Object<string, !Blockly.TypedVariableValue>} */
   this.typedValue = {};
-  /** @type {?Blockly.TypedVariableValueReference} */
-  this.valueReference = null;
   /** @type {boolean|undefined} */
   this.inputsInline = undefined;
   /** @type {boolean} */
@@ -296,10 +293,7 @@ Blockly.Block.prototype.dispose = function(healStack) {
       connections[i].dispose();
     }
 
-    // Dispose the references and all of values.
-    if (this.valueReference) {
-      this.valueReference.dispose();
-    }
+    // Dispose all of values.
     var fieldNames = Object.keys(this.typedValue);
     for (var i = 0, name; name = fieldNames[i]; i++) {
       this.typedValue[name].dispose();
@@ -1594,15 +1588,6 @@ Blockly.Block.prototype.findValue = function(parentConnection) {
 };
 
 /**
- * Register the reference to this block.
- * @param {!Blockly.TypedVariableValue} reference The reference to store to
- *     this block.
- */
-Blockly.Block.prototype.registerReference = function(reference) {
-  this.valueReference = reference;
-};
-
-/**
  * Register the variable value to this block so that getter blocks can refer to
  * the value.
  * @param {!Blockly.TypedVariableValue} value The value to register.
@@ -2529,7 +2514,6 @@ Blockly.Blocks['variables_get_typed'] = {
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
-    this.registerReference(new Blockly.TypedVariableValueReference(this));
   },
   /**
    * Whether this block is for variable getter.
@@ -2560,7 +2544,7 @@ Blockly.Blocks['variables_get_typed'] = {
    * Apply the reference's change to this block.
    */
   referenceChanged: function() {
-    var value = this.valueReference.getBoundValue();
+    var value = this.getField('VAR').getBoundValue();
     var name = value.getName()
     var typeExpr = value.typeExpr;
     var model = Blockly.Variables.getOrCreateVariablePackage(
@@ -2585,7 +2569,7 @@ Blockly.Blocks['variables_get_typed'] = {
       throw 'The value of ID "' + valueId + '" does not exist in ' +
           'the workspace\'s value list.';
     }
-    this.valueReference.setBoundValue(value);
+    this.getField('VAR').setBoundValue(value);
   },
 
   /**

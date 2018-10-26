@@ -83,6 +83,24 @@ Blockly.FieldBoundVariable.prototype.setSourceBlock = function(block) {
 };
 
 /**
+ * Sets the variable this reference refers to.
+ * @param {!Blockly.TypedVariableValueReference}
+ */
+Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
+  if (this.value_) {
+    this.value_.setBoundValue(value);
+  }
+};
+
+/**
+ * Returns the variable this reference refers to.
+ * @return {Blockly.TypedVariableValue}
+ */
+Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
+  return this.value_ ? this.value_.getBoundValue() : null;
+};
+
+/**
  * Get the variable's ID.
  * @return {string} Current variable's ID.
  */
