@@ -24,17 +24,14 @@ goog.require('goog.string');
 
 /**
  * Class for a variable's dropdown field with variable binding.
- * @param {?string} varname The default name for the variable.  If null,
- *     a unique variable name will be generated.
  * @extends {Blockly.FieldDropdown}
  * @constructor
  */
-Blockly.FieldBoundVariable = function(varname) {
+Blockly.FieldBoundVariable = function() {
   // The FieldDropdown constructor would call setValue, which might create a
   // variable.  Just do the relevant parts of the constructor.
   this.menuGenerator_ = Blockly.FieldBoundVariable.dropdownCreate;
   this.size_ = new goog.math.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
-  this.defaultVariableName = (varname || '');
 
   this.value_ = null;
 };
@@ -99,7 +96,10 @@ Blockly.FieldBoundVariable.prototype.getValue = function() {
  *     variable is selected.
  */
 Blockly.FieldBoundVariable.prototype.getText = function() {
-  throw 'Not implemented yet.';
+  if (!this.value_) {
+    throw 'The value is not initialized.';
+  }
+  return this.value_.getDisplayName();
 };
 
 /**
