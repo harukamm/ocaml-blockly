@@ -2293,7 +2293,7 @@ Blockly.Blocks['lambda_typed'] = {
     this.setColour(290);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     var B = Blockly.RenderedTypeExpr.generateTypeVar();
-    var variable_field = new Blockly.FieldVariable(
+    var variable_field = new Blockly.FieldBoundVariable(
         Blockly.Msg.VARIABLES_GET_ITEM);
     this.appendDummyInput()
         .appendField('λ')
@@ -2524,7 +2524,7 @@ Blockly.Blocks['variables_get_typed'] = {
     this.setColour(330);
     this.appendDummyInput()
         .appendField(Blockly.Msg.VARIABLES_GET_TITLE)
-        .appendField(new Blockly.FieldVariable(
+        .appendField(new Blockly.FieldBoundVariable(
           Blockly.Msg.VARIABLES_GET_ITEM, this.createDropDownChangeFunction()), 'VAR')
         .appendField(Blockly.Msg.VARIABLES_GET_TAIL);
     this.setOutput(true);
@@ -2657,7 +2657,7 @@ Blockly.Blocks['let_typed'] = {
     this.setColour(330);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     var B = Blockly.RenderedTypeExpr.generateTypeVar();
-    var variable_field = new Blockly.FieldVariable(
+    var variable_field = new Blockly.FieldBoundVariable(
         Blockly.Msg.VARIABLES_GET_ITEM,
         this.createDropDownChangeFunction());
     this.appendDummyInput('VARIABLE')
