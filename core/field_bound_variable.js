@@ -63,10 +63,12 @@ Blockly.FieldBoundVariable.prototype.init = function() {
     // Dropdown has already been initialized once.
     return;
   }
+  Blockly.FieldBoundVariable.superClass_.init.call(this);
+
   if (!this.reference_) {
     this.reference_ = new Blockly.TypedVariableValueReference(this.sourceBlock_);
   }
-  Blockly.FieldBoundVariable.superClass_.init.call(this);
+  this.updateText_();
 };
 
 /**
@@ -125,6 +127,14 @@ Blockly.FieldBoundVariable.prototype.getText = function() {
     throw 'The value is not initialized.';
   }
   return this.reference_.getDisplayName();
+};
+
+/**
+ * Update the text in this field.
+ * @private
+ */
+Blockly.FieldBoundVariable.prototype.updateText_ = function() {
+  this.setText(this.getText());
 };
 
 /**
