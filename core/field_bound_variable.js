@@ -103,18 +103,6 @@ Blockly.FieldBoundVariable.prototype.getText = function() {
 };
 
 /**
- * Get the variable model for the selected variable.
- * Not guaranteed to be in the variable map on the workspace (e.g. if accessed
- * after the variable has been deleted).
- * @return {?Blockly.VariableModel} the selected variable, or null if none was
- *     selected.
- * @package
- */
-Blockly.FieldBoundVariable.prototype.getVariable = function() {
-  return this.variable_;
-};
-
-/**
  * Set the variable ID.
  * @param {string} id New variable ID, which must reference an existing
  *     variable.
