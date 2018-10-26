@@ -33,6 +33,10 @@ Blockly.FieldBoundVariable = function() {
   this.menuGenerator_ = Blockly.FieldBoundVariable.dropdownCreate;
   this.size_ = new goog.math.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
 
+  /**
+   * The reference of this field's variable. Would be initialized in init().
+   * @type {Blockly.TypedVariableValueReference}
+   */
   this.value_ = null;
 };
 goog.inherits(Blockly.FieldBoundVariable, Blockly.FieldDropdown);
@@ -58,6 +62,9 @@ Blockly.FieldBoundVariable.prototype.init = function() {
   if (this.fieldGroup_) {
     // Dropdown has already been initialized once.
     return;
+  }
+  if (!this.value_) {
+    this.value_ = Blockly.TypedVariableValueReference(this.sourceBlock_);
   }
   Blockly.FieldBoundVariable.superClass_.init.call(this);
 };
