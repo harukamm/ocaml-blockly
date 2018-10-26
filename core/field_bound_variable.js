@@ -37,7 +37,7 @@ Blockly.FieldBoundVariable = function() {
    * The reference of this field's variable. Would be initialized in init().
    * @type {Blockly.TypedVariableValueReference}
    */
-  this.value_ = null;
+  this.reference_ = null;
 };
 goog.inherits(Blockly.FieldBoundVariable, Blockly.FieldDropdown);
 
@@ -63,8 +63,8 @@ Blockly.FieldBoundVariable.prototype.init = function() {
     // Dropdown has already been initialized once.
     return;
   }
-  if (!this.value_) {
-    this.value_ = Blockly.TypedVariableValueReference(this.sourceBlock_);
+  if (!this.reference_) {
+    this.reference_ = Blockly.TypedVariableValueReference(this.sourceBlock_);
   }
   Blockly.FieldBoundVariable.superClass_.init.call(this);
 };
@@ -94,8 +94,8 @@ Blockly.FieldBoundVariable.prototype.setSourceBlock = function(block) {
  * @param {!Blockly.TypedVariableValueReference}
  */
 Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
-  if (this.value_) {
-    this.value_.setBoundValue(value);
+  if (this.reference_) {
+    this.reference_.setBoundValue(value);
   }
 };
 
@@ -104,7 +104,7 @@ Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
  * @return {Blockly.TypedVariableValue}
  */
 Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
-  return this.value_ ? this.value_.getBoundValue() : null;
+  return this.reference_ ? this.reference_.getBoundValue() : null;
 };
 
 /**
@@ -121,10 +121,10 @@ Blockly.FieldBoundVariable.prototype.getValue = function() {
  *     variable is selected.
  */
 Blockly.FieldBoundVariable.prototype.getText = function() {
-  if (!this.value_) {
+  if (!this.reference_) {
     throw 'The value is not initialized.';
   }
-  return this.value_.getDisplayName();
+  return this.reference_.getDisplayName();
 };
 
 /**
