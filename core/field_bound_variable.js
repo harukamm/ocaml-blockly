@@ -26,12 +26,6 @@ goog.require('goog.string');
  * Class for a variable's dropdown field with variable binding.
  * @param {?string} varname The default name for the variable.  If null,
  *     a unique variable name will be generated.
- * @param {Function=} opt_validator A function that is executed when a new
- *     option is selected.  Its sole argument is the new option value.
- * @param {Array.<string>=} opt_variableTypes A list of the types of variables
- *     to include in the dropdown.
- * @param {string=} opt_defaultType The type of variable to create if this
- *     field's value is not explicitly set.  Defaults to ''.
  * @extends {Blockly.FieldDropdown}
  * @constructor
  */
@@ -40,7 +34,6 @@ Blockly.FieldBoundVariable = function(varname) {
   // variable.  Just do the relevant parts of the constructor.
   this.menuGenerator_ = Blockly.FieldBoundVariable.dropdownCreate;
   this.size_ = new goog.math.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
-  this.setValidator(opt_validator);
   this.defaultVariableName = (varname || '');
 
   this.value_ = null;

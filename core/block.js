@@ -2525,7 +2525,7 @@ Blockly.Blocks['variables_get_typed'] = {
     this.appendDummyInput()
         .appendField(Blockly.Msg.VARIABLES_GET_TITLE)
         .appendField(new Blockly.FieldBoundVariable(
-          Blockly.Msg.VARIABLES_GET_ITEM, this.createDropDownChangeFunction()), 'VAR')
+          Blockly.Msg.VARIABLES_GET_ITEM), 'VAR')
         .appendField(Blockly.Msg.VARIABLES_GET_TAIL);
     this.setOutput(true);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
@@ -2617,22 +2617,6 @@ Blockly.Blocks['variables_get_typed'] = {
     options.push(option);
   },
 
-  createDropDownChangeFunction: function() {
-    var self = this;
-    return function(text) {
-      var blocks = Blockly.mainWorkspace.getAllBlocks();
-      for (var i = 0; i < blocks.length; i++) {
-        if (blocks[i].getVarsWithTypes) {
-          var varsWithTypes = blocks[i].getVarsWithTypes();
-          if (text in varsWithTypes) {
-            self.setOutputTypeExpr(varsWithTypes[text]);
-          }
-        }
-      }
-      return undefined;
-    };
-  },
-
   clearTypes: function() {
     this.outputConnection.typeExpr.clear();
   },
@@ -2658,8 +2642,7 @@ Blockly.Blocks['let_typed'] = {
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     var B = Blockly.RenderedTypeExpr.generateTypeVar();
     var variable_field = new Blockly.FieldBoundVariable(
-        Blockly.Msg.VARIABLES_GET_ITEM,
-        this.createDropDownChangeFunction());
+        Blockly.Msg.VARIABLES_GET_ITEM);
     this.appendDummyInput('VARIABLE')
         .appendField('let')
         .appendField(variable_field, 'VAR');
@@ -2782,22 +2765,6 @@ Blockly.Blocks['let_typed'] = {
     xmlBlock.setAttribute('type', 'let_typed');
     option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
     options.push(option);
-  },
-
-  createDropDownChangeFunction: function() {
-    var self = this;
-    return function(text) {
-      var blocks = Blockly.mainWorkspace.getAllBlocks();
-      for (var i = 0; i < blocks.length; i++) {
-        if (blocks[i].getVarsWithTypes) {
-          var varsWithTypes = blocks[i].getVarsWithTypes();
-          if (text in varsWithTypes) {
-            self.setOutputTypeExpr(varsWithTypes[text]);
-          }
-        }
-      }
-      return undefined;
-    };
   },
 
   clearTypes: function() {
