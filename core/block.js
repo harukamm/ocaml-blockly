@@ -2529,7 +2529,7 @@ Blockly.Blocks['variables_get_typed'] = {
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
-    this.registerReference(new Blockly.TypedVariableValueReference(null, this));
+    this.registerReference(new Blockly.TypedVariableValueReference(this));
   },
   /**
    * Whether this block is for variable getter.

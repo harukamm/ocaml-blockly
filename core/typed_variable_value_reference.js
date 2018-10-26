@@ -12,19 +12,17 @@ goog.require('goog.string');
 
 /**
  * Class for a reference to variable defined in block.
- * @param {?Blockly.TypedVariableValue} value The variable this reference
- *     refers to.
  * @param {!Blockly.Block} block This reference's block.
  * @constructor
  */
-Blockly.TypedVariableValueReference = function(value, block) {
+Blockly.TypedVariableValueReference = function(block) {
   /**
    * The variable this reference refers to, or null if it's not been resolved
    * yet.
    * @type {Blockly.TypedVariableValue}
    * @private
    */
-  this.value_ = value ? value : null;
+  this.value_ = null;
 
   /**
    * Temporary display name while this reference is not resolved. Otherwise the
