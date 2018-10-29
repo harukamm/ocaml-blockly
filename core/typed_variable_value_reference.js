@@ -87,7 +87,7 @@ Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
   if (this.value_) {
     throw 'The bound value has already been resolved.';
   }
-  if (this.value_.getName() !== this.temporayDisplayName_) {
+  if (value.getName() !== this.temporayDisplayName_) {
     throw 'Names are not identical.';
   }
   this.value_ = value;
