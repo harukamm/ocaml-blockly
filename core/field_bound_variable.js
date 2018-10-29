@@ -128,7 +128,6 @@ Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
  * @override
  */
 Blockly.FieldBoundVariable.prototype.getValue = function() {
-  return null
   return this.reference_ ? this.reference_.getId() : null;
 };
 
