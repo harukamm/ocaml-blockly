@@ -78,7 +78,9 @@ Blockly.FieldBoundVariable.prototype.init = function() {
 Blockly.FieldBoundVariable.prototype.dispose = function() {
   Blockly.FieldBoundVariable.superClass_.dispose.call(this);
   this.workspace_ = null;
-  this.variableMap_ = null;
+  if (this.reference_) {
+    this.reference_.dispose();
+  }
 };
 
 /**

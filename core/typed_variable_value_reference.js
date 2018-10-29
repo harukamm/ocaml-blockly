@@ -45,7 +45,13 @@ Blockly.TypedVariableValueReference = function(block) {
    */
   this.block_ = block;
 
-  Blockly.BoundVariables.addReference(this.block_.workspace, this);
+  /**
+   * The workspace of this reference's block;
+   * @type {!Blockly.Workspace}
+   */
+  this.workspace_ = this.block_.workspace;
+
+  Blockly.BoundVariables.addReference(this.workspace_, this);
 };
 
 /**
@@ -93,9 +99,8 @@ Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
  * Dispose of this reference.
  */
 Blockly.TypedVariableValueReference.prototype.dispose = function() {
-  if (this.block_.workspace) {
-    Blockly.BoundVariables.removeReference(this.block_.workspace, this);
-  }
+  Blockly.BoundVariables.removeReference(this.workspace_, this);
+  this.workspace_ = null;
   this.block_.valueReference = null;
   this.block_ = null;
   this.value_ = null;
