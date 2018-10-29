@@ -139,9 +139,8 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
     field.initReference();
     id = field.getValue();
   }
-  var name = field.getText();
-  var container = goog.dom.createDom('field', null, name);
-  container.setAttribute('name', name);
+  var container = goog.dom.createDom('field', null, field.getText());
+  container.setAttribute('name', field.name);
   container.setAttribute('id', id);
   return container;
 };
@@ -895,7 +894,7 @@ Blockly.Xml.domToField_ = function(block, fieldName, xml) {
   } else if (refersToVariables == Blockly.FIELD_VARIABLE_DEFAULT) {
     Blockly.Xml.domToFieldVariable_(workspace, xml, text, field);
   } else if (refersToVariables == Blockly.FIELD_VARIABLE_BINDING) {
-    Blockly.Xml.domToFieldBoundVariable_(workspace);
+    Blockly.Xml.domToFieldBoundVariable_(workspace, xml, field);
   } else {
     throw 'Unknown field variable type.';
   }
