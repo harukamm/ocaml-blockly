@@ -163,7 +163,7 @@ Blockly.Xml.fieldToDom_ = function(field) {
     } else if (refersToVariables == Blockly.FIELD_VARIABLE_DEFAULT) {
       return Blockly.Xml.fieldToDomVariable_(field);
     } else if (refersToVariables == Blockly.FIELD_VARIABLE_BINDING) {
-      Blockly.Xml.fieldToDomBoundVariable_(field);
+      return Blockly.Xml.fieldToDomBoundVariable_(field);
     } else {
       throw 'Unknown field variable type.';
     }
