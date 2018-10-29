@@ -866,7 +866,7 @@ Blockly.Xml.domToFieldVariable_ = function(workspace, xml, text, field) {
  *     set.
  */
 Blockly.Xml.domToFieldBoundVariable_ = function(workspace, xml, field) {
-  var reference = Blockly.Variables.getReferenceById(workspace, xml.id);
+  var reference = Blockly.BoundVariables.getReferenceById(workspace, xml.id);
   field.setValue(reference.getId());
 };
 
