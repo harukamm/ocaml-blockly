@@ -859,14 +859,16 @@ Blockly.Xml.domToFieldVariable_ = function(workspace, xml, text, field) {
 
 /**
  * Decode an XML bound-variable field tag and set the value of that field.
- * @param {!Blockly.Workspace} workspace The workspace that is currently beging
+ * @param {!Blockly.Workspace} block The workspace that is currently being
  *     deserialized.
  * @param {!Element} xml The field tag to decode.
+ * @param {string} text The text content of the XML tag.
  * @param {!Blockly.FieldBoundVariable} field The field on which the value will be
  *     set.
  */
-Blockly.Xml.domToFieldBoundVariable_ = function(workspace, xml, field) {
-  var reference = Blockly.BoundVariables.getReferenceById(workspace, xml.id);
+Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
+  var reference = Blockly.BoundVariables.getOrCreateReference(block, text,
+      xml.id);
   field.setValue(reference.getId());
 };
 
@@ -893,7 +895,7 @@ Blockly.Xml.domToField_ = function(block, fieldName, xml) {
   } else if (refersToVariables == Blockly.FIELD_VARIABLE_DEFAULT) {
     Blockly.Xml.domToFieldVariable_(workspace, xml, text, field);
   } else if (refersToVariables == Blockly.FIELD_VARIABLE_BINDING) {
-    Blockly.Xml.domToFieldBoundVariable_(workspace, xml, field);
+    Blockly.Xml.domToFieldBoundVariable_(block, xml, text, field);
   } else {
     throw 'Unknown field variable type.';
   }
