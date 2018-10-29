@@ -128,6 +128,25 @@ Blockly.Xml.fieldToDomVariable_ = function(field) {
 };
 
 /**
+ * Encode a bound-variable field as XML.
+ * @param {!Blockly.FieldBoundVariable} field The field to encode.
+ * @return {!Element} XML Element.
+ * @private
+ */
+Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
+  var id = field.getValue();
+  if (id == null) {
+    field.initReference();
+    id = field.getValue();
+  }
+  var name = field.getText();
+  var container = goog.dom.createDom('field', null, name);
+  container.setAttribute('name', name);
+  container.setAttribute('id', id);
+  return container;
+};
+
+/**
  * Encode a field as XML.
  * @param {!Blockly.Field} field The field to encode.
  * @param {!Blockly.Workspace} workspace The workspace that the field is in.
@@ -145,7 +164,7 @@ Blockly.Xml.fieldToDom_ = function(field) {
     } else if (refersToVariables == Blockly.FIELD_VARIABLE_DEFAULT) {
       return Blockly.Xml.fieldToDomVariable_(field);
     } else if (refersToVariables == Blockly.FIELD_VARIABLE_BINDING) {
-      throw 'Not implemented yet.';
+      Blockly.Xml.fieldToDomBoundVariable_(field);
     } else {
       throw 'Unknown field variable type.';
     }
@@ -840,6 +859,20 @@ Blockly.Xml.domToFieldVariable_ = function(workspace, xml, text, field) {
 };
 
 /**
+ * Decode an XML bound-variable field tag and set the value of that field.
+ * @param {!Blockly.Workspace} workspace The workspace that is currently beging
+ *     deserialized.
+ * @param {!Element} xml The field tag to decode.
+ * @param {!Blockly.FieldBoundVariable} field The field on which the value will be
+ *     set.
+ */
+Blockly.Xml.domToFieldBoundVariable_ = function(workspace, xml, field) {
+  var type = xml.getAttribute('variabletype') || '';
+  var reference = Blockly.Variables.getReferenceById(workspace, xml.id);
+  field.setValue(reference.getId());
+};
+
+/**
  * Decode an XML field tag and set the value of that field on the given block.
  * @param {!Blockly.Block} block The block that is currently being deserialized.
  * @param {string} fieldName The name of the field on the block.
@@ -862,7 +895,7 @@ Blockly.Xml.domToField_ = function(block, fieldName, xml) {
   } else if (refersToVariables == Blockly.FIELD_VARIABLE_DEFAULT) {
     Blockly.Xml.domToFieldVariable_(workspace, xml, text, field);
   } else if (refersToVariables == Blockly.FIELD_VARIABLE_BINDING) {
-    throw 'Not implemented yet.';
+    Blockly.Xml.domToFieldBoundVariable_(workspace);
   } else {
     throw 'Unknown field variable type.';
   }
