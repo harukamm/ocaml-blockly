@@ -13,9 +13,10 @@ goog.require('goog.string');
 /**
  * Class for a reference to variable defined in block.
  * @param {!Blockly.Block} block This reference's block.
+ * @param {!string} varName The default name of this reference.
  * @constructor
  */
-Blockly.TypedVariableValueReference = function(block) {
+Blockly.TypedVariableValueReference = function(block, varName) {
   /**
    * The variable this reference refers to, or null if it's not been resolved
    * yet.
@@ -30,7 +31,7 @@ Blockly.TypedVariableValueReference = function(block) {
    * required to be identical just when the reference is resolved.
    * @type {string}
    */
-  this.temporayDisplayName_ = 'hoge';
+  this.temporayDisplayName_ = varName;
 
   /**
    * A unique id for the reference.

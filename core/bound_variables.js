@@ -58,11 +58,13 @@ Blockly.BoundVariables.getValueById = function(workspace, id) {
 
 /**
  * Create a reference on the given block.
+ * @param {!Blockly.Block} block The block to add the reference to.
+ * @param {!string} name The default variable name.
  */
-Blockly.BoundVariables.createReference = function(block) {
+Blockly.BoundVariables.createReference = function(block, name) {
   // The reference would be added to the reference DB of block's workspace in
   // the constructor.
-  return new Blockly.TypedVariableValueReference(block);
+  return new Blockly.TypedVariableValueReference(block, name);
 };
 
 /**
