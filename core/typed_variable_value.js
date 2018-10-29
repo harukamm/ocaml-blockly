@@ -60,7 +60,7 @@ Blockly.TypedVariableValue = function(block, typeExpr, fieldName, scopeInputName
   this.referenceList_ = [];
 
   this.sourceBlock_.typedValue[this.fieldName] = this;
-  this.sourceBlock_.workspace.addValue(this);
+  Blockly.BoundVariables.addValue(this.sourceBlock_.workspace, this);
 
   // TODO: Register an event for the variable creation.
   // Blockly.Events.fire(new Blockly.Events.VarCreate(this));
@@ -95,7 +95,7 @@ Blockly.TypedVariableValue.prototype.getId = function() {
 Blockly.TypedVariableValue.prototype.dispose = function() {
   this.referenceList_.length = 0;
   if (this.sourceBlock_.workspace) {
-    this.sourceBlock_.workspace.removeValue(this);
+    Blockly.BoundVariables.removeValue(this.sourceBlock_.workspace, this);
   }
   delete this.sourceBlock_.typedValue[this.fieldName];
   this.sourceBlock_ = null;

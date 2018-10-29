@@ -2564,7 +2564,7 @@ Blockly.Blocks['variables_get_typed'] = {
         this.workspace.id;
     var valueId = xmlElement.getAttribute('data-source');
     var workspace = Blockly.Workspace.getById(workspaceId);
-    var value = workspace.getValueById(valueId);
+    var value = Blockly.BoundVariables.getValueById(workspace, valueId);
     if (!value) {
       throw 'The value of ID "' + valueId + '" does not exist in ' +
           'the workspace\'s value list.';

@@ -1428,8 +1428,8 @@ Blockly.BlockSvg.prototype.transferWorkspace = function(newWorkspace) {
     var names = Object.keys(block.typedValue);
     for (var j = 0, name; name = names[j]; j++) {
       var value = block.typedValue[name];
-      oldWorkspace.removeValue(value);
-      newWorkspace.addValue(value);
+      Blockly.BoundVariables.removeValue(oldWorkspace, value);
+      Blockly.BoundVariables.addValue(newWorkspace, value);
     }
     // Remove blocks from block database.
     delete oldWorkspace.blockDB_[block.id];
