@@ -110,11 +110,13 @@ Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
 };
 
 /**
- * Get the variable's ID.
+ * Get the reference's ID.
  * @return {string} Current variable's ID.
+ * @override
  */
 Blockly.FieldBoundVariable.prototype.getValue = function() {
-  throw 'Not implemented yet.';
+  return null
+  return this.reference_ ? this.reference_.getId() : null;
 };
 
 /**
@@ -138,12 +140,20 @@ Blockly.FieldBoundVariable.prototype.updateText_ = function() {
 };
 
 /**
- * Set the variable ID.
+ * Set the reference ID.
  * @param {string} id New variable ID, which must reference an existing
  *     variable.
+ * @override
  */
 Blockly.FieldBoundVariable.prototype.setValue = function(id) {
-  throw 'Not implemented yet.';
+  var workspace = this.sourceBlock_.workspace;
+  var reference = Blockly.BoundVariables.getReferenceById(workspace, id);
+
+  if (!reference) {
+    throw 'Reference of ID ' + id + ' doesn\'t exist.';
+  }
+  // TODO: Type check.
+  this.reference_ = reference;
 };
 
 /**
