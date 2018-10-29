@@ -178,16 +178,15 @@ Blockly.FieldBoundVariable.prototype.onItemSelected = function(menu, menuItem) {
 };
 
 /**
- * Overrides referencesVariables(), indicating this field refers to a variable.
- * @return {boolean} True.
+ * Overrides referencesVariables(), indicating this field refers to a bound
+ * variable.
+ * @return {?number} Null if not refer to a variable, or an enum representing
+ *     which type of variable this field refers to.
  * @package
  * @override
  */
 Blockly.FieldBoundVariable.prototype.referencesVariables = function() {
-  // The function is required to return whether this field refers to a variable
-  // representation of Blockly.VariableModel class. This field uses another
-  // representation, so return false here.
-  return false;
+  return Blockly.FIELD_VARIABLE_BINDING;
 };
 
 Blockly.Field.register('field_bound_variable', Blockly.FieldBoundVariable);

@@ -191,6 +191,24 @@ Blockly.OPPOSITE_TYPE[Blockly.PREVIOUS_STATEMENT] = Blockly.NEXT_STATEMENT;
 
 
 /**
+ * ENUM representing that a field references a variable.
+ * Null for backwards compatibility reasons.
+ * @const
+ */
+Blockly.FIELD_VARIABLE_NONE = null;
+
+/**
+ * ENUM representing that a field references a default variable.
+ */
+Blockly.FIELD_VARIABLE_DEFAULT = 1;
+
+/**
+ * ENUM representing that a field references a binding variable.
+ * @const
+ */
+Blockly.FIELD_VARIABLE_BINDING = 2;
+
+/**
  * ENUM for toolbox and flyout at top of screen.
  * @const
  */

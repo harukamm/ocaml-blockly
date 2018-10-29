@@ -354,13 +354,15 @@ Blockly.FieldVariable.prototype.onItemSelected = function(menu, menuItem) {
 };
 
 /**
- * Overrides referencesVariables(), indicating this field refers to a variable.
- * @return {boolean} True.
+ * Overrides referencesVariables(), indicating this field refers to a default
+ * variable of the Blockly.VariableModel class.
+ * @return {?number} Null if not refer to a variable, or an enum representing
+ *     which type of variable this field refers to.
  * @package
  * @override
  */
 Blockly.FieldVariable.prototype.referencesVariables = function() {
-  return true;
+  return Blockly.FIELD_VARIABLE_DEFAULT;
 };
 
 Blockly.Field.register('field_variable', Blockly.FieldVariable);

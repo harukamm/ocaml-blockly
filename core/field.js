@@ -603,12 +603,13 @@ Blockly.Field.prototype.getAbsoluteXY_ = function() {
 };
 
 /**
- * Whether this field references any Blockly variables.  If true it may need to
+ * Whether this field references any Blockly variables. If so, it may need to
  * be handled differently during serialization and deserialization.  Subclasses
  * may override this.
- * @return {boolean} True if this field has any variable references.
+ * @return {?number} Null if not refer to a variable, or an enum representing
+ *     which type of variable this field refers to.
  * @package
  */
 Blockly.Field.prototype.referencesVariables = function() {
-  return false;
+  return Blockly.FIELD_VARIABLE_NONE;
 };

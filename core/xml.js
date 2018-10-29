@@ -137,12 +137,17 @@ Blockly.Xml.fieldToDomVariable_ = function(field) {
  */
 Blockly.Xml.fieldToDom_ = function(field) {
   if (field.name && field.EDITABLE) {
-    if (field.referencesVariables()) {
-      return Blockly.Xml.fieldToDomVariable_(field);
-    } else {
+    var refersToVariables = field.referencesVariables();
+    if (!refersToVariables) {
       var container = goog.dom.createDom('field', null, field.getValue());
       container.setAttribute('name', field.name);
       return container;
+    } else if (refersToVariables == Blockly.FIELD_VARIABLE_DEFAULT) {
+      return Blockly.Xml.fieldToDomVariable_(field);
+    } else if (refersToVariables == Blockly.FIELD_VARIABLE_BINDING) {
+      throw 'Not implemented yet.';
+    } else {
+      throw 'Unknown field variable type.';
     }
   }
   return null;
@@ -851,10 +856,15 @@ Blockly.Xml.domToField_ = function(block, fieldName, xml) {
 
   var workspace = block.workspace;
   var text = xml.textContent;
-  if (field.referencesVariables()) {
-    Blockly.Xml.domToFieldVariable_(workspace, xml, text, field);
-  } else {
+  var refersToVariables = field.referencesVariables();
+  if (!refersToVariables) {
     field.setValue(text);
+  } else if (refersToVariables == Blockly.FIELD_VARIABLE_DEFAULT) {
+    Blockly.Xml.domToFieldVariable_(workspace, xml, text, field);
+  } else if (refersToVariables == Blockly.FIELD_VARIABLE_BINDING) {
+    throw 'Not implemented yet.';
+  } else {
+    throw 'Unknown field variable type.';
   }
 };
 
