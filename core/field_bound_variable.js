@@ -74,7 +74,8 @@ Blockly.FieldBoundVariable.prototype.init = function() {
  */
 Blockly.FieldBoundVariable.prototype.initReference = function() {
   if (!this.reference_) {
-    this.reference_ = new Blockly.TypedVariableValueReference(this.sourceBlock_);
+    this.reference_ =
+        Blockly.BoundVariables.createReference(this.sourceBlock_);
   }
 };
 
