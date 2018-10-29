@@ -253,8 +253,8 @@ Blockly.Workspace.prototype.getTopComments = function(ordered) {
 };
 
 /**
- * Returns the list of values on the workspace. The callers of this
- * function can change the content of the list.
+ * Returns the list of values on the workspace. The callers of this function
+ * change the content of the list.
  * @return {!Object} The value DB of the workspace.
  */
 Blockly.Workspace.prototype.getValueDB = function() {
