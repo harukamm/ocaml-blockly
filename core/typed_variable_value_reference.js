@@ -33,10 +33,19 @@ Blockly.TypedVariableValueReference = function(block) {
   this.temporayDisplayName_ = 'hoge';
 
   /**
+   * A unique id for the reference.
+   * @type {string}
+   * @private
+   */
+  this.id_ = Blockly.utils.genUid();
+
+  /**
    * This reference's block.
    * @type {!Blockly.Block}
    */
   this.block_ = block;
+
+  Blockly.BoundVariables.addReference(this.block_.workspace, this);
 };
 
 /**
@@ -44,6 +53,14 @@ Blockly.TypedVariableValueReference = function(block) {
  */
 Blockly.TypedVariableValueReference.prototype.getDisplayName = function() {
   return this.value_ ? this.value_.getName() : this.temporayDisplayName_;
+};
+
+/**
+ * Returns the ID for the reference
+ * @return {!string} The ID for the reference.
+ */
+Blockly.TypedVariableValueReference.prototype.getId = function() {
+  return this.id_;
 };
 
 /**
@@ -76,6 +93,9 @@ Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
  * Dispose of this reference.
  */
 Blockly.TypedVariableValueReference.prototype.dispose = function() {
+  if (this.block_.workspace) {
+    Blockly.BoundVariables.removeReference(this.block_.workspace, this);
+  }
   this.block_.valueReference = null;
   this.block_ = null;
   this.value_ = null;

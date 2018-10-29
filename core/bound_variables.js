@@ -55,3 +55,47 @@ Blockly.BoundVariables.getValueById = function(workspace, id) {
   var valueDB = workspace.getValueDB();
   return valueDB[id] || null;
 };
+
+/**
+ * Add the reference to the given workspace.
+ * @param {!Blockly.Workspace} workspce The workspace to add the reference to.
+ * @param {!Blockly.TypedVariableValueReference} The reference to add.
+ */
+Blockly.BoundVariables.addReference = function(workspace, reference) {
+  var id = reference.getId();
+  var referenceDB = workspace.getReferenceDB();
+
+  if (referenceDB[id]) {
+    throw 'The reference ID already exists in the DB.';
+  }
+  referenceDB[id] = reference;
+};
+
+/**
+ * Remove the reference with the given workspace.
+ * @param {!Blockly.Workspace} workspace The workspace to remove the reference
+ *     from.
+ * @param {!Blockly.TypedVariableValueReference} The reference to remove.
+ */
+Blockly.BoundVariables.removeReference = function(workspace, reference) {
+  var id = reference.getId();
+  var referenceDB = workspace.getReferenceDB();
+
+  if (!referenceDB[id]) {
+    throw 'The reference doesn\'t exist in DB.';
+  }
+  delete referenceDB[id];
+};
+
+/**
+ * Look up a reference on the given workspace.
+ * @param {!Blockly.Workspace} workspace The workspace to search for the
+ *     reference.
+ * @param {string} id The ID to use to look up the variable, or null.
+ * @return {Blockly.TypedVariableValueReference} The sought after reference or
+ *     null.
+ */
+Blockly.BoundVariables.getReferenceById = function(workspace, id) {
+  var referenceDB = workspace.getReferenceDB();
+  return referenceDB[id] || null;
+};

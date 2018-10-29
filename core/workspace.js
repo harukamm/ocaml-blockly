@@ -72,6 +72,11 @@ Blockly.Workspace = function(opt_options) {
    */
   this.valueDB_ = Object.create(null);
   /**
+   * @type {!Object}
+   * @private
+   */
+  this.referenceDB_ = Object.create(null);
+  /**
    * @type {!Array.<!Function>}
    * @private
    */
@@ -143,6 +148,7 @@ Blockly.Workspace.prototype.dispose = function() {
   this.listeners_.length = 0;
   this.clear();
   this.valueDB_ = {};
+  this.referenceDB_ = {};
 
   // Remove from workspace tree.
   Blockly.WorkspaceTree.remove(this);
@@ -259,6 +265,15 @@ Blockly.Workspace.prototype.getTopComments = function(ordered) {
  */
 Blockly.Workspace.prototype.getValueDB = function() {
   return this.valueDB_;
+};
+
+/**
+ * Returns the list of references on the workspace. The callers of this
+ * function can change the content of the list.
+ * @return {!Object} The reference DB of the workspace.
+ */
+Blockly.Workspace.prototype.getReferenceDB = function() {
+  return this.referenceDB_;
 };
 
 /**
