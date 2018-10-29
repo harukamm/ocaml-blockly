@@ -65,10 +65,17 @@ Blockly.FieldBoundVariable.prototype.init = function() {
   }
   Blockly.FieldBoundVariable.superClass_.init.call(this);
 
+  this.initReference();
+  this.updateText_();
+};
+
+/**
+ * Initialize the reference of this field if has not already been initialized.
+ */
+Blockly.FieldBoundVariable.prototype.initReference = function() {
   if (!this.reference_) {
     this.reference_ = new Blockly.TypedVariableValueReference(this.sourceBlock_);
   }
-  this.updateText_();
 };
 
 /**
