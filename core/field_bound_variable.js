@@ -192,6 +192,19 @@ Blockly.FieldBoundVariable.prototype.getValue = function() {
 };
 
 /**
+ * Set the text in this field.
+ * @param {*} newText New text.
+ * @override
+ */
+Blockly.FieldBoundVariable.prototype.setText = function(newText) {
+  if (!newText) {
+    var text = String(newText);
+    this.data_.setVariableName(newText);
+  }
+  Blockly.FieldBoundVariable.superClass_.setText.call(this, text);
+};
+
+/**
  * Update the text in this field.
  * @private
  */
