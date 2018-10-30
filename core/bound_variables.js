@@ -21,13 +21,14 @@ goog.require('goog.string');
  * @param {string} fieldName The name of the variable field.
  * @param {string} scopeInputName The name of input on which the variable value
  *     is visible.
+ * @param {!string} variableName The default name of this variable value.
  */
 Blockly.BoundVariables.createValue = function(block, valueTypeExpr, fieldName,
-      scopeInputName) {
+      scopeInputName, variableName) {
   // The value would be added to the reference DB of block's workspace in
   // the constructor.
   return new Blockly.TypedVariableValue(block, valueTypeExpr, fieldName,
-      scopeInputName);
+      scopeInputName, variableName);
 };
 
 /**

@@ -16,9 +16,11 @@ goog.require('goog.string');
  * @param {!string} fieldName The name of the variable field.
  * @param {!string} scopeInputName The name of the input where the variable can
  *     be referred to.
+ * @param {!string} variableName The default name of this variable value.
  * @constructor
  */
-Blockly.TypedVariableValue = function(block, typeExpr, fieldName, scopeInputName) {
+Blockly.TypedVariableValue = function(block, typeExpr, fieldName,
+    scopeInputName, variableName) {
   /**
    * The block the variable is declared in.
    * @type {!Blockly.Block}
@@ -50,6 +52,12 @@ Blockly.TypedVariableValue = function(block, typeExpr, fieldName, scopeInputName
    * @type {string}
    */
   this.scopeInputName = scopeInputName;
+
+  /**
+   * The variable name for this value.
+   * @type {string}
+   */
+  this.variableName_ = variableName;
 
   /**
    * A unique id for the variable.
@@ -85,7 +93,7 @@ Blockly.TypedVariableValue.prototype.getSourceBlock = function() {
  * @return {!string} This variable's name.
  */
 Blockly.TypedVariableValue.prototype.getVariableName = function() {
-  return this.sourceBlock_.getField(this.fieldName).getText();
+  return this.variableName_;
 };
 
 /**
@@ -93,11 +101,7 @@ Blockly.TypedVariableValue.prototype.getVariableName = function() {
  * @param {!string} newName The new name for this variable.
  */
 Blockly.TypedVariableValue.prototype.setVariableName = function(newName) {
-  var field = this.sourceBlock_.getField(this.fieldName);
-  var oldName = field.getText();
-  if (oldName !== newName) {
-    field.setText(newName);
-  }
+  this.variableName_ = newName;
   // TODO: Rerender this source block and blocks of references in
   // this.referenceList_.
 };
