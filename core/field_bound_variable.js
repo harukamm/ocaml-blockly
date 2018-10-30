@@ -139,7 +139,6 @@ Blockly.FieldBoundVariable.prototype.initData = function() {
  */
 Blockly.FieldBoundVariable.prototype.dispose = function() {
   Blockly.FieldBoundVariable.superClass_.dispose.call(this);
-  this.workspace_ = null;
   if (this.data_) {
     this.data_.dispose();
   }
@@ -230,13 +229,13 @@ Blockly.FieldBoundVariable.prototype.setValue = function(id) {
   var data;
   if (this.forValue_) {
     data = Blockly.BoundVariables.getValueById(
-        this.workspace_, id);
+        this.sourceBlock_.workspace, id);
     if (!data) {
       throw 'Value of ID ' + id + ' doesn\'t exist.';
     }
   } else {
     data = Blockly.BoundVariables.getReferenceById(
-        this.workspace_, id);
+        this.sourceBlock_.workspace, id);
     if (!data) {
       throw 'Reference of ID ' + id + ' doesn\'t exist.';
     }
