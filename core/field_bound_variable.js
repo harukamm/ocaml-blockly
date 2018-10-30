@@ -70,6 +70,37 @@ Blockly.FieldBoundVariable.fromJson = function(options) {
 };
 
 /**
+ * Obtain a newly created bound-variable field of value type.
+ * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
+ * @param {string} scopeInputName The name of input on which the variable value
+ *     is visible.
+ * @param {string} opt_varName The default name for the variable.  If null, the
+ *     fixed name will be used.
+ * @return {!Blockly.FieldBoundVariable} The created field.
+ */
+Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
+    scopeInputName, opt_varName) {
+  var field = new Blockly.FieldBoundVariable(true, opt_varName);
+  // Add to properties, which is needed in initData().
+  field.valueTypeExpr_ = valueTypeExpr;
+  field.scopeInputName_ = scopeInputName;
+  return field;
+};
+
+/**
+ * Obtain a newly created bound-variable field of reference type.
+ * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
+ * @param {string} scopeInputName The name of input on which the variable value
+ *     is visible.
+ * @param {string} opt_varName The default name for the variable.  If null, the
+ *     fixed name will be used.
+ * @return {!Blockly.FieldBoundVariable} The created field.
+ */
+Blockly.FieldBoundVariable.newReference = function(opt_varName) {
+  return new Blockly.FieldBoundVariable(true, opt_varName);
+};
+
+/**
  * Initialize everything needed to render this field.  This includes making sure
  * that the field's value is valid.
  * @public

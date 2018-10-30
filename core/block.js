@@ -1588,16 +1588,6 @@ Blockly.Block.prototype.findValue = function(parentConnection) {
 };
 
 /**
- * Register the variable value to this block so that getter blocks can refer to
- * the value.
- * @param {!Blockly.TypedVariableValue} value The value to register.
- */
-Blockly.Block.prototype.registerValue = function(value) {
-  // NOP.
-  // Value registration is done in the value's constructor.
-};
-
-/**
  * Return all variables which is declared in this block or its ancestor block,
  * and can be used later the given connection's input.
  * @param {!Blockly.Connection} connection Connection to specify a scope.
@@ -2278,7 +2268,7 @@ Blockly.Blocks['lambda_typed'] = {
     this.setColour(290);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     var B = Blockly.RenderedTypeExpr.generateTypeVar();
-    var variable_field = new Blockly.FieldBoundVariable();
+    var variable_field = Blockly.FieldBoundVariable.newValue(A, 'RETURN');
     this.appendDummyInput()
         .appendField('λ')
         .appendField(variable_field, 'VAR');
@@ -2290,7 +2280,6 @@ Blockly.Blocks['lambda_typed'] = {
     this.setInputsInline(true);
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.FUN(A, B));
-    this.registerValue(new Blockly.TypedVariableValue(this, A, 'VAR', 'RETURN'));
   },
 
   /**
@@ -2508,7 +2497,7 @@ Blockly.Blocks['variables_get_typed'] = {
     this.setColour(330);
     this.appendDummyInput()
         .appendField(Blockly.Msg.VARIABLES_GET_TITLE)
-        .appendField(new Blockly.FieldBoundVariable(), 'VAR')
+        .appendField(Blockly.FieldBoundVariable.newReference(), 'VAR')
         .appendField(Blockly.Msg.VARIABLES_GET_TAIL);
     this.setOutput(true);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
@@ -2623,7 +2612,7 @@ Blockly.Blocks['let_typed'] = {
     this.setColour(330);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     var B = Blockly.RenderedTypeExpr.generateTypeVar();
-    var variable_field = new Blockly.FieldBoundVariable();
+    var variable_field = Blockly.FieldBoundVariable.newValue(A, 'EXP2');
     this.appendDummyInput('VARIABLE')
         .appendField('let')
         .appendField(variable_field, 'VAR');
@@ -2637,7 +2626,6 @@ Blockly.Blocks['let_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
-    this.registerValue(new Blockly.TypedVariableValue(this, A, 'VAR', 'EXP2'));
   },
 
   /**
