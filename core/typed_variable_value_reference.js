@@ -68,7 +68,7 @@ Blockly.TypedVariableValueReference.prototype.getVariableName = function() {
  * Set the variable name for this variable.
  * @param {!string} newName The new name for this variable.
  */
-Blockly.TypedVariableValue.prototype.setVariableName = function(newName) {
+Blockly.TypedVariableValueReference.prototype.setVariableName = function(newName) {
   var oldName = this.getVariableName();
   if (oldName === newName) {
     return;
