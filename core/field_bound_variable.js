@@ -158,8 +158,8 @@ Blockly.FieldBoundVariable.prototype.updateText_ = function() {
  * @override
  */
 Blockly.FieldBoundVariable.prototype.setValue = function(id) {
-  var workspace = this.sourceBlock_.workspace;
-  var reference = Blockly.BoundVariables.getReferenceById(workspace, id);
+  var reference = Blockly.BoundVariables.getReferenceById(
+      this.workspace_, id);
 
   if (!reference) {
     throw 'Reference of ID ' + id + ' doesn\'t exist.';

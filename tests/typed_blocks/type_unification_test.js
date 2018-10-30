@@ -29,6 +29,17 @@ function isVariableOf(varBlock, block, opt_variableName) {
       (!opt_variableName || opt_variableName === name1);
 }
 
+function setVariableName(block, fieldName, name, opt_defautlFieldVariable) {
+  var variable;
+  if (opt_defautlFieldVariable) {
+    variable = Blockly.Variables.getOrCreateVariablePackage(
+        block.workspace, null, name, '');
+  } else {
+    variable = Blockly.BoundVariables.createReference(block, name);
+  }
+  block.getField(fieldName).setValue(variable.getId());
+}
+
 function test_type_unification_ifThenElseStructure() {
   var workspace = create_typed_workspace();
   try {
@@ -436,13 +447,9 @@ function test_type_unification_useWorkbenchWithinLetTypedBlock() {
     // Outer let typed block.
     var outerLetBlock = workspace.newBlock('let_typed');
     // Set a variable `j`
-    var variable2 = Blockly.Variables.getOrCreateVariablePackage(
-        workspace, null, 'j', '');
-    innerLetBlock.getField('VAR').setValue(variable2.getId());
+    setVariableName(innerLetBlock, 'VAR', 'j');
     // Set a variable `i`
-    var variable1 = Blockly.Variables.getOrCreateVariablePackage(
-        workspace, null, 'i', '');
-    outerLetBlock.getField('VAR').setValue(variable1.getId());
+    setVariableName(outerLetBlock, 'VAR', 'i');
 
     outerLetBlock.getInput('EXP2').connection.connect(innerLetBlock.outputConnection);
     var xml = innerLetBlock.getTreeInFlyout();
