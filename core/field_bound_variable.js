@@ -123,7 +123,9 @@ Blockly.FieldBoundVariable.prototype.init = function() {
 Blockly.FieldBoundVariable.prototype.initData = function() {
   if (!this.data_) {
     if (this.forValue_) {
-      throw 'Not implemented yet.';
+      this.data_ = Blockly.BoundVariables.createValue(
+          this.sourceBlock_, this.valueTypeExpr_, this.name,
+          this.scopeInputName_);
     } else {
       this.data_ = Blockly.BoundVariables.createReference(
           this.sourceBlock_, this.defaultVariableName_);
