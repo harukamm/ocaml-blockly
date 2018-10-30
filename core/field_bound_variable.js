@@ -211,14 +211,12 @@ Blockly.FieldBoundVariable.prototype.setText = function(newText) {
 };
 
 /**
- * Update the text in this field.
+ * Update the text in this field with the variable name.
  * @private
  */
 Blockly.FieldBoundVariable.prototype.updateText_ = function() {
-  if (this.data_ && !this.forValue_) {
-    // Update the text because the name of value this reference refers to may
-    // be changed.
-    var vame = this.data_.getVariableName();
+  if (this.data_) {
+    var name = this.data_.getVariableName();
     this.setText(name);
   }
 };
