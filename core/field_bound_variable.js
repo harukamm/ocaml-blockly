@@ -243,6 +243,7 @@ Blockly.FieldBoundVariable.prototype.setValue = function(id) {
   }
   // TODO: Type check.
   this.data_ = data;
+  this.updateText_();
 };
 
 /**
