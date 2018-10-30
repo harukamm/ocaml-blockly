@@ -192,26 +192,16 @@ Blockly.FieldBoundVariable.prototype.getValue = function() {
 };
 
 /**
- * Get the text from this field, which is the selected variable's name.
- * @return {string} The selected variable's name, or the empty string if no
- *     variable is selected.
- */
-Blockly.FieldBoundVariable.prototype.getText = function() {
-  if (!this.data_) {
-    throw 'The variable data is not initialized.';
-  }
-  if (this.forValue_) {
-    throw 'Not implemented yet.';
-  }
-  return this.data_.getVariableName();
-};
-
-/**
  * Update the text in this field.
  * @private
  */
 Blockly.FieldBoundVariable.prototype.updateText_ = function() {
-  this.setText(this.getText());
+  if (this.data_ && !this.forValue_) {
+    // Update the text because the name of value this reference refers to may
+    // be changed.
+    var vame = this.data_.getVariableName();
+    this.setText(name);
+  }
 };
 
 /**
