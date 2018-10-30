@@ -2312,11 +2312,16 @@ Blockly.Blocks['lambda_typed'] = {
     var names = Object.keys(env);
     for (var i = 0, name; name = names[i]; i++) {
       var variable = env[name];
+      var getterBlock = this.workspace.newBlock('variables_get_typed');
+      getterBlock.getField('VAR').setBoundValue(value);
+      var dom = Blockly.Xml.blockToDom(getterBlock);
+      /*
       var dom = goog.dom.createDom('block', {
          'type': 'variables_get_typed',
          'data-workspace': this.workspace.id,
          'data-source': variable.getId()
         });
+      */
       xml.appendChild(dom);
     }
     return xml;
@@ -2534,11 +2539,8 @@ Blockly.Blocks['variables_get_typed'] = {
    */
   referenceChanged: function() {
     var value = this.getField('VAR').getBoundValue();
-    var name = value.getVariableName()
     var typeExpr = value.typeExpr;
-    var model = Blockly.Variables.getOrCreateVariablePackage(
-        this.workspace, null, name, '');
-    this.setFieldValue(model.getId(), 'VAR');
+    this.getField('VAR').updateText_(); // Private
     delete this.outputConnection.typeExpr;
     this.setOutputTypeExpr(typeExpr);
   },
@@ -2680,11 +2682,16 @@ Blockly.Blocks['let_typed'] = {
     var names = Object.keys(env);
     for (var i = 0, name; name = names[i]; i++) {
       var variable = env[name];
+      var getterBlock = this.workspace.newBlock('variables_get_typed');
+      getterBlock.getField('VAR').setBoundValue(variable);
+      var dom = Blockly.Xml.blockToDom(getterBlock);
+      /*
       var dom = goog.dom.createDom('block', {
          'type': 'variables_get_typed',
          'data-workspace': this.workspace.id,
          'data-source': variable.getId()
         });
+      */
       xml.appendChild(dom);
     }
     return xml;
