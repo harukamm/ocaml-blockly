@@ -56,10 +56,12 @@ Blockly.TypedVariableValueReference = function(block, varName) {
 };
 
 /**
- * Gets the display name for this reference.
+ * Gets the variable name for this reference. Returns that of the value if the
+ * value has been resolved.
+ * @return {string} The display name.
  */
-Blockly.TypedVariableValueReference.prototype.getDisplayName = function() {
-  return this.value_ ? this.value_.getName() : this.temporayDisplayName_;
+Blockly.TypedVariableValueReference.prototype.getVariableName = function() {
+  return this.value_ ? this.value_.getVariableName() : this.temporayDisplayName_;
 };
 
 /**
@@ -87,7 +89,7 @@ Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
   if (this.value_) {
     throw 'The bound value has already been resolved.';
   }
-  if (value.getName() !== this.temporayDisplayName_) {
+  if (value.getVariableName() !== this.temporayDisplayName_) {
     throw 'Names are not identical.';
   }
   this.value_ = value;

@@ -84,7 +84,7 @@ Blockly.TypedVariableValue.prototype.getSourceBlock = function() {
  * Get the variable name for this variable.
  * @return {!string} This variable's name.
  */
-Blockly.TypedVariableValue.prototype.getName = function() {
+Blockly.TypedVariableValue.prototype.getVariableName = function() {
   return this.sourceBlock_.getField(this.fieldName).getText();
 };
 

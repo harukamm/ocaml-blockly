@@ -203,7 +203,7 @@ Blockly.FieldBoundVariable.prototype.getText = function() {
   if (this.forValue_) {
     throw 'Not implemented yet.';
   }
-  return this.data_.getDisplayName();
+  return this.data_.getVariableName();
 };
 
 /**

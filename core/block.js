@@ -2294,7 +2294,7 @@ Blockly.Blocks['lambda_typed'] = {
     var map = {};
     if (returnInput.connection == conn) {
       var variable = this.typedValue['VAR'];
-      var name = variable.getName();
+      var name = variable.getVariableName();
       map[name] = variable;
     }
     return map;
@@ -2534,7 +2534,7 @@ Blockly.Blocks['variables_get_typed'] = {
    */
   referenceChanged: function() {
     var value = this.getField('VAR').getBoundValue();
-    var name = value.getName()
+    var name = value.getVariableName()
     var typeExpr = value.typeExpr;
     var model = Blockly.Variables.getOrCreateVariablePackage(
         this.workspace, null, name, '');
@@ -2649,7 +2649,7 @@ Blockly.Blocks['let_typed'] = {
     var map = {};
     if (exp2.connection == conn) {
       var variable = this.typedValue['VAR'];
-      var name = variable.getName();
+      var name = variable.getVariableName();
       map[name] = variable;
     }
     return map;
