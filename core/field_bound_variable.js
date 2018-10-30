@@ -97,7 +97,7 @@ Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
  * @return {!Blockly.FieldBoundVariable} The created field.
  */
 Blockly.FieldBoundVariable.newReference = function(opt_varName) {
-  return new Blockly.FieldBoundVariable(true, opt_varName);
+  return new Blockly.FieldBoundVariable(false, opt_varName);
 };
 
 /**
