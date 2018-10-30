@@ -199,7 +199,13 @@ Blockly.FieldBoundVariable.prototype.getValue = function() {
 Blockly.FieldBoundVariable.prototype.setText = function(newText) {
   if (!newText) {
     var text = String(newText);
-    this.data_.setVariableName(newText);
+    if (this.data_) {
+      this.data_.setVariableName(newText);
+    } else {
+      // Overwrite the default variable name in case of initializing this.data_
+      // later.
+      this.defaultVariableName_ = text;
+    }
   }
   Blockly.FieldBoundVariable.superClass_.setText.call(this, text);
 };
