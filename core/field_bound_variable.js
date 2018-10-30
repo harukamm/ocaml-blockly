@@ -24,23 +24,36 @@ goog.require('goog.string');
 
 /**
  * Class for a variable's dropdown field with variable binding.
- * @param {string} varName The default name for the variable.  If null, the
+ * @param {boolean} isValue Whether the field is for a variable value.
+ *     Otherwise, for a variable reference.
+ * @param {string} opt_varName The default name for the variable.  If null, the
  *     fixed name will be used.
  * @extends {Blockly.FieldDropdown}
  * @constructor
  */
-Blockly.FieldBoundVariable = function(varName) {
+Blockly.FieldBoundVariable = function(isValue, opt_varName) {
   // The FieldDropdown constructor would call setValue, which might create a
   // variable.  Just do the relevant parts of the constructor.
   this.menuGenerator_ = Blockly.FieldBoundVariable.dropdownCreate;
   this.size_ = new goog.math.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
-  this.defaultVariableName_ = varName || 'hoge';
+  this.defaultVariableName_ = opt_varName || 'hoge';
 
   /**
-   * The reference of this field's variable. Would be initialized in init().
-   * @type {Blockly.TypedVariableValueReference}
+   * Whether this field is for a variable value. If true, this field works as
+   * a variable value. Otherwise, as a variable references. Variable references
+   * can refer to one of variable values.
+   * Could not be changed later.
+   * @type {boolean}
    */
-  this.reference_ = null;
+  this.forValue_ = isValue;
+
+  /**
+   * The value of this field's variable if this.forValue_ is true, otherwise
+   * the reference of that.
+   * Would be initialized in init() or setValue().
+   * @type {Blockly.TypedVariableValue|Blockly.TypedVariableValueReference}
+   */
+  this.data_ = null;
 };
 goog.inherits(Blockly.FieldBoundVariable, Blockly.FieldDropdown);
 
@@ -68,17 +81,22 @@ Blockly.FieldBoundVariable.prototype.init = function() {
   }
   Blockly.FieldBoundVariable.superClass_.init.call(this);
 
-  this.initReference();
+  this.initData();
   this.updateText_();
 };
 
 /**
- * Initialize the reference of this field if has not already been initialized.
+ * Initialize the data of this field's variable if has not already been
+ * initialized.
  */
-Blockly.FieldBoundVariable.prototype.initReference = function() {
-  if (!this.reference_) {
-    this.reference_ = Blockly.BoundVariables.createReference(
-        this.sourceBlock_, this.defaultVariableName_);
+Blockly.FieldBoundVariable.prototype.initData = function() {
+  if (!this.data_) {
+    if (this.forValue_) {
+      throw 'Not implemented yet.';
+    } else {
+      this.data_ = Blockly.BoundVariables.createReference(
+          this.sourceBlock_, this.defaultVariableName_);
+    }
   }
 };
 
@@ -89,9 +107,10 @@ Blockly.FieldBoundVariable.prototype.initReference = function() {
 Blockly.FieldBoundVariable.prototype.dispose = function() {
   Blockly.FieldBoundVariable.superClass_.dispose.call(this);
   this.workspace_ = null;
-  if (this.reference_) {
-    this.reference_.dispose();
+  if (this.data_) {
+    this.data_.dispose();
   }
+  this.data_ = null;
 };
 
 /**
@@ -105,30 +124,38 @@ Blockly.FieldBoundVariable.prototype.setSourceBlock = function(block) {
 };
 
 /**
- * Sets the variable this reference refers to.
+ * Sets the value this reference refers to.  Throws an error if this field
+ * is for a variable value.
  * @param {!Blockly.TypedVariableValueReference}
  */
 Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
-  if (this.reference_) {
-    this.reference_.setBoundValue(value);
+  if (this.forValue_) {
+    throw 'Can\'t set a bound value to a variable value.';
+  }
+  if (this.data_) {
+    this.data_.setBoundValue(value);
   }
 };
 
 /**
- * Returns the variable this reference refers to.
+ * Returns the value this reference refers to.  Throws an error is this
+ * field is for a variable value.
  * @return {Blockly.TypedVariableValue}
  */
 Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
-  return this.reference_ ? this.reference_.getBoundValue() : null;
+  if (this.forValue_) {
+    throw 'Can\'t get a bound value from a variable value.';
+  }
+  return this.data_ ? this.data_.getBoundValue() : null;
 };
 
 /**
- * Get the reference's ID.
+ * Get the ID of this field's variable data.
  * @return {string} Current variable's ID.
  * @override
  */
 Blockly.FieldBoundVariable.prototype.getValue = function() {
-  return this.reference_ ? this.reference_.getId() : null;
+  return this.data_ ? this.data_.getId() : null;
 };
 
 /**
@@ -137,10 +164,13 @@ Blockly.FieldBoundVariable.prototype.getValue = function() {
  *     variable is selected.
  */
 Blockly.FieldBoundVariable.prototype.getText = function() {
-  if (!this.reference_) {
-    throw 'The value is not initialized.';
+  if (!this.data_) {
+    throw 'The variable data is not initialized.';
   }
-  return this.reference_.getDisplayName();
+  if (this.forValue_) {
+    throw 'Not implemented yet.';
+  }
+  return this.data_.getDisplayName();
 };
 
 /**
@@ -152,20 +182,23 @@ Blockly.FieldBoundVariable.prototype.updateText_ = function() {
 };
 
 /**
- * Set the reference ID.
- * @param {string} id New variable ID, which must reference an existing
- *     variable.
+ * Set the ID of this field's variable data.
+ * @param {string} id New ID, which must refer to a existing data.
  * @override
  */
 Blockly.FieldBoundVariable.prototype.setValue = function(id) {
-  var reference = Blockly.BoundVariables.getReferenceById(
-      this.workspace_, id);
-
-  if (!reference) {
-    throw 'Reference of ID ' + id + ' doesn\'t exist.';
+  var data;
+  if (this.forValue_) {
+    throw 'Not implemented yet.';
+  } else {
+    data = Blockly.BoundVariables.getReferenceById(
+        this.workspace_, id);
+    if (!data) {
+      throw 'Reference of ID ' + id + ' doesn\'t exist.';
+    }
   }
   // TODO: Type check.
-  this.reference_ = reference;
+  this.data_ = data;
 };
 
 /**
