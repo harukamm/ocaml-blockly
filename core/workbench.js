@@ -46,6 +46,12 @@ Blockly.Workbench.MINIMUM_WIDTH_ = 180;
 Blockly.Workbench.MINIMUM_HEIGHT_ = 100;
 
 /**
+ * Whether the workbench dialog has been initialized.
+ * @private
+ */
+Blockly.Workbench.prototype.initialized_ = false;
+
+/**
  * Draw the mutator icon.
  * @param {!Element} group The icon group.
  * @private
@@ -150,6 +156,9 @@ Blockly.Workbench.prototype.createEditor_ = function() {
  * Initialize the icon and its components.
  */
 Blockly.Workbench.prototype.init = function() {
+  if (this.initialized_) {
+    return;
+  }
   // Create the bubble.
   var anchorXY = this.iconXY_ ? this.iconXY_ : new goog.math.Coordinate(0, 0);
   this.bubble_ = new Blockly.Bubble(
@@ -165,6 +174,8 @@ Blockly.Workbench.prototype.init = function() {
   // Hide the workspace and bubble. The mutator should not be shown until user
   // clicks on the icon.
   this.setVisible(false);
+
+  this.initialized_ = true;
 };
 
 /**
@@ -255,6 +266,9 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
     // No change.
     return;
   }
+  if (!this.initialized_) {
+    this.init();
+  }
   Blockly.Events.fire(
       new Blockly.Events.Ui(this.block_, 'mutatorOpen', !visible, visible));
 
@@ -341,10 +355,14 @@ Blockly.Workbench.prototype.dispose = function() {
 
   this.svgDialog_ = null;
   this.removeChangeListener();
-  this.workspace_.dispose();
-  this.workspace_ = null;
-  this.bubble_.dispose();
-  this.bubble_ = null;
+  if (this.workspace_) {
+    this.workspace_.dispose();
+    this.workspace_ = null;
+  }
+  if (this.bubble_) {
+    this.bubble_.dispose();
+    this.bubble_ = null;
+  }
   this.workspaceWidth_ = 0;
   this.workspaceHeight_ = 0;
 };

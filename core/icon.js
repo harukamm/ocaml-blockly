@@ -83,7 +83,6 @@ Blockly.Icon.prototype.createIcon = function() {
         /** @type {!Element} */ (this.iconGroup_), 'blocklyIconGroupReadonly');
   }
   this.drawIcon_(this.iconGroup_);
-  this.init();
 
   this.block_.getSvgRoot().appendChild(this.iconGroup_);
   Blockly.bindEventWithChecks_(
@@ -101,12 +100,6 @@ Blockly.Icon.prototype.dispose = function() {
   // Dispose of and unlink the bubble.
   this.setVisible(false);
   this.block_ = null;
-};
-
-/**
- * Initialize the icon and its components.
- */
-Blockly.Icon.prototype.init = function() {
 };
 
 /**
