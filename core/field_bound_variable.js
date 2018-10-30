@@ -222,7 +222,11 @@ Blockly.FieldBoundVariable.prototype.updateText_ = function() {
 Blockly.FieldBoundVariable.prototype.setValue = function(id) {
   var data;
   if (this.forValue_) {
-    throw 'Not implemented yet.';
+    data = Blockly.BoundVariables.getValueById(
+        this.workspace_, id);
+    if (!data) {
+      throw 'Value of ID ' + id + ' doesn\'t exist.';
+    }
   } else {
     data = Blockly.BoundVariables.getReferenceById(
         this.workspace_, id);
