@@ -191,6 +191,17 @@ Blockly.FieldBoundVariable.prototype.getValue = function() {
 };
 
 /**
+ * Get the variable name.
+ * @return {!string} Get the name for this variable.
+ */
+Blockly.FieldBoundVariable.prototype.getVariableName = function() {
+  if (!this.data_) {
+    throw 'The variable data is not initalized.';
+  }
+  return this.data_.getVariableName();
+};
+
+/**
  * Set the text in this field.
  * @param {*} newText New text.
  * @override
@@ -215,8 +226,7 @@ Blockly.FieldBoundVariable.prototype.setText = function(newText) {
  */
 Blockly.FieldBoundVariable.prototype.updateText_ = function() {
   if (this.data_) {
-    var name = this.data_.getVariableName();
-    this.setText(name);
+    this.setText(this.getVariableName());
   }
 };
 

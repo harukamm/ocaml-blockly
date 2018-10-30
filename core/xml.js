@@ -139,7 +139,7 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
     field.initData();
     id = field.getValue();
   }
-  var container = goog.dom.createDom('field', null, field.getText());
+  var container = goog.dom.createDom('field', null, field.getVariableName());
   container.setAttribute('name', field.name);
   container.setAttribute('id', id);
   return container;
