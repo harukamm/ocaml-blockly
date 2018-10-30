@@ -142,6 +142,9 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
   var container = goog.dom.createDom('field', null, field.getVariableName());
   container.setAttribute('name', field.name);
   container.setAttribute('id', id);
+  if (field.isForValue()) {
+    container.setAttribute('isvalue', 'true');
+  }
   return container;
 };
 
@@ -867,9 +870,21 @@ Blockly.Xml.domToFieldVariable_ = function(workspace, xml, text, field) {
  *     set.
  */
 Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
-  var reference = Blockly.BoundVariables.getOrCreateReference(block, text,
-      xml.id);
-  field.setValue(reference.getId());
+  var isForValue = xml.getAttribute('isvalue') == 'true';
+  if (isForValue != field.isForValue()) {
+    throw 'Inconsistant variable type (value or reference).';
+  }
+  var variable;
+  if (isForValue) {
+    variable = Blockly.BoundVariables.getValueById(block.workspace, xml.id);
+    if (!variable) {
+      throw 'Variable value doesn\'t exist.';
+    }
+  } else {
+    variable = Blockly.BoundVariables.getOrCreateReference(block, text,
+        xml.id);
+  }
+  field.setValue(variable.getId());
 };
 
 /**

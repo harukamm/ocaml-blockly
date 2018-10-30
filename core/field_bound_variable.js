@@ -156,6 +156,15 @@ Blockly.FieldBoundVariable.prototype.setSourceBlock = function(block) {
 };
 
 /**
+ * Returns whether this field's variable is a variable value.
+ * @return {boolean} True if this field's variable is a variable value
+ *     Otherwise, a variable reference.
+ */
+Blockly.FieldBoundVariable.prototype.isForValue = function() {
+  return this.forValue_;
+};
+
+/**
  * Sets the value this reference refers to.  Throws an error if this field
  * is for a variable value.
  * @param {!Blockly.TypedVariableValueReference}
