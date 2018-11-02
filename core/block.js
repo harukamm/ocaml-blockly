@@ -2312,11 +2312,10 @@ Blockly.Blocks['lambda_typed'] = {
     var names = Object.keys(env);
     for (var i = 0, name; name = names[i]; i++) {
       var variable = env[name];
-      var dom = goog.dom.createDom('block', {
-         'type': 'variables_get_typed',
-         'data-workspace': this.workspace.id,
-         'data-source': variable.getId()
-        });
+      var getterBlock = this.workspace.newBlock('variables_get_typed');
+      getterBlock.getField('VAR').setBoundValue(variable);
+      var dom = Blockly.Xml.blockToDom(getterBlock);
+      getterBlock.dispose();
       xml.appendChild(dom);
     }
     return xml;
@@ -2680,11 +2679,10 @@ Blockly.Blocks['let_typed'] = {
     var names = Object.keys(env);
     for (var i = 0, name; name = names[i]; i++) {
       var variable = env[name];
-      var dom = goog.dom.createDom('block', {
-         'type': 'variables_get_typed',
-         'data-workspace': this.workspace.id,
-         'data-source': variable.getId()
-        });
+      var getterBlock = this.workspace.newBlock('variables_get_typed');
+      getterBlock.getField('VAR').setBoundValue(variable);
+      var dom = Blockly.Xml.blockToDom(getterBlock);
+      getterBlock.dispose();
       xml.appendChild(dom);
     }
     return xml;
