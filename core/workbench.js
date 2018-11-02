@@ -171,10 +171,6 @@ Blockly.Workbench.prototype.init = function() {
   this.workspace_.flyout_.init(this.workspace_);
   this.workspace_.flyout_.show(tree.childNodes);
 
-  // Hide the workspace and bubble. The mutator should not be shown until user
-  // clicks on the icon.
-  this.setVisible(false);
-
   this.initialized_ = true;
 };
 
