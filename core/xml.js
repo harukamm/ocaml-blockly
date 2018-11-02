@@ -143,8 +143,21 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
   container.setAttribute('name', field.name);
   container.setAttribute('id', id);
   if (field.isForValue()) {
+    // The variable is a variable value.
     container.setAttribute('isvalue', 'true');
     container.setAttribute('workspace-id', field.sourceBlock_.workspace.id);
+  } else {
+    // The variable is a variable reference.
+    container.setAttribute('isvalue', 'false');
+    var value = field.getBoundValue();
+    if (value) {
+      // Also encode the value this variable reference refers to as XML, and
+      // append it.
+      var valueDom = goog.dom.createDom('refer-to');
+      valueDom.setAttribute('id', value.getId());
+      valueDom.setAttribute('workspace-id', value.getWorkspace().id);
+      container.append(valueDom);
+    }
   }
   return container;
 };
@@ -875,13 +888,17 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   if (isForValue != field.isForValue()) {
     throw 'Inconsistant variable type (value or reference).';
   }
-  var variable;
-  if (isForValue) {
+  function getWorkspaceFromDom(xml) {
     var workspaceId = xml.getAttribute('workspace-id');
     var workspace = Blockly.Workspace.getById(workspaceId);
     if (!workspace) {
-      throw 'Variable refers to an undefined workspace.';
+      throw 'Refers to an undefined workspace.';
     }
+    return workspace;
+  }
+  var variable;
+  if (isForValue) {
+    var workspace = getWorkspaceFromDom(xml);
     if (workspace.isFlyout) {
       // Ignore the variable that refers to a flyout workspace, and create a
       // new variable.
@@ -896,6 +913,16 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   } else {
     variable = Blockly.BoundVariables.getOrCreateReference(block, text,
         xml.id);
+    var childDom = xml.children.length && xml.children[0];
+    // Initialize the variable binding if <refer-to> DOM is specified.
+    if (childDom && childDom.nodeName.toLowerCase() == 'refer-to') {
+      var valuesWorkspace = getWorkspaceFromDom(childDom);
+      var value = Blockly.BoundVariables.getValueById(valuesWorkspace, childDom.id);
+      if (value && !valuesWorkspace.isFlyout) {
+        variable.removeBoundValue();
+        variable.setBoundValue(value);
+      }
+    }
   }
   field.setValue(variable.getId());
 };

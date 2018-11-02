@@ -89,6 +89,14 @@ Blockly.TypedVariableValue.prototype.getSourceBlock = function() {
 };
 
 /**
+ * Get the workspace of this variable's source block.
+ * @return {!Blockly.Workspace} The source block's workspace, or null.
+ */
+Blockly.TypedVariableValue.prototype.getWorkspace = function() {
+  return this.sourceBlock_ ? this.sourceBlock_.workspace : null;
+};
+
+/**
  * Get the variable name for this variable.
  * @return {!string} This variable's name.
  */

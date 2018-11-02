@@ -117,6 +117,16 @@ Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
 };
 
 /**
+ * Remove the reference to the current value.
+ */
+Blockly.TypedVariableValueReference.prototype.removeBoundValue = function() {
+  if (this.value_) {
+    this.value_.removeReference(this);
+    this.value_ = null;
+  }
+};
+
+/**
  * Dispose of this reference.
  */
 Blockly.TypedVariableValueReference.prototype.dispose = function() {
