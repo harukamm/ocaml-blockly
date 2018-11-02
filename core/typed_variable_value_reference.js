@@ -132,7 +132,9 @@ Blockly.TypedVariableValueReference.prototype.removeBoundValue = function() {
 Blockly.TypedVariableValueReference.prototype.dispose = function() {
   Blockly.BoundVariables.removeReference(this.workspace_, this);
   this.workspace_ = null;
-  this.block_.valueReference = null;
   this.block_ = null;
-  this.value_ = null;
+  if (this.value_) {
+    this.value_.removeReference(this);
+    this.value_ = null;
+  }
 };
