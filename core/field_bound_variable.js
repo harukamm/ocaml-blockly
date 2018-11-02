@@ -220,6 +220,17 @@ Blockly.FieldBoundVariable.prototype.getVariableName = function() {
 };
 
 /**
+ * Set the variable name of this variable.
+ * @return {!string} newName The new name for this field's variable.
+ */
+Blockly.FieldBoundVariable.prototype.setVariableName = function(newName) {
+  if (!this.data_) {
+    throw 'The variable data is not initalized.';
+  }
+  this.data_.setVariableName(newName);
+};
+
+/**
  * Set the text in this field.
  * @param {*} newText New text.
  * @override

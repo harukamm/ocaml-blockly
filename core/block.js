@@ -2313,7 +2313,9 @@ Blockly.Blocks['lambda_typed'] = {
     for (var i = 0, name; name = names[i]; i++) {
       var variable = env[name];
       var getterBlock = this.workspace.newBlock('variables_get_typed');
-      getterBlock.getField('VAR').setBoundValue(variable);
+      var field = getterBlock.getField('VAR');
+      field.setVariableName(name);
+      field.setBoundValue(variable);
       var dom = Blockly.Xml.blockToDom(getterBlock);
       getterBlock.dispose();
       xml.appendChild(dom);
@@ -2666,7 +2668,9 @@ Blockly.Blocks['let_typed'] = {
     for (var i = 0, name; name = names[i]; i++) {
       var variable = env[name];
       var getterBlock = this.workspace.newBlock('variables_get_typed');
-      getterBlock.getField('VAR').setBoundValue(variable);
+      var field = getterBlock.getField('VAR');
+      field.setVariableName(name);
+      field.setBoundValue(variable);
       var dom = Blockly.Xml.blockToDom(getterBlock);
       getterBlock.dispose();
       xml.appendChild(dom);
