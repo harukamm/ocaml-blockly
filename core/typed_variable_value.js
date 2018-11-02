@@ -101,9 +101,14 @@ Blockly.TypedVariableValue.prototype.getVariableName = function() {
  * @param {!string} newName The new name for this variable.
  */
 Blockly.TypedVariableValue.prototype.setVariableName = function(newName) {
-  this.variableName_ = newName;
-  // TODO: Rerender this source block and blocks of references in
-  // this.referenceList_.
+  if (this.variableName_ !== newName) {
+    this.variableName_ = newName;
+    for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
+      reference.setVariableName(newName);
+    }
+    // Rerender the block.
+    this.sourceBlock_.getField(this.fieldName).updateText_();
+  }
 };
 
 /**
