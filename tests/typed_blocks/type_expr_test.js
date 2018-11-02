@@ -101,3 +101,28 @@ function test_type_expr_derefereceWithSideEffect() {
   assertValueEquals(fun1.deepDeref(), fun1Expected);
 }
 
+function test_type_expr_disconnect_types() {
+  // t0 <-- t1 <-- t2 <-- t3
+  //       ^
+  //       |---- t4
+  var tvar0 = new Blockly.TypeExpr.TVAR('0', null);
+  var tvar1 = new Blockly.TypeExpr.TVAR('1', tvar0);
+  var tvar2 = new Blockly.TypeExpr.TVAR('2', tvar1);
+  var tvar3 = new Blockly.TypeExpr.TVAR('3', tvar2);
+  var tvar4 = new Blockly.TypeExpr.TVAR('4', tvar1);
+
+  tvar3.disconnect(tvar4);
+  // Nothing is expected to change.
+  assertEquals(tvar3.deref(), tvar0);
+  assertEquals(tvar4.deref(), tvar0);
+
+  tvar4.disconnect(tvar1);
+  assertEquals(tvar4.deref(), tvar4);
+  assertEquals(tvar3.deref(), tvar0);
+
+  var int1 = new Blockly.TypeExpr.INT();
+  tvar0.val = int1;
+  tvar0.disconnect(int1);
+  // Can not disconnect types if either one is a primitive type.
+  assertEquals(tvar3.deref().label, Blockly.TypeExpr.INT_);
+}

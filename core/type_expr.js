@@ -580,3 +580,26 @@ Blockly.TypeExpr.prototype.ableToUnify = function(other) {
     return false;
   }
 }
+
+/**
+ * Disconnect this type expression from another one if they are type variables
+ * and either one contains the other.
+ * @param {!Blockly.TypeExpr} other
+ */
+Blockly.TypeExpr.prototype.disconnect = function(other) {
+  function disconnectImpl(upstream, child) {
+    if (child.label != Blockly.TypeExpr.TVAR_) {
+      return;
+    }
+    var t = upstream;
+    while (t) {
+      if (t.label != Blockly.TypeExpr.TVAR_ || !t.val) {
+        break;
+      }
+      t.val = t.val == child ? null : t.val;
+      t = t.val;
+    }
+  }
+  disconnectImpl(this, other);
+  disconnectImpl(other, this);
+};
