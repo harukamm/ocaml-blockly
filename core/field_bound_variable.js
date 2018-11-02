@@ -113,7 +113,7 @@ Blockly.FieldBoundVariable.prototype.init = function() {
   Blockly.FieldBoundVariable.superClass_.init.call(this);
 
   this.initData();
-  this.updateText_();
+  this.updateText();
 };
 
 /**
@@ -231,9 +231,8 @@ Blockly.FieldBoundVariable.prototype.setText = function(newText) {
 
 /**
  * Update the text in this field with the variable name.
- * @private
  */
-Blockly.FieldBoundVariable.prototype.updateText_ = function() {
+Blockly.FieldBoundVariable.prototype.updateText = function() {
   if (this.data_) {
     this.setText(this.getVariableName());
   }
@@ -261,7 +260,7 @@ Blockly.FieldBoundVariable.prototype.setValue = function(id) {
   }
   // TODO: Type check.
   this.data_ = data;
-  this.updateText_();
+  this.updateText();
 };
 
 /**

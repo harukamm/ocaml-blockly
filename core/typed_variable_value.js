@@ -107,7 +107,7 @@ Blockly.TypedVariableValue.prototype.setVariableName = function(newName) {
       reference.setVariableName(newName);
     }
     // Rerender the block.
-    this.sourceBlock_.getField(this.fieldName).updateText_();
+    this.sourceBlock_.getField(this.fieldName).updateText();
   }
 };
 

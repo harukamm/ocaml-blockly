@@ -2545,7 +2545,7 @@ Blockly.Blocks['variables_get_typed'] = {
       throw 'Not Implemented yet.';
     }
     // Update the text in the field with the current variable name.
-    this.getField('VAR').updateText_();
+    this.getField('VAR').updateText();
   },
 
   /**
