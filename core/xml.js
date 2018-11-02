@@ -882,8 +882,6 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
     if (!workspace) {
       throw 'Variable refers to an undefined workspace.';
     }
-    field.initData();
-    return;
     if (workspace.isFlyout) {
       // Ignore the variable that refers to a flyout workspace, and create a
       // new variable.
