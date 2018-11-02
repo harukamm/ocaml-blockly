@@ -144,7 +144,6 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
   container.setAttribute('id', id);
   if (field.isForValue()) {
     container.setAttribute('isvalue', 'true');
-    container.setAttribute('workspace-id', field.sourceBlock_.workspace.id);
   }
   return container;
 };
@@ -877,17 +876,9 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   }
   var variable;
   if (isForValue) {
-    var workspaceId = xml.getAttribute('workspace-id');
-    var workspace = Blockly.Workspace.getById(workspaceId);
-    if (!workspace) {
-      throw 'Variable refers to the undefined workspace.';
-    }
-    if (workspace.isFlyout) {
-      // Ignore the variable that refers to a flyout workspace.
-      field.initData();
-      variable = field.getData();
-    } else {
-      variable = Blockly.BoundVariables.getValueById(workspace, xml.id);
+    variable = Blockly.BoundVariables.getValueById(block.workspace, xml.id);
+    if (!variable) {
+      throw 'Variable value doesn\'t exist.';
     }
   } else {
     variable = Blockly.BoundVariables.getOrCreateReference(block, text,

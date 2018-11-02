@@ -191,15 +191,6 @@ Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
 };
 
 /**
- * Get the variable of this field.
- * @return {Blockly.TypedVariableValue|Blockly.TypedVariableValueReference}
- *     The variable's reference or value.
- */
-Blockly.FieldBoundVariable.prototype.getData = function() {
-  return this.data_;
-};
-
-/**
  * Get the ID of this field's variable data.
  * @return {string} Current variable's ID.
  * @override

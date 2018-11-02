@@ -88,8 +88,9 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLetTypedBlocks(
     var int1 = workspace.newBlock('int_typed');
     var var1 = workspace.newBlock('variables_get_typed');
     // Set a variable `i`
-    setVariableName(var1, 'VAR', 'i');
-    setVariableName(block, 'VAR', 'i');
+    var variableId = workspace.getVariable('i').getId();
+    var1.getField('VAR').setValue(variableId);
+    block.getField('VAR').setValue(variableId);
 
     block.getInput('EXP1').connection.connect(int1.outputConnection);
     block.getInput('EXP2').connection.connect(var1.outputConnection);
@@ -262,14 +263,13 @@ function test_type_unification_intArithmeticStructure() {
     var letVar1 = workspace.newBlock('let_typed');
     var letVar2 = workspace.newBlock('let_typed');
     // Set a variable `i`
-    setVariableName(var1, 'VAR', 'i');
-    setVariableName(letVar1, 'VAR', 'i');
+    var variableId = workspace.getVariable('i').getId();
+    var1.getField('VAR').setValue(variableId);
+    letVar1.getField('VAR').setValue(variableId);
     // Set a variable `j`
     var variableId = workspace.getVariable('j').getId();
     var2.getField('VAR').setValue(variableId);
     letVar2.getField('VAR').setValue(variableId);
-    setVariableName(var2, 'VAR', 'i');
-    setVariableName(letVar2, 'VAR', 'i');
     // Define variables `i` and `j`
     letVar1.getInput('EXP2').connection.connect(var1.outputConnection);
     letVar2.getInput('EXP2').connection.connect(var2.outputConnection);
@@ -503,21 +503,6 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
     outerLetBlock.getInput('EXP1').connection.connect(int1.outputConnection);
     assertEquals(Blockly.TypeExpr.INT_,
         outersVar.outputConnection.typeExpr.deref().label);
-  } finally {
-    workspace.dispose();
-  }
-}
-
-function test_type_unification_simpleTreeInFlyoutReferences() {
-  var workspace = create_typed_workspace();
-  try {
-    var letBlock = workspace.newBlock('let_typed');
-    setVariableName(letBlock, 'VAR', 'j');
-    var xml = letBlock.getTreeInFlyout();
-    var childNodes = xml.childNodes;
-    for (var i = 0, node; node = childNodes[i]; i++) {
-      assertEqual(node.tagName, 'BLOCK');
-    }
   } finally {
     workspace.dispose();
   }
