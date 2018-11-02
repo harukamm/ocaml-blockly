@@ -29,15 +29,9 @@ function isVariableOf(varBlock, block, opt_variableName) {
       (!opt_variableName || opt_variableName === name1);
 }
 
-function setVariableName(block, fieldName, name, opt_defautlFieldVariable) {
-  var variable;
-  if (opt_defautlFieldVariable) {
-    variable = Blockly.Variables.getOrCreateVariablePackage(
-        block.workspace, null, name, '');
-  } else {
-    variable = Blockly.BoundVariables.createReference(block, name);
-  }
-  block.getField(fieldName).setValue(variable.getId());
+function setVariableName(block, fieldName, name) {
+  var field = block.getField(fieldName);
+  field.setVariableName(name);
 }
 
 function test_type_unification_ifThenElseStructure() {
@@ -88,9 +82,8 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLetTypedBlocks(
     var int1 = workspace.newBlock('int_typed');
     var var1 = workspace.newBlock('variables_get_typed');
     // Set a variable `i`
-    var variableId = workspace.getVariable('i').getId();
-    var1.getField('VAR').setValue(variableId);
-    block.getField('VAR').setValue(variableId);
+    setVariableName(var1, 'VAR', 'i');
+    setVariableName(block, 'VAR', 'i');
 
     block.getInput('EXP1').connection.connect(int1.outputConnection);
     block.getInput('EXP2').connection.connect(var1.outputConnection);
@@ -263,13 +256,11 @@ function test_type_unification_intArithmeticStructure() {
     var letVar1 = workspace.newBlock('let_typed');
     var letVar2 = workspace.newBlock('let_typed');
     // Set a variable `i`
-    var variableId = workspace.getVariable('i').getId();
-    var1.getField('VAR').setValue(variableId);
-    letVar1.getField('VAR').setValue(variableId);
+    setVariableName(var1, 'VAR', 'i');
+    setVariableName(letVar1, 'VAR', 'i');
     // Set a variable `j`
-    var variableId = workspace.getVariable('j').getId();
-    var2.getField('VAR').setValue(variableId);
-    letVar2.getField('VAR').setValue(variableId);
+    setVariableName(var2, 'VAR', 'j');
+    setVariableName(letVar2, 'VAR', 'j');
     // Define variables `i` and `j`
     letVar1.getInput('EXP2').connection.connect(var1.outputConnection);
     letVar2.getInput('EXP2').connection.connect(var2.outputConnection);
@@ -296,13 +287,11 @@ function test_type_unification_floatArithmeticStructure() {
     var letVar1 = workspace.newBlock('let_typed');
     var letVar2 = workspace.newBlock('let_typed');
     // Set a variable `i`
-    var variableId = workspace.getVariable('i').getId();
-    var1.getField('VAR').setValue(variableId);
-    letVar1.getField('VAR').setValue(variableId);
+    setVariableName(var1, 'VAR', 'i');
+    setVariableName(letVar1, 'VAR', 'i');
     // Set a variable `j`
-    var variableId = workspace.getVariable('j').getId();
-    var2.getField('VAR').setValue(variableId);
-    letVar2.getField('VAR').setValue(variableId);
+    setVariableName(var2, 'VAR', 'j');
+    setVariableName(letVar2, 'VAR', 'j');
     // Define variables `i` and `j`
     letVar1.getInput('EXP2').connection.connect(var1.outputConnection);
     letVar2.getInput('EXP2').connection.connect(var2.outputConnection);
@@ -354,9 +343,8 @@ function test_type_unification_lambdaStructure() {
     var block = workspace.newBlock('lambda_typed');
     var var1 = workspace.newBlock('variables_get_typed');
     // Set the same variable name with the name of lambda's argument.
-    var variable = block.getField('VAR').getVariable();
-    var variableId = variable.getId();
-    var1.getField('VAR').setValue(variableId);
+    var variableName = block.getField('VAR').getVariableName();
+    setVariableName(var1, 'VAR', variableName);
     block.getInput('RETURN').connection.connect(var1.outputConnection);
     assertEquals(var1.getField('VAR').getText(),
         block.getField('VAR').getText());
@@ -379,9 +367,8 @@ function test_type_unification_lambdaAppStructure() {
     block.getInput('ARG').connection.connect(int1.outputConnection);
     var var1 = workspace.newBlock('variables_get_typed');
     // Set the same variable name with the name of lambda's argument.
-    var variable = lambdaBlock.getField('VAR').getVariable();
-    var variableId = variable.getId();
-    var1.getField('VAR').setValue(variableId);
+    var variableName = lambdaBlock.getField('VAR').getVariableName();
+    setVariableName(var1, 'VAR', variableName);
     assertEquals(var1.getField('VAR').getText(),
         lambdaBlock.getField('VAR').getText());
     lambdaBlock.getInput('RETURN').connection.connect(var1.outputConnection);
@@ -481,13 +468,9 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
     // Outer let typed block.
     var outerLetBlock = workspace.newBlock('let_typed');
     // Set a variable `j`
-    var variable2 = Blockly.Variables.getOrCreateVariablePackage(
-        workspace, null, 'j', '');
-    innerLambdaBlock.getField('VAR').setValue(variable2.getId());
+    setVariableName(innerLambdaBlock, 'VAR', 'j');
     // Set a variable `i`
-    var variable1 = Blockly.Variables.getOrCreateVariablePackage(
-        workspace, null, 'i', '');
-    outerLetBlock.getField('VAR').setValue(variable1.getId());
+    setVariableName(outerLetBlock, 'VAR', 'i');
 
     outerLetBlock.getInput('EXP2').connection.connect(
         innerLambdaBlock.outputConnection);
