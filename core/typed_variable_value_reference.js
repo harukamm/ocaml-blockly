@@ -47,6 +47,13 @@ Blockly.TypedVariableValueReference = function(block, varName) {
   this.block_ = block;
 
   /**
+   * This reference's type expression.
+   * @type {!Blockly.TypeExpr}
+   */
+  // TODO: Receive a type expression from the constructor parameters.
+  this.typeExpr = this.block_.outputConnection.typeExpr;
+
+  /**
    * The workspace of this reference's block;
    * @type {!Blockly.Workspace}
    */
@@ -72,13 +79,11 @@ Blockly.TypedVariableValueReference.prototype.setVariableName = function(newName
   if (this.value_) {
     if (this.value_.getVariableName() !== newName) {
       this.value_.setVariableName(newName);
-      // Rerender the block.
-      this.block_.referenceChanged();
+      this.referenceChange_();
     }
   } else if (this.temporayDisplayName_ !== newName) {
     this.temporayDisplayName_ = newName;
-    // Rerender the block.
-    this.block_.referenceChanged();
+    this.referenceChange_();
   }
 };
 
@@ -112,8 +117,9 @@ Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
   }
   this.value_ = value;
   value.storeReference(this);
+  this.value_.typeExpr.unify(this.typeExpr);
 
-  this.block_.referenceChanged();
+  this.referenceChange_();
 };
 
 /**
@@ -122,8 +128,19 @@ Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
 Blockly.TypedVariableValueReference.prototype.removeBoundValue = function() {
   if (this.value_) {
     this.value_.removeReference(this);
+    this.typeExpr.disconnect(this.value_.typeExpr);
     this.value_ = null;
   }
+};
+
+/**
+ * Update the source block when this reference is changed.
+ * @private
+ */
+Blockly.TypedVariableValueReference.prototype.referenceChange_ = function() {
+  // TODO: This doesn't work if the name of field which contains this reference
+  // is 'VAR'. Get the field's name property.
+  this.block_.getField('VAR').updateText();
 };
 
 /**

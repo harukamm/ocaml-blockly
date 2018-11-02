@@ -2529,20 +2529,6 @@ Blockly.Blocks['variables_get_typed'] = {
   },
 
   /**
-   * Apply the reference's change to this block.
-   */
-  referenceChanged: function() {
-    var value = this.getField('VAR').getBoundValue();
-    if (value) {
-      value.typeExpr.unify(this.outputConnection.typeExpr);
-    } else {
-      this.outputConnection.typeExpr.disconnect(value.typeExpr);
-    }
-    // Update the text in the field with the current variable name.
-    this.getField('VAR').updateText();
-  },
-
-  /**
    * Parse XML to copy the value reference.
    * @param {!Element} xmlElement XML element.
    * @this Blockly.Block
