@@ -2534,13 +2534,18 @@ Blockly.Blocks['variables_get_typed'] = {
    */
   referenceChanged: function() {
     var value = this.getField('VAR').getBoundValue();
-    var name = value.getVariableName()
-    var typeExpr = value.typeExpr;
-    var model = Blockly.Variables.getOrCreateVariablePackage(
-        this.workspace, null, name, '');
-    this.setFieldValue(model.getId(), 'VAR');
-    delete this.outputConnection.typeExpr;
-    this.setOutputTypeExpr(typeExpr);
+    if (value) {
+      // TODO: Store the original typeExpr of this block instead of deleting
+      // it. It will be needed if the variable binding is canceled by
+      // disconnecting this blocks.
+      delete this.outputConnection.typeExpr;
+      this.setOutputTypeExpr(value.typeExpr);
+    } else {
+      // TODO: Restore the original typeExpr of this block.
+      throw 'Not Implemented yet.';
+    }
+    // Update the text in the field with the current variable name.
+    this.getField('VAR').updateText_();
   },
 
   /**
