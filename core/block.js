@@ -1566,21 +1566,30 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
 };
 
 /**
- * Find the value this getter refers to.
+ * Whether there would be no getter block which refers to a non-existing
+ * variable if this block is connected to the given parent block.
  * @param {!Blockly.Connection} parentConnection connection this block is trying
  *     to connect to.
- * @return {?Blockly.Blockly.BoundVariableValue} Variable representation this
- *     getter is bound to.
+ * @param {=boolean} opt_bind Bind the getter with the proper variable if
+ *     true.
+ * @return {boolean} True if all of getter blocks can refer to a existing
+ *     variable.
  */
-Blockly.Block.prototype.findValue = function(parentConnection) {
+Blockly.Block.prototype.resolveReference = function(parentConnection,
+      opt_bind) {
   if (!this.isGetter) {
-    return null;
+    // TODO: See this blocks recursively even if this is not a getter block.
+    return true;
   }
   var block = parentConnection.getSourceBlock();
   var env = block.allVisibleVariables(parentConnection);
   var getterVariables = this.getVars();
   for (var i = 0, name; name = getterVariables[i]; i++) {
-    if (!(name in env)) {
+    if (nam in env) {
+      if (opt_bind) {
+        // TODO: Bind this getter block with the found variable.
+      }
+    } else {
       return false;
     }
   }

@@ -223,7 +223,7 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   // Sorin
   if (parentConnection.typeExpr && childConnection.typeExpr) {
     if (childBlock.isGetter) {
-      var variable = childBlock.findValue(parentConnection);
+      var variable = childBlock.resolveReference(parentConnection, true);
       if (!variable) {
         throw 'Connecting these blocks will occur invalid variable reference.';
       }
@@ -644,7 +644,8 @@ Blockly.Connection.prototype.checkType_ = function(otherConnection) {
       return false;
     }
     var childBlock = this.sourceBlock_;
-    return !childBlock.isGetter || childBlock.findValue(otherConnection);
+    return !childBlock.isGetter ||
+        childBlock.resolveReference(otherConnection);
   }
   if (!this.typeExpr && otherConnection.typeExpr) {
     return false;
