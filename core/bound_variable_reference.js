@@ -6,7 +6,7 @@
 
 goog.provide('Blockly.BoundVariableValueReference');
 
-goog.require('Blockly.BoundVariableValue');
+goog.require('Blockly.BoundVariableAbstract');
 goog.require('goog.string');
 
 
@@ -34,38 +34,24 @@ Blockly.BoundVariableValueReference = function(block, varName) {
   this.temporayDisplayName_ = varName;
 
   /**
-   * A unique id for the reference.
-   * @type {string}
-   * @private
-   */
-  this.id_ = Blockly.utils.genUid();
-
-  /**
-   * This reference's block.
-   * @type {!Blockly.Block}
-   */
-  this.sourceBlock_ = block;
-
-  /**
    * This reference's type expression.
    * @type {!Blockly.TypeExpr}
    */
   // TODO: Receive a type expression from the constructor parameters.
-  this.typeExpr = this.sourceBlock_.outputConnection.typeExpr;
+  this.typeExpr = block.outputConnection.typeExpr;
 
-  /**
-   * The workspace of this reference's block;
-   * @type {!Blockly.Workspace}
-   */
-  this.workspace_ = this.sourceBlock_.workspace;
+  Blockly.BoundVariableValueReference.superClass_.constructor.call(this,
+      block);
 
   Blockly.BoundVariables.addReference(this.workspace_, this);
 };
+goog.inherits(Blockly.BoundVariableValueReference, Blockly.BoundVariableAbstract);
 
 /**
  * Gets the variable name for this reference. Returns that of the value if the
  * value has been resolved.
  * @return {string} The display name.
+ * @override
  */
 Blockly.BoundVariableValueReference.prototype.getVariableName = function() {
   return this.value_ ? this.value_.getVariableName() : this.temporayDisplayName_;
@@ -74,6 +60,7 @@ Blockly.BoundVariableValueReference.prototype.getVariableName = function() {
 /**
  * Set the variable name for this variable.
  * @param {!string} newName The new name for this variable.
+ * @override
  */
 Blockly.BoundVariableValueReference.prototype.setVariableName = function(newName) {
   if (this.value_) {
@@ -85,14 +72,6 @@ Blockly.BoundVariableValueReference.prototype.setVariableName = function(newName
     this.temporayDisplayName_ = newName;
     this.referenceChange_();
   }
-};
-
-/**
- * Returns the ID for the reference
- * @return {!string} The ID for the reference.
- */
-Blockly.BoundVariableValueReference.prototype.getId = function() {
-  return this.id_;
 };
 
 /**
@@ -148,8 +127,7 @@ Blockly.BoundVariableValueReference.prototype.referenceChange_ = function() {
  */
 Blockly.BoundVariableValueReference.prototype.dispose = function() {
   Blockly.BoundVariables.removeReference(this.workspace_, this);
-  this.workspace_ = null;
-  this.sourceBlock_ = null;
+  Blockly.BoundVariableValueReference.superClass_.dispose.call(this);
   if (this.value_) {
     this.value_.removeReference(this);
     this.value_ = null;

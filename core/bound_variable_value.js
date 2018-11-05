@@ -6,6 +6,7 @@
 
 goog.provide('Blockly.BoundVariableValue');
 
+goog.require('Blockly.BoundVariableAbstract');
 goog.require('goog.string');
 
 
@@ -21,18 +22,6 @@ goog.require('goog.string');
  */
 Blockly.BoundVariableValue = function(block, typeExpr, fieldName,
     scopeInputName, variableName) {
-  /**
-   * The block the variable is declared in.
-   * @type {!Blockly.Block}
-   */
-  this.sourceBlock_ = block;
-
-  /**
-   * The workspace of this variable's block.
-   * @type {!Blockly.Workspace}
-   */
-  this.workspace_ = this.sourceBlock_.workspace;
-
   /**
    * @type {!Blockly.TypeExpr} The type expression of the variable.
    */
@@ -60,13 +49,6 @@ Blockly.BoundVariableValue = function(block, typeExpr, fieldName,
   this.variableName_ = variableName;
 
   /**
-   * A unique id for the variable.
-   * @type {string}
-   * @private
-   */
-  this.id_ = Blockly.utils.genUid();
-
-  /**
    * A list of references that refer to this value.
    * @type {!Array.<Blockly.BoundVariableValueReference>}
    * @private
@@ -81,32 +63,20 @@ Blockly.BoundVariableValue = function(block, typeExpr, fieldName,
    */
   this.deleteLater_ = false;
 
-  this.sourceBlock_.typedValue[this.fieldName] = this;
-  Blockly.BoundVariables.addValue(this.workspace_, this);
+  Blockly.BoundVariableValue.superClass_.constructor.call(this, block);
+
+  block.typedValue[this.fieldName] = this;
+  Blockly.BoundVariables.addValue(block.workspace, this);
 
   // TODO: Register an event for the variable creation.
   // Blockly.Events.fire(new Blockly.Events.VarCreate(this));
 };
-
-/**
- * Get the source block for this varialbe.
- * @return {!Blockly.Block} The source block
- */
-Blockly.BoundVariableValue.prototype.getSourceBlock = function() {
-  return this.sourceBlock_;
-};
-
-/**
- * Get the workspace of this variable's source block.
- * @return {!Blockly.Workspace} The source block's workspace, or null.
- */
-Blockly.BoundVariableValue.prototype.getWorkspace = function() {
-  return this.workspace_;
-};
+goog.inherits(Blockly.BoundVariableValue, Blockly.BoundVariableAbstract);
 
 /**
  * Get the variable name for this variable.
  * @return {!string} This variable's name.
+ * @override
  */
 Blockly.BoundVariableValue.prototype.getVariableName = function() {
   return this.variableName_;
@@ -115,6 +85,7 @@ Blockly.BoundVariableValue.prototype.getVariableName = function() {
 /**
  * Set the variable name for this variable.
  * @param {!string} newName The new name for this variable.
+ * @override
  */
 Blockly.BoundVariableValue.prototype.setVariableName = function(newName) {
   if (this.variableName_ !== newName) {
@@ -128,22 +99,15 @@ Blockly.BoundVariableValue.prototype.setVariableName = function(newName) {
 };
 
 /**
- * @return {!string} The ID for the variable.
- */
-Blockly.BoundVariableValue.prototype.getId = function() {
-  return this.id_;
-};
-
-/**
  * Dispose of this value.
+ * @override
  */
 Blockly.BoundVariableValue.prototype.dispose = function() {
   if (this.referenceList_.length == 0) {
     Blockly.BoundVariables.removeValue(this.workspace_, this);
-    this.workspace_ = null;
     delete this.sourceBlock_.typedValue[this.fieldName];
-    this.sourceBlock_ = null;
     this.typeExpr = null;
+    Blockly.BoundVariableValue.superClass.dispose.call(this);
   } else {
     // Currently can not be destroyed because this variable value has
     // references. Delete this when the number of references drops to zero.
