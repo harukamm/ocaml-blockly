@@ -284,13 +284,36 @@ Blockly.FieldBoundVariable.prototype.setValue = function(id) {
 };
 
 /**
- * Return a sorted list of variable names for variable dropdown menus.
- * Include a special option at the end for creating a new variable name.
- * @return {!Array.<string>} Array of variable names.
+ * Return a sorted list of visible variable names for dropdown menus.
+ * @return {!Array.<!Array>} Array of option tuples.
  * @this {Blockly.FieldBoundVariable}
  */
 Blockly.FieldBoundVariable.dropdownCreate = function() {
-  throw 'Not implemented yet.';
+  if (!this.variable_) {
+    throw new Error('Tried to call dropdownCreate on a bound-variable field ' +
+        'with no variable selected.');
+  }
+  var options = [];
+  if (!this.isForValue()) {
+    var valueList = Blockly.BoundVariables.getVisibleVariableValues(
+        this.variable_);
+    valueList.sort(Blockly.BoundVariableAbstract.compareByName);
+    for (var i = 0; i < valueList.length; i++) {
+      var value = valueList[i];
+      options[i] = [value.getVariableName(), value.getId()];
+    }
+  }
+  options.push([Blockly.Msg['RENAME_VARIABLE'], Blockly.RENAME_VARIABLE_ID]);
+  // var name = this.getVariableName();
+  // if (Blockly.Msg['DELETE_VARIABLE']) {
+  //   options.push(
+  //       [
+  //         Blockly.Msg['DELETE_VARIABLE'].replace('%1', name),
+  //         Blockly.DELETE_VARIABLE_ID
+  //       ]
+  //   );
+  // }
+  return options;
 };
 
 /**
