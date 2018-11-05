@@ -119,9 +119,7 @@ Blockly.BoundVariableValueReference.prototype.removeBoundValue = function() {
  * @private
  */
 Blockly.BoundVariableValueReference.prototype.referenceChange_ = function() {
-  // TODO: This doesn't work if the name of field which contains this reference
-  // is 'VAR'. Get the field's name property.
-  this.sourceBlock_.getField(this.fieldName_).updateText();
+  this.getContainerField().updateText();
 };
 
 /**

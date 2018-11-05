@@ -62,6 +62,14 @@ Blockly.BoundVariableAbstract.prototype.getWorkspace = function() {
 };
 
 /**
+ * Returns a field which contains this variable.
+ * @return {!Blockly.FieldBoundVariable} This variable's field.
+ */
+Blockly.BoundVariableAbstract.prototype.getContainerField = function() {
+  return this.sourceBlock_.getField(this.fieldName_);
+};
+
+/**
  * @return {!string} The ID for the variable.
  */
 Blockly.BoundVariableAbstract.prototype.getId = function() {

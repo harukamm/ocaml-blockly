@@ -90,7 +90,7 @@ Blockly.BoundVariableValue.prototype.setVariableName = function(newName) {
       reference.setVariableName(newName);
     }
     // Rerender the block.
-    this.sourceBlock_.getField(this.fieldName_).updateText();
+    this.getContainerField().updateText();
   }
 };
 
