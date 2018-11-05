@@ -46,7 +46,7 @@ goog.addDependency("../../../" + dir + "/core/blocks.js", ['Blockly.Blocks'], []
 goog.addDependency("../../../" + dir + "/core/bound_variable_abstract.js", ['Blockly.BoundVariableAbstract'], ['goog.string']);
 goog.addDependency("../../../" + dir + "/core/bound_variable_reference.js", ['Blockly.BoundVariableValueReference'], ['Blockly.BoundVariableAbstract', 'goog.string']);
 goog.addDependency("../../../" + dir + "/core/bound_variable_value.js", ['Blockly.BoundVariableValue'], ['Blockly.BoundVariableAbstract', 'goog.string']);
-goog.addDependency("../../../" + dir + "/core/bound_variables.js", ['Blockly.BoundVariables'], ['Blockly.Workspace', 'goog.string']);
+goog.addDependency("../../../" + dir + "/core/bound_variables.js", ['Blockly.BoundVariables'], ['Blockly.BoundVariableValue', 'Blockly.BoundVariableValueReference', 'Blockly.Workspace', 'goog.string']);
 goog.addDependency("../../../" + dir + "/core/bubble.js", ['Blockly.Bubble'], ['Blockly.Touch', 'Blockly.Workspace', 'goog.dom', 'goog.math', 'goog.math.Coordinate', 'goog.userAgent']);
 goog.addDependency("../../../" + dir + "/core/bubble_dragger.js", ['Blockly.BubbleDragger'], ['Blockly.Bubble', 'Blockly.Events.CommentMove', 'Blockly.WorkspaceCommentSvg', 'goog.math.Coordinate', 'goog.asserts']);
 goog.addDependency("../../../" + dir + "/core/comment.js", ['Blockly.Comment'], ['Blockly.Bubble', 'Blockly.Events.BlockChange', 'Blockly.Events.Ui', 'Blockly.Icon', 'goog.userAgent']);
@@ -61,7 +61,7 @@ goog.addDependency("../../../" + dir + "/core/events_abstract.js", ['Blockly.Eve
 goog.addDependency("../../../" + dir + "/core/extensions.js", ['Blockly.Extensions'], ['Blockly.Mutator', 'Blockly.utils', 'goog.string']);
 goog.addDependency("../../../" + dir + "/core/field.js", ['Blockly.Field'], ['Blockly.Events.BlockChange', 'Blockly.Gesture', 'goog.asserts', 'goog.dom', 'goog.math.Size', 'goog.style', 'goog.userAgent']);
 goog.addDependency("../../../" + dir + "/core/field_angle.js", ['Blockly.FieldAngle'], ['Blockly.FieldTextInput', 'goog.math', 'goog.userAgent']);
-goog.addDependency("../../../" + dir + "/core/field_bound_variable.js", ['Blockly.FieldBoundVariable'], ['Blockly.FieldDropdown', 'Blockly.Msg', 'goog.asserts', 'goog.string']);
+goog.addDependency("../../../" + dir + "/core/field_bound_variable.js", ['Blockly.FieldBoundVariable'], ['Blockly.BoundVariables', 'Blockly.FieldDropdown', 'Blockly.Msg', 'goog.asserts', 'goog.string']);
 goog.addDependency("../../../" + dir + "/core/field_checkbox.js", ['Blockly.FieldCheckbox'], ['Blockly.Field']);
 goog.addDependency("../../../" + dir + "/core/field_colour.js", ['Blockly.FieldColour'], ['Blockly.Field', 'Blockly.utils', 'goog.dom', 'goog.events', 'goog.style', 'goog.ui.ColorPicker']);
 goog.addDependency("../../../" + dir + "/core/field_date.js", ['Blockly.FieldDate'], ['Blockly.Field', 'Blockly.utils', 'goog.date', 'goog.date.DateTime', 'goog.dom', 'goog.events', 'goog.i18n.DateTimeSymbols', 'goog.i18n.DateTimeSymbols_he', 'goog.style', 'goog.ui.DatePicker']);
