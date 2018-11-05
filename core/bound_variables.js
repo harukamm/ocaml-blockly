@@ -140,18 +140,19 @@ Blockly.BoundVariables.getReferenceById = function(workspace, id) {
 Blockly.BoundVariables.getVisibleVariableValues = function(variable) {
   var field = variable.getContainerField();
   var block = variable.getSourceBlock();
-  var thisConnection;
-  for (var i = 0, input; input = block.inputList[i]; i++) {
-    var index = goog.array.findIndex(input.fieldRow, function(field_) {
-      return field_.name === field.name;
-    });
-    if (index != -1) {
-      thisConnection = input.connection;
-      break;
+  var targetBlock = block.outputConnection.targetBlock();
+  if (!variable.isReference()) {
+    throw 'Not support for a variable value.';
+  }
+  var values = [];
+  if (targetBlock) {
+    var targetConnection = block.outputConnection.targetConnection;
+    var env = targetBlock.allVisibleVariables(targetConnection);
+    var names = Object.keys(env);
+    for (var i = 0, name; name = names[i]; i++) {
+      var variable = env[name];
+      values.push(variable);
     }
   }
-  if (!thisConnection) {
-    throw 'The field\'s connection is not found.';
-  }
-  return block.allVisibleVariables(thisConnection);
+  return values;
 };
