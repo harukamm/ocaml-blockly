@@ -107,7 +107,7 @@ Blockly.BoundVariableValue.prototype.dispose = function() {
     Blockly.BoundVariables.removeValue(this.workspace_, this);
     delete this.sourceBlock_.typedValue[this.fieldName];
     this.typeExpr = null;
-    Blockly.BoundVariableValue.superClass.dispose.call(this);
+    Blockly.BoundVariableValue.superClass_.dispose.call(this);
   } else {
     // Currently can not be destroyed because this variable value has
     // references. Delete this when the number of references drops to zero.
