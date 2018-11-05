@@ -19,17 +19,17 @@ goog.require('goog.string');
 /**
  * Create a value on the given block.
  * @param {!Blockly.Block} block The block to add the value to.
- * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
  * @param {string} fieldName The name of the variable field.
+ * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
  * @param {string} scopeInputName The name of input on which the variable value
  *     is visible.
  * @param {!string} variableName The default name of this variable value.
  */
-Blockly.BoundVariables.createValue = function(block, valueTypeExpr, fieldName,
+Blockly.BoundVariables.createValue = function(block, fieldName, valueTypeExpr,
       scopeInputName, variableName) {
   // The value would be added to the reference DB of block's workspace in
   // the constructor.
-  return new Blockly.BoundVariableValue(block, valueTypeExpr, fieldName,
+  return new Blockly.BoundVariableValue(block, fieldName, valueTypeExpr,
       scopeInputName, variableName);
 };
 

@@ -13,14 +13,15 @@ goog.require('goog.string');
 /**
  * Class for a variable declared in the block.
  * @param {!Blockly.Block} block The block the variable is declared in.
+ * @param {!string} fieldName The name of the field that contains this
+ *     variable.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
- * @param {!string} fieldName The name of the variable field.
  * @param {!string} scopeInputName The name of the input where the variable can
  *     be referred to.
  * @param {!string} variableName The default name of this variable value.
  * @constructor
  */
-Blockly.BoundVariableValue = function(block, typeExpr, fieldName,
+Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
     scopeInputName, variableName) {
   /**
    * @type {!Blockly.TypeExpr} The type expression of the variable.
