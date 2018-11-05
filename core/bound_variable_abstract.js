@@ -88,7 +88,6 @@ Blockly.BoundVariableAbstract.prototype.getVariableName = undefined;
  */
 Blockly.BoundVariableAbstract.prototype.setVariableName = undefined;
 
-
 /**
  * Dispose of this variable.
  */
