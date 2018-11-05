@@ -44,20 +44,20 @@ Blockly.BoundVariableValueReference = function(block, varName) {
    * This reference's block.
    * @type {!Blockly.Block}
    */
-  this.block_ = block;
+  this.sourceBlock_ = block;
 
   /**
    * This reference's type expression.
    * @type {!Blockly.TypeExpr}
    */
   // TODO: Receive a type expression from the constructor parameters.
-  this.typeExpr = this.block_.outputConnection.typeExpr;
+  this.typeExpr = this.sourceBlock_.outputConnection.typeExpr;
 
   /**
    * The workspace of this reference's block;
    * @type {!Blockly.Workspace}
    */
-  this.workspace_ = this.block_.workspace;
+  this.workspace_ = this.sourceBlock_.workspace;
 
   Blockly.BoundVariables.addReference(this.workspace_, this);
 };
@@ -140,7 +140,7 @@ Blockly.BoundVariableValueReference.prototype.removeBoundValue = function() {
 Blockly.BoundVariableValueReference.prototype.referenceChange_ = function() {
   // TODO: This doesn't work if the name of field which contains this reference
   // is 'VAR'. Get the field's name property.
-  this.block_.getField('VAR').updateText();
+  this.sourceBlock_.getField('VAR').updateText();
 };
 
 /**
@@ -149,7 +149,7 @@ Blockly.BoundVariableValueReference.prototype.referenceChange_ = function() {
 Blockly.BoundVariableValueReference.prototype.dispose = function() {
   Blockly.BoundVariables.removeReference(this.workspace_, this);
   this.workspace_ = null;
-  this.block_ = null;
+  this.sourceBlock_ = null;
   if (this.value_) {
     this.value_.removeReference(this);
     this.value_ = null;
