@@ -199,6 +199,50 @@ Blockly.DraggedConnectionManager.prototype.update = function(dxy, deleteArea,
 };
 
 /**
+ * Replace the block begin dragged with another block. Suppose that the new
+ * blocks are in the exactly same position with the current block.
+ * @param {!Block.Block} newBlock The new block being dragged.
+ */
+Blockly.DraggedConnectionManager.prototype.replaceBlock = function(newBlock) {
+  var oldBlock = this.topBlock_;
+  if (oldBlock == newBlock) {
+    return;
+  }
+  if (oldBlock.type !== newBlock.type) {
+    throw 'Can not replace the dragged block with a block of another type.';
+  }
+  if (this.localConnection_) {
+    // Find a connection in the new block equivalent to the current
+    // this.localConnection_ in the old block.
+    var oldConnection = this.localConnection_;
+    var newConnection;
+    if (oldConnection == oldBlock.outputConnection) {
+      newConnection = newBlock.outputConnection;
+    } else if (oldConnection == oldBlock.previousConnection) {
+      newConnection = newBlock.previouseConnection;
+    } else if (oldConnection == oldBlock.nextConnection) {
+      newConnection = newBlock.nextConnection;
+    } else if (oldConnection == oldBlock.lastConnectionInStack()) {
+      newConnection = newBlock.lastConnectionInStack();
+    } else {
+      var parentInput = goog.array.find(oldBlock.inputList, function(input) {
+        return input.connection == this.localConnection_;
+      }, this);
+      if (parentInput) {
+        newConnection = newBlock.getInput(parentInput.name).connection;
+      }
+    }
+    if (!newConnection) {
+      throw 'Equivalent connection is not found.';
+    }
+    this.localConnection_ = newConnection;
+  }
+  this.topBlock_ = newBlock;
+  this.workspace_ = this.topBlock_.workspace;
+  this.availableConnections_ = this.initAvailableConnections_();
+};
+
+/**
  * Remove highlighting from the currently highlighted connection, if it exists.
  * @private
  */

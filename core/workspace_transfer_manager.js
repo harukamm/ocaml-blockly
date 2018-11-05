@@ -144,13 +144,16 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
 };
 
 /**
- * Change the workspace of the block to the pointed workspace.
+ * Returns the block newly created in the pointed workspace. Throws an error if
+ * the block would not transfer.
  * This should be called at the end of a drag.
+ * @return {Block.Block} The block positioned in the same location with the
+ *     current block.
  * @package
  */
-Blockly.WorkspaceTransferManager.prototype.applyTransfer = function() {
+Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function() {
   if (!this.wouldTransfer()) {
-    return;
+    throw 'The block would not transfer workspace.';
   }
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.setGroup(true);
@@ -159,7 +162,10 @@ Blockly.WorkspaceTransferManager.prototype.applyTransfer = function() {
     event.workspaceId = this.pointedWorkspace_.id;
     Blockly.Events.fire(event);
   }
-  this.topBlock_.transferWorkspace(this.pointedWorkspace_);
+  var xml = Blockly.Xml.blockToDom(this.topBlock_);
+  var block = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
+  // TODO: Position the new block correctly.
+  return block;
 };
 
 /**

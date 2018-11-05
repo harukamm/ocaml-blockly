@@ -279,7 +279,10 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
     this.fireMoveEvent_();
     if (this.workspaceTransferManager_ &&
         this.workspaceTransferManager_.wouldTransfer()) {
-      this.workspaceTransferManager_.applyTransfer();
+      var transferredBlock = this.workspaceTransferManager_.placeNewBlock();
+      this.draggedConnectionManager_.replaceBlock(transferredBlock);
+      this.draggingBlock_.dispose();
+      this.draggingBlock_ = transferredBlock;
     }
     if (this.draggedConnectionManager_.wouldConnectBlock()) {
       // Applying connections also rerenders the relevant blocks.
