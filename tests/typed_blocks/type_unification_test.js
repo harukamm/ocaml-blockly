@@ -490,3 +490,18 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_simpleTreeInFlyoutReferences() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    setVariableName(letBlock, 'VAR', 'j');
+    var xml = letBlock.getTreeInFlyout();
+    var childNodes = xml.childNodes;
+    for (var i = 0, node; node = childNodes[i]; i++) {
+      assertEquals(node.tagName, 'BLOCK');
+    }
+  } finally {
+    workspace.dispose();
+  }
+}

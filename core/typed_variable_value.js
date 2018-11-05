@@ -73,6 +73,14 @@ Blockly.TypedVariableValue = function(block, typeExpr, fieldName,
    */
   this.referenceList_ = [];
 
+  /**
+   * Whether this variable value is scheduled to be deleted. If true, will be
+   * deleted when there is no references to this value.
+   * @type {boolean}
+   * @private
+   */
+  this.deleteLater_ = false;
+
   this.sourceBlock_.typedValue[this.fieldName] = this;
   Blockly.BoundVariables.addValue(this.workspace_, this);
 
@@ -93,7 +101,7 @@ Blockly.TypedVariableValue.prototype.getSourceBlock = function() {
  * @return {!Blockly.Workspace} The source block's workspace, or null.
  */
 Blockly.TypedVariableValue.prototype.getWorkspace = function() {
-  return this.sourceBlock_ ? this.sourceBlock_.workspace : null;
+  return this.workspace_;
 };
 
 /**
@@ -130,12 +138,17 @@ Blockly.TypedVariableValue.prototype.getId = function() {
  * Dispose of this value.
  */
 Blockly.TypedVariableValue.prototype.dispose = function() {
-  this.referenceList_.length = 0;
-  Blockly.BoundVariables.removeValue(this.workspace_, this);
-  this.workspace_ = null;
-  delete this.sourceBlock_.typedValue[this.fieldName];
-  this.sourceBlock_ = null;
-  this.typeExpr = null;
+  if (this.referenceList_.length == 0) {
+    Blockly.BoundVariables.removeValue(this.workspace_, this);
+    this.workspace_ = null;
+    delete this.sourceBlock_.typedValue[this.fieldName];
+    this.sourceBlock_ = null;
+    this.typeExpr = null;
+  } else {
+    // Currently can not be destroyed because this variable value has
+    // references. Delete this when the number of references drops to zero.
+    this.deleteLater_ = true;
+  }
 };
 
 /**
@@ -146,6 +159,9 @@ Blockly.TypedVariableValue.prototype.dispose = function() {
 Blockly.TypedVariableValue.prototype.storeReference = function(reference) {
   if (this.referenceList_.indexOf(reference) != -1) {
     throw 'Duplicated references.';
+  }
+  if (this.deleteLater_) {
+    throw 'Can not add a reference any more, this value is being deleted.';
   }
   this.referenceList_.push(reference);
 };
@@ -161,4 +177,9 @@ Blockly.TypedVariableValue.prototype.removeReference = function(reference) {
     throw 'Unable to find the reference.';
   }
   this.referenceList_.splice(removalIndex, 1);
+
+  // Delete this value if it's scheduled to do so and there is no references.
+  if (this.deleteLater_ && !this.referenceList_.length) {
+    this.dispose();
+  }
 };
