@@ -343,8 +343,8 @@ function test_type_unification_lambdaStructure() {
     var block = workspace.newBlock('lambda_typed');
     var var1 = workspace.newBlock('variables_get_typed');
     // Set the same variable name with the name of lambda's argument.
-    var variableName = block.getField('VAR').getVariableName();
-    setVariableName(var1, 'VAR', variableName);
+    setVariableName(block, 'VAR', 'x');
+    setVariableName(var1, 'VAR', 'x');
     block.getInput('RETURN').connection.connect(var1.outputConnection);
     assertEquals(var1.getField('VAR').getText(),
         block.getField('VAR').getText());
