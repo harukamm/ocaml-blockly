@@ -164,7 +164,11 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function() {
   }
   var xml = Blockly.Xml.blockToDom(this.topBlock_);
   var block = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
-  // TODO: Position the new block correctly.
+  // Aline this block according to the new surface.
+  var localXY = this.topBlock_.getRelativeToSurfaceXY();
+  var surfaceXY = this.workspace_.getRelativeToWorkspaceXY(this.pointedWorkspace_);
+  var position = goog.math.Coordinate.sum(localXY, surfaceXY);
+  block.moveBy(position.x, position.y);
   return block;
 };
 
