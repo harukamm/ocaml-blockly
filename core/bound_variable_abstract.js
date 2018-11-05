@@ -14,9 +14,11 @@ goog.require('goog.string');
 /**
  * Class for a variable to implement variable binding.
  * @param {!Blockly.Block} block The block of this variable.
+ * @param {!string} fieldName The name of the field that contains this
+ *     variable.
  * @constructor
  */
-Blockly.BoundVariableAbstract = function(block) {
+Blockly.BoundVariableAbstract = function(block, fieldName) {
   /**
    * The block the variable is declared in.
    * @type {!Blockly.Block}
@@ -28,6 +30,12 @@ Blockly.BoundVariableAbstract = function(block) {
    * @type {!Blockly.Workspace}
    */
   this.workspace_ = this.sourceBlock_.workspace;
+
+  /**
+   * The name of this variable's name.
+   * @type {string}
+   */
+  this.fieldName_ = fieldName;
 
   /**
    * A unique id for the variable.

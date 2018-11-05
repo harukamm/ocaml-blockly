@@ -78,26 +78,28 @@ Blockly.BoundVariables.getValueById = function(workspace, id) {
 /**
  * Create a reference on the given block.
  * @param {!Blockly.Block} block The block to add the reference to.
+ * @param {string} fieldName The name of the variable field.
  * @param {!string} name The default variable name.
  */
-Blockly.BoundVariables.createReference = function(block, name) {
+Blockly.BoundVariables.createReference = function(block, fieldName, name) {
   // The reference would be added to the reference DB of block's workspace in
   // the constructor.
-  return new Blockly.BoundVariableValueReference(block, name);
+  return new Blockly.BoundVariableValueReference(block, fieldName, name);
 };
 
 /**
  * Look up the reference on the workspace of the given block, or create a
  * variable reference on the block.
  * @param {!Block.Block} block The block to search for the reference.
+ * @param {!string} fieldName The name of the field which contains the variable.
  * @param {!string} name The default variable name.
  * @param {string} opt_id The ID to use to look up.
  */
-Blockly.BoundVariables.getOrCreateReference = function(block, name, opt_id) {
+Blockly.BoundVariables.getOrCreateReference = function(block, fieldName, name, opt_id) {
   var variable = Blockly.BoundVariables.getReferenceById(block.workspace,
       opt_id);
   if (!variable) {
-    variable = Blockly.BoundVariables.createReference(block, name);
+    variable = Blockly.BoundVariables.createReference(block, fieldName, name);
   }
   return variable;
 };

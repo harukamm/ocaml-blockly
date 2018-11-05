@@ -13,10 +13,12 @@ goog.require('goog.string');
 /**
  * Class for a reference to variable defined in block.
  * @param {!Blockly.Block} block This reference's block.
+ * @param {!string} fieldName The name of the field that contains this
+ *     variable.
  * @param {!string} varName The default name of this reference.
  * @constructor
  */
-Blockly.BoundVariableValueReference = function(block, varName) {
+Blockly.BoundVariableValueReference = function(block, fieldName, varName) {
   /**
    * The variable this reference refers to, or null if it's not been resolved
    * yet.
@@ -41,7 +43,7 @@ Blockly.BoundVariableValueReference = function(block, varName) {
   this.typeExpr = block.outputConnection.typeExpr;
 
   Blockly.BoundVariableValueReference.superClass_.constructor.call(this,
-      block);
+      block, fieldName);
 
   Blockly.BoundVariables.addReference(this.workspace_, this);
 };
@@ -119,7 +121,7 @@ Blockly.BoundVariableValueReference.prototype.removeBoundValue = function() {
 Blockly.BoundVariableValueReference.prototype.referenceChange_ = function() {
   // TODO: This doesn't work if the name of field which contains this reference
   // is 'VAR'. Get the field's name property.
-  this.sourceBlock_.getField('VAR').updateText();
+  this.sourceBlock_.getField(this.fieldName_).updateText();
 };
 
 /**

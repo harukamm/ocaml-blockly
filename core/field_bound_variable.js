@@ -129,7 +129,7 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
           this.scopeInputName_, this.defaultVariableName_);
     } else {
       this.variable_ = Blockly.BoundVariables.createReference(
-          this.sourceBlock_, this.defaultVariableName_);
+          this.sourceBlock_, this.name, this.defaultVariableName_);
     }
   }
 };

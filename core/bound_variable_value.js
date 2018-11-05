@@ -28,12 +28,6 @@ Blockly.BoundVariableValue = function(block, typeExpr, fieldName,
   this.typeExpr = typeExpr;
 
   /**
-   * The name of the variable field which belongs to the block.
-   * @type {!string}
-   */
-  this.fieldName = fieldName;
-
-  /**
    * The name of input which this variable can be used. (e.g. Suppose that the
    * source block is 'let X = I1 in I2' where I1 and I2 is value inputs.
    * this.inputName must be the name of input I2 because the variable X can be
@@ -63,9 +57,10 @@ Blockly.BoundVariableValue = function(block, typeExpr, fieldName,
    */
   this.deleteLater_ = false;
 
-  Blockly.BoundVariableValue.superClass_.constructor.call(this, block);
+  Blockly.BoundVariableValue.superClass_.constructor.call(this, block,
+      fieldName);
 
-  block.typedValue[this.fieldName] = this;
+  block.typedValue[fieldName] = this;
   Blockly.BoundVariables.addValue(block.workspace, this);
 
   // TODO: Register an event for the variable creation.
@@ -94,7 +89,7 @@ Blockly.BoundVariableValue.prototype.setVariableName = function(newName) {
       reference.setVariableName(newName);
     }
     // Rerender the block.
-    this.sourceBlock_.getField(this.fieldName).updateText();
+    this.sourceBlock_.getField(this.fieldName_).updateText();
   }
 };
 
@@ -105,7 +100,7 @@ Blockly.BoundVariableValue.prototype.setVariableName = function(newName) {
 Blockly.BoundVariableValue.prototype.dispose = function() {
   if (this.referenceList_.length == 0) {
     Blockly.BoundVariables.removeValue(this.workspace_, this);
-    delete this.sourceBlock_.typedValue[this.fieldName];
+    delete this.sourceBlock_.typedValue[this.fieldName_];
     this.typeExpr = null;
     Blockly.BoundVariableValue.superClass_.dispose.call(this);
   } else {
