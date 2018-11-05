@@ -51,7 +51,7 @@ Blockly.FieldBoundVariable = function(isValue, opt_varName) {
    * The value of this field's variable if this.forValue_ is true, otherwise
    * the reference of that.
    * Would be initialized in init() or setValue().
-   * @type {Blockly.TypedVariableValue|Blockly.TypedVariableValueReference}
+   * @type {Blockly.BoundVariableValue|Blockly.BoundVariableValueReference}
    */
   this.data_ = null;
 };
@@ -167,7 +167,7 @@ Blockly.FieldBoundVariable.prototype.isForValue = function() {
 /**
  * Sets the value this reference refers to.  Throws an error if this field
  * is for a variable value.
- * @param {!Blockly.TypedVariableValueReference}
+ * @param {!Blockly.BoundVariableValueReference}
  */
 Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
   if (this.forValue_) {
@@ -181,7 +181,7 @@ Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
 /**
  * Returns the value this reference refers to.  Throws an error is this
  * field is for a variable value.
- * @return {Blockly.TypedVariableValue}
+ * @return {Blockly.BoundVariableValue}
  */
 Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
   if (this.forValue_) {
@@ -192,7 +192,7 @@ Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
 
 /**
  * Get the variable of this field.
- * @return {Blockly.TypedVariableValue|Blockly.TypedVariableValueReference}
+ * @return {Blockly.BoundVariableValue|Blockly.BoundVariableValueReference}
  *     The variable's reference or value.
  */
 Blockly.FieldBoundVariable.prototype.getData = function() {

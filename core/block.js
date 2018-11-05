@@ -36,7 +36,7 @@ goog.require('Blockly.Events.BlockMove');
 goog.require('Blockly.Extensions');
 goog.require('Blockly.Input');
 goog.require('Blockly.Mutator');
-goog.require('Blockly.TypedVariableValue');
+goog.require('Blockly.BoundVariableValue');
 goog.require('Blockly.Workbench');
 goog.require('Blockly.Warning');
 goog.require('Blockly.Workspace');
@@ -78,7 +78,7 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
   this.previousConnection = null;
   /** @type {!Array.<!Blockly.Input>} */
   this.inputList = [];
-  /** @type {!Object<string, !Blockly.TypedVariableValue>} */
+  /** @type {!Object<string, !Blockly.BoundVariableValue>} */
   this.typedValue = {};
   /** @type {boolean|undefined} */
   this.inputsInline = undefined;
@@ -1569,7 +1569,7 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
  * Find the value this getter refers to.
  * @param {!Blockly.Connection} parentConnection connection this block is trying
  *     to connect to.
- * @return {?Blockly.Blockly.TypedVariableValue} Variable representation this
+ * @return {?Blockly.Blockly.BoundVariableValue} Variable representation this
  *     getter is bound to.
  */
 Blockly.Block.prototype.findValue = function(parentConnection) {

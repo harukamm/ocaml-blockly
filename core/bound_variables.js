@@ -27,14 +27,14 @@ Blockly.BoundVariables.createValue = function(block, valueTypeExpr, fieldName,
       scopeInputName, variableName) {
   // The value would be added to the reference DB of block's workspace in
   // the constructor.
-  return new Blockly.TypedVariableValue(block, valueTypeExpr, fieldName,
+  return new Blockly.BoundVariableValue(block, valueTypeExpr, fieldName,
       scopeInputName, variableName);
 };
 
 /**
  * Adds a value to the list of values.
  * @param {!Blockly.Workspace} workspace The workspace to add the value to.
- * @param {!Blockly.TypedVariableValue}
+ * @param {!Blockly.BoundVariableValue}
  */
 Blockly.BoundVariables.addValue = function(workspace, value) {
   var id = value.getId();
@@ -50,7 +50,7 @@ Blockly.BoundVariables.addValue = function(workspace, value) {
  * Remove a value from the list of values.
  * @param {!Blockly.Workspace} workspace The workspace to remove the value
  *     from.
- * @param {!Blockly.TypedVariableValue}
+ * @param {!Blockly.BoundVariableValue}
  */
 Blockly.BoundVariables.removeValue = function(workspace, value) {
   var id = value.getId();
@@ -66,7 +66,7 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
  * Find the value on workspace workspace with the specified ID.
  * @param {!Blockly.Workspace} workspace The workspace to search for the value.
  * @param {string} id ID of workspace to find.
- * @return {Blockly.TypedVariableValue} The sought after value or null.
+ * @return {Blockly.BoundVariableValue} The sought after value or null.
  */
 Blockly.BoundVariables.getValueById = function(workspace, id) {
   var valueDB = workspace.getValueDB();
@@ -81,7 +81,7 @@ Blockly.BoundVariables.getValueById = function(workspace, id) {
 Blockly.BoundVariables.createReference = function(block, name) {
   // The reference would be added to the reference DB of block's workspace in
   // the constructor.
-  return new Blockly.TypedVariableValueReference(block, name);
+  return new Blockly.BoundVariableValueReference(block, name);
 };
 
 /**
@@ -103,7 +103,7 @@ Blockly.BoundVariables.getOrCreateReference = function(block, name, opt_id) {
 /**
  * Add the reference to the given workspace.
  * @param {!Blockly.Workspace} workspce The workspace to add the reference to.
- * @param {!Blockly.TypedVariableValueReference} The reference to add.
+ * @param {!Blockly.BoundVariableValueReference} The reference to add.
  */
 Blockly.BoundVariables.addReference = function(workspace, reference) {
   var id = reference.getId();
@@ -119,7 +119,7 @@ Blockly.BoundVariables.addReference = function(workspace, reference) {
  * Remove the reference with the given workspace.
  * @param {!Blockly.Workspace} workspace The workspace to remove the reference
  *     from.
- * @param {!Blockly.TypedVariableValueReference} The reference to remove.
+ * @param {!Blockly.BoundVariableValueReference} The reference to remove.
  */
 Blockly.BoundVariables.removeReference = function(workspace, reference) {
   var id = reference.getId();
@@ -136,7 +136,7 @@ Blockly.BoundVariables.removeReference = function(workspace, reference) {
  * @param {!Blockly.Workspace} workspace The workspace to search for the
  *     reference.
  * @param {string} id The ID to use to look up the variable, or null.
- * @return {Blockly.TypedVariableValueReference} The sought after reference or
+ * @return {Blockly.BoundVariableValueReference} The sought after reference or
  *     null.
  */
 Blockly.BoundVariables.getReferenceById = function(workspace, id) {

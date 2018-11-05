@@ -4,9 +4,9 @@
  */
 'use strict';
 
-goog.provide('Blockly.TypedVariableValueReference');
+goog.provide('Blockly.BoundVariableValueReference');
 
-goog.require('Blockly.TypedVariableValue');
+goog.require('Blockly.BoundVariableValue');
 goog.require('goog.string');
 
 
@@ -16,11 +16,11 @@ goog.require('goog.string');
  * @param {!string} varName The default name of this reference.
  * @constructor
  */
-Blockly.TypedVariableValueReference = function(block, varName) {
+Blockly.BoundVariableValueReference = function(block, varName) {
   /**
    * The variable this reference refers to, or null if it's not been resolved
    * yet.
-   * @type {Blockly.TypedVariableValue}
+   * @type {Blockly.BoundVariableValue}
    * @private
    */
   this.value_ = null;
@@ -67,7 +67,7 @@ Blockly.TypedVariableValueReference = function(block, varName) {
  * value has been resolved.
  * @return {string} The display name.
  */
-Blockly.TypedVariableValueReference.prototype.getVariableName = function() {
+Blockly.BoundVariableValueReference.prototype.getVariableName = function() {
   return this.value_ ? this.value_.getVariableName() : this.temporayDisplayName_;
 };
 
@@ -75,7 +75,7 @@ Blockly.TypedVariableValueReference.prototype.getVariableName = function() {
  * Set the variable name for this variable.
  * @param {!string} newName The new name for this variable.
  */
-Blockly.TypedVariableValueReference.prototype.setVariableName = function(newName) {
+Blockly.BoundVariableValueReference.prototype.setVariableName = function(newName) {
   if (this.value_) {
     if (this.value_.getVariableName() !== newName) {
       this.value_.setVariableName(newName);
@@ -91,24 +91,24 @@ Blockly.TypedVariableValueReference.prototype.setVariableName = function(newName
  * Returns the ID for the reference
  * @return {!string} The ID for the reference.
  */
-Blockly.TypedVariableValueReference.prototype.getId = function() {
+Blockly.BoundVariableValueReference.prototype.getId = function() {
   return this.id_;
 };
 
 /**
  * Gets the value this reference refers to.
- * @return {!Blockly.TypedVariableValue} The bound value, or null.
+ * @return {!Blockly.BoundVariableValue} The bound value, or null.
  */
-Blockly.TypedVariableValueReference.prototype.getBoundValue = function() {
+Blockly.BoundVariableValueReference.prototype.getBoundValue = function() {
   return this.value_;
 };
 
 /**
  * Sets the value to refer to. Throw an exception if the bound value is already
  * resolved.
- * @param {!Blockly.TypedVariableValue} value The variable to refer to.
+ * @param {!Blockly.BoundVariableValue} value The variable to refer to.
  */
-Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
+Blockly.BoundVariableValueReference.prototype.setBoundValue = function(value) {
   if (this.value_) {
     throw 'The bound value has already been resolved.';
   }
@@ -125,7 +125,7 @@ Blockly.TypedVariableValueReference.prototype.setBoundValue = function(value) {
 /**
  * Remove the reference to the current value.
  */
-Blockly.TypedVariableValueReference.prototype.removeBoundValue = function() {
+Blockly.BoundVariableValueReference.prototype.removeBoundValue = function() {
   if (this.value_) {
     this.value_.removeReference(this);
     this.typeExpr.disconnect(this.value_.typeExpr);
@@ -137,7 +137,7 @@ Blockly.TypedVariableValueReference.prototype.removeBoundValue = function() {
  * Update the source block when this reference is changed.
  * @private
  */
-Blockly.TypedVariableValueReference.prototype.referenceChange_ = function() {
+Blockly.BoundVariableValueReference.prototype.referenceChange_ = function() {
   // TODO: This doesn't work if the name of field which contains this reference
   // is 'VAR'. Get the field's name property.
   this.block_.getField('VAR').updateText();
@@ -146,7 +146,7 @@ Blockly.TypedVariableValueReference.prototype.referenceChange_ = function() {
 /**
  * Dispose of this reference.
  */
-Blockly.TypedVariableValueReference.prototype.dispose = function() {
+Blockly.BoundVariableValueReference.prototype.dispose = function() {
   Blockly.BoundVariables.removeReference(this.workspace_, this);
   this.workspace_ = null;
   this.block_ = null;

@@ -4,7 +4,7 @@
  */
 'use strict';
 
-goog.provide('Blockly.TypedVariableValue');
+goog.provide('Blockly.BoundVariableValue');
 
 goog.require('goog.string');
 
@@ -19,7 +19,7 @@ goog.require('goog.string');
  * @param {!string} variableName The default name of this variable value.
  * @constructor
  */
-Blockly.TypedVariableValue = function(block, typeExpr, fieldName,
+Blockly.BoundVariableValue = function(block, typeExpr, fieldName,
     scopeInputName, variableName) {
   /**
    * The block the variable is declared in.
@@ -68,7 +68,7 @@ Blockly.TypedVariableValue = function(block, typeExpr, fieldName,
 
   /**
    * A list of references that refer to this value.
-   * @type {!Array.<Blockly.TypedVariableValueReference>}
+   * @type {!Array.<Blockly.BoundVariableValueReference>}
    * @private
    */
   this.referenceList_ = [];
@@ -92,7 +92,7 @@ Blockly.TypedVariableValue = function(block, typeExpr, fieldName,
  * Get the source block for this varialbe.
  * @return {!Blockly.Block} The source block
  */
-Blockly.TypedVariableValue.prototype.getSourceBlock = function() {
+Blockly.BoundVariableValue.prototype.getSourceBlock = function() {
   return this.sourceBlock_;
 };
 
@@ -100,7 +100,7 @@ Blockly.TypedVariableValue.prototype.getSourceBlock = function() {
  * Get the workspace of this variable's source block.
  * @return {!Blockly.Workspace} The source block's workspace, or null.
  */
-Blockly.TypedVariableValue.prototype.getWorkspace = function() {
+Blockly.BoundVariableValue.prototype.getWorkspace = function() {
   return this.workspace_;
 };
 
@@ -108,7 +108,7 @@ Blockly.TypedVariableValue.prototype.getWorkspace = function() {
  * Get the variable name for this variable.
  * @return {!string} This variable's name.
  */
-Blockly.TypedVariableValue.prototype.getVariableName = function() {
+Blockly.BoundVariableValue.prototype.getVariableName = function() {
   return this.variableName_;
 };
 
@@ -116,7 +116,7 @@ Blockly.TypedVariableValue.prototype.getVariableName = function() {
  * Set the variable name for this variable.
  * @param {!string} newName The new name for this variable.
  */
-Blockly.TypedVariableValue.prototype.setVariableName = function(newName) {
+Blockly.BoundVariableValue.prototype.setVariableName = function(newName) {
   if (this.variableName_ !== newName) {
     this.variableName_ = newName;
     for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
@@ -130,14 +130,14 @@ Blockly.TypedVariableValue.prototype.setVariableName = function(newName) {
 /**
  * @return {!string} The ID for the variable.
  */
-Blockly.TypedVariableValue.prototype.getId = function() {
+Blockly.BoundVariableValue.prototype.getId = function() {
   return this.id_;
 };
 
 /**
  * Dispose of this value.
  */
-Blockly.TypedVariableValue.prototype.dispose = function() {
+Blockly.BoundVariableValue.prototype.dispose = function() {
   if (this.referenceList_.length == 0) {
     Blockly.BoundVariables.removeValue(this.workspace_, this);
     this.workspace_ = null;
@@ -153,10 +153,10 @@ Blockly.TypedVariableValue.prototype.dispose = function() {
 
 /**
  * Store the reference to a list of references.
- * @param {!Blockly.TypedVariableValueReference} reference The reference to
+ * @param {!Blockly.BoundVariableValueReference} reference The reference to
  *     store a list of references.
  */
-Blockly.TypedVariableValue.prototype.storeReference = function(reference) {
+Blockly.BoundVariableValue.prototype.storeReference = function(reference) {
   if (this.referenceList_.indexOf(reference) != -1) {
     throw 'Duplicated references.';
   }
@@ -168,10 +168,10 @@ Blockly.TypedVariableValue.prototype.storeReference = function(reference) {
 
 /**
  * Remove the reference from a list of references.
- * @param {!Blockly.TypedVariableValueReference} reference The reference to
+ * @param {!Blockly.BoundVariableValueReference} reference The reference to
  *     remove from a list of references.
  */
-Blockly.TypedVariableValue.prototype.removeReference = function(reference) {
+Blockly.BoundVariableValue.prototype.removeReference = function(reference) {
   var removalIndex = this.referenceList_.indexOf(reference);
   if (removalIndex == -1) {
     throw 'Unable to find the reference.';
