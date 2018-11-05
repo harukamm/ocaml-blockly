@@ -16,6 +16,7 @@
 
 goog.provide('Blockly.FieldBoundVariable');
 
+goog.require('Blockly.BoundVariables');
 goog.require('Blockly.FieldDropdown');
 goog.require('Blockly.Msg');
 goog.require('goog.asserts');

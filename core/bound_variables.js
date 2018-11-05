@@ -10,6 +10,8 @@
  **/
 goog.provide('Blockly.BoundVariables');
 
+goog.require('Blockly.BoundVariableValue');
+goog.require('Blockly.BoundVariableValueReference');
 goog.require('Blockly.Workspace');
 goog.require('goog.string');
 
