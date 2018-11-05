@@ -911,10 +911,11 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
       }
     }
   } else {
-    variable = Blockly.BoundVariables.getOrCreateReference(block, field.name,
-        text, xml.id);
+    // If the field is for a variable reference, ignore the xml.id and create
+    // a new reference. We can restore it from XML.
+    variable = Blockly.BoundVariables.createReference(block, field.name, text);
     var childDom = xml.children.length && xml.children[0];
-    // Initialize the variable binding if <refer-to> DOM is specified.
+    // Build the variable binding if <refer-to> DOM is specified.
     if (childDom && childDom.nodeName.toLowerCase() == 'refer-to') {
       var valuesWorkspace = getWorkspaceFromDom(childDom);
       var value = Blockly.BoundVariables.getValueById(valuesWorkspace, childDom.id);
