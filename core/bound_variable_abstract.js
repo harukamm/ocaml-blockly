@@ -77,6 +77,12 @@ Blockly.BoundVariableAbstract.prototype.getId = function() {
 };
 
 /**
+ * Wether this variable is a reference to a variable value.
+ * @return {boolean} True if this variable is a reference.
+ */
+Blockly.BoundVariableAbstract.prototype.isReference = undefined;
+
+/**
  * Get the variable name for this variable.
  * @return {!string} This variable's name.
  */

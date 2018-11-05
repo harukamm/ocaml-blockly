@@ -802,6 +802,26 @@ Blockly.Block.prototype.getVarModels = function() {
 };
 
 /**
+ * Returns all bound-variables referenced by this block.
+ * @return {!Array.<!Blockly.BoundVariableAbstract>} List of variables.
+ * @package
+ */
+Blockly.Block.prototype.getBoundVariables = function() {
+  var vars = [];
+  for (var i = 0, input; input = this.inputList[i]; i++) {
+    for (var j = 0, field; field = input.fieldRow[j]; j++) {
+      if (field.referencesVariables() == Blockly.FIELD_VARIABLE_BINDING) {
+        var variable = field.getVariable();
+        if (variable) {
+          vars.push(variable);
+        }
+      }
+    }
+  }
+  return vars;
+};
+
+/**
  * Notification that a variable is renaming but keeping the same ID.  If the
  * variable is in use on this block, rerender to show the new name.
  * @param {!Blockly.VariableModel} variable The variable being renamed.
@@ -1583,11 +1603,13 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
   }
   var block = parentConnection.getSourceBlock();
   var env = block.allVisibleVariables(parentConnection);
-  var getterVariables = this.getVars();
-  for (var i = 0, name; name = getterVariables[i]; i++) {
-    if (nam in env) {
-      if (opt_bind) {
-        // TODO: Bind this getter block with the found variable.
+  var variableList = this.getBoundVariables();
+  for (var i = 0, variable; variable = variableList[i]; i++) {
+    var name = variable.getVariableName();
+    if (name in env) {
+      if (variable.isReference() && opt_bind) {
+        variable.removeBoundValue();
+        variable.setBoundValue(env[name]);
       }
     } else {
       return false;
