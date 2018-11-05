@@ -7,6 +7,27 @@ function create_typed_workspace() {
   return new Blockly.Workspace(workspaceOptions);
 }
 
+function getVariable(block) {
+  var fieldName;
+  switch (block.type) {
+    case 'let_typed':
+    case 'lambda_typed':
+    case 'variables_get_typed':
+      fieldName = 'VAR';
+      break;
+    default:
+      assertTrue(false, 'Unexpected case.');
+  }
+  var field = block.getField(fieldName);
+  return field.getVariable();
+}
+
+function isOfBoundVariable(referenceBlock, valueBlock) {
+  var reference = getVariable(referenceBlock);
+  var value = getVariable(valueBlock);
+  return reference.getBoundValue() == value;
+}
+
 function isVariableOf(varBlock, block, opt_variableName) {
   var name1, name2, checkType;
   switch (block.type) {
@@ -501,6 +522,30 @@ function test_type_unification_simpleTreeInFlyoutReferences() {
     for (var i = 0, node; node = childNodes[i]; i++) {
       assertEquals(node.tagName, 'BLOCK');
     }
+  } finally {
+    workspace.dispose();
+  }
+}
+
+function test_type_unification_changeVariablesNameReferences() {
+  var workspace = create_typed_workspace();
+  try {
+    var outerBlock = workspace.newBlock('let_typed');
+    var innerBlock = workspace.newBlock('let_typed');
+    var varBlock = workspace.newBlock('variables_get_typed');
+    setVariableName(outerBlock, 'VAR', 'j');
+    setVariableName(innerBlock, 'VAR', 'i');
+    setVariableName(varBlock, 'VAR', 'j');
+    // [let j = <> in < [let i = <> in < [j] >] >]
+    outerBlock.getInput('EXP2').connection.connect(innerBlock.outputConnection);
+    innerBlock.getInput('EXP2').connection.connect(varBlock.outputConnection);
+
+    assertTrue(isOfBoundVariable(varBlock, outerBlock));
+    setVariableName(outerBlock, 'VAR', 'i');
+    assertTrue(varBlock.getField('VAR').getText() === 'i');
+
+    setVariableName(outerBlock, 'VAR', 'x');
+    assertTrue(varBlock.getField('VAR').getText() === 'x');
   } finally {
     workspace.dispose();
   }
