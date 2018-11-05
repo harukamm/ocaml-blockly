@@ -136,7 +136,7 @@ Blockly.Xml.fieldToDomVariable_ = function(field) {
 Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
   var id = field.getValue();
   if (id == null) {
-    field.initData();
+    field.initModel();
     id = field.getValue();
   }
   var container = goog.dom.createDom('field', null, field.getVariableName());
@@ -902,8 +902,8 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
     if (workspace.isFlyout) {
       // Ignore the variable that refers to a flyout workspace, and create a
       // new variable.
-      field.initData();
-      variable = field.getData();
+      field.initModel();
+      variable = field.getVariable();
     } else {
       variable = Blockly.BoundVariables.getValueById(workspace, xml.id);
       if (!variable) {

@@ -54,7 +54,7 @@ Blockly.FieldBoundVariable = function(isValue, opt_varName) {
    * Would be initialized in init() or setValue().
    * @type {Blockly.BoundVariableAbstract}
    */
-  this.data_ = null;
+  this.variable_ = null;
 };
 goog.inherits(Blockly.FieldBoundVariable, Blockly.FieldDropdown);
 
@@ -82,7 +82,7 @@ Blockly.FieldBoundVariable.fromJson = function(options) {
 Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
     scopeInputName, opt_varName) {
   var field = new Blockly.FieldBoundVariable(true, opt_varName);
-  // Add to properties, which is needed in initData().
+  // Add to properties, which is needed in initModel().
   field.valueTypeExpr_ = valueTypeExpr;
   field.scopeInputName_ = scopeInputName;
   return field;
@@ -113,22 +113,22 @@ Blockly.FieldBoundVariable.prototype.init = function() {
   }
   Blockly.FieldBoundVariable.superClass_.init.call(this);
 
-  this.initData();
+  this.initModel();
   this.updateText();
 };
 
 /**
- * Initialize the data of this field's variable if has not already been
+ * Initialize this field's variable if has not already been
  * initialized.
  */
-Blockly.FieldBoundVariable.prototype.initData = function() {
-  if (!this.data_) {
+Blockly.FieldBoundVariable.prototype.initModel = function() {
+  if (!this.variable_) {
     if (this.forValue_) {
-      this.data_ = Blockly.BoundVariables.createValue(
+      this.variable_ = Blockly.BoundVariables.createValue(
           this.sourceBlock_, this.valueTypeExpr_, this.name,
           this.scopeInputName_, this.defaultVariableName_);
     } else {
-      this.data_ = Blockly.BoundVariables.createReference(
+      this.variable_ = Blockly.BoundVariables.createReference(
           this.sourceBlock_, this.defaultVariableName_);
     }
   }
@@ -140,10 +140,10 @@ Blockly.FieldBoundVariable.prototype.initData = function() {
  */
 Blockly.FieldBoundVariable.prototype.dispose = function() {
   Blockly.FieldBoundVariable.superClass_.dispose.call(this);
-  if (this.data_) {
-    this.data_.dispose();
+  if (this.variable_) {
+    this.variable_.dispose();
   }
-  this.data_ = null;
+  this.variable_ = null;
 };
 
 /**
@@ -174,8 +174,8 @@ Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
   if (this.forValue_) {
     throw 'Can\'t set a bound value to a variable value.';
   }
-  if (this.data_) {
-    this.data_.setBoundValue(value);
+  if (this.variable_) {
+    this.variable_.setBoundValue(value);
   }
 };
 
@@ -188,24 +188,24 @@ Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
   if (this.forValue_) {
     throw 'Can\'t get a bound value from a variable value.';
   }
-  return this.data_ ? this.data_.getBoundValue() : null;
+  return this.variable_ ? this.variable_.getBoundValue() : null;
 };
 
 /**
  * Get the variable of this field.
  * @return {Blockly.BoundVariableAbstract} The variable's reference or value.
  */
-Blockly.FieldBoundVariable.prototype.getData = function() {
-  return this.data_;
+Blockly.FieldBoundVariable.prototype.getVariable = function() {
+  return this.variable_;
 };
 
 /**
- * Get the ID of this field's variable data.
+ * Get the ID of this field's variable.
  * @return {string} Current variable's ID.
  * @override
  */
 Blockly.FieldBoundVariable.prototype.getValue = function() {
-  return this.data_ ? this.data_.getId() : null;
+  return this.variable_ ? this.variable_.getId() : null;
 };
 
 /**
@@ -213,10 +213,10 @@ Blockly.FieldBoundVariable.prototype.getValue = function() {
  * @return {!string} Get the name for this variable.
  */
 Blockly.FieldBoundVariable.prototype.getVariableName = function() {
-  if (!this.data_) {
-    throw 'The variable data is not initalized.';
+  if (!this.variable_) {
+    throw 'The variable is not initalized.';
   }
-  return this.data_.getVariableName();
+  return this.variable_.getVariableName();
 };
 
 /**
@@ -224,10 +224,10 @@ Blockly.FieldBoundVariable.prototype.getVariableName = function() {
  * @return {!string} newName The new name for this field's variable.
  */
 Blockly.FieldBoundVariable.prototype.setVariableName = function(newName) {
-  if (!this.data_) {
-    throw 'The variable data is not initalized.';
+  if (!this.variable_) {
+    throw 'The variable is not initalized.';
   }
-  this.data_.setVariableName(newName);
+  this.variable_.setVariableName(newName);
 };
 
 /**
@@ -238,10 +238,10 @@ Blockly.FieldBoundVariable.prototype.setVariableName = function(newName) {
 Blockly.FieldBoundVariable.prototype.setText = function(newText) {
   if (newText !== null) {
     var text = String(newText);
-    if (this.data_) {
-      this.data_.setVariableName(newText);
+    if (this.variable_) {
+      this.variable_.setVariableName(newText);
     } else {
-      // Overwrite the default variable name in case of initializing this.data_
+      // Overwrite the default variable name in case of initializing this.variable_
       // later.
       this.defaultVariableName_ = text;
     }
@@ -253,33 +253,33 @@ Blockly.FieldBoundVariable.prototype.setText = function(newText) {
  * Update the text in this field with the variable name.
  */
 Blockly.FieldBoundVariable.prototype.updateText = function() {
-  if (this.data_) {
+  if (this.variable_) {
     this.setText(this.getVariableName());
   }
 };
 
 /**
- * Set the ID of this field's variable data.
- * @param {string} id New ID, which must refer to a existing data.
+ * Set the ID of this field's variable.
+ * @param {string} id New ID, which must refer to a existing variable.
  * @override
  */
 Blockly.FieldBoundVariable.prototype.setValue = function(id) {
-  var data;
+  var variable;
   if (this.forValue_) {
-    data = Blockly.BoundVariables.getValueById(
+    variable = Blockly.BoundVariables.getValueById(
         this.sourceBlock_.workspace, id);
-    if (!data) {
+    if (!variable) {
       throw 'Value of ID ' + id + ' doesn\'t exist.';
     }
   } else {
-    data = Blockly.BoundVariables.getReferenceById(
+    variable = Blockly.BoundVariables.getReferenceById(
         this.sourceBlock_.workspace, id);
-    if (!data) {
+    if (!variable) {
       throw 'Reference of ID ' + id + ' doesn\'t exist.';
     }
   }
   // TODO: Type check.
-  this.data_ = data;
+  this.variable_ = variable;
   this.updateText();
 };
 
