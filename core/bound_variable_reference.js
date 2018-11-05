@@ -73,12 +73,12 @@ Blockly.BoundVariableValueReference.prototype.getVariableName = function() {
  * @override
  */
 Blockly.BoundVariableValueReference.prototype.setVariableName = function(newName) {
-  if (this.value_) {
-    if (this.value_.getVariableName() !== newName) {
-      this.value_.setVariableName(newName);
-      this.referenceChange_();
-    }
-  } else if (this.temporayDisplayName_ !== newName) {
+  if (this.value_ && this.value_.getVariableName() !== newName) {
+    this.value_.setVariableName(newName);
+  }
+  // Update the text only if the new name is different from the displayed one.
+  if (this.temporayDisplayName_ !== newName) {
+    // Save the new displayed name.
     this.temporayDisplayName_ = newName;
     this.referenceChange_();
   }
