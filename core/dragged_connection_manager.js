@@ -44,7 +44,6 @@ Blockly.DraggedConnectionManager = function(block) {
 
   /**
    * The top block in the stack being dragged.
-   * Does not change during a drag.
    * @type {!Blockly.Block}
    * @private
    */
@@ -52,7 +51,6 @@ Blockly.DraggedConnectionManager = function(block) {
 
   /**
    * The workspace on which these connections are being dragged.
-   * Does not change during a drag.
    * @type {!Blockly.WorkspaceSvg}
    * @private
    */
@@ -62,7 +60,6 @@ Blockly.DraggedConnectionManager = function(block) {
    * The connections on the dragging blocks that are available to connect to
    * other blocks.  This includes all open connections on the top block, as well
    * as the last connection on the block stack.
-   * Does not change during a drag.
    * @type {!Array.<!Blockly.RenderedConnection>}
    * @private
    */
@@ -263,8 +260,7 @@ Blockly.DraggedConnectionManager.prototype.addHighlighting_ = function() {
 };
 
 /**
- * Populate the list of available connections on this block stack.  This should
- * only be called once, at the beginning of a drag.
+ * Populate the list of available connections on this block stack.
  * @return {!Array.<!Blockly.RenderedConnection>} a list of available
  *     connections.
  * @private
