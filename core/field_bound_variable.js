@@ -141,7 +141,17 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
 Blockly.FieldBoundVariable.prototype.dispose = function() {
   Blockly.FieldBoundVariable.superClass_.dispose.call(this);
   if (this.variable_) {
-    this.variable_.dispose();
+    var isSameSourceBlock = this.sourceBlock_ &&
+        this.sourceBlock_ && this.variable_.getSourceBlock();
+    if (this.forValue_ && !isSameSourceBlock) {
+      // Generally isSameSourceBlock is true, except when the value has
+      // changed its source block. See transferValuesBlock() in the variable
+      // value class.
+      // If the source blocks are no longer identical, don't dispose of the
+      // variable. Its source block is in charge.
+    } else {
+      this.variable_.dispose();
+    }
   }
   this.variable_ = null;
 };

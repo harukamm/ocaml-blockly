@@ -28,6 +28,7 @@ function test_type_transfer_block_workspace_simpleValueBlock() {
     assertTrue(value1.getId() != value2.getId());
   } finally {
     workspace.dispose();
+    otherWorkspace.dispose();
   }
 }
 
@@ -45,11 +46,13 @@ function test_type_transfer_block_workspace_valueBlockWithReferences() {
     var transferredBlock = virtually_transfer_workspace(originalBlock,
         otherWorkspace);
     var transferredValue = transferredBlock.getField('VAR').getVariable();
+    originalBlock.dispose();
     // transferredBlock must have the identical variable value with the
     // original block.
     assertTrue(originalValue == transferredValue);
   } finally {
     workspace.dispose();
+    otherWorkspace.dispose();
   }
 }
 
