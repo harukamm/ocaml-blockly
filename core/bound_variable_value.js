@@ -67,7 +67,7 @@ Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
   Blockly.BoundVariableValue.superClass_.constructor.call(this, block,
       fieldName);
 
-  Blockly.BoundVariables.addValue(this);
+  Blockly.BoundVariables.addValue(this.workspace_, this);
 
   // TODO: Register an event for the variable creation.
   // Blockly.Events.fire(new Blockly.Events.VarCreate(this));

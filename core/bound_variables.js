@@ -32,10 +32,11 @@ Blockly.BoundVariables.createValue = function(block, fieldName, valueTypeExpr,
 };
 
 /**
- * Adds a value to the list of values on the workspace.
- * @param {!Blockly.BoundVariableValue} value The value to add to the list.
+ * Adds a value to the list of values.
+ * @param {!Blockly.Workspace} workspace The workspace to add the value to.
+ * @param {!Blockly.BoundVariableValue}
  */
-Blockly.BoundVariables.addValue = function(value) {
+Blockly.BoundVariables.addValue = function(workspace, value) {
   var block = value.getSourceBlock();
   var fieldName = value.getContainerFieldName();
 
@@ -46,7 +47,7 @@ Blockly.BoundVariables.addValue = function(value) {
   value.inBlockDB = true;
 
   var id = value.getId();
-  var valueDB = value.getWorkspace().getValueDB();
+  var valueDB = workspace.getValueDB();
 
   if (valueDB[id] || value.inWorkspaceDB) {
     throw 'The value already exists in DB.';
@@ -72,7 +73,7 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
   value.inBlockDB = false;
 
   var id = value.getId();
-  var valueDB = value.getWorkspace().getValueDB();
+  var valueDB = workspace.getValueDB();
 
   if (!valueDB[id] || !value.inWorkspaceDB) {
     throw 'The value doesn\'t exist in DB.';
@@ -100,16 +101,16 @@ Blockly.BoundVariables.getValueById = function(workspace, id) {
  */
 Blockly.BoundVariables.createReference = function(block, fieldName, name) {
   return new Blockly.BoundVariableValueReference(block, fieldName, name);
-  Blockly.BoundVariables.addReference(reference);
 };
 
 /**
- * Add the reference to a list of references on the workspace.
+ * Add the reference to the given workspace.
+ * @param {!Blockly.Workspace} workspce The workspace to add the reference to.
  * @param {!Blockly.BoundVariableValueReference} The reference to add.
  */
-Blockly.BoundVariables.addReference = function(reference) {
+Blockly.BoundVariables.addReference = function(workspace, reference) {
   var id = reference.getId();
-  var referenceDB = reference.getWorkspace().getReferenceDB();
+  var referenceDB = workspace.getReferenceDB();
 
   if (referenceDB[id] || reference.inWorkspaceDB) {
     throw 'The reference ID already exists in the DB.';
