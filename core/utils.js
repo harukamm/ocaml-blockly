@@ -906,7 +906,7 @@ Blockly.utils.getViewportBBox = function() {
  * Color the outside edge of each workspace in a list.
  * @param {!Array.<Blockly.WorkspaceSvg>} workspaces A list of workspace to
  *     show the edge.
- * @param {=Blockly.WorkspaceSvg} opt_emphasize Workspace to especially
+ * @param {Blockly.WorkspaceSvg=} opt_emphasize Workspace to especially
  *     emphasize.
  */
 Blockly.utils.showRects = function(workspaces, opt_emphasize) {

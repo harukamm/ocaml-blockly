@@ -1591,7 +1591,7 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
  * @param {Blockly.Connection} parentConnection Connection this block is trying
  *     to connect to, which means that this block would share a variable context
  *     with the parent. If null, the block is not connected to any block.
- * @param {=boolean} opt_bind Bind the getter with the proper variable if
+ * @param {boolean=} opt_bind Bind the getter with the proper variable if
  *     true.
  * @return {boolean} True if all of getter blocks can refer to a existing
  *     variable.
