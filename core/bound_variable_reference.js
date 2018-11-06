@@ -44,6 +44,8 @@ Blockly.BoundVariableValueReference = function(block, fieldName, varName) {
 
   Blockly.BoundVariableValueReference.superClass_.constructor.call(this,
       block, fieldName);
+
+  Blockly.BoundVariables.addReference(this);
 };
 goog.inherits(Blockly.BoundVariableValueReference, Blockly.BoundVariableAbstract);
 

@@ -27,10 +27,8 @@ goog.require('goog.string');
  */
 Blockly.BoundVariables.createValue = function(block, fieldName, valueTypeExpr,
       scopeInputName, variableName) {
-  var value = new Blockly.BoundVariableValue(block, fieldName, valueTypeExpr,
+  return new Blockly.BoundVariableValue(block, fieldName, valueTypeExpr,
       scopeInputName, variableName);
-  Blockly.BoundVariables.addValue(value);
-  return value;
 };
 
 /**
@@ -101,9 +99,8 @@ Blockly.BoundVariables.getValueById = function(workspace, id) {
  * @param {!string} name The default variable name.
  */
 Blockly.BoundVariables.createReference = function(block, fieldName, name) {
-  var reference = new Blockly.BoundVariableValueReference(block, fieldName, name);
+  return new Blockly.BoundVariableValueReference(block, fieldName, name);
   Blockly.BoundVariables.addReference(reference);
-  return reference;
 };
 
 /**
