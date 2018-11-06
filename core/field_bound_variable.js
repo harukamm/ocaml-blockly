@@ -324,7 +324,14 @@ Blockly.FieldBoundVariable.dropdownCreate = function() {
  * @param {!goog.ui.MenuItem} menuItem The MenuItem selected within menu.
  */
 Blockly.FieldBoundVariable.prototype.onItemSelected = function(menu, menuItem) {
-  throw 'Not implemented yet.';
+  var id = menuItem.getValue();
+  var workspace = this.sourceBlock_.workspace;
+  if (id == Blockly.RENAME_VARIABLE_ID) {
+    // Rename variable.
+    Blockly.BoundVariables.renameVariable(this.variable_);
+  } else if (id == Blockly.DELETE_VARIABLE_ID) {
+    throw 'Not implemented yet.';
+  }
 };
 
 /**

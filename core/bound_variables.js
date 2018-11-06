@@ -156,3 +156,62 @@ Blockly.BoundVariables.getVisibleVariableValues = function(variable) {
   }
   return values;
 };
+
+/**
+ * Helper function for renaming the variable as the given name.
+ * @param {Blockly.BoundVariableAbstract} variable The variable to rename.
+ * @param {string} newName The new variable name.
+ * @return {boolean} True if variable is renamed. Otherwise, false.
+ */
+Blockly.BoundVariables.renameVariableImpl_ = function(variable, newName) {
+  if (!newName) {
+    return false;
+  }
+  // Remove all whitespace.
+  newName = newName.replace(/\s/g, '');
+  // Check if a string follows the naming convention.
+  if (newName.match(/^[a-z_]\w*$/) == null) {
+    return false;
+  }
+  if (variable.isReference()) {
+    if (newName === '_') {
+      // Can not refer to wildcard.
+      return false;
+    }
+    variable.setVariableName(newName);
+  } else {
+    if (newName === '_') {
+      throw 'Not implemented yet.';
+    }
+    variable.setVariableName(newName);
+  }
+  return true;
+};
+
+/**
+ * Rename the given variable. Open a user prompt dialog to get a new variable
+ * name.
+ * @param {!Blockly.BoundVariableAbstract} variable The variable to rename.
+ */
+Blockly.BoundVariables.renameVariable = function(variable) {
+  var promptAndCheckWithAlert = function(defaultName) {
+    var name = variable.getVariableName();
+    var promptText =
+        Blockly.Msg['RENAME_VARIABLE_TITLE'].replace('%1', name);
+    Blockly.prompt(promptText, defaultName,
+        function(newName) {
+          if (!newName) {
+            // NOP. User canceled prompt.
+          } else {
+            var changed = Blockly.BoundVariables.renameVariableImpl_(variable,
+                newName);
+            if (!changed) {
+              // TODO: Define the message in the Blockly.Msg class.
+              var msg = 'Invalid variable name!';
+              Blockly.alert(msg, promptAndCheckWithAlert.bind(null, defaultName));
+            }
+          }
+        });
+  };
+  promptAndCheckWithAlert('');
+};
