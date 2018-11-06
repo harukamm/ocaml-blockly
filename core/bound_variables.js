@@ -27,20 +27,23 @@ goog.require('goog.string');
  */
 Blockly.BoundVariables.createValue = function(block, fieldName, valueTypeExpr,
       scopeInputName, variableName) {
-  // The value would be added to the reference DB of block's workspace in
-  // the constructor.
-  return new Blockly.BoundVariableValue(block, fieldName, valueTypeExpr,
+  var value = new Blockly.BoundVariableValue(block, fieldName, valueTypeExpr,
       scopeInputName, variableName);
+  Blockly.BoundVariables.addValue(value);
+  return value;
 };
 
 /**
- * Adds a value to the list of values.
- * @param {!Blockly.Workspace} workspace The workspace to add the value to.
- * @param {!Blockly.BoundVariableValue}
+ * Adds a value to the list of values on the workspace.
+ * @param {!Blockly.BoundVariableValue} value The value to add to the list.
  */
-Blockly.BoundVariables.addValue = function(workspace, value) {
+Blockly.BoundVariables.addValue = function(value) {
+  var block = value.getSourceBlock();
+  var fieldName = value.getContainerFieldName();
+
+  block.typedValue[fieldName] = value;
   var id = value.getId();
-  var valueDB = workspace.getValueDB();
+  var valueDB = value.getWorkspace().getValueDB();
 
   if (valueDB[id]) {
     throw 'The value already exists in DB.';
@@ -55,8 +58,12 @@ Blockly.BoundVariables.addValue = function(workspace, value) {
  * @param {!Blockly.BoundVariableValue}
  */
 Blockly.BoundVariables.removeValue = function(workspace, value) {
+  var block = value.getSourceBlock();
+  var fieldName = value.getContainerFieldName();
+
+  delete block.typedValue[fieldName];
   var id = value.getId();
-  var valueDB = workspace.getValueDB();
+  var valueDB = value.getWorkspace().getValueDB();
 
   if (!valueDB[id]) {
     throw 'The value doesn\'t exist in DB.';
@@ -82,19 +89,18 @@ Blockly.BoundVariables.getValueById = function(workspace, id) {
  * @param {!string} name The default variable name.
  */
 Blockly.BoundVariables.createReference = function(block, fieldName, name) {
-  // The reference would be added to the reference DB of block's workspace in
-  // the constructor.
-  return new Blockly.BoundVariableValueReference(block, fieldName, name);
+  var reference = new Blockly.BoundVariableValueReference(block, fieldName, name);
+  Blockly.BoundVariables.addReference(reference);
+  return reference;
 };
 
 /**
- * Add the reference to the given workspace.
- * @param {!Blockly.Workspace} workspce The workspace to add the reference to.
+ * Add the reference to a list of references on the workspace.
  * @param {!Blockly.BoundVariableValueReference} The reference to add.
  */
-Blockly.BoundVariables.addReference = function(workspace, reference) {
+Blockly.BoundVariables.addReference = function(reference) {
   var id = reference.getId();
-  var referenceDB = workspace.getReferenceDB();
+  var referenceDB = reference.getWorkspace().getReferenceDB();
 
   if (referenceDB[id]) {
     throw 'The reference ID already exists in the DB.';
