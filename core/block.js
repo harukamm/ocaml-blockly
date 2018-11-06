@@ -1604,16 +1604,26 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
   var block = parentConnection.getSourceBlock();
   var env = block.allVisibleVariables(parentConnection);
   var variableList = this.getBoundVariables();
+  var bindPair = [];
   for (var i = 0, variable; variable = variableList[i]; i++) {
     var name = variable.getVariableName();
     if (name in env) {
       if (variable.isReference() && opt_bind) {
-        variable.removeBoundValue();
-        variable.setBoundValue(env[name]);
+        var value = env[name];
+        // Binding process has side effect. Save the pair to bind them later in
+        // case that other getter block may refer to a invalid variable.
+        bindPair.push([variable, value]);
       }
     } else {
       return false;
     }
+  }
+  for (var i = 0, pair; pair = bindPair[i]; i++) {
+    var reference = pair[0];
+    var value = pair[1];
+    // Initialize the current value.
+    reference.removeBoundValue();
+    reference.setBoundValue(value);
   }
   return true;
 };
