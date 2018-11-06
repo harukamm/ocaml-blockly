@@ -137,6 +137,12 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
    */
   this.transferable_ = false;
 
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.transferring_ = false;
+
   /** @type {string|Blockly.Comment} */
   this.comment = null;
 
@@ -1071,6 +1077,27 @@ Blockly.Block.prototype.isTransferable = function() {
  */
 Blockly.Block.prototype.setTransferable = function(transferable) {
   this.transferable_ = transferable;
+};
+
+/**
+ * Get whether the block is currently in the process of transferring workspace.
+ * Returns always false if the block is not transferable.
+ * @return {boolean} transferring True if the block is transferring now.
+ */
+Blockly.Block.prototype.isTransferring = function() {
+  return this.transferring_;
+};
+
+/**
+ * Set whether the block is currently in the process of transferring workspace.
+ * Once the block starts to transfer, an equivalent block would be created on
+ * the target workspace and this block would be deleted.
+ * @param {boolean} transferring True if the block is transferring now.
+ */
+Blockly.Block.prototype.setTransferring = function(transferring) {
+  goog.asserts.assert(this.isTransferable(), 'Not allowed to change the ' +
+      'state of transferring on blocks which are not transferable.');
+  this.transferring_ = transferring;
 };
 
 /**
