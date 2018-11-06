@@ -65,6 +65,37 @@ function setVariableName(block, name) {
   field.setVariableName(name);
 }
 
+function getValueScopeInput(block) {
+  switch (block.type) {
+    case 'let_typed':
+      return block.getInput('EXP2');
+    case 'lambda_typed':
+      return block.getInput('RETURN');
+    default:
+      assertTrue(false);
+  }
+}
+
+function createNestedValueBlock(workspace, size, getNthName) {
+  var valueBlocks = [];
+  for (var i = 0; i < size; i++) {
+    var name = getNthName(i);
+    if (i % 2 == 0) {
+      var block = workspace.newBlock('let_typed');
+    } else {
+      var block = workspace.newBlock('lambda_typed');
+    }
+    setVariableName(block, name);
+    var previousBlock = valueBlocks[valueBlocks.length - 1];
+    if (previousBlock) {
+      var input = getValueScopeInput(previousBlock);
+      input.connection.connect(block.outputConnection);
+    }
+    valueBlocks.push(block);
+  }
+  return valueBlocks;
+}
+
 function test_type_unification_ifThenElseStructure() {
   var workspace = create_typed_workspace();
   try {
@@ -573,6 +604,50 @@ function test_type_unification_changeVariablesNameReferences() {
     setVariableName(varBlock, 'm');
     assertTrue(getVariableFieldDisplayedText(innerBlock) === 'm');
     assertTrue(getVariableFieldDisplayedText(varBlock) == 'm');
+  } finally {
+    workspace.dispose();
+  }
+}
+
+function test_type_unification_changeVariablesNameReferencesNested() {
+  var workspace = create_typed_workspace();
+  try {
+    function getNthName(n) {
+      return isNaN(n) ? null : 'var' + n;
+    }
+    var nestedSize = 20;
+    var valueBlocks = createNestedValueBlock(workspace, nestedSize,
+        getNthName);
+    var var1 = workspace.newBlock('variables_get_typed');
+    var lastBlock = valueBlocks[nestedSize - 1];
+    var inputInLastBlock = getValueScopeInput(lastBlock);
+
+    // Connect var1 and lastBlock.
+    setVariableName(var1, 'hogehoge');
+    var errored = false;
+    try {
+      inputInLastBlock.connection.connect(var1.outputConnection);
+    } catch (err) {
+      // Error is expected to occur because var1 block has a reference to an
+      // undefined variable named 'hogehoge'.
+      errored = true;
+    }
+    assertTrue(errored);
+
+    // Bind variable of var1 with that of x-th value block.
+    var x = 5;
+    setVariableName(var1, getNthName(x));
+    inputInLastBlock.connection.connect(var1.outputConnection);
+    function checkName(n, nthName) {
+      for (var i = 0; i < valueBlocks.length; i++) {
+        var expected = i == n ? nthName : getNthName(i);
+        assertTrue(getVariableFieldDisplayedText(valueBlocks[i]) === expected);
+      }
+    }
+    setVariableName(var1, 'hogehoge');
+    checkName(x, 'hogehoge');
+    setVariableName(valueBlocks[x], 'foo');
+    assertTrue(getVariableFieldDisplayedText(var1) === 'foo');
   } finally {
     workspace.dispose();
   }
