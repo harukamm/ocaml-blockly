@@ -175,7 +175,7 @@ Blockly.BoundVariableValue.prototype.transferValuesBlock = function(newBlock) {
   var oldBlock = this.sourceBlock_;
   var oldWorkspace = this.workspace_;
   if (oldBlock) {
-    if (!oldBlock.isTransferring()) {
+    if (!oldBlock.getStateOfTransfer() == Blockly.TRANSFER_STATE_ONGOING) {
       throw 'Can\'t move a value unless its original block is currelty ' +
           'tranferring.';
     }

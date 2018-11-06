@@ -180,6 +180,24 @@ Blockly.DRAG_BEGIN = 1;
 Blockly.DRAG_FREE = 2;
 
 /**
+ * ENUM represents that workspace transfer is not started.
+ * @const
+ */
+Blockly.TRANSFER_STATE_NONE = 0;
+
+/**
+ * ENUM represents that workspace transfer is currently in the process.
+ * @const
+ */
+Blockly.TRANSFER_STATE_ONGOING = 1;
+
+/**
+ * ENUM represents that workspace transfer is done.
+ * @const
+ */
+Blockly.TRANSFER_STATE_DONE = 2;
+
+/**
  * Lookup table for determining the opposite type of a connection.
  * @const
  */

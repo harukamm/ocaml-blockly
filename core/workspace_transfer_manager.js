@@ -162,8 +162,12 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function() {
     event.workspaceId = this.pointedWorkspace_.id;
     Blockly.Events.fire(event);
   }
+  this.topBlock_.setStateOfTransfer(Blockly.TRANSFER_STATE_ONGOING);
+
   var xml = Blockly.Xml.blockToDom(this.topBlock_);
   var block = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
+
+  this.topBlock_.setStateOfTransfer(Blockly.TRANSFER_STATE_DONE);
   // Aline this block according to the new surface.
   var localXY = this.topBlock_.getRelativeToSurfaceXY();
   var surfaceXY = this.workspace_.getRelativeToWorkspaceXY(this.pointedWorkspace_);
