@@ -900,8 +900,7 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   if (isForValue) {
     var workspace = getWorkspaceFromDom(xml);
     variable = Blockly.BoundVariables.getValueById(workspace, xml.id);
-    if (workspace.isFlyout || !variable) {
-      // Ignore the variable if it refers to a flyout workspace.
+    if (workspace.isFlyout || !variable || variable.referenceCount() == 0) {
       field.initModel();
       variable = field.getVariable();
     } else {

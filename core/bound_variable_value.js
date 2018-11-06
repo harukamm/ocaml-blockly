@@ -126,6 +126,14 @@ Blockly.BoundVariableValue.prototype.dispose = function() {
 };
 
 /**
+ * Return a number of the references that refers to this value.
+ * @return {number} The number of references.
+ */
+Blockly.BoundVariableValue.prototype.referenceCount = function() {
+  return this.referenceList_.length;
+};
+
+/**
  * Store the reference to a list of references.
  * @param {!Blockly.BoundVariableValueReference} reference The reference to
  *     store a list of references.
