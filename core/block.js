@@ -1587,9 +1587,10 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
 
 /**
  * Whether there would be no getter block which refers to a non-existing
- * variable if this block is connected to the given parent block.
- * @param {!Blockly.Connection} parentConnection connection this block is trying
- *     to connect to.
+ * variable.
+ * @param {Blockly.Connection} parentConnection Connection this block is trying
+ *     to connect to, which means that this block would share a variable context
+ *     with the parent. If null, the block is not connected to any block.
  * @param {=boolean} opt_bind Bind the getter with the proper variable if
  *     true.
  * @return {boolean} True if all of getter blocks can refer to a existing
@@ -1601,8 +1602,12 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
     // TODO: See this blocks recursively even if this is not a getter block.
     return true;
   }
-  var block = parentConnection.getSourceBlock();
-  var env = block.allVisibleVariables(parentConnection);
+  if (parentConnection) {
+    var parentBlock = parentConnection.getSourceBlock();
+    var env = parentBlock.allVisibleVariables(parentConnection);
+  } else {
+    var env = [];
+  }
   var variableList = this.getBoundVariables();
   var bindPair = [];
   for (var i = 0, variable; variable = variableList[i]; i++) {
