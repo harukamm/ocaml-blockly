@@ -546,6 +546,23 @@ function test_type_unification_changeVariablesNameReferences() {
 
     setVariableName(outerBlock, 'VAR', 'x');
     assertTrue(varBlock.getField('VAR').getText() === 'x');
+    // [let j = <> in < [let i = <> in < [j] >] >]
+
+    // [let x = <> in < [let i = <> in <>] >]   [x]
+    innerBlock.getInput('EXP2').connection.disconnect(
+        varBlock.outputConnection);
+    assertTrue(!isOfBoundVariable(varBlock, outerBlock));
+    setVariableName(outerBlock, 'VAR', 'y');
+    assertTrue(outerBlock.getField('VAR').getText() === 'y');
+    assertTrue(varBlock.getField('VAR').getText() === 'x');
+
+    // [let y = <> in < [let i = <> in < >] >]   [x]
+    setVariableName(varBlock, 'VAR', 'i');
+    innerBlock.getInput('EXP2').connection.connect(
+        varBlock.outputConnection);
+    setVariableName(varBlock, 'VAR', 'm');
+    assertTrue(innerBlock.getField('VAR').getText() === 'm');
+    assertTrue(varBlock.getField('VAR').getText() == 'm');
   } finally {
     workspace.dispose();
   }
