@@ -899,16 +899,15 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   var variable;
   if (isForValue) {
     var workspace = getWorkspaceFromDom(xml);
-    if (workspace.isFlyout) {
-      // Ignore the variable that refers to a flyout workspace, and create a
-      // new variable.
+    variable = Blockly.BoundVariables.getValueById(workspace, xml.id);
+    if (workspace.isFlyout || !variable) {
+      // Ignore the variable if it refers to a flyout workspace.
       field.initModel();
       variable = field.getVariable();
     } else {
-      variable = Blockly.BoundVariables.getValueById(workspace, xml.id);
-      if (!variable) {
-        throw 'The field refers to a non-existing variable.';
-      }
+      // Some getter blocks refer to the variable. Instead of creating a new
+      // variable, transfer the variable's block to the new block.
+      variable.transferValuesBlock(block);
     }
   } else {
     // If the field is for a variable reference, ignore the xml.id and create

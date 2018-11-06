@@ -157,3 +157,32 @@ Blockly.BoundVariableValue.prototype.removeReference = function(reference) {
     this.dispose();
   }
 };
+
+/**
+ * Transfer the value to another block.
+ * @param {!Blockly.Block} destBlock The new block for the value.
+ * @param {!Blockly.BoundVariableValue}
+ */
+Blockly.BoundVariableValue.prototype.transferValuesBlock = function(newBlock) {
+  var oldBlock = this.sourceBlock_;
+  var oldWorkspace = this.workspace_;
+  if (oldBlock) {
+    if (!oldBlock.isTransferring()) {
+      throw 'Can\'t move a value unless its original block is currelty ' +
+          'tranferring.';
+    }
+    if (oldBlock.type !== newBlock.type) {
+      throw 'Can\'t change the block of the value with a block of another ' +
+          'type.';
+    }
+    // Remove this value from the value database.
+    Blockly.BoundVariables.removeValue(oldWorkspace, this);
+  }
+  this.typeExpr = null;
+  this.deleteLater_ = true;
+
+  var newWorkspace = newBlock.workspace;
+  this.workspace_ = newWorkspace;
+  this.sourceBlock_ = newBlock;
+  Blockly.BoundVariables.addValue(newWorkspace, this);
+};
