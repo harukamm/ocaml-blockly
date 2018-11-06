@@ -261,19 +261,20 @@ Blockly.FieldBoundVariable.prototype.updateText = function() {
 /**
  * Set the ID of this field's variable.
  * @param {string} id New ID, which must refer to a existing variable.
+ * @param {Blockly.Workspace=} opt_workspace The workspace to search for
+ *     variable. If null, search the workspace of the source block.
  * @override
  */
-Blockly.FieldBoundVariable.prototype.setValue = function(id) {
+Blockly.FieldBoundVariable.prototype.setValue = function(id, opt_workspace) {
+  var workspace = opt_workspace ? opt_workspace : this.sourceBlock_.workspace;
   var variable;
   if (this.forValue_) {
-    variable = Blockly.BoundVariables.getValueById(
-        this.sourceBlock_.workspace, id);
+    variable = Blockly.BoundVariables.getValueById(workspace, id);
     if (!variable) {
       throw 'Value of ID ' + id + ' doesn\'t exist.';
     }
   } else {
-    variable = Blockly.BoundVariables.getReferenceById(
-        this.sourceBlock_.workspace, id);
+    variable = Blockly.BoundVariables.getReferenceById(workspace, id);
     if (!variable) {
       throw 'Reference of ID ' + id + ' doesn\'t exist.';
     }

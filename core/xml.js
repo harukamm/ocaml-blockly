@@ -928,7 +928,7 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
       }
     }
   }
-  field.setValue(variable.getId());
+  field.setValue(variable.getId(), variable.getWorkspace());
 };
 
 /**
