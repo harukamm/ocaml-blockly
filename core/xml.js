@@ -919,7 +919,10 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
     if (childDom && childDom.nodeName.toLowerCase() == 'refer-to') {
       var valuesWorkspace = getWorkspaceFromDom(childDom);
       var value = Blockly.BoundVariables.getValueById(valuesWorkspace, childDom.id);
-      if (value && !valuesWorkspace.isFlyout) {
+      if (!valuesWorkspace.isFlyout) {
+        if (!value) {
+          throw 'The variable value is not found.';
+        }
         variable.removeBoundValue();
         variable.setBoundValue(value);
       }
