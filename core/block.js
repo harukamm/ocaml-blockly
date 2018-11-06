@@ -1097,6 +1097,8 @@ Blockly.Block.prototype.isTransferring = function() {
 Blockly.Block.prototype.setTransferring = function(transferring) {
   goog.asserts.assert(this.isTransferable(), 'Not allowed to change the ' +
       'state of transferring on blocks which are not transferable.');
+  goog.asserts.assert(!this.transferring_ || transferring, 'Not allowed to ' +
+      'cancel transferring.');
   this.transferring_ = transferring;
 };
 
