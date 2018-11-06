@@ -43,6 +43,13 @@ Blockly.BoundVariableAbstract = function(block, fieldName) {
    * @private
    */
   this.id_ = Blockly.utils.genUid();
+
+  /**
+   * Whether the variable has been added to the variable database of the
+   * workspace.
+   * @type {boolean}
+   */
+  this.inWorkspaceDB = false;
 };
 
 /**

@@ -41,14 +41,20 @@ Blockly.BoundVariables.addValue = function(value) {
   var block = value.getSourceBlock();
   var fieldName = value.getContainerFieldName();
 
+  if (block.typedValue[fieldName] || value.inBlockDB) {
+    throw 'The value is already added to the variable map of other block.';
+  }
   block.typedValue[fieldName] = value;
+  value.inBlockDB = true;
+
   var id = value.getId();
   var valueDB = value.getWorkspace().getValueDB();
 
-  if (valueDB[id]) {
+  if (valueDB[id] || value.inWorkspaceDB) {
     throw 'The value already exists in DB.';
   }
   valueDB[id] = value;
+  value.inWorkspaceDB = true;
 };
 
 /**
@@ -61,14 +67,20 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
   var block = value.getSourceBlock();
   var fieldName = value.getContainerFieldName();
 
+  if (!block.typedValue[fieldName] || !value.inBlockDB) {
+    throw 'The value doesn\'t exist in DB.';
+  }
   delete block.typedValue[fieldName];
+  value.inBlockDB = false;
+
   var id = value.getId();
   var valueDB = value.getWorkspace().getValueDB();
 
-  if (!valueDB[id]) {
+  if (!valueDB[id] || !value.inWorkspaceDB) {
     throw 'The value doesn\'t exist in DB.';
   }
   delete valueDB[id];
+  value.inWorkspaceDB = false;
 };
 
 /**
@@ -102,10 +114,11 @@ Blockly.BoundVariables.addReference = function(reference) {
   var id = reference.getId();
   var referenceDB = reference.getWorkspace().getReferenceDB();
 
-  if (referenceDB[id]) {
+  if (referenceDB[id] || reference.inWorkspaceDB) {
     throw 'The reference ID already exists in the DB.';
   }
   referenceDB[id] = reference;
+  reference.inWorkspaceDB = true;
 };
 
 /**
@@ -118,10 +131,11 @@ Blockly.BoundVariables.removeReference = function(workspace, reference) {
   var id = reference.getId();
   var referenceDB = workspace.getReferenceDB();
 
-  if (!referenceDB[id]) {
+  if (!referenceDB[id] || !reference.inWorkspaceDB) {
     throw 'The reference doesn\'t exist in DB.';
   }
   delete referenceDB[id];
+  reference.inWorkspaceDB = false;
 };
 
 /**
