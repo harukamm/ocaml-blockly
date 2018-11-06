@@ -7,19 +7,31 @@ function create_typed_workspace() {
   return new Blockly.Workspace(workspaceOptions);
 }
 
-function getVariable(block) {
-  var fieldName;
+function getVariableFieldName(block) {
   switch (block.type) {
     case 'let_typed':
     case 'lambda_typed':
     case 'variables_get_typed':
-      fieldName = 'VAR';
+      return 'VAR';
       break;
     default:
       assertTrue(false, 'Unexpected case.');
   }
-  var field = block.getField(fieldName);
+}
+
+function getVariableField(block) {
+  var fieldName = getVariableFieldName(block);
+  return block.getField(fieldName);
+}
+
+function getVariable(block) {
+  var field = getVariableField(block);
   return field.getVariable();
+}
+
+function getVariableFieldDisplayedText(block) {
+  var field = getVariableField(block);
+  return field.getText();
 }
 
 function isOfBoundVariable(referenceBlock, valueBlock) {
@@ -29,17 +41,15 @@ function isOfBoundVariable(referenceBlock, valueBlock) {
 }
 
 function isVariableOf(varBlock, block, opt_variableName) {
-  var name1, name2, checkType;
+  var name1 = getVariableFieldDisplayedText(varBlock);
+  var name2 = getVariableFieldDisplayedText(block);
+  var checkType;
   switch (block.type) {
     case 'let_typed':
-      name1 = varBlock.getField('VAR').getText();
-      name2 = block.getField('VAR').getText();
       checkType = varBlock.outputConnection.typeExpr.deref() ==
           block.getInput('EXP1').connection.typeExpr.deref();
       break;
     case 'lambda_typed':
-      name1 = varBlock.getField('VAR').getText();
-      name2 = block.getField('VAR').getText();
       checkType = varBlock.outputConnection.typeExpr.deref() ==
           block.outputConnection.typeExpr.arg_type.deref();
       break;
@@ -367,8 +377,8 @@ function test_type_unification_lambdaStructure() {
     setVariableName(block, 'VAR', 'x');
     setVariableName(var1, 'VAR', 'x');
     block.getInput('RETURN').connection.connect(var1.outputConnection);
-    assertEquals(var1.getField('VAR').getText(),
-        block.getField('VAR').getText());
+    assertEquals(getVariableFieldDisplayedText(var1),
+        getVariableFieldDisplayedText(block));
     assertTrue(block.outputConnection.typeExpr.return_type.deref() ===
         var1.outputConnection.typeExpr.deref());
     assertTrue(block.outputConnection.typeExpr.arg_type.deref() ==
@@ -388,10 +398,10 @@ function test_type_unification_lambdaAppStructure() {
     block.getInput('ARG').connection.connect(int1.outputConnection);
     var var1 = workspace.newBlock('variables_get_typed');
     // Set the same variable name with the name of lambda's argument.
-    var variableName = lambdaBlock.getField('VAR').getVariableName();
+    var variableName = getVariable(lambdaBlock).getVariableName();
     setVariableName(var1, 'VAR', variableName);
-    assertEquals(var1.getField('VAR').getText(),
-        lambdaBlock.getField('VAR').getText());
+    assertEquals(getVariableFieldDisplayedText(var1),
+        getVariableFieldDisplayedText(lambdaBlock));
     lambdaBlock.getInput('RETURN').connection.connect(var1.outputConnection);
     assertTrue(block.outputConnection.typeExpr.deref() ===
         lambdaBlock.outputConnection.typeExpr.return_type.deref());
@@ -542,10 +552,10 @@ function test_type_unification_changeVariablesNameReferences() {
 
     assertTrue(isOfBoundVariable(varBlock, outerBlock));
     setVariableName(outerBlock, 'VAR', 'i');
-    assertTrue(varBlock.getField('VAR').getText() === 'i');
+    assertTrue(getVariableFieldDisplayedText(varBlock) === 'i');
 
     setVariableName(outerBlock, 'VAR', 'x');
-    assertTrue(varBlock.getField('VAR').getText() === 'x');
+    assertTrue(getVariableFieldDisplayedText(varBlock) === 'x');
     // [let j = <> in < [let i = <> in < [j] >] >]
 
     // [let x = <> in < [let i = <> in <>] >]   [x]
@@ -553,16 +563,16 @@ function test_type_unification_changeVariablesNameReferences() {
         varBlock.outputConnection);
     assertTrue(!isOfBoundVariable(varBlock, outerBlock));
     setVariableName(outerBlock, 'VAR', 'y');
-    assertTrue(outerBlock.getField('VAR').getText() === 'y');
-    assertTrue(varBlock.getField('VAR').getText() === 'x');
+    assertTrue(getVariableFieldDisplayedText(outerBlock) === 'y');
+    assertTrue(getVariableFieldDisplayedText(varBlock) === 'x');
 
     // [let y = <> in < [let i = <> in < >] >]   [x]
     setVariableName(varBlock, 'VAR', 'i');
     innerBlock.getInput('EXP2').connection.connect(
         varBlock.outputConnection);
     setVariableName(varBlock, 'VAR', 'm');
-    assertTrue(innerBlock.getField('VAR').getText() === 'm');
-    assertTrue(varBlock.getField('VAR').getText() == 'm');
+    assertTrue(getVariableFieldDisplayedText(innerBlock) === 'm');
+    assertTrue(getVariableFieldDisplayedText(varBlock) == 'm');
   } finally {
     workspace.dispose();
   }
