@@ -60,8 +60,8 @@ function isVariableOf(varBlock, block, opt_variableName) {
       (!opt_variableName || opt_variableName === name1);
 }
 
-function setVariableName(block, fieldName, name) {
-  var field = block.getField(fieldName);
+function setVariableName(block, name) {
+  var field = getVariableField(block);
   field.setVariableName(name);
 }
 
@@ -113,8 +113,8 @@ function test_type_unification_clearTypeVariableWhenDisconnectingLetTypedBlocks(
     var int1 = workspace.newBlock('int_typed');
     var var1 = workspace.newBlock('variables_get_typed');
     // Set a variable `i`
-    setVariableName(var1, 'VAR', 'i');
-    setVariableName(block, 'VAR', 'i');
+    setVariableName(var1, 'i');
+    setVariableName(block, 'i');
 
     block.getInput('EXP1').connection.connect(int1.outputConnection);
     block.getInput('EXP2').connection.connect(var1.outputConnection);
@@ -287,11 +287,11 @@ function test_type_unification_intArithmeticStructure() {
     var letVar1 = workspace.newBlock('let_typed');
     var letVar2 = workspace.newBlock('let_typed');
     // Set a variable `i`
-    setVariableName(var1, 'VAR', 'i');
-    setVariableName(letVar1, 'VAR', 'i');
+    setVariableName(var1, 'i');
+    setVariableName(letVar1, 'i');
     // Set a variable `j`
-    setVariableName(var2, 'VAR', 'j');
-    setVariableName(letVar2, 'VAR', 'j');
+    setVariableName(var2, 'j');
+    setVariableName(letVar2, 'j');
     // Define variables `i` and `j`
     letVar1.getInput('EXP2').connection.connect(var1.outputConnection);
     letVar2.getInput('EXP2').connection.connect(var2.outputConnection);
@@ -318,11 +318,11 @@ function test_type_unification_floatArithmeticStructure() {
     var letVar1 = workspace.newBlock('let_typed');
     var letVar2 = workspace.newBlock('let_typed');
     // Set a variable `i`
-    setVariableName(var1, 'VAR', 'i');
-    setVariableName(letVar1, 'VAR', 'i');
+    setVariableName(var1, 'i');
+    setVariableName(letVar1, 'i');
     // Set a variable `j`
-    setVariableName(var2, 'VAR', 'j');
-    setVariableName(letVar2, 'VAR', 'j');
+    setVariableName(var2, 'j');
+    setVariableName(letVar2, 'j');
     // Define variables `i` and `j`
     letVar1.getInput('EXP2').connection.connect(var1.outputConnection);
     letVar2.getInput('EXP2').connection.connect(var2.outputConnection);
@@ -374,8 +374,8 @@ function test_type_unification_lambdaStructure() {
     var block = workspace.newBlock('lambda_typed');
     var var1 = workspace.newBlock('variables_get_typed');
     // Set the same variable name with the name of lambda's argument.
-    setVariableName(block, 'VAR', 'x');
-    setVariableName(var1, 'VAR', 'x');
+    setVariableName(block, 'x');
+    setVariableName(var1, 'x');
     block.getInput('RETURN').connection.connect(var1.outputConnection);
     assertEquals(getVariableFieldDisplayedText(var1),
         getVariableFieldDisplayedText(block));
@@ -399,7 +399,7 @@ function test_type_unification_lambdaAppStructure() {
     var var1 = workspace.newBlock('variables_get_typed');
     // Set the same variable name with the name of lambda's argument.
     var variableName = getVariable(lambdaBlock).getVariableName();
-    setVariableName(var1, 'VAR', variableName);
+    setVariableName(var1, variableName);
     assertEquals(getVariableFieldDisplayedText(var1),
         getVariableFieldDisplayedText(lambdaBlock));
     lambdaBlock.getInput('RETURN').connection.connect(var1.outputConnection);
@@ -465,9 +465,9 @@ function test_type_unification_useWorkbenchWithinLetTypedBlock() {
     // Outer let typed block.
     var outerLetBlock = workspace.newBlock('let_typed');
     // Set a variable `j`
-    setVariableName(innerLetBlock, 'VAR', 'j');
+    setVariableName(innerLetBlock, 'j');
     // Set a variable `i`
-    setVariableName(outerLetBlock, 'VAR', 'i');
+    setVariableName(outerLetBlock, 'i');
 
     outerLetBlock.getInput('EXP2').connection.connect(innerLetBlock.outputConnection);
     var xml = innerLetBlock.getTreeInFlyout();
@@ -499,9 +499,9 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
     // Outer let typed block.
     var outerLetBlock = workspace.newBlock('let_typed');
     // Set a variable `j`
-    setVariableName(innerLambdaBlock, 'VAR', 'j');
+    setVariableName(innerLambdaBlock, 'j');
     // Set a variable `i`
-    setVariableName(outerLetBlock, 'VAR', 'i');
+    setVariableName(outerLetBlock, 'i');
 
     outerLetBlock.getInput('EXP2').connection.connect(
         innerLambdaBlock.outputConnection);
@@ -526,7 +526,7 @@ function test_type_unification_simpleTreeInFlyoutReferences() {
   var workspace = create_typed_workspace();
   try {
     var letBlock = workspace.newBlock('let_typed');
-    setVariableName(letBlock, 'VAR', 'j');
+    setVariableName(letBlock, 'j');
     var xml = letBlock.getTreeInFlyout();
     var childNodes = xml.childNodes;
     for (var i = 0, node; node = childNodes[i]; i++) {
@@ -543,18 +543,18 @@ function test_type_unification_changeVariablesNameReferences() {
     var outerBlock = workspace.newBlock('let_typed');
     var innerBlock = workspace.newBlock('let_typed');
     var varBlock = workspace.newBlock('variables_get_typed');
-    setVariableName(outerBlock, 'VAR', 'j');
-    setVariableName(innerBlock, 'VAR', 'i');
-    setVariableName(varBlock, 'VAR', 'j');
+    setVariableName(outerBlock, 'j');
+    setVariableName(innerBlock, 'i');
+    setVariableName(varBlock, 'j');
     // [let j = <> in < [let i = <> in < [j] >] >]
     outerBlock.getInput('EXP2').connection.connect(innerBlock.outputConnection);
     innerBlock.getInput('EXP2').connection.connect(varBlock.outputConnection);
 
     assertTrue(isOfBoundVariable(varBlock, outerBlock));
-    setVariableName(outerBlock, 'VAR', 'i');
+    setVariableName(outerBlock, 'i');
     assertTrue(getVariableFieldDisplayedText(varBlock) === 'i');
 
-    setVariableName(outerBlock, 'VAR', 'x');
+    setVariableName(outerBlock, 'x');
     assertTrue(getVariableFieldDisplayedText(varBlock) === 'x');
     // [let j = <> in < [let i = <> in < [j] >] >]
 
@@ -562,15 +562,15 @@ function test_type_unification_changeVariablesNameReferences() {
     innerBlock.getInput('EXP2').connection.disconnect(
         varBlock.outputConnection);
     assertTrue(!isOfBoundVariable(varBlock, outerBlock));
-    setVariableName(outerBlock, 'VAR', 'y');
+    setVariableName(outerBlock, 'y');
     assertTrue(getVariableFieldDisplayedText(outerBlock) === 'y');
     assertTrue(getVariableFieldDisplayedText(varBlock) === 'x');
 
     // [let y = <> in < [let i = <> in < >] >]   [x]
-    setVariableName(varBlock, 'VAR', 'i');
+    setVariableName(varBlock, 'i');
     innerBlock.getInput('EXP2').connection.connect(
         varBlock.outputConnection);
-    setVariableName(varBlock, 'VAR', 'm');
+    setVariableName(varBlock, 'm');
     assertTrue(getVariableFieldDisplayedText(innerBlock) === 'm');
     assertTrue(getVariableFieldDisplayedText(varBlock) == 'm');
   } finally {
