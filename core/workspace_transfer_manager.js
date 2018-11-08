@@ -170,11 +170,13 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
   // block.
   Blockly.transferring = oldBlock;
 
-  // TODO: Define a transfer event in Blockly.Events, and fire it.
-  var xml = Blockly.Xml.blockToDom(oldBlock);
-  var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
-
-  Blockly.transferring = null;
+  try {
+    // TODO: Define a transfer event in Blockly.Events, and fire it.
+    var xml = Blockly.Xml.blockToDom(oldBlock);
+    var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
+  } finally {
+    Blockly.transferring = null;
+  }
 
   // Aline this block according to the new surface.
   var localXY = oldBlock.getRelativeToSurfaceXY();

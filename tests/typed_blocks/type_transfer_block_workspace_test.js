@@ -15,10 +15,12 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace) {
   assertTrue(!Blockly.transferring);
   Blockly.transferring = oldBlock;
 
-  var xml = Blockly.Xml.blockToDom(oldBlock);
-  var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace);
-
-  Blockly.transferring = null;
+  try {
+    var xml = Blockly.Xml.blockToDom(oldBlock);
+    var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace);
+  } finally {
+    Blockly.transferring = null;
+  }
 
   Blockly.Events.disable();
   try {
