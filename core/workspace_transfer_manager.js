@@ -186,7 +186,7 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
   // is called at the end of a drag, but change the properties just in case.
   this.topBlock_ = newBlock;
   this.workspace_ = newBlock.workspace;
-  this.mainWorkspace_ = Blockly.getMainWorksapce(this.workspace_);
+  this.mainWorkspace_ = this.workspace_.getMainWorkspace(this.workspace_);
   this.availableWorkspaces_.length = 0;
   this.pointedWorkspace_ = null;
 
