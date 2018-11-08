@@ -167,30 +167,43 @@ Blockly.BoundVariableValue.prototype.removeReference = function(reference) {
 };
 
 /**
- * Transfer the value to another block.
- * @param {!Blockly.Block} destBlock The new block for the value.
- * @param {!Blockly.BoundVariableValue}
+ * Clone this variable on the given block.
+ * @param {!Blockly.Block} targetBlock The block on which to clone this
+ *     variable.
+ * @return {!Blockly.BoundVariableValue} A cloned variable created newly.
  */
-Blockly.BoundVariableValue.prototype.transferValuesBlock = function(newBlock) {
-  var oldBlock = this.sourceBlock_;
-  var oldWorkspace = this.workspace_;
-  if (oldBlock) {
-    if (!oldBlock.getTransferStatus() == Blockly.TRANSFER_STATUS_ONGOING) {
-      throw 'Can\'t move a value unless its original block is currelty ' +
-          'transferring.';
-    }
-    if (oldBlock.type !== newBlock.type) {
-      throw 'Can\'t change the block of the value with a block of another ' +
-          'type.';
-    }
-    // Remove this value from the value database.
-    Blockly.BoundVariables.removeValue(oldWorkspace, this);
+Blockly.BoundVariableValue.prototype.cloneValue = function(targetBlock) {
+  if (this.sourceBlock_.type !== targetBlock.type) {
+    throw 'Can\'t clone the variable for a block of the different type';
   }
-  this.typeExpr = null;
-  this.deleteLater_ = true;
 
-  var newWorkspace = newBlock.workspace;
-  this.workspace_ = newWorkspace;
-  this.sourceBlock_ = newBlock;
-  Blockly.BoundVariables.addValue(newWorkspace, this);
+  var newVar = Blockly.BoundVariables.createValue(targetBlock, this.fieldName_,
+        this.typeExpr, this.scopeInputName, this.variableName_);
+
+  var referencesToMove = [];
+  for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
+    var referenceBlock = reference.getSourceBlock();
+    if (referenceBlock.getTransferStatus() ==
+        Blockly.TRANSFER_STATUS_ONGOING) {
+      // The reference's block is scheduled to be disposed of, so we don't
+      // have to do anything.
+    } else {
+      referencesToMove.push(reference);
+    }
+  }
+
+  if (referencesToMove.length != 0) {
+    var transferStatus = this.sourceBlock_.getTransferStatus();
+    if (transferStatus != Blockly.TRANSFER_STATUS_ONGOING) {
+      throw 'Can\'t clone a value which has references unless its original ' +
+          'block is currelty transferring.';
+    }
+    // The transferring block is scheduled to be disposed of when it has
+    // finished transferring, so move some of references.
+    for (var i = 0, reference; reference = referencesToMove[i]; i++) {
+      reference.removeBoundValue();
+      reference.setBoundValue(newVar);
+    }
+  }
+  return newVar;
 };

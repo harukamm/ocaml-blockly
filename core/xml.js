@@ -893,13 +893,13 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   if (isForValue) {
     var workspace = getWorkspaceFromDom(xml);
     variable = Blockly.BoundVariables.getValueById(workspace, xml.id);
-    if (workspace.isFlyout || !variable || variable.referenceCount() == 0) {
+    if (workspace.isFlyout || !variable) {
       field.initModel();
       variable = field.getVariable();
     } else {
-      // Some getter blocks refer to the variable. Instead of creating a new
-      // variable, transfer the variable's block to the new block.
-      variable.transferValuesBlock(block);
+      // Create a copy of the existing variable because one bound-variable can
+      // not contained in multiple blocks.
+      variable = variable.cloneValue(block);
     }
   } else {
     variable = Blockly.BoundVariables.createReference(block, field.name, text);

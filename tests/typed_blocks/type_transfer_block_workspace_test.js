@@ -53,13 +53,14 @@ function test_type_transfer_block_workspace_valueBlockWithReferences() {
     var reference = varBlock.getField('VAR').getVariable();
     reference.setBoundValue(originalValue);
     assertTrue(originalValue.referenceCount() == 1);
+    assertTrue(reference.getBoundValue() == originalValue);
 
     var transferredBlock = virtually_transfer_workspace(originalBlock,
         otherWorkspace);
     var transferredValue = transferredBlock.getField('VAR').getVariable();
-    // transferredBlock must have the identical variable value with the
-    // original block.
-    assertTrue(originalValue == transferredValue);
+    assertTrue(originalValue != transferredValue);
+
+    assertTrue(reference.getBoundValue() == transferredValue);
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();
@@ -67,5 +68,44 @@ function test_type_transfer_block_workspace_valueBlockWithReferences() {
 }
 
 function test_type_transfer_block_workspace_nestedValueBlocks() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace()
+  try {
+    // [ let i = <> in < [i] > ]
+    var originalLetBlock = workspace.newBlock('let_typed');
+    var originalVarBlock = workspace.newBlock('variables_get_typed');
+    setVariableName(originalLetBlock, 'i');
+    setVariableName(originalVarBlock, 'i');
+    originalLetBlock.getInput('EXP2').connection.connect(
+        originalVarBlock.outputConnection);
+    var originalValue = originalLetBlock.getField('VAR').getVariable();
+    var originalReference = originalVarBlock.getField('VAR').getVariable();
 
+    // Another getter block, which doesn't connect to the originalLetBlock,
+    // but its reference is bound to the originalValue.
+    var varBlock = workspace.newBlock('variables_get_typed');
+    var reference = varBlock.getField('VAR').getVariable();
+    setVariableName(varBlock, 'i');
+    reference.setBoundValue(originalValue);
+
+    assertTrue(originalValue.getSourceBlock() == originalLetBlock);
+    assertTrue(originalValue.referenceCount() == 2);
+    assertTrue(originalValue == originalReference.getBoundValue());
+    assertTrue(originalValue == reference.getBoundValue());
+
+    var newLetBlock = virtually_transfer_workspace(originalLetBlock,
+        otherWorkspace);
+    var newVarBlock = newLetBlock.getInputTargetBlock('EXP2');
+    var newValue = newLetBlock.getField('VAR').getVariable();
+    var newReference = newVarBlock.getField('VAR').getVariable();
+
+    // The originalValue has been disposed of.
+    assertTrue(!originalValue.getSourceBlock());
+    assertTrue(newValue.referenceCount() == 2);
+    assertTrue(newValue == newReference.getBoundValue());
+    assertTrue(newValue == reference.getBoundValue());
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
 }
