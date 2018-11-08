@@ -2618,24 +2618,6 @@ Blockly.Blocks['variables_get_typed'] = {
   },
 
   /**
-   * Parse XML to copy the value reference.
-   * @param {!Element} xmlElement XML element.
-   * @this Blockly.Block
-   */
-  domToReference: function(xmlElement) {
-    var workspaceId = xmlElement.getAttribute('data-workspace') ||
-        this.workspace.id;
-    var valueId = xmlElement.getAttribute('data-source');
-    var workspace = Blockly.Workspace.getById(workspaceId);
-    var value = Blockly.BoundVariables.getValueById(workspace, valueId);
-    if (!value) {
-      throw 'The value of ID "' + valueId + '" does not exist in ' +
-          'the workspace\'s value list.';
-    }
-    this.getField('VAR').setBoundValue(value);
-  },
-
-  /**
    * Copy the variable's name and type expression from the given block.
    * @param {!Blockly.Block} sourceBlock Block to be copied.
    */

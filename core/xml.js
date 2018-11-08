@@ -676,13 +676,6 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace) {
   var id = xmlBlock.getAttribute('id');
   block = workspace.newBlock(prototypeName, id);
 
-  if (xmlBlock.hasAttribute('data-source')) {
-    if (!block.domToReference) {
-      throw Error('Block reference is not supported by this block type.');
-    }
-    block.domToReference(xmlBlock);
-  }
-
   var blockChild = null;
   for (var i = 0, xmlChild; xmlChild = xmlBlock.childNodes[i]; i++) {
     if (xmlChild.nodeType == 3) {
