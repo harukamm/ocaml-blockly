@@ -1095,26 +1095,24 @@ Blockly.Block.prototype.getTransferStatus = function() {
 /**
  * Set which stage of the process this block is to transfer workspace.
  * Once the block starts to transfer, an equivalent block would be created on
- * the target workspace and this block would be deleted.
+ * the target workspace and this block would be deleted including nested
+ * blocks.
  * @param {number} newStatus An enum representing stage of the process.
  */
 Blockly.Block.prototype.setTransferStatus = function(newStatus) {
   goog.asserts.assert(this.isTransferable() && !this.parentBlock_,
       'Not allowed to change the status of workspace transfer on blocks ' +
       'which are neither transferable nor root ones.');
-  switch (newStatus) {
-    case Blockly.TRANSFER_STATUS_NONE:
-    case Blockly.TRANSFER_STATUS_ONGOING:
-    case Blockly.TRANSFER_STATUS_DONE:
-      goog.asserts.assert(this.transferStatus_ <= newStatus, 'Can not go back ' +
-          'to the former status.');
-      break;
-    default:
-      throw 'An invalid enum.';
-      break;
-  }
 
-  this.transferStatus_ = newStatus;
+  if (newStatus == Blockly.TRANSFER_STATUS_NONE ||
+      newStatus == Blockly.TRANSFER_STATUS_ONGOING ||
+      newStatus == Blockly.TRANSFER_STATUS_DONE) {
+    goog.asserts.assert(this.transferStatus_ <= newStatus, 'Can not go back ' +
+        'to the former status.');
+    this.transferStatus_ = newStatus;
+  } else {
+      throw 'An invalid enum.';
+  }
 };
 
 /**
