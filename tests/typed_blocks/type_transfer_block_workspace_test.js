@@ -16,7 +16,13 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace) {
   var xml = Blockly.Xml.blockToDom(oldBlock);
   var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace);
   oldBlock.setTransferStatus(Blockly.TRANSFER_STATUS_DONE);
-  oldBlock.dispose();
+
+  Blockly.Events.disable();
+  try {
+    oldBlock.dispose();
+  } finally {
+    Blockly.Events.enable();
+  }  oldBlock.dispose();
   return newBlock;
 }
 

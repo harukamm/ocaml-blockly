@@ -180,7 +180,12 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
   if (opt_onReplace) {
     opt_onReplace(newBlock);
   }
-  oldBlock.dispose();
+  Blockly.Events.disable();
+  try {
+    oldBlock.dispose();
+  } finally {
+    Blockly.Events.enable();
+  }
 
   // Expect that there is nothing for this manager to do because this function
   // is called at the end of a drag, but change the properties just in case.
