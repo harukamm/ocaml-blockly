@@ -8,10 +8,10 @@ function create_typed_workspace() {
 }
 
 function virtually_transfer_workspace(block, targetWorkspace) {
-  block.setStateOfTransfer(Blockly.TRANSFER_STATE_ONGOING);
+  block.setTransferStatus(Blockly.TRANSFER_STATUS_ONGOING);
   var xml = Blockly.Xml.blockToDom(block);
   var block = Blockly.Xml.domToBlock(xml, targetWorkspace);
-  block.setStateOfTransfer(Blockly.TRANSFER_STATE_DONE);
+  block.setTransferStatus(Blockly.TRANSFER_STATUS_DONE);
   return block;
 }
 

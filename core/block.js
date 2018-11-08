@@ -141,7 +141,7 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
    * @type {number}
    * @private
    */
-  this.stateOfTransfer_ = Blockly.TRANSFER_STATE_NONE;
+  this.transferStatus_ = Blockly.TRANSFER_STATUS_NONE;
 
   /** @type {string|Blockly.Comment} */
   this.comment = null;
@@ -1081,39 +1081,39 @@ Blockly.Block.prototype.setTransferable = function(transferable) {
 
 /**
  * At which stage of the process this block is to transfer workspace? Returns
- * one of {@link Blockly.TRANSFER_STATE_NONE},
- * {@link Blockly.TRANSFER_STATE_ONGOING}, or
- * {@link Blockly.TRANSFER_STATE_DONE}. If the block is not transferable,
- * always returns {@link Blockly.TRANSFER_STATE_NONE}.
+ * one of {@link Blockly.TRANSFER_STATUS_NONE},
+ * {@link Blockly.TRANSFER_STATUS_ONGOING}, or
+ * {@link Blockly.TRANSFER_STATUS_DONE}. If the block is not transferable,
+ * always returns {@link Blockly.TRANSFER_STATUS_NONE}.
  * @return {number} An enum representing stage of the process to transfer
  *     workspace.
  */
-Blockly.Block.prototype.getStateOfTransfer = function() {
-  return this.stateOfTransfer_;
+Blockly.Block.prototype.getTransferStatus = function() {
+  return this.transferStatus_;
 };
 
 /**
  * Set which stage of the process this block is to transfer workspace.
  * Once the block starts to transfer, an equivalent block would be created on
  * the target workspace and this block would be deleted.
- * @param {number} state An enum representing stage of the process.
+ * @param {number} newStatus An enum representing stage of the process.
  */
-Blockly.Block.prototype.setStateOfTransfer = function(state) {
+Blockly.Block.prototype.setTransferStatus = function(newStatus) {
   goog.asserts.assert(this.isTransferable(), 'Not allowed to change the ' +
-      'state of workspace transfer on blocks which are not transferable.');
-  switch (state) {
-    case Blockly.TRANSFER_STATE_NONE:
-    case Blockly.TRANSFER_STATE_ONGOING:
-    case Blockly.TRANSFER_STATE_DONE:
-      goog.asserts.assert(this.stateOfTransfer_ <= state, 'Can not go back ' +
-          'to the former state.');
+      'status of workspace transfer on blocks which are not transferable.');
+  switch (newStatus) {
+    case Blockly.TRANSFER_STATUS_NONE:
+    case Blockly.TRANSFER_STATUS_ONGOING:
+    case Blockly.TRANSFER_STATUS_DONE:
+      goog.asserts.assert(this.transferStatus_ <= newStatus, 'Can not go back ' +
+          'to the former status.');
       break;
     default:
       throw 'An invalid enum.';
       break;
   }
 
-  this.stateOfTransfer_ = state;
+  this.transferStatus_ = newStatus;
 };
 
 /**
