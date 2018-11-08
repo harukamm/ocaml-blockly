@@ -1107,9 +1107,13 @@ Blockly.Block.prototype.setTransferStatus = function(newStatus) {
   if (newStatus == Blockly.TRANSFER_STATUS_NONE ||
       newStatus == Blockly.TRANSFER_STATUS_ONGOING ||
       newStatus == Blockly.TRANSFER_STATUS_DONE) {
-    goog.asserts.assert(this.transferStatus_ <= newStatus, 'Can not go back ' +
-        'to the former status.');
-    this.transferStatus_ = newStatus;
+    var descendants = this.getDescendants();
+    for (var i = 0, descendant; descendant = descendants[i]; i++) {
+      // TODO: Avoid accessing to a private property.
+      goog.asserts.assert(this.transferStatus_ <= newStatus,
+        'Can not go back to the former status.');
+      descendant.transferStatus_ = newStatus;
+    }
   } else {
       throw 'An invalid enum.';
   }
