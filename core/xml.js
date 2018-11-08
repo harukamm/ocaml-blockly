@@ -141,9 +141,9 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
   }
   var container = goog.dom.createDom('field', null, field.getVariableName());
   container.setAttribute('name', field.name);
-  container.setAttribute('id', id);
   if (field.isForValue()) {
     // The variable is a variable value.
+    container.setAttribute('id', id);
     container.setAttribute('isvalue', 'true');
     container.setAttribute('workspace-id', field.sourceBlock_.workspace.id);
   } else {
@@ -902,8 +902,6 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
       variable.transferValuesBlock(block);
     }
   } else {
-    // If the field is for a variable reference, ignore the xml.id and create
-    // a new reference. We can restore it from XML.
     variable = Blockly.BoundVariables.createReference(block, field.name, text);
     var childDom = xml.children.length && xml.children[0];
     // Build the variable binding if <refer-to> DOM is specified.
