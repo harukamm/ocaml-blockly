@@ -144,14 +144,18 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
 };
 
 /**
- * Returns the block newly created in the pointed workspace. Throws an error if
- * the block would not transfer.
+ * Returns the block newly created in the pointed workspace, so that the old
+ * block transfer its workspace. The old one will be disposed of because the
+ * new block takes the place of it. Throws an error if the dragged block would
+ * not transfer.
  * This should be called at the end of a drag.
+ * @param {Function=} opt_onReplace An optional function to be called before
+ *     dispose of the old block.
  * @return {Block.Block} The block positioned in the same location with the
  *     current block.
  * @package
  */
-Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function() {
+Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplace) {
   if (!this.wouldTransfer()) {
     throw 'The block would not transfer workspace.';
   }
@@ -169,6 +173,12 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function() {
   var surfaceXY = this.workspace_.getRelativeToWorkspaceXY(this.pointedWorkspace_);
   var position = goog.math.Coordinate.sum(localXY, surfaceXY);
   block.moveBy(position.x, position.y);
+
+  if (opt_onReplace) {
+    opt_onReplace(newBlock);
+  }
+  this.topBlock_.dispose();
+
   return block;
 };
 
