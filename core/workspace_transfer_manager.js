@@ -155,6 +155,8 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function() {
   if (!this.wouldTransfer()) {
     throw 'The block would not transfer workspace.';
   }
+  // Starts to transfer the block's workspace, which means the block would be
+  // deleted immediately, and a newly created block would inherit it.
   this.topBlock_.setTransferStatus(Blockly.TRANSFER_STATUS_ONGOING);
 
   // TODO: Define a transfer event in Blockly.Events, and fire it.
