@@ -137,12 +137,6 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
    */
   this.transferable_ = false;
 
-  /**
-   * @type {number}
-   * @private
-   */
-  this.transferStatus_ = Blockly.TRANSFER_STATUS_NONE;
-
   /** @type {string|Blockly.Comment} */
   this.comment = null;
 
@@ -1080,43 +1074,18 @@ Blockly.Block.prototype.setTransferable = function(transferable) {
 };
 
 /**
- * At which stage of the process this block is to transfer workspace? Returns
- * one of {@link Blockly.TRANSFER_STATUS_NONE},
- * {@link Blockly.TRANSFER_STATUS_ONGOING}, or
- * {@link Blockly.TRANSFER_STATUS_DONE}. If the block is not transferable,
- * always returns {@link Blockly.TRANSFER_STATUS_NONE}.
- * @return {number} An enum representing stage of the process to transfer
- *     workspace.
+ * Get whether the block is currently transferring its workspace.
+ * @return {boolean} True if this block is in the process of transferring.
  */
-Blockly.Block.prototype.getTransferStatus = function() {
-  return this.transferStatus_;
-};
-
-/**
- * Set which stage of the process this block is to transfer workspace.
- * Once the block starts to transfer, an equivalent block would be created on
- * the target workspace and this block would be deleted including nested
- * blocks.
- * @param {number} newStatus An enum representing stage of the process.
- */
-Blockly.Block.prototype.setTransferStatus = function(newStatus) {
-  goog.asserts.assert(this.isTransferable() && !this.parentBlock_,
-      'Not allowed to change the status of workspace transfer on blocks ' +
-      'which are neither transferable nor root ones.');
-
-  if (newStatus == Blockly.TRANSFER_STATUS_NONE ||
-      newStatus == Blockly.TRANSFER_STATUS_ONGOING ||
-      newStatus == Blockly.TRANSFER_STATUS_DONE) {
-    var descendants = this.getDescendants();
-    for (var i = 0, descendant; descendant = descendants[i]; i++) {
-      // TODO: Avoid accessing to a private property.
-      goog.asserts.assert(this.transferStatus_ <= newStatus,
-        'Can not go back to the former status.');
-      descendant.transferStatus_ = newStatus;
+Blockly.Block.prototype.isTransferring = function() {
+  var block = this;
+  while (Blockly.transferring && block) {
+    if (Blockly.transferring == block) {
+      return true;
     }
-  } else {
-      throw 'An invalid enum.';
+    block = block.getParent();
   }
+  return false;
 };
 
 /**

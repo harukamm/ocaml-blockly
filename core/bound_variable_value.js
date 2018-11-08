@@ -183,8 +183,7 @@ Blockly.BoundVariableValue.prototype.cloneValue = function(targetBlock) {
   var referencesToMove = [];
   for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
     var referenceBlock = reference.getSourceBlock();
-    if (referenceBlock.getTransferStatus() ==
-        Blockly.TRANSFER_STATUS_ONGOING) {
+    if (referenceBlock.isTransferring()) {
       // The reference's block is scheduled to be disposed of, so we don't
       // have to do anything.
     } else {
@@ -193,8 +192,7 @@ Blockly.BoundVariableValue.prototype.cloneValue = function(targetBlock) {
   }
 
   if (referencesToMove.length != 0) {
-    var transferStatus = this.sourceBlock_.getTransferStatus();
-    if (transferStatus != Blockly.TRANSFER_STATUS_ONGOING) {
+    if (!this.sourceBlock_.isTransferring()) {
       throw 'Can\'t clone a value which has references unless its original ' +
           'block is currelty transferring.';
     }

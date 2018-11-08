@@ -180,25 +180,6 @@ Blockly.DRAG_BEGIN = 1;
 Blockly.DRAG_FREE = 2;
 
 /**
- * ENUM represents that a block is not transferable, or it does not start to
- * transfer.
- * @const
- */
-Blockly.TRANSFER_STATUS_NONE = 0;
-
-/**
- * ENUM represents that a block is currently transferring.
- * @const
- */
-Blockly.TRANSFER_STATUS_ONGOING = 1;
-
-/**
- * ENUM represents that a block has finished transferring.
- * @const
- */
-Blockly.TRANSFER_STATUS_DONE = 2;
-
-/**
  * Lookup table for determining the opposite type of a connection.
  * @const
  */

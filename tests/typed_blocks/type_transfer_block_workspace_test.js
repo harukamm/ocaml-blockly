@@ -12,10 +12,13 @@ function create_typed_workspace() {
  * placeNewBlock() in Blockly.WorkspaceTransferManager.
  */
 function virtually_transfer_workspace(oldBlock, targetWorkspace) {
-  oldBlock.setTransferStatus(Blockly.TRANSFER_STATUS_ONGOING);
+  assertTrue(!Blockly.transferring);
+  Blockly.transferring = oldBlock;
+
   var xml = Blockly.Xml.blockToDom(oldBlock);
   var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace);
-  oldBlock.setTransferStatus(Blockly.TRANSFER_STATUS_DONE);
+
+  Blockly.transferring = null;
 
   Blockly.Events.disable();
   try {

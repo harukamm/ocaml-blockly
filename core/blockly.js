@@ -77,6 +77,12 @@ Blockly.mainWorkspace = null;
 Blockly.selected = null;
 
 /**
+ * Blocks currently in the process of transferring.
+ * @type {Blockly.Block}
+ */
+Blockly.transferring = null;
+
+/**
  * All of the connections on blocks that are currently being dragged.
  * @type {!Array.<!Blockly.Connection>}
  * @private
