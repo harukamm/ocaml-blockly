@@ -159,27 +159,30 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
   if (!this.wouldTransfer()) {
     throw 'The block would not transfer workspace.';
   }
+  var oldBlock = this.topBlock_;
+
   // Starts to transfer the block's workspace, which means the block would be
   // deleted immediately, and a newly created block would inherit it.
-  this.topBlock_.setTransferStatus(Blockly.TRANSFER_STATUS_ONGOING);
+  oldBlock.setTransferStatus(Blockly.TRANSFER_STATUS_ONGOING);
 
   // TODO: Define a transfer event in Blockly.Events, and fire it.
-  var xml = Blockly.Xml.blockToDom(this.topBlock_);
-  var block = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
+  var xml = Blockly.Xml.blockToDom(oldBlock);
+  var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
 
-  this.topBlock_.setTransferStatus(Blockly.TRANSFER_STATUS_DONE);
+  oldBlock.setTransferStatus(Blockly.TRANSFER_STATUS_DONE);
+
   // Aline this block according to the new surface.
-  var localXY = this.topBlock_.getRelativeToSurfaceXY();
+  var localXY = oldBlock.getRelativeToSurfaceXY();
   var surfaceXY = this.workspace_.getRelativeToWorkspaceXY(this.pointedWorkspace_);
   var position = goog.math.Coordinate.sum(localXY, surfaceXY);
-  block.moveBy(position.x, position.y);
+  newBlock.moveBy(position.x, position.y);
 
   if (opt_onReplace) {
     opt_onReplace(newBlock);
   }
-  this.topBlock_.dispose();
+  oldBlock.dispose();
 
-  return block;
+  return newBlock;
 };
 
 /**
