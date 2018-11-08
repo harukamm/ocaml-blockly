@@ -155,15 +155,9 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function() {
   if (!this.wouldTransfer()) {
     throw 'The block would not transfer workspace.';
   }
-  if (Blockly.Events.isEnabled()) {
-    Blockly.Events.setGroup(true);
-    // Fire a create event for the new workspace.
-    var event = new Blockly.Events.Create(this.topBlock_);
-    event.workspaceId = this.pointedWorkspace_.id;
-    Blockly.Events.fire(event);
-  }
   this.topBlock_.setTransferStatus(Blockly.TRANSFER_STATUS_ONGOING);
 
+  // TODO: Define a transfer event in Blockly.Events, and fire it.
   var xml = Blockly.Xml.blockToDom(this.topBlock_);
   var block = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
 
