@@ -177,7 +177,7 @@ Blockly.BoundVariableValue.prototype.transferValuesBlock = function(newBlock) {
   if (oldBlock) {
     if (!oldBlock.getTransferStatus() == Blockly.TRANSFER_STATUS_ONGOING) {
       throw 'Can\'t move a value unless its original block is currelty ' +
-          'tranferring.';
+          'transferring.';
     }
     if (oldBlock.type !== newBlock.type) {
       throw 'Can\'t change the block of the value with a block of another ' +
