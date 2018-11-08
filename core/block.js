@@ -1099,8 +1099,9 @@ Blockly.Block.prototype.getTransferStatus = function() {
  * @param {number} newStatus An enum representing stage of the process.
  */
 Blockly.Block.prototype.setTransferStatus = function(newStatus) {
-  goog.asserts.assert(this.isTransferable(), 'Not allowed to change the ' +
-      'status of workspace transfer on blocks which are not transferable.');
+  goog.asserts.assert(this.isTransferable() && !this.parentBlock_,
+      'Not allowed to change the status of workspace transfer on blocks ' +
+      'which are neither transferable nor root ones.');
   switch (newStatus) {
     case Blockly.TRANSFER_STATUS_NONE:
     case Blockly.TRANSFER_STATUS_ONGOING:
