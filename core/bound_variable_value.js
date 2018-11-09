@@ -24,11 +24,6 @@ goog.require('goog.string');
 Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
     scopeInputName, variableName) {
   /**
-   * @type {!Blockly.TypeExpr} The type expression of the variable.
-   */
-  this.typeExpr = typeExpr;
-
-  /**
    * The name of input which this variable can be used. (e.g. Suppose that the
    * source block is 'let X = I1 in I2' where I1 and I2 is value inputs.
    * this.inputName must be the name of input I2 because the variable X can be
@@ -65,7 +60,7 @@ Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
   this.inBlockDB = false;
 
   Blockly.BoundVariableValue.superClass_.constructor.call(this, block,
-      fieldName);
+      fieldName, typeExpr);
 
   Blockly.BoundVariables.addValue(this.workspace_, this);
 

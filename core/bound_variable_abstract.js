@@ -16,9 +16,11 @@ goog.require('goog.string');
  * @param {!Blockly.Block} block The block of this variable.
  * @param {!string} fieldName The name of the field that contains this
  *     variable.
+ * @param {!Blockly.TypeExpr} typeExpr The type expression of this
+ *     variable.
  * @constructor
  */
-Blockly.BoundVariableAbstract = function(block, fieldName) {
+Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr) {
   /**
    * The block the variable is declared in.
    * @type {!Blockly.Block}
@@ -36,6 +38,12 @@ Blockly.BoundVariableAbstract = function(block, fieldName) {
    * @type {string}
    */
   this.fieldName_ = fieldName;
+
+  /**
+   * The type expression of this variable.
+   * @type {string}
+   */
+  this.typeExpr_ = typeExpr;
 
   /**
    * A unique id for the variable.

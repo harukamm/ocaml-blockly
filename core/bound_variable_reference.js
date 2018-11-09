@@ -15,10 +15,12 @@ goog.require('goog.string');
  * @param {!Blockly.Block} block This reference's block.
  * @param {!string} fieldName The name of the field that contains this
  *     variable.
+ * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
  * @param {!string} varName The default name of this reference.
  * @constructor
  */
-Blockly.BoundVariableValueReference = function(block, fieldName, varName) {
+Blockly.BoundVariableValueReference = function(block, fieldName, typeExpr,
+    varName) {
   /**
    * The variable this reference refers to, or null if it's not been resolved
    * yet.
@@ -35,15 +37,8 @@ Blockly.BoundVariableValueReference = function(block, fieldName, varName) {
    */
   this.temporayDisplayName_ = varName;
 
-  /**
-   * This reference's type expression.
-   * @type {!Blockly.TypeExpr}
-   */
-  // TODO: Receive a type expression from the constructor parameters.
-  this.typeExpr = block.outputConnection.typeExpr;
-
   Blockly.BoundVariableValueReference.superClass_.constructor.call(this,
-      block, fieldName);
+      block, fieldName, typeExpr);
 
   Blockly.BoundVariables.addReference(this.workspace_, this);
 };
