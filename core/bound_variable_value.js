@@ -35,7 +35,7 @@ Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
    * used only inside I2.
    * @type {string}
    */
-  this.scopeInputName = scopeInputName;
+  this.scopeInputName_ = scopeInputName;
 
   /**
    * The variable name for this value.
@@ -134,6 +134,15 @@ Blockly.BoundVariableValue.prototype.referenceCount = function() {
 };
 
 /**
+ * Return the name of input on which this variable can be referred to. The
+ * input must be exist in this variable's block.
+ * @return {!string} The name of input.
+ */
+Blockly.BoundVariableValue.prototype.getScopeInputName = function() {
+  return this.scopeInputName_;
+};
+
+/**
  * Store the reference to a list of references.
  * @param {!Blockly.BoundVariableValueReference} reference The reference to
  *     store a list of references.
@@ -178,7 +187,7 @@ Blockly.BoundVariableValue.prototype.cloneValue = function(targetBlock) {
   }
 
   var newVar = Blockly.BoundVariables.createValue(targetBlock, this.fieldName_,
-        this.typeExpr, this.scopeInputName, this.variableName_);
+        this.typeExpr, this.scopeInputName_, this.variableName_);
 
   var referencesToMove = [];
   for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
