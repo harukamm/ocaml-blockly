@@ -77,7 +77,8 @@ Blockly.mainWorkspace = null;
 Blockly.selected = null;
 
 /**
- * Blocks currently in the process of transferring.
+ * Block currently in the process of transferring.
+ * Must be a root block.
  * @type {Blockly.Block}
  */
 Blockly.transferring = null;
