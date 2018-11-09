@@ -108,7 +108,6 @@ Blockly.WorkspaceTransferManager.prototype.isFlyoutPointed = function() {
  */
 Blockly.WorkspaceTransferManager.prototype.checkTransferable_ = function() {
   goog.asserts.assert(this.topBlock_.isTransferable());
-  goog.asserts.assert(!this.topBlock_.getParent());
 };
 
 /**
@@ -162,6 +161,7 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
   }
   goog.asserts.assert(!Blockly.transferring, 'Another blocks are ' +
       'currently transferring.');
+  goog.asserts.assert(!this.topBlock_.getParent());
 
   var oldBlock = this.topBlock_;
 

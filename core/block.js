@@ -1602,27 +1602,61 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
 
 /**
  * Whether there would be no getter block which refers to a non-existing
- * variable.
+ * variable. Check not only this block but also all the blocks nested inside
+ * it.
  * @param {Blockly.Connection} parentConnection Connection this block is trying
  *     to connect to, which means that this block would share a variable context
  *     with the parent. If null, the block is not connected to any block.
  * @param {boolean=} opt_bind Bind the getter with the proper variable if
  *     true.
- * @return {boolean} True if all of getter blocks can refer to a existing
- *     variable.
+ * @return {boolean} True if all of getter blocks inside this block  can refer
+ *     to a existing variable.
  */
 Blockly.Block.prototype.resolveReference = function(parentConnection,
       opt_bind) {
-  if (!this.isGetter) {
-    // TODO: See this blocks recursively even if this is not a getter block.
-    return true;
-  }
   if (parentConnection) {
     var parentBlock = parentConnection.getSourceBlock();
     var env = parentBlock.allVisibleVariables(parentConnection);
   } else {
     var env = {};
   }
+
+  var bfsStack = [[this, env]];
+  var allSuccess = true;
+  while (bfsStack.length) {
+    var pair = bfsStack.shift();
+    var block = pair[0];
+    var envOfParent = pair[1];
+
+    for (var i = 0, child; child = block.childBlocks_[i]; i++) {
+      var outputConn = child.outputConnection;
+      var targetConn = outputConn && outputConn.targetConnection;
+      var additionalEnv = block.allVisibleVariables(targetConn, false);
+      var envOfChild = Object.assign(additionalEnv, env);
+      var success = block.resolveReferenceWithEnv_(envOfChild, opt_bind);
+      allSuccess = allSuccess && success;
+      if (!success && !opt_bind) {
+        // Some of references can not be resolved. If no need to bind other
+        // references, just quit.
+        return false;
+      }
+      bfsStack.push([child, envOfChild]);
+    }
+  }
+  return opt_bind ? allSuccess : true;
+};
+
+/**
+ * Returns if all of references this block contains can be resolved with the
+ * given variable environment.
+ * @param {!Object} env The Object mapping variable name to a variable which
+ *     can be referred to by reference in this block keyed by variable's name.
+ * @param {boolean=} opt_bind Bind the getter with the proper variable if
+ *     true.
+ * @return {boolean} True if all of references this block contains are
+ *     resolved. Otherwise false.
+ */
+Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
   var variableList = this.getBoundVariables();
   var allBound = true;
   for (var i = 0, variable; variable = variableList[i]; i++) {
