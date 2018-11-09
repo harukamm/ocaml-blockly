@@ -130,6 +130,10 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
       this.pointedWorkspace_ == this.workspace_) {
     return false;
   }
+  // Only root blocks are allowed to start to transfer.
+  if (this.topBlock_.getParent()) {
+    return false;
+  }
   // TODO(harukam): The following check must be done for each nested blocks
   // inside this.topBlock_, not only the block itself.
   var mutator = this.topBlock_.mutator;
@@ -163,7 +167,6 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
   }
   goog.asserts.assert(!Blockly.transferring, 'Another blocks are ' +
       'currently transferring.');
-  goog.asserts.assert(!this.topBlock_.getParent());
 
   var oldBlock = this.topBlock_;
 
