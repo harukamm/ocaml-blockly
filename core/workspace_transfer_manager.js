@@ -130,6 +130,8 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
       this.pointedWorkspace_ == this.workspace_) {
     return false;
   }
+  // TODO(harukam): The following check must be done for each nested blocks
+  // inside this.topBlock_, not only the block itself.
   var mutator = this.topBlock_.mutator;
   var mutatorWorkspace = mutator ? mutator.getWorkspace() : null;
   if (mutatorWorkspace && this.pointedWorkspace_.isMutator) {
