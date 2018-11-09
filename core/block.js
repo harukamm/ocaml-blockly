@@ -1621,7 +1621,7 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
     var parentBlock = parentConnection.getSourceBlock();
     var env = parentBlock.allVisibleVariables(parentConnection);
   } else {
-    var env = [];
+    var env = {};
   }
   var variableList = this.getBoundVariables();
   var allBound = true;
