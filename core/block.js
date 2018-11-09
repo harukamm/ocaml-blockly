@@ -1647,19 +1647,21 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
 };
 
 /**
- * Return all variables which is declared in this block or its ancestor block,
- * and can be used later the given connection's input.
+ * Return all variables which is declared in blocks, and can be used later in
+ * the given connection's input.
  * @param {!Blockly.Connection} connection Connection to specify a scope.
+ * @param {boolean=} opt_bubble If false, just get variables in this block.
+ *   If true, also get variables its ancestor blocks. Defaults to true.
  * @return {Object} Object mapping variable name to its variable representation.
  */
-Blockly.Block.prototype.allVisibleVariables = function(conn) {
+Blockly.Block.prototype.allVisibleVariables = function(conn, opt_bubble) {
   var env = {};
   // TODO(harukam): Use ordered dictionary to keep the order of variable
   // declaration.
   if (conn.getSourceBlock() == this) {
-    if (this.parentBlock_) {
+    if (opt_bubble !== false && this.parentBlock_) {
       var targetConnection = this.outputConnection.targetConnection;
-      env = this.parentBlock_.allVisibleVariables(targetConnection);
+      env = this.parentBlock_.allVisibleVariables(targetConnection, true);
     }
     if (goog.isFunction(this.getVisibleVariables)) {
       var scopeVariables = this.getVisibleVariables(conn);
