@@ -2604,10 +2604,6 @@ Blockly.Blocks['variables_get_typed'] = {
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
   },
   /**
-   * Whether this block is for variable getter.
-   */
-  isGetter: true,
-  /**
    * Return all variables referenced by this block.
    * @return {!Array.<string>} List of variable names.
    * @this Blockly.Block
