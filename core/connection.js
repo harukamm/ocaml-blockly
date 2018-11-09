@@ -590,7 +590,8 @@ Blockly.Connection.prototype.disconnectInternal_ = function(parentBlock,
   var parentRootBlock = parentBlock.getRootBlock();
   parentRootBlock.updateTypeInference(true);
   childBlock.updateTypeInference(true);
-  if (!childBlock.resolveReference(null, true)) {
+  var typed = !!otherConnection.typeExpr && !!this.typeExpr;
+  if (!typed || !childBlock.resolveReference(null, true)) {
     // TODO: If there is a reference that could not be resolved, show message
     // users.
   }
