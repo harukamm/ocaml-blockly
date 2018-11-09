@@ -1654,6 +1654,8 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
  */
 Blockly.Block.prototype.allVisibleVariables = function(conn) {
   var env = {};
+  // TODO(harukam): Use ordered dictionary to keep the order of variable
+  // declaration.
   if (conn.getSourceBlock() == this) {
     if (this.parentBlock_) {
       var targetConnection = this.outputConnection.targetConnection;
