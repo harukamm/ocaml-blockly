@@ -66,7 +66,7 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
   var block = value.getSourceBlock();
   var fieldName = value.getContainerFieldName();
 
-  if (!block.typedValue[fieldName] || !value.inBlockDB) {
+  if (value.inBlockDB && !block.typedValue[fieldName]) {
     throw 'The value doesn\'t exist in DB.';
   }
   delete block.typedValue[fieldName];
@@ -75,7 +75,7 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
   var id = value.getId();
   var valueDB = workspace.getValueDB();
 
-  if (!valueDB[id] || !value.inWorkspaceDB) {
+  if (value.inWorkspaceDB && !valueDB[id]) {
     throw 'The value doesn\'t exist in DB.';
   }
   delete valueDB[id];
@@ -147,6 +147,29 @@ Blockly.BoundVariables.removeReference = function(workspace, reference) {
 Blockly.BoundVariables.getReferenceById = function(workspace, id) {
   var referenceDB = workspace.getReferenceDB();
   return referenceDB[id] || null;
+};
+
+/**
+ * Clear the database of variables on the given workspace.
+ * @param {!Blockly.Workspace} workspace The workspace whose variable database
+ *     to be cleared.
+ */
+Blockly.BoundVariables.clearWorkspaceVariableDB = function(workspace) {
+  function clearVariableDB(db) {
+    var ids = Object.keys(db);
+    for (var i = 0, id; id = ids[i]; i++) {
+      var variable = db[id];
+      if (!variable.inWorkspaceDB) {
+        throw 'Invalid status.';
+      }
+      variable.inWorkspaceDB = false;
+      delete db[id];
+    }
+  }
+  var referenceDB = workspace.getReferenceDB();
+  var valueDB = workspace.getValueDB();
+  clearVariableDB(referenceDB);
+  clearVariableDB(valueDB);
 };
 
 /**

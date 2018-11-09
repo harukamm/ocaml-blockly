@@ -147,8 +147,9 @@ Blockly.Workspace.prototype.MAX_UNDO = 1024;
 Blockly.Workspace.prototype.dispose = function() {
   this.listeners_.length = 0;
   this.clear();
-  this.valueDB_ = {};
-  this.referenceDB_ = {};
+
+  // Clear reference and value database.
+  Blockly.BoundVariables.clearWorkspaceVariableDB(this);
 
   // Remove from workspace tree.
   Blockly.WorkspaceTree.remove(this);
