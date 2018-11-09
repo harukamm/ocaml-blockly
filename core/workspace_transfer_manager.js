@@ -131,7 +131,7 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
     return false;
   }
   var mutator = this.topBlock_.mutator;
-  var mutatorWorkspace = mutator ? mutator.workspace_ : null;
+  var mutatorWorkspace = mutator ? mutator.getWorkspace() : null;
   if (mutatorWorkspace && this.pointedWorkspace_.isMutator) {
     // It's not allowed to transfer blocks to a workspace of blocks' mutator
     // and its child workspaces.

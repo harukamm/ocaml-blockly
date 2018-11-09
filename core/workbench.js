@@ -206,6 +206,14 @@ Blockly.Workbench.prototype.getBubble = function() {
 };
 
 /**
+ * Return the mutator workspace.
+ * @return {Blockly.Workspace} Workspace, or null.
+ */
+Blockly.Workbench.prototype.getWorkspace = function() {
+  return this.workspace_;
+};
+
+/**
  * Callback function triggered when the bubble has resized.
  * Resize the workspace accordingly.
  * @private
