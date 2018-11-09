@@ -1663,8 +1663,8 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
   for (var i = 0, variable; variable = variableList[i]; i++) {
     var name = variable.getVariableName();
     var value = env[name];
-    if (opt_bind) {
-      if (variable.isReference()) {
+    if (variable.isReference()) {
+      if (opt_bind) {
         // Initialize the current bound value.
         variable.removeBoundValue();
         if (value) {
@@ -1673,9 +1673,9 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
           // This reference could not be resolved. Return false later.
           allBound = false;
         }
+      } else if (!value) {
+        return false;
       }
-    } else if (!value) {
-      return false;
     }
   }
   return opt_bind ? allBound : true;

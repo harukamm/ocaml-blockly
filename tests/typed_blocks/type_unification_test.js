@@ -710,3 +710,62 @@ function test_type_unification_resolveNestedReferenceBlock() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_resolveNestedReferenceOnNestedValueBlock() {
+  var workspace = create_typed_workspace();
+  try {
+    var lambdaBlock1 = workspace.newBlock('lambda_typed');
+    var lambdaBlock2 = workspace.newBlock('lambda_typed');
+    var letBlock1 = workspace.newBlock('let_typed');
+    var letBlock2 = workspace.newBlock('let_typed');
+    var varBlock_i = workspace.newBlock('variables_get_typed');
+    var varBlock_j = workspace.newBlock('variables_get_typed');
+    var listBlock = workspace.newBlock('lists_create_with_typed');
+    setVariableName(lambdaBlock1, 'j');
+    setVariableName(lambdaBlock2, 'i');
+    setVariableName(letBlock1, 'i');
+    setVariableName(letBlock2, 'j');
+    setVariableName(varBlock_i, 'i');
+    setVariableName(varBlock_j, 'j');
+
+    // [lambda(j) <[lambda (i) <[<[j]>, <[i]>]>]>]
+    // [let i = <> in <[let j = <> in <>]>]
+    lambdaBlock1.getInput('RETURN').connection.connect(
+        lambdaBlock2.outputConnection);
+    lambdaBlock2.getInput('RETURN').connection.connect(
+        listBlock.outputConnection);
+    listBlock.getInput('ADD0').connection.connect(
+        varBlock_j.outputConnection);
+    listBlock.getInput('ADD1').connection.connect(
+        varBlock_i.outputConnection);
+    letBlock1.getInput('EXP2').connection.connect(
+        letBlock2.outputConnection);
+
+    var reference_i = getVariable(varBlock_i);
+    var reference_j = getVariable(varBlock_j);
+
+    assertTrue(getVariable(lambdaBlock1).referenceCount() == 1);
+    assertTrue(getVariable(lambdaBlock1) == reference_j.getBoundValue());
+    assertTrue(getVariable(lambdaBlock2).referenceCount() == 1);
+    assertTrue(getVariable(lambdaBlock2) == reference_i.getBoundValue());
+
+
+    // こりはけす！
+    lambdaBlock2.getInput('RETURN').connection.disconnect(
+        listBlock.outputConnection);
+
+    // [let i = <> in <[let j = <> in <[<[j]>, <[i]>]>]>]
+    letBlock2.getInput('EXP2').connection.connect(
+        listBlock.outputConnection);
+
+    assertTrue(getVariable(letBlock1).referenceCount() == 1);
+    assertTrue(getVariable(letBlock1) == reference_i.getBoundValue());
+    assertTrue(getVariable(letBlock2).referenceCount() == 1);
+    assertTrue(getVariable(letBlock2) == reference_j.getBoundValue());
+
+    assertTrue(getVariable(lambdaBlock1).referenceCount() == 0);
+    assertTrue(getVariable(lambdaBlock2).referenceCount() == 0);
+  } finally {
+    workspace.dispose();
+  }
+}
