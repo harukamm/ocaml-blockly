@@ -670,3 +670,43 @@ function test_type_unification_isReferenceOrValue() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_resolveNestedReferenceBlock() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var varBlock1 = workspace.newBlock('variables_get_typed');
+    var varBlock2_1 = workspace.newBlock('variables_get_typed');
+    var varBlock2_2 = workspace.newBlock('variables_get_typed');
+    var intArith1 = workspace.newBlock('int_arithmetic_typed');
+    var intArith2 = workspace.newBlock('int_arithmetic_typed');
+    setVariableName(letBlock, 'i');
+    setVariableName(varBlock1, 'i');
+    setVariableName(varBlock2_1, 'i');
+    setVariableName(varBlock2_2, 'i');
+
+    // let i = <> in <[ <[i]> + <[ <i> + <i> ]> ]>
+    letBlock.getInput('EXP2').connection.connect(
+        intArith1.outputConnection);
+    intArith1.getInput('A').connection.connect(
+        varBlock1.outputConnection);
+    intArith1.getInput('B').connection.connect(
+        intArith2.outputConnection);
+    intArith2.getInput('A').connection.connect(
+        varBlock2_1.outputConnection);
+    intArith2.getInput('B').connection.connect(
+        varBlock2_2.outputConnection);
+
+    var value = getVariable(letBlock);
+    var reference1 = getVariable(varBlock1);
+    var reference2_1 = getVariable(varBlock2_1);
+    var reference2_2 = getVariable(varBlock2_2);
+
+    assertTrue(value.referenceCount() == 3);
+    assertTrue(reference1.getBoundValue() == value);
+    assertTrue(reference2_1.getBoundValue() == value);
+    assertTrue(reference2_2.getBoundValue() == value);
+  } finally {
+    workspace.dispose();
+  }
+}

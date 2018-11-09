@@ -1628,22 +1628,23 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
     var block = pair[0];
     var envOfParent = pair[1];
 
+    var success = block.resolveReferenceWithEnv_(envOfParent, opt_bind);
+    allSuccess = allSuccess && success;
+    if (!success && !opt_bind) {
+      // Some of references can not be resolved. If no need to bind other
+      // references, just quit.
+      return false;
+    }
+
     for (var i = 0, child; child = block.childBlocks_[i]; i++) {
       var outputConn = child.outputConnection;
       var targetConn = outputConn && outputConn.targetConnection;
       var additionalEnv = block.allVisibleVariables(targetConn, false);
       var envOfChild = Object.assign(additionalEnv, env);
-      var success = block.resolveReferenceWithEnv_(envOfChild, opt_bind);
-      allSuccess = allSuccess && success;
-      if (!success && !opt_bind) {
-        // Some of references can not be resolved. If no need to bind other
-        // references, just quit.
-        return false;
-      }
       bfsStack.push([child, envOfChild]);
     }
   }
-  return opt_bind ? allSuccess : true;
+  return allSuccess;
 };
 
 /**
