@@ -749,11 +749,6 @@ function test_type_unification_resolveNestedReferenceOnNestedValueBlock() {
     assertTrue(getVariable(lambdaBlock2).referenceCount() == 1);
     assertTrue(getVariable(lambdaBlock2) == reference_i.getBoundValue());
 
-
-    // こりはけす！
-    lambdaBlock2.getInput('RETURN').connection.disconnect(
-        listBlock.outputConnection);
-
     // [let i = <> in <[let j = <> in <[<[j]>, <[i]>]>]>]
     letBlock2.getInput('EXP2').connection.connect(
         listBlock.outputConnection);
