@@ -167,9 +167,7 @@ Blockly.Workbench.prototype.init = function() {
   // Expose this mutator's block's ID on its top-level SVG group.
   this.bubble_.setSvgId(this.block_.id);
 
-  var tree = this.getFlyoutLanguageTree_();
   this.workspace_.flyout_.init(this.workspace_);
-  this.workspace_.flyout_.show(tree.childNodes);
 
   this.initialized_ = true;
 };
@@ -275,6 +273,9 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
   this.workspace_.setVisible(visible);
 
   if (visible) {
+    var tree = this.getFlyoutLanguageTree_();
+    this.workspace_.flyout_.show(tree.childNodes);
+
     this.bubble_.setAnchorLocation(this.iconXY_);
     this.resizeBubble_();
     this.changeListener_ = this.workspaceChanged_.bind(this);
