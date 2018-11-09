@@ -79,7 +79,7 @@ goog.inherits(Blockly.BoundVariableValue, Blockly.BoundVariableAbstract);
  * @return {boolean} True if this variable is a reference.
  * @override
  */
-Blockly.BoundVariableAbstract.prototype.isReference = function() {
+Blockly.BoundVariableValue.prototype.isReference = function() {
   return false;
 };
 

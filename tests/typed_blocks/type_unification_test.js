@@ -652,3 +652,21 @@ function test_type_unification_changeVariablesNameReferencesNested() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_isReferenceOrValue() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var lambdaBlock = workspace.newBlock('lambda_typed');
+    var varBlock = workspace.newBlock('variables_get_typed');
+    assertTrue(getVariableField(letBlock).isForValue());
+    assertTrue(getVariableField(lambdaBlock).isForValue());
+    assertTrue(!getVariableField(varBlock).isForValue());
+
+    assertTrue(!getVariable(letBlock).isReference());
+    assertTrue(!getVariable(lambdaBlock).isReference());
+    assertTrue(getVariable(varBlock).isReference());
+  } finally {
+    workspace.dispose();
+  }
+}
