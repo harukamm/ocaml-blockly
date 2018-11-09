@@ -135,8 +135,8 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
   if (mutatorWorkspace && this.pointedWorkspace_.isMutator) {
     // It's not allowed to transfer blocks to a workspace of blocks' mutator
     // and its child workspaces.
-    if (Blockly.WorkspaceTree.isChildOf(
-        this.pointedWorkspace_, mutatorWorkspace)) {
+    if (Blockly.WorkspaceTree.isDescendant(this.pointedWorkspace_,
+        mutatorWorkspace)) {
       return false;
     }
   }
