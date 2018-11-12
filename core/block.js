@@ -2602,14 +2602,14 @@ Blockly.Blocks['variables_get_typed'] = {
    * @this Blockly.Block
    */
   init: function() {
+    var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.setHelpUrl(Blockly.Msg.VARIABLES_GET_HELPURL);
     this.setColour(330);
     this.appendDummyInput()
         .appendField(Blockly.Msg.VARIABLES_GET_TITLE)
-        .appendField(Blockly.FieldBoundVariable.newReference(), 'VAR')
+        .appendField(Blockly.FieldBoundVariable.newReference(A), 'VAR')
         .appendField(Blockly.Msg.VARIABLES_GET_TAIL);
     this.setOutput(true);
-    var A = Blockly.RenderedTypeExpr.generateTypeVar();
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
   },

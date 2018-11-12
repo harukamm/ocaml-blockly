@@ -90,12 +90,16 @@ Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
 
 /**
  * Obtain a newly created bound-variable field of reference type.
+ * @param {!Blockly.TypeExpr} referenceTypeExpr The type for the reference.
  * @param {string} opt_varName The default name for the variable.  If null, the
  *     fixed name will be used.
  * @return {!Blockly.FieldBoundVariable} The created field.
  */
-Blockly.FieldBoundVariable.newReference = function(opt_varName) {
-  return new Blockly.FieldBoundVariable(false, opt_varName);
+Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
+    opt_varName) {
+  var field = new Blockly.FieldBoundVariable(false, opt_varName);
+  field.referenceTypeExpr_ = referenceTypeExpr;
+  return field;
 };
 
 /**
@@ -126,7 +130,8 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
           this.scopeInputName_, this.defaultVariableName_);
     } else {
       this.variable_ = Blockly.BoundVariables.createReference(
-          this.sourceBlock_, this.name, this.defaultVariableName_);
+          this.sourceBlock_, this.name, this.referenceTypeExpr_,
+          this.defaultVariableName_);
     }
   }
 };
