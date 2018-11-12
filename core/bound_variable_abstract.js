@@ -93,6 +93,14 @@ Blockly.BoundVariableAbstract.prototype.getContainerField = function() {
 };
 
 /**
+ * Returns the type expression of this variable.
+ * @return {!Blockly.TypeExpr} The type expression of this variable.
+ */
+Blockly.BoundVariableAbstract.prototype.getTypeExpr = function() {
+  return this.typeExpr_;
+};
+
+/**
  * @return {!string} The ID for the variable.
  */
 Blockly.BoundVariableAbstract.prototype.getId = function() {

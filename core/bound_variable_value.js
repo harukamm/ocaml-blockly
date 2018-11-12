@@ -181,7 +181,7 @@ Blockly.BoundVariableValue.prototype.cloneValue = function(targetBlock) {
   }
 
   var newVar = Blockly.BoundVariables.createValue(targetBlock, this.fieldName_,
-        this.typeExpr, this.scopeInputName_, this.variableName_);
+        this.typeExpr_, this.scopeInputName_, this.variableName_);
 
   var referencesToMove = [];
   for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
