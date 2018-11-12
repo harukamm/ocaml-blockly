@@ -896,6 +896,7 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
     if (workspace.isFlyout || !variable) {
       field.initModel();
       variable = field.getVariable();
+      variable.setVariableName(text);
     } else {
       // Create a copy of the existing variable because one bound-variable can
       // not contained in multiple blocks.
@@ -904,6 +905,7 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   } else {
     field.initModel();
     variable = field.getVariable();
+    variable.setVariableName(text);
     var childDom = xml.children.length && xml.children[0];
     // Build the variable binding if <refer-to> DOM is specified.
     if (childDom && childDom.nodeName.toLowerCase() == 'refer-to') {

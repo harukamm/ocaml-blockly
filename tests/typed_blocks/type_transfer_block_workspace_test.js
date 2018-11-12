@@ -72,6 +72,35 @@ function test_type_transfer_block_workspace_simpleValueBlock() {
   }
 }
 
+function test_type_transfer_block_workspace_simpleVariableBlocksRestoreName() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace()
+  try {
+    var originalBlock = workspace.newBlock('let_typed');
+    setVariableName(originalBlock, 'ii');
+    var value1 = originalBlock.getField('VAR').getVariable();
+    // Accidentally clear the database of variables..
+    Blockly.BoundVariables.clearWorkspaceVariableDB(workspace);
+    var transferredBlock = virtually_transfer_workspace(originalBlock,
+        otherWorkspace);
+    var value2 = transferredBlock.getField('VAR').getVariable();
+    assertTrue(value1.getVariableName() === 'ii');
+    assertTrue(value1.getVariableName() === value2.getVariableName());
+
+    originalBlock = workspace.newBlock('variables_get_typed');
+    setVariableName(originalBlock, 'xx');
+    var reference1 = originalBlock.getField('VAR').getVariable();
+    var transferredBlock = virtually_transfer_workspace(originalBlock,
+        otherWorkspace);
+    var reference2 =  transferredBlock.getField('VAR').getVariable();
+    assertTrue(reference1.getVariableName() === 'xx');
+    assertTrue(reference1.getVariableName() === reference2.getVariableName());
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}
+
 function test_type_transfer_block_workspace_valueBlockWithReferences() {
   var workspace = create_typed_workspace();
   var otherWorkspace = create_typed_workspace()
