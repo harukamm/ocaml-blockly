@@ -90,9 +90,6 @@ Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
 
 /**
  * Obtain a newly created bound-variable field of reference type.
- * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
- * @param {string} scopeInputName The name of input on which the variable value
- *     is visible.
  * @param {string} opt_varName The default name for the variable.  If null, the
  *     fixed name will be used.
  * @return {!Blockly.FieldBoundVariable} The created field.
