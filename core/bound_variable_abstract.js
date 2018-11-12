@@ -123,6 +123,7 @@ Blockly.BoundVariableAbstract.prototype.setVariableName = undefined;
 Blockly.BoundVariableAbstract.prototype.dispose = function() {
   this.sourceBlock_ = null;
   this.workspace_ = null;
+  this.typeExpr_ = null;
 };
 
 /**
