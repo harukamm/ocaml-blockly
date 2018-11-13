@@ -961,11 +961,17 @@ Blockly.Block.prototype.setOutput = function(newBoolean, opt_check) {
   }
 };
 
-// Sorin
-Blockly.Block.prototype.setOutputTypeExpr = function(typeExpr) {
+/**
+ * Store the given type expression in the output connection of this block.
+ * @param {!Blockly.TypeExpr} typeExpr The type expression to be stored in the
+ *     output connection of this block.
+ * @param {boolean=} opt_overwrite If true, overwrite a type expression already
+ *     present on the connection.
+ */
+Blockly.Block.prototype.setOutputTypeExpr = function(typeExpr, opt_overwrite) {
   goog.asserts.assert(this.workspace.options.typedVersion,
       'Allow to have types only in a workspace of typedBlockly version.');
-  this.outputConnection.setTypeExpr(typeExpr);
+  this.outputConnection.setTypeExpr(typeExpr, opt_overwrite);
 }
 
 /**
@@ -2660,8 +2666,7 @@ Blockly.Blocks['variables_get_typed'] = {
    */
   copyFrom: function(sourceBlock) {
     var typeExpr = sourceBlock.outputConnection.typeExpr;
-    delete this.outputConnection.typeExpr;
-    this.setOutputTypeExpr(typeExpr);
+    this.setOutputTypeExpr(typeExpr, true);
   },
 
   /**
