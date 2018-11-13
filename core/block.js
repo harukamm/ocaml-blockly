@@ -979,13 +979,10 @@ Blockly.Block.prototype.setOutputTypeExpr = function(typeExpr, opt_overwrite) {
  * another block. If both blocks have nested blocks, also replace their type
  * expressions on them.
  * @param {!Blockly.Block} oldBlock The block whose type expressions to replace
- *     that of this block. Expected to be in the process of transferring.
- *     Otherwise, throws an error.
+ *     that of this block. Newly created type expressions are stored to the
+ *     oldBlock after the replacement.
  */
 Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock) {
-  goog.asserts.assert(oldBlock.isTransferring(),
-      'Can\'t replace type expressions with that of non-transferring block.');
-
   var pairsToUnify = [[this, oldBlock]];
   while (pairsToUnify.length) {
     var pair = pairsToUnify.pop();
@@ -2658,15 +2655,6 @@ Blockly.Blocks['variables_get_typed'] = {
     if (Blockly.Names.equals(oldName, this.getField('VAR').getText())) {
       this.setFieldValue(newName, 'VAR');
     }
-  },
-
-  /**
-   * Copy the variable's name and type expression from the given block.
-   * @param {!Blockly.Block} sourceBlock Block to be copied.
-   */
-  copyFrom: function(sourceBlock) {
-    var typeExpr = sourceBlock.outputConnection.typeExpr;
-    this.setOutputTypeExpr(typeExpr, true);
   },
 
   /**

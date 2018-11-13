@@ -821,12 +821,12 @@ Blockly.Flyout.prototype.placeNewBlock_ = function(oldBlock) {
 
   block.moveBy(finalOffsetMainWs.x, finalOffsetMainWs.y);
 
-  // Copy the components from the old block if necessary.
-  if (block.copyFrom) {
-    block.copyFrom(oldBlock);
+  if (targetWorkspace.options.typedVersion &&
+      oldBlock.workspace.options.typedVersion) {
+    // If the block is typed, replace type expressions with that of the old
+    // block.
+    block.replaceTypeExprWith(oldBlock);
     block.render(false);
-    // TODO: Restore the old block's components at the time of calling
-    // Blockly.Xml.domToBlock to avoid rerendering.
   }
   return block;
 };
