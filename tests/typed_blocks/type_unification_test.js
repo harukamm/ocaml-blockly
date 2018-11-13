@@ -506,6 +506,13 @@ function test_type_unification_useWorkbenchWithinLetTypedBlock() {
     assertEquals(childNodes.length, 2);
     var innersVars = Blockly.Xml.domToBlock(childNodes[0], workspace);
     var outersVar = Blockly.Xml.domToBlock(childNodes[1], workspace);
+    // getTreeInFlyout() does not guarantee any order. If they seems to have
+    // been swapped, just swap them.
+    if (isVariableOf(outersVar, innerLetBlock, 'j')) {
+      var tmp = outersVar;
+      outersVar = innersVars;
+      innersVars = tmp;
+    }
     assertTrue(isVariableOf(innersVars, innerLetBlock, 'j'));
     assertTrue(isVariableOf(outersVar, outerLetBlock, 'i'));
 
@@ -541,6 +548,13 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
     assertEquals(childNodes.length, 2);
     var innersVars = Blockly.Xml.domToBlock(childNodes[0], workspace);
     var outersVar = Blockly.Xml.domToBlock(childNodes[1], workspace);
+    // getTreeInFlyout() does not guarantee any order. If they seems to have
+    // been swapped, just swap them.
+    if (isVariableOf(outersVar, innerLambdaBlock, 'j')) {
+      var tmp = outersVar;
+      outersVar = innersVars;
+      innersVars = tmp;
+    }
     assertTrue(isVariableOf(innersVars, innerLambdaBlock, 'j'));
     assertTrue(isVariableOf(outersVar, outerLetBlock, 'i'));
 

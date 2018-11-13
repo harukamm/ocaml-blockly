@@ -1755,7 +1755,7 @@ Blockly.Block.prototype.allVisibleVariables = function(conn, opt_bubble) {
     }
     if (goog.isFunction(this.getVisibleVariables)) {
       var scopeVariables = this.getVisibleVariables(conn);
-      env = Object.assign(scopeVariables, env);
+      env = Object.assign(env, scopeVariables);
     }
   }
   return env;
