@@ -1854,12 +1854,9 @@ Blockly.Block.prototype.toDevString = function() {
   return msg;
 };
 
-
-/**
- * Sorin: Typed blocks, not the right place to put these, but this
- * makes it easier because we can use uncompressed javascript without
- * need for compilation
- */
+// TODO(harukam): Define a class representing blocks with type expressions as
+// a subclass of Blockly.Block, and move functions related to typing in this
+// file to that class.
 
 /* should go in blocks/logic.js */
 
