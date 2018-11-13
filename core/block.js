@@ -2473,35 +2473,6 @@ Blockly.Blocks['lambda_typed'] = {
     return xml;
   },
 
-  /**
-   * Create XML to represent list inputs.
-   * @return {Element} XML storage element.
-   * @this Blockly.Block
-   */
-  mutationToDom: function() {
-    var container = document.createElement('mutation');
-    return container;
-  },
-  /**
-   * Parse XML to restore the list inputs.
-   * @param {!Element} xmlElement XML storage element.
-   * @this Blockly.Block
-   */
-  domToMutation: function(xmlElement) {
-    goog.asserts.assert(false, 'Not implemented');
-  },
-  /**
-   * Populate the mutator's dialog with this block's components.
-   * @param {!Blockly.Workspace} workspace Mutator's workspace.
-   * @return {!Blockly.Block} Root block in mutator.
-   * @this Blockly.Block
-   */
-  decompose: function(workspace) {
-    var dummyBlock = workspace.newBlock('logic_boolean_typed');
-    dummyBlock.initSvg();
-    return dummyBlock;
-  },
-
   clearTypes: function() {
     this.outputConnection.typeExpr.arg_type.clear();
     this.outputConnection.typeExpr.return_type.clear();
@@ -2775,35 +2746,6 @@ Blockly.Blocks['let_typed'] = {
       xml.appendChild(dom);
     }
     return xml;
-  },
-
-  /**
-   * Create XML to represent list inputs.
-   * @return {Element} XML storage element.
-   * @this Blockly.Block
-   */
-  mutationToDom: function() {
-    var container = document.createElement('mutation');
-    return container;
-  },
-  /**
-   * Parse XML to restore the list inputs.
-   * @param {!Element} xmlElement XML storage element.
-   * @this Blockly.Block
-   */
-  domToMutation: function(xmlElement) {
-    goog.asserts.assert(false, 'Not implemented');
-  },
-  /**
-   * Populate the mutator's dialog with this block's components.
-   * @param {!Blockly.Workspace} workspace Mutator's workspace.
-   * @return {!Blockly.Block} Root block in mutator.
-   * @this Blockly.Block
-   */
-  decompose: function(workspace) {
-    var dummyBlock = workspace.newBlock('logic_boolean_typed');
-    dummyBlock.initSvg();
-    return dummyBlock;
   },
 
   /**
