@@ -27,16 +27,18 @@ goog.require('goog.string');
  * Class for a variable's dropdown field with variable binding.
  * @param {boolean} isValue Whether the field is for a variable value.
  *     Otherwise, for a variable reference.
+ * @param {!typeExpr} typeExpr The type expression of this variable.
  * @param {string} opt_varName The default name for the variable.  If null, the
  *     fixed name will be used.
  * @extends {Blockly.FieldDropdown}
  * @constructor
  */
-Blockly.FieldBoundVariable = function(isValue, opt_varName) {
+Blockly.FieldBoundVariable = function(isValue, typeExpr, opt_varName) {
   // The FieldDropdown constructor would call setValue, which might create a
   // variable.  Just do the relevant parts of the constructor.
   this.menuGenerator_ = Blockly.FieldBoundVariable.dropdownCreate;
   this.size_ = new goog.math.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
+  this.defaultTypeExpr_ = typeExpr;
   this.defaultVariableName_ = opt_varName || 'hoge';
 
   /**
@@ -81,9 +83,7 @@ Blockly.FieldBoundVariable.fromJson = function(options) {
  */
 Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
     scopeInputName, opt_varName) {
-  var field = new Blockly.FieldBoundVariable(true, opt_varName);
-  // Add to properties, which is needed in initModel().
-  field.valueTypeExpr_ = valueTypeExpr;
+  var field = new Blockly.FieldBoundVariable(true, valueTypeExpr, opt_varName);
   field.scopeInputName_ = scopeInputName;
   return field;
 };
@@ -97,9 +97,7 @@ Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
  */
 Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
     opt_varName) {
-  var field = new Blockly.FieldBoundVariable(false, opt_varName);
-  field.referenceTypeExpr_ = referenceTypeExpr;
-  return field;
+  return new Blockly.FieldBoundVariable(false, referenceTypeExpr, opt_varName);
 };
 
 /**
@@ -126,11 +124,11 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
   if (!this.variable_) {
     if (this.forValue_) {
       this.variable_ = Blockly.BoundVariables.createValue(
-          this.sourceBlock_, this.name, this.valueTypeExpr_,
+          this.sourceBlock_, this.name, this.defaultTypeExpr_,
           this.scopeInputName_, this.defaultVariableName_);
     } else {
       this.variable_ = Blockly.BoundVariables.createReference(
-          this.sourceBlock_, this.name, this.referenceTypeExpr_,
+          this.sourceBlock_, this.name, this.defaultTypeExpr_,
           this.defaultVariableName_);
     }
   }
