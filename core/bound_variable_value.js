@@ -170,18 +170,20 @@ Blockly.BoundVariableValue.prototype.removeReference = function(reference) {
 };
 
 /**
- * Clone this variable on the given block.
- * @param {!Blockly.Block} targetBlock The block on which to clone this
- *     variable.
- * @return {!Blockly.BoundVariableValue} A cloned variable created newly.
+ * Copy the components of this variable to another variable.
+ * @param {!Blockly.BoundVariableValue} variable The variable to copy this
+ *     variable's properties to.
  */
-Blockly.BoundVariableValue.prototype.cloneValue = function(targetBlock) {
-  if (this.sourceBlock_.type !== targetBlock.type) {
-    throw 'Can\'t clone the variable for a block of the different type';
+Blockly.BoundVariableValue.prototype.copyTo = function(variable) {
+  var targetBlock = variable.getSourceBlock();
+  if (this.sourceBlock_.type !== targetBlock.type ||
+      this.fieldName_ !== variable.getContainerFieldName() ||
+      this.scopeInputName_ != variable.getScopeInputName()) {
+    throw 'Can\'t copy to a variable of the different type';
   }
 
-  var newVar = Blockly.BoundVariables.createValue(targetBlock, this.fieldName_,
-        this.typeExpr_, this.scopeInputName_, this.variableName_);
+  variable.setVariableName(this.variableName_);
+  this.typeExpr_.unify(variable.getTypeExpr());
 
   var referencesToMove = [];
   for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
@@ -203,8 +205,7 @@ Blockly.BoundVariableValue.prototype.cloneValue = function(targetBlock) {
     // finished transferring, so move some of references.
     for (var i = 0, reference; reference = referencesToMove[i]; i++) {
       reference.removeBoundValue();
-      reference.setBoundValue(newVar);
+      reference.setBoundValue(variable);
     }
   }
-  return newVar;
 };

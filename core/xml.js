@@ -889,23 +889,18 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
     }
     return workspace;
   }
-  var variable;
+  field.initModel();
+  var variable = field.getVariable();
+  variable.setVariableName(text);
   if (isForValue) {
     var workspace = getWorkspaceFromDom(xml);
-    variable = Blockly.BoundVariables.getValueById(workspace, xml.id);
-    if (workspace.isFlyout || !variable) {
-      field.initModel();
-      variable = field.getVariable();
-      variable.setVariableName(text);
-    } else {
-      // Create a copy of the existing variable because one bound-variable can
-      // not contained in multiple blocks.
-      variable = variable.cloneValue(block);
+    var variableInDB = Blockly.BoundVariables.getValueById(workspace, xml.id);
+    if (!workspace.isFlyout && variableInDB) {
+      // Copy the existing variable to this field's variable because a single
+      // bound-variable can not be shared by multiple blocks.
+      variableInDB.copyTo(variable);
     }
   } else {
-    field.initModel();
-    variable = field.getVariable();
-    variable.setVariableName(text);
     var childDom = xml.children.length && xml.children[0];
     // Build the variable binding if <refer-to> DOM is specified.
     if (childDom && childDom.nodeName.toLowerCase() == 'refer-to') {
