@@ -2539,14 +2539,6 @@ Blockly.Blocks['lambda_app_typed'] = {
     this.setInputsInline(true);
   },
 
-  getVars: function () {
-    return [this.argName];
-  },
-
-  getVarsWithTypes: function() {
-    goog.asserts.assert(false, 'No implemented.');
-  },
-
   clearTypes: function() {
     this.getInput('FUN').connection.typeExpr.arg_type.clear();
     this.getInput('FUN').connection.typeExpr.return_type.clear();
@@ -2596,10 +2588,6 @@ Blockly.Blocks['match_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(false);
-  },
-
-  getVarsWithTypes: function() {
-    goog.asserts.assert(false, 'No implemented.');
   },
 
   clearTypes: function() {
@@ -2654,14 +2642,6 @@ Blockly.Blocks['variables_get_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
-  },
-  /**
-   * Return all variables referenced by this block.
-   * @return {!Array.<string>} List of variable names.
-   * @this Blockly.Block
-   */
-  getVars: function() {
-    return [this.getField('VAR').getText()];
   },
   /**
    * Notification that a variable is renaming.
@@ -2741,15 +2721,6 @@ Blockly.Blocks['let_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
-  },
-
-  /**
-   * Return all variables referenced by this block.
-   * @return {!Array.<string>} List of variable names.
-   * @this Blockly.Block
-   */
-  getVars: function() {
-    return [this.getField('VAR').getText()];
   },
 
   /**
