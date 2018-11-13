@@ -29,6 +29,7 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace,
   try {
     var xml = Blockly.Xml.blockToDom(oldBlock);
     var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace);
+    newBlock.replaceTypeExprWith(oldBlock);
     if (goog.isFunction(opt_testDuringTransferring)) {
       opt_testDuringTransferring();
     }
@@ -229,6 +230,84 @@ function test_type_transfer_block_workspace_mutatorBlocksTransferred() {
     workspace.dispose();
     workbench.dispose();
     nestedWorkbench.dispose();
+    otherWorkspace.dispose();
+  }
+}
+
+function test_type_transfer_block_workspace_newBlockShareTypeExpression() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace()
+  try {
+    var originalLetBlock = workspace.newBlock('let_typed');
+    var originalVarBlock = workspace.newBlock('variables_get_typed');
+    var originalExp1Type =
+        originalLetBlock.getInput('EXP1').connection.typeExpr;
+    var originalExp2Type =
+        originalLetBlock.getInput('EXP2').connection.typeExpr;
+    var originalVarType = originalVarBlock.outputConnection.typeExpr;
+
+    setVariableName(originalLetBlock, 'x');
+    setVariableName(originalVarBlock, 'x');
+    originalLetBlock.getInput('EXP2').connection.connect(
+        originalVarBlock.outputConnection);
+    assertTrue(originalExp1Type ==
+        getVariable(originalLetBlock).getTypeExpr());
+
+    var newLetBlock = virtually_transfer_workspace(originalLetBlock,
+        otherWorkspace);
+    var newVarBlock = newLetBlock.getInputTargetBlock('EXP2');
+
+    // See blocks' type expressions.
+    assertTrue(originalExp1Type ==
+        newLetBlock.getInput('EXP1').connection.typeExpr);
+    assertTrue(originalExp2Type ==
+        newLetBlock.getInput('EXP2').connection.typeExpr);
+    assertTrue(originalExp2Type ==
+        newLetBlock.outputConnection.typeExpr);
+    assertTrue(originalVarType ==
+        newVarBlock.outputConnection.typeExpr);
+
+    // See variables' type expressions.
+    assertTrue(getVariable(newLetBlock).getVariableName() === 'x');
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}
+
+function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace()
+  try {
+    var originalLetBlock = workspace.newBlock('let_typed');
+    var originalBoolBlock = workspace.newBlock('logic_boolean_typed')
+    var originalExp1Type =
+        originalLetBlock.getInput('EXP1').connection.typeExpr;
+    var originalExp2Type =
+        originalLetBlock.getInput('EXP2').connection.typeExpr;
+    var originalLetValue = getVariable(originalLetBlock);
+
+    originalLetBlock.getInput('EXP1').connection.connect(
+        originalBoolBlock.outputConnection);
+    setVariableName(originalLetBlock, 'flag');
+
+    var newLetBlock = virtually_transfer_workspace(originalLetBlock,
+        otherWorkspace);
+
+    // See blocks' type expressions.
+    assertTrue(originalExp1Type ==
+        newLetBlock.getInput('EXP1').connection.typeExpr);
+    assertTrue(Blockly.TypeExpr.BOOL_ ==
+        newLetBlock.getInput('EXP1').connection.typeExpr.deref().label);
+    assertTrue(originalExp2Type ==
+        newLetBlock.getInput('EXP2').connection.typeExpr);
+    assertTrue(originalExp2Type ==
+        newLetBlock.outputConnection.typeExpr);
+
+    // See variables' type expressions.
+    assertTrue(getVariable(newLetBlock).getVariableName() === 'flag');
+  } finally {
+    workspace.dispose();
     otherWorkspace.dispose();
   }
 }

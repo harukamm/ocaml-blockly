@@ -969,6 +969,48 @@ Blockly.Block.prototype.setOutputTypeExpr = function(typeExpr) {
 }
 
 /**
+ * Replace each of this block's type expressions by the corresponding one of
+ * another block. If both blocks have nested blocks, also replace their type
+ * expressions on them.
+ * @param {!Blockly.Block} oldBlock The block whose type expressions to replace
+ *     that of this block. Expected to be in the process of transferring.
+ *     Otherwise, throws an error.
+ */
+Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock) {
+  goog.asserts.assert(oldBlock.isTransferring(),
+      'Can\'t replace type expressions with that of non-transferring block.');
+
+  var pairsToUnify = [[this, oldBlock]];
+  while (pairsToUnify.length) {
+    var pair = pairsToUnify.pop();
+    var thisBlock = pair[0];
+    var oldBlock = pair[1];
+    if (thisBlock.type !== oldBlock.type) {
+      continue;
+    }
+    if (thisBlock.outputConnection) {
+      thisBlock.outputConnection.replaceTypeExprWith(
+          oldBlock.outputConnection);
+    }
+    for (var i = 0, input; input = thisBlock.inputList[i]; i++) {
+      var oldInput = oldBlock.inputList[i];
+      if (input.connection) {
+        goog.asserts.assert(input.name === oldInput.name);
+        input.connection.replaceTypeExprWith(oldInput.connection);
+        var targetBlock = input.connection.targetBlock();
+        var oldTargetBlock = oldInput.connection.targetBlock();
+        if (targetBlock && oldTargetBlock) {
+          pairsToUnify.push([targetBlock, oldTargetBlock]);
+        }
+      }
+    }
+  }
+  // oldBlock now refers to newly created type expressions. Trigger a type
+  // inference.
+  oldBlock.updateTypeInference();
+};
+
+/**
  * Set whether value inputs are arranged horizontally or vertically.
  * @param {boolean} newBoolean True if inputs are horizontal.
  */

@@ -179,6 +179,7 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
     // TODO: Define a transfer event in Blockly.Events, and fire it.
     var xml = Blockly.Xml.blockToDom(oldBlock);
     var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
+    newBlock.replaceTypeExprWith(oldBlock);
   } finally {
     Blockly.transferring = null;
   }

@@ -722,6 +722,21 @@ Blockly.Connection.prototype.setTypeExpr = function(t, opt_overwrite) {
 }
 
 /**
+ * Replace a connection's type expression with another connection.
+ * @param {!Blockly.Connection} oldConnection The connection whose type
+ *     expression to be moved to this connection.
+ */
+Blockly.Connection.prototype.replaceTypeExprWith = function(oldConnection) {
+  if (this.typeExpr && oldConnection.typeExpr) {
+    this.setTypeExpr(oldConnection.typeExpr, true);
+    // Store a new type expression to remove reference to the type expression
+    // from the oldConnection.
+    var dummyType = Blockly.RenderedTypeExpr.generateTypeVar();
+    oldConnection.setTypeExpr(dummyType, true);
+  }
+};
+
+/**
  * Change a connection's shadow block.
  * @param {Element} shadow DOM representation of a block or null.
  */
