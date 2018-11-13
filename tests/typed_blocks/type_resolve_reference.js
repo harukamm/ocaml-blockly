@@ -70,3 +70,28 @@ function test_resolve_reference_NotShareVariables() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_letNestedTreeWithDifferenctNames() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock1 = workspace.newBlock('let_typed');
+    var letBlock2 = workspace.newBlock('let_typed');
+    var varBlock = workspace.newBlock('variables_get_typed');
+    setVariableName(letBlock1, 'x');
+    setVariableName(letBlock2, 'y');
+    setVariableName(varBlock, 'y');
+
+    // [let y = <> in <[let x = <> in <[y]>]>]
+    letBlock2.getInput('EXP2').connection.connect(
+        letBlock1.outputConnection);
+    letBlock1.getInput('EXP2').connection.connect(varBlock.outputConnection);
+    assertEquals(getVariable(letBlock2),
+        getVariable(varBlock).getBoundValue());
+
+    assertTrue(letBlock2.resolveReference(null, true));
+    assertEquals(getVariable(letBlock2),
+        getVariable(varBlock).getBoundValue());
+  } finally {
+    workspace.dispose();
+  }
+}
