@@ -1695,7 +1695,7 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
       var outputConn = child.outputConnection;
       var targetConn = outputConn && outputConn.targetConnection;
       var additionalEnv = block.allVisibleVariables(targetConn, false);
-      var envOfChild = Object.assign(additionalEnv, env);
+      var envOfChild = Object.assign(env, additionalEnv);
       bfsStack.push([child, envOfChild]);
     }
   }
