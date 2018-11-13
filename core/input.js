@@ -211,12 +211,18 @@ Blockly.Input.prototype.setCheck = function(check) {
   return this;
 };
 
-// Sorin
-Blockly.Input.prototype.setTypeExpr = function(t) {
+/**
+ * Store the given type expression to the connection.
+ * @param {!Blockly.TypeExpr} t The type expression to be stored.
+ * @param {boolean=} opt_overwrite If true, overwrite a type expression already
+ *     present on the connection.
+ * @return {!Blockly.Input} The input being modified (to allow chaining).
+ */
+Blockly.Input.prototype.setTypeExpr = function(t, opt_overwrite) {
   if (!this.connection) {
     throw 'This input does not have a connection.';
   }
-  this.connection.setTypeExpr(t);
+  this.connection.setTypeExpr(t, opt_overwrite);
   return this;
 };
 

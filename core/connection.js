@@ -703,9 +703,21 @@ Blockly.Connection.prototype.setCheck = function(check) {
   return this;
 };
 
-// Sorin
-Blockly.Connection.prototype.setTypeExpr = function(t) {
-  this.typeExpr = t;
+/*
+ * Store the given type expression to a connection.
+ * @param {!Blockly.TypeExpr} t The type expression to be stored.
+ * @param {boolean=} opt_overwrite If true, overwrite a type expression already
+ *     present on the connection. Defaults to false.
+ * @return {!Blockly.Connection} The connection being modified
+ *     (to allow chaining).
+ */
+Blockly.Connection.prototype.setTypeExpr = function(t, opt_overwrite) {
+  if (this.typeExpr && !opt_overwrite) {
+    console.warn('A type expression has already been stored ' +
+        'in the connection.');
+  } else {
+    this.typeExpr = t;
+  }
   return this;
 }
 
