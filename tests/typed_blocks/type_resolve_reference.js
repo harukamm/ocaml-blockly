@@ -95,3 +95,36 @@ function test_resolve_reference_letNestedTreeWithDifferenctNames() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_letFixedBoundValue() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock1 = workspace.newBlock('let_typed');
+    var letBlock2 = workspace.newBlock('let_typed');
+    var value1 = getVariable(letBlock1);
+    var value2 = getVariable(letBlock2);
+    var varBlockBoundTo1 = workspace.newBlock('variables_get_typed');
+    var varBlockBoundTo2 = workspace.newBlock('variables_get_typed');
+
+    setVariableName(letBlock1, 'i');
+    setVariableName(letBlock2, 'i');
+    setVariableName(varBlockBoundTo1, 'i');
+    setVariableName(varBlockBoundTo2, 'i');
+
+    getVariable(varBlockBoundTo1).setBoundValue(value1);
+    getVariable(varBlockBoundTo2).setBoundValue(value2);
+
+    letBlock1.getInput('EXP2').connection.connect(letBlock2.outputConnection);
+
+    var exp2 = letBlock2.getInput('EXP2').connection;
+    var exp1 = letBlock2.getInput('EXP1').connection;
+
+    assertFalse(varBlockBoundTo1.resolveReference(exp2));
+    assertTrue(varBlockBoundTo1.resolveReference(exp1));
+
+    assertTrue(varBlockBoundTo2.resolveReference(exp2));
+    assertFalse(varBlockBoundTo2.resolveReference(exp1));
+  } finally {
+    workspace.dispose();
+  }
+}

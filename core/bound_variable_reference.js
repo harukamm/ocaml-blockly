@@ -94,7 +94,11 @@ Blockly.BoundVariableValueReference.prototype.getBoundValue = function() {
  */
 Blockly.BoundVariableValueReference.prototype.setBoundValue = function(value) {
   if (this.value_) {
-    throw 'The bound value has already been resolved.';
+    if (this.value_ == value) {
+      return;
+    } else {
+      throw 'The bound value has already been resolved.';
+    }
   }
   if (value.getVariableName() !== this.temporayDisplayName_) {
     throw 'Names are not identical.';

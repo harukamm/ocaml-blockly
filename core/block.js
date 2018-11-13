@@ -1720,17 +1720,14 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
     var name = variable.getVariableName();
     var value = env[name];
     if (variable.isReference()) {
-      if (opt_bind) {
-        // Initialize the current bound value.
-        variable.removeBoundValue();
-        if (value) {
-          variable.setBoundValue(value);
-        } else {
-          // This reference could not be resolved. Return false later.
-          allBound = false;
-        }
-      } else if (!value) {
+      var currentValue = variable.getBoundValue();
+      var valid = currentValue ? currentValue == value : !!value;
+      if (valid) {
+        variable.setBoundValue(value);
+      } else if (!opt_bind) {
         return false;
+      } else {
+        allBound = false;
       }
     }
   }
