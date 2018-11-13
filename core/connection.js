@@ -733,6 +733,10 @@ Blockly.Connection.prototype.replaceTypeExprWith = function(oldConnection) {
     // from the oldConnection.
     var dummyType = Blockly.RenderedTypeExpr.generateTypeVar();
     oldConnection.setTypeExpr(dummyType, true);
+
+    if (this.sourceBlock_.typeExprReplaced) {
+      this.sourceBlock_.typeExprReplaced();
+    }
   }
 };
 

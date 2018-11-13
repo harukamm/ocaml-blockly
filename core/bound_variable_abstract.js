@@ -101,6 +101,15 @@ Blockly.BoundVariableAbstract.prototype.getTypeExpr = function() {
 };
 
 /**
+ * Store the given type expression in this variable.
+ * @param {!Blockly.TypeExpr} typeExpr The type expression to be stored in this
+ *     variable.
+ */
+Blockly.BoundVariableAbstract.prototype.setTypeExpr = function(typeExpr) {
+  this.typeExpr_ = typeExpr;
+};
+
+/**
  * @return {!string} The ID for the variable.
  */
 Blockly.BoundVariableAbstract.prototype.getId = function() {

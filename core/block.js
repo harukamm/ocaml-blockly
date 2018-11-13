@@ -2433,6 +2433,19 @@ Blockly.Blocks['lambda_typed'] = {
   },
 
   /**
+   * Update the type expressions of bound-variable fields on this block.
+   * Would be called if the block's type expressions are replaced with other
+   * ones, and a type expression this field's variable refers to is no longer
+   * up-to-date.
+   */
+  typeExprReplaced: function() {
+    var A = this.outputConnection.typeExpr.arg_type;
+    var field = this.getField('VAR');
+    var variable = field.getVariable();
+    variable.setTypeExpr(A);
+  },
+
+  /**
    * Return all variables of which is declared in this block, and can be used
    * later the given connection's input.
    * @param {!Blockly.Connection} connection Connection to specify a scope.
@@ -2614,6 +2627,20 @@ Blockly.Blocks['variables_get_typed'] = {
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
   },
+
+  /**
+   * Update the type expressions of bound-variable fields on this block.
+   * Would be called if the block's type expressions are replaced with other
+   * ones, and a type expression this field's variable refers to is no longer
+   * up-to-date.
+   */
+  typeExprReplaced: function() {
+    var A = this.outputConnection.typeExpr;
+    var field = this.getField('VAR');
+    var variable = field.getVariable();
+    variable.setTypeExpr(A);
+  },
+
   /**
    * Notification that a variable is renaming.
    * If the name matches one of this block's variables, rename it.
@@ -2692,6 +2719,19 @@ Blockly.Blocks['let_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
+  },
+
+  /**
+   * Update the type expressions of bound-variable fields on this block.
+   * Would be called if the block's type expressions are replaced with other
+   * ones, and a type expression this field's variable refers to is no longer
+   * up-to-date.
+   */
+  typeExprReplaced: function() {
+    var A = this.getInput('EXP1').connection.typeExpr;
+    var field = this.getField('VAR');
+    var variable = field.getVariable();
+    variable.setTypeExpr(A);
   },
 
   /**

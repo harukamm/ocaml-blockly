@@ -269,6 +269,10 @@ function test_type_transfer_block_workspace_newBlockShareTypeExpression() {
 
     // See variables' type expressions.
     assertTrue(getVariable(newLetBlock).getVariableName() === 'x');
+    assertTrue(originalExp1Type ==
+        getVariable(newLetBlock).getTypeExpr());
+    assertTrue(originalVarType ==
+        getVariable(newVarBlock).getTypeExpr());
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();
@@ -306,6 +310,8 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
 
     // See variables' type expressions.
     assertTrue(getVariable(newLetBlock).getVariableName() === 'flag');
+    assertTrue(originalExp1Type ==
+        getVariable(newLetBlock).getTypeExpr());
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();

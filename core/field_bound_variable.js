@@ -109,6 +109,18 @@ Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
 };
 
 /**
+ * Attach this field to a block.
+ * @param {!Blockly.Block} block The block containing this field.
+ */
+Blockly.FieldBoundVariable.prototype.setSourceBlock = function(block) {
+  goog.asserts.assert(goog.isFunction(block.typeExprReplaced),
+      'The function typeExprReplaced is expected to be defined on the ' +
+      'block which contains bound-variable fields.');
+
+  Blockly.FieldBoundVariable.superClass_.setSourceBlock.call(this, block);
+};
+
+/**
  * Initialize everything needed to render this field.  This includes making sure
  * that the field's value is valid.
  * @public
