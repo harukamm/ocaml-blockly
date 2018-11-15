@@ -332,6 +332,10 @@ Blockly.Css.CONTENT = [
     'fill-opacity: .6;',
   '}',
 
+  '.highlight.blocklyEditableText>rect {',
+    'fill: orange;',
+  '}',
+
   '.blocklyNonEditableText>text,',
   '.blocklyEditableText>text {',
     'fill: #000;',

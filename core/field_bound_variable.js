@@ -132,6 +132,16 @@ Blockly.FieldBoundVariable.prototype.init = function() {
   }
   Blockly.FieldBoundVariable.superClass_.init.call(this);
 
+  var onMouseEnter = this.highlightVariables_.bind(this, true);
+  this.mouseEnterWrapper_ =
+      Blockly.bindEventWithChecks_(
+          this.fieldGroup_, 'mouseenter', this, onMouseEnter, true, true);
+
+  var onMouseLeave = this.highlightVariables_.bind(this, false);
+  this.mouseLeaveWrapper_ =
+      Blockly.bindEventWithChecks_(
+          this.fieldGroup_, 'mouseleave', this, onMouseLeave, true, true);
+
   this.initModel();
   this.updateText();
 };
@@ -165,6 +175,14 @@ Blockly.FieldBoundVariable.prototype.dispose = function() {
   Blockly.FieldBoundVariable.superClass_.dispose.call(this);
   if (this.variable_) {
     this.variable_.dispose();
+  }
+  if (this.mouseEnterWrapper_) {
+    Blockly.unbindEvent_(this.mouseEnterWrapper_);
+    this.mouseEnterWrapper_ = null;
+  }
+  if (this.mouseLeaveWrapper_) {
+    Blockly.unbindEvent_(this.mouseLeaveWrapper_);
+    this.mouseLeaveWrapper_ = null;
   }
   this.variable_ = null;
 };
@@ -355,6 +373,35 @@ Blockly.FieldBoundVariable.prototype.onItemSelected = function(menu, menuItem) {
     Blockly.BoundVariables.renameVariable(this.variable_);
   } else if (id == Blockly.DELETE_VARIABLE_ID) {
     throw 'Not implemented yet.';
+  }
+};
+
+/**
+ * Highlights/unhighlights all the fields whose variables refer to this
+ * variable, or are referred to by this variable. They includes this field at
+ * least.
+ * @param {boolean} on True if highlight the fields. Otherwise, unhighlight.
+ */
+Blockly.FieldBoundVariable.prototype.highlightVariables_ = function(on, e) {
+  if (!this.variable_) {
+    return;
+  }
+  var variables = this.variable_.getAllBoundVariables();
+  for (var i = 0, variable; variable = variables[i]; i++) {
+    var field = variable.getContainerField();
+    field.highlight(on);
+  }
+};
+
+/**
+ * Highlights/unhighlights this field.
+ * @param {boolean} on True if highlight. Otherwise, unhighlight.
+ */
+Blockly.FieldBoundVariable.prototype.highlight = function(on) {
+  if (on) {
+    Blockly.utils.addClass(this.fieldGroup_, 'highlight');
+  } else {
+    Blockly.utils.removeClass(this.fieldGroup_, 'highlight');
   }
 };
 
