@@ -128,3 +128,56 @@ function test_resolve_reference_letFixedBoundValue() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_clearCyclicReference() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock1 = workspace.newBlock('let_typed');
+    var letBlock2 = workspace.newBlock('let_typed');
+    var listBlock = workspace.newBlock('lists_create_with_typed');
+    var varBlock1 = workspace.newBlock('variables_get_typed');
+    var varBlock2 = workspace.newBlock('variables_get_typed');
+    var otherVarBlock1 = workspace.newBlock('variables_get_typed');
+    var otherVarBlock2 = workspace.newBlock('variables_get_typed');
+
+    setVariableName(letBlock1, 'h')
+    setVariableName(letBlock2, 'm')
+    setVariableName(varBlock1, 'h')
+    setVariableName(varBlock2, 'm')
+    setVariableName(otherVarBlock1, 'h')
+    setVariableName(otherVarBlock2, 'm')
+
+    letBlock1.getInput('EXP2').connection.connect(letBlock2.outputConnection);
+    letBlock2.getInput('EXP2').connection.connect(listBlock.outputConnection);
+    listBlock.getInput('ADD0').connection.connect(varBlock1.outputConnection);
+    listBlock.getInput('ADD1').connection.connect(varBlock2.outputConnection);
+
+    var value1 = getVariable(letBlock1);
+    var value2 = getVariable(letBlock2);
+    var reference1 = getVariable(varBlock1);
+    var reference2 = getVariable(varBlock2);
+    var otherReference1 = getVariable(otherVarBlock1);
+    var otherReference2 = getVariable(otherVarBlock2);
+
+    otherReference1.setBoundValue(value1);
+    otherReference2.setBoundValue(value2);
+
+    assertEquals(value1.referenceCount(), 2);
+    assertEquals(value2.referenceCount(), 2);
+    assertEquals(reference1.getBoundValue(), value1);
+    assertEquals(reference2.getBoundValue(), value2);
+    assertEquals(otherReference1.getBoundValue(), value1);
+    assertEquals(otherReference2.getBoundValue(), value2);
+
+    Blockly.BoundVariables.clearCyclicReferenceOnBlock(letBlock1);
+
+    assertEquals(value1.referenceCount(), 1);
+    assertEquals(value2.referenceCount(), 1);
+    assertTrue(!reference1.getBoundValue());
+    assertTrue(!reference1.getBoundValue());
+    assertEquals(otherReference1.getBoundValue(), value1);
+    assertEquals(otherReference2.getBoundValue(), value2);
+  } finally {
+    workspace.dispose();
+  }
+}

@@ -176,6 +176,27 @@ Blockly.BoundVariables.clearWorkspaceVariableDB = function(workspace) {
 };
 
 /**
+ * Clear variable-binding relation of the references which share the same root
+ * block with the given block, and refer to the value existing in the block or
+ * its nested blocks.
+ * @param {!Blockly.Block} block The block whose cyclic references to be
+ *     removed.
+ */
+Blockly.BoundVariables.clearCyclicReferenceOnBlock = function(block) {
+  function clearCyclicReferenceImpl(childBlock) {
+    var names = Object.keys(childBlock.typedValue);
+    for (var i = 0, name; name = names[i]; i++) {
+      var value = childBlock.typedValue[name];
+      value.clearCyclicReference();
+    }
+  }
+  var descendants = block.getDescendants();
+  for (var i = 0, childBlock; childBlock = descendants[i]; i++) {
+    clearCyclicReferenceImpl(childBlock);
+  }
+};
+
+/**
  * Return a list of variables visible in the scope of the given field.
  * @param {!Blockly.BoundVariableAbstract} variable
  * @return {!Array.<Blockly.BoundVariableValue>} List of variable values which

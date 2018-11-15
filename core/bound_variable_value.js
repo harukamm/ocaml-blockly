@@ -170,6 +170,23 @@ Blockly.BoundVariableValue.prototype.removeReference = function(reference) {
 };
 
 /**
+ * Remove the references which refer to this variable and this variable's
+ * block is connected to their blocks directly or indirectly.
+ */
+Blockly.BoundVariableValue.prototype.clearCyclicReference = function() {
+  var thisRootBlock = this.sourceBlock_.getRootBlock();
+  for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
+    var block = reference.getSourceBlock();
+    var rootBlock = block.getRootBlock();
+    if (thisRootBlock == rootBlock) {
+      // Don't need to remove the reference from this.referenceList_ here
+      // because this.removeReference() would be called by the reference.
+      reference.removeBoundValue();
+    }
+  }
+};
+
+/**
  * Copy the components of this variable to another variable.
  * @param {!Blockly.BoundVariableValue} variable The variable to copy this
  *     variable's properties to.
