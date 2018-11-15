@@ -606,17 +606,26 @@ function test_type_unification_changeVariablesNameReferences() {
     // [let x = <> in < [let i = <> in <>] >]   [x]
     innerBlock.getInput('EXP2').connection.disconnect(
         varBlock.outputConnection);
-    assertTrue(!isOfBoundVariable(varBlock, outerBlock));
+    // Variable binding relation holds even after disconnect().
+    assertTrue(isOfBoundVariable(varBlock, outerBlock));
     setVariableName(outerBlock, 'y');
     assertTrue(getVariableFieldDisplayedText(outerBlock) === 'y');
-    assertTrue(getVariableFieldDisplayedText(varBlock) === 'x');
+    assertTrue(getVariableFieldDisplayedText(varBlock) === 'y');
 
-    // [let y = <> in < [let i = <> in < >] >]   [x]
+    // [let y = <> in < [let i = <> in < >] >]   [y]
     setVariableName(varBlock, 'i');
+    // varBlock can't connect to innerBlock on the 'EXP2' input because
+    // variables named 'i' must be bound to the variable declared on
+    // innerBlock.
+    assertFalse(
+        varBlock.resolveReference(innerBlock.getInput('EXP2').connection));
+    assertTrue(
+        varBlock.resolveReference(innerBlock.getInput('EXP1').connection));
+    setVariableName(varBlock, 'm');
     innerBlock.getInput('EXP2').connection.connect(
         varBlock.outputConnection);
-    setVariableName(varBlock, 'm');
-    assertTrue(getVariableFieldDisplayedText(innerBlock) === 'm');
+    assertTrue(getVariableFieldDisplayedText(outerBlock) === 'm');
+    assertTrue(getVariableFieldDisplayedText(innerBlock) === 'i');
     assertTrue(getVariableFieldDisplayedText(varBlock) == 'm');
   } finally {
     workspace.dispose();
@@ -763,17 +772,16 @@ function test_type_unification_resolveNestedReferenceOnNestedValueBlock() {
     assertTrue(getVariable(lambdaBlock2).referenceCount() == 1);
     assertTrue(getVariable(lambdaBlock2) == reference_i.getBoundValue());
 
-    // [let i = <> in <[let j = <> in <[<[j]>, <[i]>]>]>]
-    letBlock2.getInput('EXP2').connection.connect(
+    lambdaBlock2.getInput('RETURN').connection.disconnect(
         listBlock.outputConnection);
 
-    assertTrue(getVariable(letBlock1).referenceCount() == 1);
-    assertTrue(getVariable(letBlock1) == reference_i.getBoundValue());
-    assertTrue(getVariable(letBlock2).referenceCount() == 1);
-    assertTrue(getVariable(letBlock2) == reference_j.getBoundValue());
-
-    assertTrue(getVariable(lambdaBlock1).referenceCount() == 0);
-    assertTrue(getVariable(lambdaBlock2).referenceCount() == 0);
+    // [let i = <> in <[let j = <> in <[<[j]>, <[i]>]>]>]
+    // listBlock can't connect to letBlock2 on the 'EXP2' input because
+    // variables on varBlock_i and varBlock_j are bound to other values.
+    assertTrue(isOfBoundVariable(varBlock_j, lambdaBlock1));
+    assertTrue(isOfBoundVariable(varBlock_i, lambdaBlock2));
+    assertFalse(listBlock.resolveReference(
+        letBlock2.getInput('EXP2').connection));
   } finally {
     workspace.dispose();
   }
