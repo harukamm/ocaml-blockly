@@ -27,6 +27,7 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace,
   Blockly.transferring = oldBlock;
 
   try {
+    Blockly.BoundVariables.clearCyclicReferenceOnBlock(oldBlock);
     var xml = Blockly.Xml.blockToDom(oldBlock);
     var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace);
     newBlock.replaceTypeExprWith(oldBlock);
