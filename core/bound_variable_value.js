@@ -104,6 +104,16 @@ Blockly.BoundVariableValue.prototype.setVariableName = function(newName) {
 };
 
 /**
+ * Returns a list of variables which refer to the same value, or are referred
+ * to by them.  Includes this variable in the list.
+ * @return {Array.<!Blockly.BoundVariableAbstract>} A list of variables.
+ * @override
+ */
+Blockly.BoundVariableValue.prototype.getAllBoundVariables = function() {
+  return [this].concat(this.referenceList_);
+};
+
+/**
  * Dispose of this value.
  * @override
  */

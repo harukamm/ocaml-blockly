@@ -135,6 +135,15 @@ Blockly.BoundVariableAbstract.prototype.getVariableName = undefined;
 Blockly.BoundVariableAbstract.prototype.setVariableName = undefined;
 
 /**
+ * Returns a list of variables which refer to the same value, or are referred
+ * to by them.  Includes this variable in the list.
+ * @return {Array.<!Blockly.BoundVariableAbstract>} A list of variables.
+ */
+Blockly.BoundVariableAbstract.prototype.getAllBoundVariables = function() {
+  return [this];
+};
+
+/**
  * Dispose of this variable.
  */
 Blockly.BoundVariableAbstract.prototype.dispose = function() {
