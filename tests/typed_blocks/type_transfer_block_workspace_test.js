@@ -353,6 +353,15 @@ function test_type_transfer_block_workspace_copyVariablesBlock() {
     assertEquals(copiedValue.referenceCount(), 1);
     assertEquals(otherReference.getBoundValue(), value);
     assertEquals(copiedReference.getBoundValue(), copiedValue);
+
+    assertNotEquals(copiedLetBlock.outputConnection.typeExpr.deref(),
+        originalLetBlock.outputConnection.typeExpr.deref());
+    assertNotEquals(copiedLetBlock.getInput('EXP1').connection.typeExpr.deref(),
+        originalLetBlock.getInput('EXP2').connection.typeExpr.deref());
+    assertEquals(copiedLetBlock.getInput('EXP1').connection.typeExpr,
+        copiedValue.getTypeExpr());
+    assertEquals(copiedVarBlock.outputConnection.typeExpr,
+        copiedReference.getTypeExpr());
   } finally {
     workspace.dispose();
   }

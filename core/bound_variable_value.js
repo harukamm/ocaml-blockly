@@ -210,7 +210,6 @@ Blockly.BoundVariableValue.prototype.copyTo = function(variable) {
   }
 
   variable.setVariableName(this.variableName_);
-  this.typeExpr_.unify(variable.getTypeExpr());
 
   if (!this.sourceBlock_.isTransferring()) {
     return;
