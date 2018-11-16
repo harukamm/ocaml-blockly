@@ -1,12 +1,5 @@
 'use strict';
 
-function create_typed_workspace() {
-  var workspaceOptions = {
-    typedVersion: true
-  };
-  return new Blockly.Workspace(workspaceOptions);
-}
-
 function test_resolve_reference_letNested() {
   var workspace = create_typed_workspace();
   try {
