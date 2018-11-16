@@ -1286,6 +1286,8 @@ Blockly.WorkspaceSvg.prototype.inFrontOf = function(other) {
   var bubbleSvg1 = ws1.ownerMutator_.getBubble().getSvgRoot();
   var bubbleSvg2 = ws2.ownerMutator_.getBubble().getSvgRoot();
   var bubbleCanvas = commonWs.getBubbleCanvas();
+  // TODO(harukam): Make it work out even if the following condition is not
+  // satisfied, and remove the assertion.
   goog.asserts.assert(bubbleCanvas == bubbleSvg1.parentNode &&
       bubbleSvg1.parentNode == bubbleSvg2.parentNode);
   var i1 = Array.prototype.indexOf.call(bubbleCanvas.childNodes, bubbleSvg1);
