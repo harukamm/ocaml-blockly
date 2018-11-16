@@ -317,14 +317,17 @@ Blockly.BoundVariables.renameVariableImpl_ = function(variable, newName) {
       // Can not refer to wildcard.
       return false;
     }
-    variable.setVariableName(newName);
   } else {
     if (newName === '_') {
       throw 'Not implemented yet.';
     }
-    variable.setVariableName(newName);
   }
-  return true;
+  if (Blockly.BoundVariables.canRenameTo(variable, newName)) {
+    variable.setVariableName(newName);
+    return true;
+  } else {
+    return false;
+  }
 };
 
 /**
