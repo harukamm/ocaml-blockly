@@ -212,25 +212,18 @@ Blockly.BoundVariableValue.prototype.copyTo = function(variable) {
   variable.setVariableName(this.variableName_);
   this.typeExpr_.unify(variable.getTypeExpr());
 
-  var referencesToMove = [];
+  if (!this.sourceBlock_.isTransferring()) {
+    return;
+  }
+  // The transferring block is scheduled to be disposed of when it has finished
+  // transferring, so move some of references.
+
   for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
     var referenceBlock = reference.getSourceBlock();
     if (referenceBlock.isTransferring()) {
-      // The reference's block is scheduled to be disposed of, so we don't
+      // The reference's block is also scheduled to be disposed of, so we don't
       // have to do anything.
     } else {
-      referencesToMove.push(reference);
-    }
-  }
-
-  if (referencesToMove.length != 0) {
-    if (!this.sourceBlock_.isTransferring()) {
-      throw 'Can\'t clone a value which has references unless its original ' +
-          'block is currelty transferring.';
-    }
-    // The transferring block is scheduled to be disposed of when it has
-    // finished transferring, so move some of references.
-    for (var i = 0, reference; reference = referencesToMove[i]; i++) {
       reference.removeBoundValue();
       reference.setBoundValue(variable);
     }
