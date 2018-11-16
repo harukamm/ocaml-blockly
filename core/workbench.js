@@ -348,8 +348,21 @@ Blockly.Workbench.prototype.getFlyoutMetrics_ = function() {
  * @return {Node} DOM tree of blocks.
  */
 Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
-  // Decide which blocks to show in a flyout depending on this blocks status.
-  return this.block_.getTreeInFlyout();
+  var xml = goog.dom.createDom('xml');
+  var env = this.block_.getWorkbenchContext();
+  var names = Object.keys(env);
+  for (var i = 0, name; name = names[i]; i++) {
+    var variable = env[name];
+    // TODO(harukam): Avoid providing prototype name using string literal.
+    var getterBlock = this.workspace_.newBlock('variables_get_typed');
+    var field = getterBlock.getField('VAR');
+    field.setVariableName(name);
+    field.setBoundValue(variable);
+    var dom = Blockly.Xml.blockToDom(getterBlock);
+    getterBlock.dispose();
+    xml.appendChild(dom);
+  }
+  return xml;
 };
 
 /**

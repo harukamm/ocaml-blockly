@@ -2494,26 +2494,13 @@ Blockly.Blocks['lambda_typed'] = {
   },
 
   /**
-   * Return a DOM tree of blocks to show in the workbench's flyout.
-   * @return {Node} DOM tree of blocks.
+   * Returns map to a variable value that can be referred to inside this
+   * block's workbench keyed by its name.
+   * @return {!Object}
    */
-  getTreeInFlyout: function() {
-    var xml = goog.dom.createDom('xml');
+  getWorkbenchContext: function() {
     var returnInput = this.getInput('RETURN');
-    var env = this.allVisibleVariables(returnInput.connection);
-
-    var names = Object.keys(env);
-    for (var i = 0, name; name = names[i]; i++) {
-      var variable = env[name];
-      var getterBlock = this.workspace.newBlock('variables_get_typed');
-      var field = getterBlock.getField('VAR');
-      field.setVariableName(name);
-      field.setBoundValue(variable);
-      var dom = Blockly.Xml.blockToDom(getterBlock);
-      getterBlock.dispose();
-      xml.appendChild(dom);
-    }
-    return xml;
+    return this.allVisibleVariables(returnInput.connection);
   },
 
   clearTypes: function() {
@@ -2786,26 +2773,13 @@ Blockly.Blocks['let_typed'] = {
   },
 
   /**
-   * Return a DOM tree of blocks to show in the workbench's flyout.
-   * @return {Node} DOM tree of blocks.
+   * Returns map to a variable value that can be referred to inside this
+   * block's workbench keyed by its name.
+   * @return {!Object}
    */
-  getTreeInFlyout: function() {
-    var xml = goog.dom.createDom('xml');
+  getWorkbenchContext: function() {
     var exp2 = this.getInput('EXP2');
-    var env = this.allVisibleVariables(exp2.connection);
-
-    var names = Object.keys(env);
-    for (var i = 0, name; name = names[i]; i++) {
-      var variable = env[name];
-      var getterBlock = this.workspace.newBlock('variables_get_typed');
-      var field = getterBlock.getField('VAR');
-      field.setVariableName(name);
-      field.setBoundValue(variable);
-      var dom = Blockly.Xml.blockToDom(getterBlock);
-      getterBlock.dispose();
-      xml.appendChild(dom);
-    }
-    return xml;
+    return this.allVisibleVariables(exp2.connection);
   },
 
   /**

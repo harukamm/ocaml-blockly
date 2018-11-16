@@ -394,6 +394,7 @@ function test_type_unification_matchStructure() {
 
 function test_type_unification_useWorkbenchWithinLetTypedBlock() {
   var workspace = create_typed_workspace();
+  var workbench;
   try {
     // Inner let typed block.
     var innerLetBlock = workspace.newBlock('let_typed');
@@ -405,13 +406,14 @@ function test_type_unification_useWorkbenchWithinLetTypedBlock() {
     setVariableName(outerLetBlock, 'i');
 
     outerLetBlock.getInput('EXP2').connection.connect(innerLetBlock.outputConnection);
-    var xml = innerLetBlock.getTreeInFlyout();
+    workbench = create_mock_workbench(innerLetBlock);
+    var xml = workbench.getFlyoutLanguageTree_();
     var childNodes = xml.childNodes;
     assertEquals(childNodes.length, 2);
     var innersVars = Blockly.Xml.domToBlock(childNodes[0], workspace);
     var outersVar = Blockly.Xml.domToBlock(childNodes[1], workspace);
-    // getTreeInFlyout() does not guarantee any order. If they seems to have
-    // been swapped, just swap them.
+    // workbench.getFlyoutLanguageTree_() does not guarantee any order. If
+    // they seems to have been swapped, just swap them.
     if (isVariableOf(outersVar, innerLetBlock, 'j')) {
       var tmp = outersVar;
       outersVar = innersVars;
@@ -430,11 +432,15 @@ function test_type_unification_useWorkbenchWithinLetTypedBlock() {
         innersVars.outputConnection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
+    if (workbench) {
+      workbench.dispose();
+    }
   }
 }
 
 function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
   var workspace = create_typed_workspace();
+  var workbench;
   try {
     // Inner lambda typed block.
     var innerLambdaBlock = workspace.newBlock('lambda_typed');
@@ -447,13 +453,14 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
 
     outerLetBlock.getInput('EXP2').connection.connect(
         innerLambdaBlock.outputConnection);
-    var xml = innerLambdaBlock.getTreeInFlyout();
+    workbench = create_mock_workbench(innerLambdaBlock);
+    var xml = workbench.getFlyoutLanguageTree_();
     var childNodes = xml.childNodes;
     assertEquals(childNodes.length, 2);
     var innersVars = Blockly.Xml.domToBlock(childNodes[0], workspace);
     var outersVar = Blockly.Xml.domToBlock(childNodes[1], workspace);
-    // getTreeInFlyout() does not guarantee any order. If they seems to have
-    // been swapped, just swap them.
+    // workbench.getFlyoutLanguageTree_() does not guarantee any order. If
+    // they seems to have been swapped, just swap them.
     if (isVariableOf(outersVar, innerLambdaBlock, 'j')) {
       var tmp = outersVar;
       outersVar = innersVars;
@@ -468,21 +475,29 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
         outersVar.outputConnection.typeExpr.deref().label);
   } finally {
     workspace.dispose();
+    if (workbench) {
+      workbench.dispose();
+    }
   }
 }
 
 function test_type_unification_simpleTreeInFlyoutReferences() {
   var workspace = create_typed_workspace();
+  var workbench;
   try {
     var letBlock = workspace.newBlock('let_typed');
+    workbench = create_mock_workbench(letBlock);
     setVariableName(letBlock, 'j');
-    var xml = letBlock.getTreeInFlyout();
+    var xml = workbench.getFlyoutLanguageTree_();
     var childNodes = xml.childNodes;
     for (var i = 0, node; node = childNodes[i]; i++) {
       assertEquals(node.tagName, 'BLOCK');
     }
   } finally {
     workspace.dispose();
+    if (workbench) {
+      workbench.dispose();
+    }
   }
 }
 
