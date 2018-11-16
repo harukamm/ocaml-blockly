@@ -215,3 +215,46 @@ function test_resolve_reference_collectAllBoundVariables() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_renameVariableCheck() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock1 = workspace.newBlock('let_typed');
+    var letBlock2 = workspace.newBlock('let_typed');
+    var varBlock = workspace.newBlock('variables_get_typed');
+    setVariableName(letBlock1, 'x');
+    setVariableName(letBlock2, 'y');
+    setVariableName(varBlock, 'x');
+
+    var value1 = getVariable(letBlock1);
+    var value2 = getVariable(letBlock2);
+    var reference = getVariable(varBlock);
+
+    // [let x = <> in <[let y = <> in <[x]>]>]
+    letBlock1.getInput('EXP2').connection.connect(letBlock2.outputConnection);
+    letBlock2.getInput('EXP2').connection.connect(varBlock.outputConnection);
+    assertFalse(Blockly.BoundVariables.canRenameTo(value1, 'y'));
+    assertFalse(Blockly.BoundVariables.canRenameTo(value2, 'x'));
+    assertFalse(Blockly.BoundVariables.canRenameTo(reference, 'y'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(value1, 'z'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(reference, 'z'));
+
+    // [let y = <> in <[let x = <> in <[x]>]>]
+    letBlock1.getInput('EXP2').connection.connect(varBlock.outputConnection);
+    letBlock2.getInput('EXP2').connection.connect(letBlock1.outputConnection);
+    assertTrue(Blockly.BoundVariables.canRenameTo(value1, 'y'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(reference, 'y'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(value2, 'x'));
+
+    // [let x = <[let y = <> in <>]> in <[x]>]
+    letBlock2.getInput('EXP2').connection.disconnect(
+        letBlock1.outputConnection);
+    letBlock1.getInput('EXP1').connection.connect(letBlock2.outputConnection);
+    assertTrue(Blockly.BoundVariables.canRenameTo(value1, 'y'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(value1, 'y'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(reference, 'y'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(value2, 'x'));
+  } finally {
+    workspace.dispose();
+  }
+}

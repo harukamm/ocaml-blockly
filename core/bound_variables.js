@@ -197,6 +197,80 @@ Blockly.BoundVariables.clearCyclicReferenceOnBlock = function(block) {
 };
 
 /**
+ * Get whether the given variable name is unique on the related workspaces.
+ * @param {!string} name The name of variable.
+ * @param {!Blockly.Workspace} workspace The workspace to specify a group of
+ *     related workspaces. Check if these workspaces don't have a variable of
+ *     the given name.
+ * @return {boolean} True if the name is unique on the related workspaces.
+ */
+Blockly.BoundVariables.isUniqueName = function(name, workspace) {
+  var workspaceFamily = Blockly.WorkspaceTree.getFamily(workspace);
+  for (var i = 0, ws; ws = workspaceFamily[i]; i++) {
+    var valueDB = ws.getValueDB();
+    var keys = Object.keys(valueDB);
+    for (var j = 0, key; key = keys[j]; j++) {
+      var value = valueDB[key];
+      if (value.getVariableName() === name) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+/**
+ * Find all root blocks without duplicates which contain the given variables
+ * inside or directly.
+ * @param {!Array.<!Blockly.BoundVariableAbstract>} variables The list of
+ *     variables.
+ * @return {!Array.<!Blockly.Block>} Root blocks which contain any variable
+ *     existing in the give list.
+ */
+Blockly.BoundVariables.getAllRootBlocks = function(variables) {
+  var rootBlocks = [];
+  for (var i = 0, variable; variable = variables[i]; i++) {
+    var block = variable.getSourceBlock();
+    var root = block.getRootBlock();
+    if (rootBlocks.indexOf(root) == -1) {
+      rootBlocks.push(root);
+    }
+  }
+  return rootBlocks;
+};
+
+/**
+ * Returns if any variable references will never be changed when the variable
+ * is renamed to the given name.
+ * @param {!Blockly.BoundVariableAbstract} variable The variable to be renamed.
+ * @param {!string} The variable's new name.
+ * @return {boolean} True if the renaming is valid.
+ */
+Blockly.BoundVariables.canRenameTo = function(variable, newName) {
+  var oldName = variable.getVariableName();
+  if (oldName === newName) {
+    return true;
+  }
+  if (Blockly.BoundVariables.isUniqueName(newName, variable.getWorkspace())) {
+    return true;
+  }
+
+  var renamedVars = variable.getAllBoundVariables();
+  var renamedTopBlocks = Blockly.BoundVariables.getAllRootBlocks(renamedVars);
+
+  var failedIndex = 0;
+  variable.setVariableName(newName);
+  try {
+    failedIndex = goog.array.findIndex(renamedTopBlocks, function(block) {
+        return !block.resolveReference(null)
+      });
+  } finally {
+    variable.setVariableName(oldName);
+  }
+  return failedIndex < 0;
+};
+
+/**
  * Return a list of variables visible in the scope of the given field.
  * @param {!Blockly.BoundVariableAbstract} variable
  * @return {!Array.<Blockly.BoundVariableValue>} List of variable values which
