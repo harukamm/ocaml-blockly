@@ -168,8 +168,6 @@ function test_type_transfer_block_workspace_mutatorBlocksTransferred() {
     assertTrue(otherWorkspace.getAllBlocks().length == 2);
     // workspace has a single block 'varBlockIsolated'.
     assertTrue(workspace.getAllBlocks().length == 1);
-  } catch(e) {
-    console.log(e);
   } finally {
     workspace.dispose();
     workbench.dispose();
