@@ -825,7 +825,8 @@ Blockly.Flyout.prototype.placeNewBlock_ = function(oldBlock) {
       oldBlock.workspace.options.typedVersion) {
     // If the block is typed, replace type expressions with that of the old
     // block.
-    block.replaceTypeExprWith(oldBlock);
+    var fixedTypeExprs = this.workspace_.options.fixedTypeExprs;
+    block.replaceTypeExprWith(oldBlock, !(fixedTypeExprs === true));
     block.render(false);
   }
   return block;

@@ -979,10 +979,13 @@ Blockly.Block.prototype.setOutputTypeExpr = function(typeExpr, opt_overwrite) {
  * another block. If both blocks have nested blocks, also replace their type
  * expressions on them.
  * @param {!Blockly.Block} oldBlock The block whose type expressions to replace
- *     that of this block. Newly created type expressions are stored to the
- *     oldBlock after the replacement.
+ *     that of this block.
+ * @param {boolean=} opt_createTypeExpr If true, newly created type expressions
+ *     are stored to the oldBlock after the replacement. If false, does not
+ *     create. Defaults to true.
  */
-Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock) {
+Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock,
+    opt_createTypeExpr) {
   var pairsToUnify = [[this, oldBlock]];
   while (pairsToUnify.length) {
     var pair = pairsToUnify.pop();
@@ -993,7 +996,7 @@ Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock) {
     }
     if (thisBlock.outputConnection) {
       thisBlock.outputConnection.replaceTypeExprWith(
-          oldBlock.outputConnection);
+          oldBlock.outputConnection, opt_createTypeExpr);
     }
     for (var i = 0, input; input = thisBlock.inputList[i]; i++) {
       var oldInput = oldBlock.inputList[i];

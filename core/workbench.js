@@ -129,6 +129,7 @@ Blockly.Workbench.prototype.createEditor_ = function() {
         Blockly.TOOLBOX_AT_LEFT,
     horizontalLayout: false,
     typedVersion: this.block_.workspace.options.typedVersion,
+    fixedTypeExprs: true,
     getMetrics: this.getFlyoutMetrics_.bind(this),
     setMetrics: null
   };
