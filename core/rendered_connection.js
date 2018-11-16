@@ -354,8 +354,11 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function(parentBlock,
       parentBlock, childBlock);
 
   if (hasTypeExpr && parentBlock.rendered && childBlock.rendered) {
-    // All blocks must be re-rendered if type expression maybe change.
-    parentBlock.workspace.render();
+    // Re-render all blocks on the related workspaces if type expression might
+    // change.
+    // TODO(harukam): Re-render only blocks whose type expressions have changed
+    // by adding listener to them.
+    parentBlock.workspace.renderRelatedWorkspaces();
   } else {
     // Rerender the parent so that it may reflow.
     if (parentBlock.rendered) {
@@ -424,8 +427,11 @@ Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
   }
   if (parentBlock.rendered && childBlock.rendered) {
     if (!!parentConnection.typeExpr && !!childConnection.typeExpr) {
-      // All blocks must be re-rendered if type expression maybe change.
-      parentBlock.workspace.render();
+      // Re-render all blocks on the related workspaces if type expression
+      // might change.
+      // TODO(harukam): Re-render only blocks whose type expressions have
+      // changed by adding listener to them.
+      parentBlock.workspace.renderRelatedWorkspaces();
     } else if (parentConnection.type == Blockly.NEXT_STATEMENT ||
         parentConnection.type == Blockly.PREVIOUS_STATEMENT) {
       // Child block may need to square off its corners if it is in a stack.
