@@ -156,3 +156,13 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace,
   }
   return newBlock;
 }
+
+function copyAndPasteBlock(block, opt_targetWorkspace) {
+  assertTrue(block.resolveReference(null));
+
+  var xml = Blockly.Xml.blockToDom(block);
+  var targetWorkspace = opt_targetWorkspace ?
+      opt_targetWorkspace : block.workspace;
+  var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace);
+  return newBlock;
+}

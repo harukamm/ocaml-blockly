@@ -321,3 +321,39 @@ function test_type_transfer_block_workspace_cyclicReferences() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_copyVariablesBlock() {
+  var workspace = create_typed_workspace();
+  try {
+    var originalLetBlock = workspace.newBlock('let_typed');
+    var originalVarBlock = workspace.newBlock('variables_get_typed');
+    var otherVarBlock = workspace.newBlock('variables_get_typed');
+
+    var value = getVariable(originalLetBlock);
+    var reference = getVariable(originalVarBlock);
+    var otherReference = getVariable(otherVarBlock);
+
+    setVariableName(originalLetBlock, 'y');
+    setVariableName(originalVarBlock, 'y');
+    setVariableName(otherVarBlock, 'y');
+
+    // [let x = <> in <[x]>]   [x]
+    originalLetBlock.getInput('EXP2').connection.connect(
+        originalVarBlock.outputConnection);
+    otherReference.setBoundValue(value);
+
+    assertEquals(value.referenceCount(), 2);
+
+    var copiedLetBlock = copyAndPasteBlock(originalLetBlock);
+    var copiedVarBlock = copiedLetBlock.getInputTargetBlock('EXP2');
+    var copiedValue = getVariable(copiedLetBlock);
+    var copiedReference = getVariable(copiedVarBlock);
+
+    assertEquals(value.referenceCount(), 2);
+    assertEquals(copiedValue.referenceCount(), 1);
+    assertEquals(otherReference.getBoundValue(), value);
+    assertEquals(copiedReference.getBoundValue(), copiedValue);
+  } finally {
+    workspace.dispose();
+  }
+}
