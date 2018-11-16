@@ -261,7 +261,7 @@ Blockly.ContextMenu.blockHelpOption = function(block) {
 Blockly.ContextMenu.blockDuplicateOption = function(block) {
   var enabled = true;
   if (block.getDescendants(false).length >
-      block.workspace.remainingCapacity()) {
+      block.workspace.remainingCapacity() || !block.isCopyable()) {
     enabled = false;
   }
   var duplicateOption = {
