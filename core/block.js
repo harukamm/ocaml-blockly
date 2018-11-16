@@ -1147,6 +1147,14 @@ Blockly.Block.prototype.isTransferring = function() {
 };
 
 /**
+ * Is this block allowed to be copied?
+ * @return {boolean} True if this block are copyable.
+ */
+Blockly.Block.prototype.isCopyable = function() {
+  return this.resolveReference(null);
+};
+
+/**
  * Create a human-readable text representation of this block and any children.
  * @param {number=} opt_maxLength Truncate the string to this length.
  * @param {string=} opt_emptyToken The placeholder string used to denote an

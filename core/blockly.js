@@ -262,9 +262,9 @@ Blockly.copy_ = function(toCopy) {
   if (toCopy.isComment) {
     var xml = toCopy.toXmlWithXY();
   } else {
-    if (!toCopy.resolveReference(null)) {
+    if (!toCopy.isCopyable()) {
       // TODO(harukam): Tell users why the block can not be copied.
-      Blockly.alert('This blocks can be copied.');
+      Blockly.alert('This blocks can not be copied.');
       return;
     }
     var xml = Blockly.Xml.blockToDom(toCopy);

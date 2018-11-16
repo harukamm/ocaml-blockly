@@ -158,7 +158,7 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace,
 }
 
 function copyAndPasteBlock(block, opt_targetWorkspace) {
-  assertTrue(block.resolveReference(null));
+  assertTrue(block.isCopyable());
 
   var xml = Blockly.Xml.blockToDom(block);
   var targetWorkspace = opt_targetWorkspace ?
