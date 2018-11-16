@@ -130,10 +130,13 @@ Blockly.Xml.fieldToDomVariable_ = function(field) {
 /**
  * Encode a bound-variable field as XML.
  * @param {!Blockly.FieldBoundVariable} field The field to encode.
+ * @param {!Blockly.Block} rootBlock The root block currently being encoded.
+ *     Note that this block is not always same with the root block of the
+ *     field's block.
  * @return {!Element} XML Element.
  * @private
  */
-Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
+Blockly.Xml.fieldToDomBoundVariable_ = function(field, rootBlock) {
   var id = field.getValue();
   if (id == null) {
     field.initModel();
@@ -149,8 +152,13 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
   } else {
     // The variable is a variable reference.
     container.setAttribute('isvalue', 'false');
-    var value = field.getBoundValue();
-    if (value) {
+    var reference = field.getVariable();
+    var value = reference.getBoundValue();
+    // If the reference refers to a value existing in the blocks currently
+    // being encoded, do not store the reference relation in XML. Otherwise,
+    // references on a new block created by decoding block XML could refer to
+    // values on the old block.
+    if (value && !reference.isCyclicReference(rootBlock)) {
       // Also encode the value this variable reference refers to as XML, and
       // append it.
       var valueDom = goog.dom.createDom('refer-to');
@@ -166,11 +174,12 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field) {
  * Encode a field as XML.
  * @param {!Blockly.Field} field The field to encode.
  * @param {!Blockly.Workspace} workspace The workspace that the field is in.
+ * @param {!Blockly.Block} rootBlock The root block currently being encoded.
  * @return {?Element} XML element, or null if the field did not need to be
  *     serialized.
  * @private
  */
-Blockly.Xml.fieldToDom_ = function(field) {
+Blockly.Xml.fieldToDom_ = function(field, rootBlock) {
   if (field.name && field.EDITABLE) {
     var refersToVariables = field.referencesVariables();
     if (!refersToVariables) {
@@ -180,7 +189,7 @@ Blockly.Xml.fieldToDom_ = function(field) {
     } else if (refersToVariables == Blockly.FIELD_VARIABLE_DEFAULT) {
       return Blockly.Xml.fieldToDomVariable_(field);
     } else if (refersToVariables == Blockly.FIELD_VARIABLE_BINDING) {
-      return Blockly.Xml.fieldToDomBoundVariable_(field);
+      return Blockly.Xml.fieldToDomBoundVariable_(field, rootBlock);
     } else {
       throw 'Unknown field variable type.';
     }
@@ -194,12 +203,13 @@ Blockly.Xml.fieldToDom_ = function(field) {
  * @param {!Blockly.Block} block A block with fields to be encoded.
  * @param {!Element} element The XML element to which the field DOM should be
  *     attached.
+ * @param {!Blockly.Block} rootBlock The root block currently being encoded.
  * @private
  */
-Blockly.Xml.allFieldsToDom_ = function(block, element) {
+Blockly.Xml.allFieldsToDom_ = function(block, element, rootBlock) {
   for (var i = 0, input; input = block.inputList[i]; i++) {
     for (var j = 0, field; field = input.fieldRow[j]; j++) {
-      var fieldDom = Blockly.Xml.fieldToDom_(field);
+      var fieldDom = Blockly.Xml.fieldToDom_(field, rootBlock);
       if (fieldDom) {
         element.appendChild(fieldDom);
       }
@@ -211,9 +221,11 @@ Blockly.Xml.allFieldsToDom_ = function(block, element) {
  * Encode a block subtree as XML.
  * @param {!Blockly.Block} block The root block to encode.
  * @param {boolean=} opt_noId True if the encoder should skip the block ID.
+ * @param {!Blockly.Block} opt_rootBlock The root block currently being
+ *     encoded. Provided only if this is a recursive call.
  * @return {!Element} Tree of XML elements.
  */
-Blockly.Xml.blockToDom = function(block, opt_noId) {
+Blockly.Xml.blockToDom = function(block, opt_noId, opt_rootBlock) {
   var element = goog.dom.createDom(block.isShadow() ? 'shadow' : 'block');
   element.setAttribute('type', block.type);
   if (!opt_noId) {
@@ -227,7 +239,8 @@ Blockly.Xml.blockToDom = function(block, opt_noId) {
     }
   }
 
-  Blockly.Xml.allFieldsToDom_(block, element);
+  var rootBlock = opt_rootBlock ? opt_rootBlock : block;
+  Blockly.Xml.allFieldsToDom_(block, element, rootBlock);
 
   var commentText = block.getCommentText();
   if (commentText) {
@@ -263,7 +276,8 @@ Blockly.Xml.blockToDom = function(block, opt_noId) {
         container.appendChild(Blockly.Xml.cloneShadow_(shadow));
       }
       if (childBlock) {
-        container.appendChild(Blockly.Xml.blockToDom(childBlock, opt_noId));
+        var childBlockXml = Blockly.Xml.blockToDom(childBlock, opt_noId, block);
+        container.appendChild(childBlockXml);
         empty = false;
       }
     }
@@ -296,8 +310,8 @@ Blockly.Xml.blockToDom = function(block, opt_noId) {
 
   var nextBlock = block.getNextBlock();
   if (nextBlock) {
-    var container = goog.dom.createDom('next', null,
-        Blockly.Xml.blockToDom(nextBlock, opt_noId));
+    var nextBlockXml = Blockly.Xml.blockToDom(nextBlock, opt_noId, block);
+    var container = goog.dom.createDom('next', null, nextBlockXml);
     element.appendChild(container);
   }
   var shadow = block.nextConnection && block.nextConnection.getShadowDom();

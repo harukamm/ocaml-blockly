@@ -261,3 +261,63 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_cyclicReferences() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    var outerLetBlock = workspace.newBlock('let_typed');
+    var originalLetBlock = workspace.newBlock('let_typed');
+    var originalVarBlockX = workspace.newBlock('variables_get_typed');
+    var originalVarBlockY = workspace.newBlock('variables_get_typed');
+
+    var outerValue = getVariable(outerLetBlock);
+    var value = getVariable(originalLetBlock);
+    var referenceX = getVariable(originalVarBlockX);
+    var referenceY = getVariable(originalVarBlockY);
+
+    setVariableName(outerLetBlock, 'x');
+    setVariableName(originalLetBlock, 'y');
+    setVariableName(originalVarBlockX, 'x');
+    setVariableName(originalVarBlockY, 'y');
+
+    // [let x = <> in <[let y = <[x]> in <[y]>]>]
+    outerLetBlock.getInput('EXP2').connection.connect(
+        originalLetBlock.outputConnection);
+    originalLetBlock.getInput('EXP1').connection.connect(
+        originalVarBlockX.outputConnection);
+    originalLetBlock.getInput('EXP2').connection.connect(
+        originalVarBlockY.outputConnection);
+
+    assertFalse(referenceX.isCyclicReference(originalLetBlock));
+    assertTrue(referenceX.isCyclicReference(outerLetBlock));
+    assertTrue(referenceY.isCyclicReference(originalLetBlock));
+    assertTrue(referenceY.isCyclicReference(outerLetBlock));
+
+    assertEquals(outerValue, referenceX.getBoundValue());
+    assertEquals(value, referenceY.getBoundValue());
+
+    // Tests below fail for now because new blocks don't have the 'outerValue'
+    // on their variable environment. The new blocks are not connected to
+    // 'otherLetBlock' which contains 'outerValue'.
+
+    // function checks() {
+    //   assertEquals(outerValue.referenceCount(), 2);
+    //   assertEquals(outerValue, referenceX.getBoundValue());
+    // }
+    // var newLetBlock = virtually_transfer_workspace(originalLetBlock,
+    //     otherWorkspace, checks);
+    // var newVarBlockX = newLetBlock.getInputTargetBlock('EXP1');
+    // var newVarBlockY = newLetBlock.getInputTargetBlock('EXP2');
+    // var newReferenceX = getVariable(newVarBlockX);
+    // var newReferenceY = getVariable(newVarBlockY);
+
+    // assertEquals(outerValue.referenceCount(), 1);
+
+    // assertEquals(outerValue, newReferenceX.getBoundValue());
+    // assertEquals(newValue, referenceY.getBoundValue());
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}

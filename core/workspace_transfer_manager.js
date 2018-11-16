@@ -177,13 +177,6 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
 
   try {
     // TODO: Define a transfer event in Blockly.Events, and fire it.
-
-    // Clear all the cyclic references on the block before encoding it as XML.
-    // Otherwise, variables on a new block created by decoding block XML could
-    // refer to variables on the old block. Note that reference relations would
-    // also be stored in XML.
-    Blockly.BoundVariables.clearCyclicReferenceOnBlock(oldBlock);
-
     var xml = Blockly.Xml.blockToDom(oldBlock);
     var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
     newBlock.replaceTypeExprWith(oldBlock);

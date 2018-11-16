@@ -94,6 +94,29 @@ Blockly.BoundVariableValueReference.prototype.getAllBoundVariables = function() 
 };
 
 /**
+ * Gets whether this reference is cyclic. A reference is cyclic if it refers to
+ * a value existing in the same block subtree.
+ * @param {Blockly.Block=} opt_block The root of block subtree. If provided,
+ *     detect if the reference is cyclic on the given block or its nested
+ *     blocks. Defaults to the root block of the reference's block.
+ * @return {boolean} True if cyclic.
+ */
+Blockly.BoundVariableValueReference.prototype.isCyclicReference = function(
+    opt_block) {
+  if (this.value_) {
+    var rootBlock = opt_block ? opt_block : this.sourceBlock_.getRootBlock();
+    var valueBlock = this.value_.getSourceBlock();
+    while (valueBlock) {
+      if (valueBlock == rootBlock) {
+        return true;
+      }
+      valueBlock = valueBlock.getParent();
+    }
+  }
+  return false;
+};
+
+/**
  * Gets the value this reference refers to.
  * @return {!Blockly.BoundVariableValue} The bound value, or null.
  */
