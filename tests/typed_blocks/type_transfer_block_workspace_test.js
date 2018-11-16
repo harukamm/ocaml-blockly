@@ -115,19 +115,20 @@ function test_type_transfer_block_workspace_nestedValueBlocks() {
 
 function test_type_transfer_block_workspace_mutatorBlocksTransferred() {
   var workspace = create_typed_workspace();
-  var workbench = create_typed_workbench(workspace);
-  var nestedWorkbench = create_typed_workbench(workbench);
+  var workbench;
+  var nestedWorkbench;
   var otherWorkspace = create_typed_workspace()
   try {
     var letBlockOnMain = workspace.newBlock('let_typed');
-    virtually_set_mutator(letBlockOnMain, workbench);
-    var letBlockOnWB = workbench.newBlock('let_typed');
-    virtually_set_mutator(letBlockOnWB, nestedWorkbench);
+    workbench = create_mock_workbench(letBlockOnMain);
+    var letBlockOnWB = workbench.getWorkspace().newBlock('let_typed');
+    nestedWorkbench = create_mock_workbench(letBlockOnWB);
 
     var varBlock1 = workspace.newBlock('variables_get_typed');
-    var varBlock2 = workbench.newBlock('variables_get_typed');
-    var varBlock3 = workbench.newBlock('variables_get_typed');
-    var varBlock4 = nestedWorkbench.newBlock('variables_get_typed');
+    var varBlock2 = workbench.getWorkspace().newBlock('variables_get_typed');
+    var varBlock3 = workbench.getWorkspace().newBlock('variables_get_typed');
+    var varBlock4 =
+        nestedWorkbench.getWorkspace().newBlock('variables_get_typed');
     var varBlockIsolated = workspace.newBlock('variables_get_typed');
     setVariableName(letBlockOnMain, 'i');
     setVariableName(letBlockOnWB, 'i');
@@ -170,8 +171,12 @@ function test_type_transfer_block_workspace_mutatorBlocksTransferred() {
     assertTrue(workspace.getAllBlocks().length == 1);
   } finally {
     workspace.dispose();
-    workbench.dispose();
-    nestedWorkbench.dispose();
+    if (workbench) {
+      workbench.dispose();
+    }
+    if (nestedWorkbench) {
+      nestedWorkbench.dispose();
+    }
     otherWorkspace.dispose();
   }
 }

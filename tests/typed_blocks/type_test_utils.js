@@ -106,24 +106,33 @@ function createNestedValueBlock(workspace, size, getNthName) {
 
 /* Begin functions for workbenches. */
 
-function create_typed_workbench(parentWorkspace) {
+function create_mock_workbench(block) {
   var workspaceOptions = {
     typedVersion: true,
-    parentWorkspace: parentWorkspace
+    parentWorkspace: block.workspace
   };
   var workspace = new Blockly.Workspace(workspaceOptions);
   workspace.isMutator = true;
-  return workspace;
-}
 
-function virtually_set_mutator(block, mutatorWorkspace) {
-  mutatorWorkspace.isMutator = true;
-  var getter = function() {
-    return this;
+  var mutatorMock = {
+    block_: block,
+    workspace_: workspace,
+    getWorkspace: function() {
+          return this.workspace_;
+        },
+    getFlyoutLanguageTree_: function() {
+          var func = Blockly.Workbench.prototype.getFlyoutLanguageTree_;
+          return func.call(this);
+        },
+    dispose: function() {
+          this.block_.mutator = null;
+          this.block_ = null;
+          this.workspace_.dispose();
+          this.workspace_ = null;
+        }
   };
-  block.mutator = {
-    getWorkspace: getter.bind(mutatorWorkspace)
-  };
+  block.mutator = mutatorMock;
+  return mutatorMock;
 }
 
 /* End functions for workbenches. */
