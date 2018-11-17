@@ -375,6 +375,7 @@ function test_type_transfer_block_workspace_transferringBlockManyTimes() {
   var otherWorkspace = create_typed_workspace();
   try {
     var originalLetBlock = workspace.newBlock('let_typed');
+    var originalBoolBlock = workspace.newBlock('logic_boolean_typed')
     var originalVarBlock = workspace.newBlock('variables_get_typed');
     var otherVarBlock = workspace.newBlock('variables_get_typed');
 
@@ -388,9 +389,11 @@ function test_type_transfer_block_workspace_transferringBlockManyTimes() {
     setVariableName(originalVarBlock, 'y');
     setVariableName(otherVarBlock, 'y');
 
-    // [let y = <> in <[y]>]   [y]
+    // [let y = <[true]> in <[y]>]   [y]
     originalLetBlock.getInput('EXP2').connection.connect(
         originalVarBlock.outputConnection);
+    originalLetBlock.getInput('EXP1').connection.connect(
+        originalBoolBlock.outputConnection);
     otherReference.setBoundValue(value);
 
     assertEquals(value.referenceCount(), 2);
@@ -406,8 +409,20 @@ function test_type_transfer_block_workspace_transferringBlockManyTimes() {
     assertEquals(originalValueTypeExpr, newValue.getTypeExpr());
     assertEquals(originalReferenceTypeExpr, newReference.getTypeExpr());
     assertEquals(otherReference.getBoundValue(), newValue);
+    assertEquals(otherReference.getTypeExpr().deref().label,
+        Blockly.TypeExpr.BOOL_);
+
+    transBlock.getInput('EXP1').connection.disconnect(
+        transBlock.getInputTargetBlock('EXP1').outputConnection);
 
     assertEquals(newReference.getTypeExpr().deref(), newValue.getTypeExpr());
+
+    // Type-expr of otherVarBlock is out of date because otherVarBlock is not
+    // connected to transBlock. To update it, call
+    // otherVarBlock.updateTypeInference().
+    assertNotEquals(otherReference.getTypeExpr().deref(),
+        newValue.getTypeExpr());
+    otherVarBlock.updateTypeInference(true);
     assertEquals(otherReference.getTypeExpr().deref(), newValue.getTypeExpr());
   } finally {
     workspace.dispose();
