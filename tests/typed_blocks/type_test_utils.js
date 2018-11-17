@@ -166,6 +166,19 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace,
   return newBlock;
 }
 
+function repeat_transfer_workspace(oldBlock, targetWorkspace, opt_times) {
+  var times = opt_times ? opt_times : 5;
+  var block = oldBlock;
+  var originalWorkspace = oldBlock.workspace;
+  for (var i = 0; i < times; i++) {
+    block = virtually_transfer_workspace(block, targetWorkspace);
+    block = virtually_transfer_workspace(block, originalWorkspace);
+  }
+  block = virtually_transfer_workspace(block, targetWorkspace);
+
+  return block;
+}
+
 function copyAndPasteBlock(block, opt_targetWorkspace) {
   assertTrue(block.isCopyable());
 

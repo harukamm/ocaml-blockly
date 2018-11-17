@@ -369,3 +369,48 @@ function test_type_transfer_block_workspace_copyVariablesBlock() {
     workspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_transferringBlockManyTimes() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    var originalLetBlock = workspace.newBlock('let_typed');
+    var originalVarBlock = workspace.newBlock('variables_get_typed');
+    var otherVarBlock = workspace.newBlock('variables_get_typed');
+
+    var value = getVariable(originalLetBlock);
+    var reference = getVariable(originalVarBlock);
+    var otherReference = getVariable(otherVarBlock);
+    var originalValueTypeExpr = value.getTypeExpr();
+    var originalReferenceTypeExpr = reference.getTypeExpr();
+
+    setVariableName(originalLetBlock, 'y');
+    setVariableName(originalVarBlock, 'y');
+    setVariableName(otherVarBlock, 'y');
+
+    // [let y = <> in <[y]>]   [y]
+    originalLetBlock.getInput('EXP2').connection.connect(
+        originalVarBlock.outputConnection);
+    otherReference.setBoundValue(value);
+
+    assertEquals(value.referenceCount(), 2);
+
+    var transBlock = repeat_transfer_workspace(originalLetBlock,
+        otherWorkspace, 10);
+    var transVarBlock = transBlock.getInputTargetBlock('EXP2');
+
+    var newValue = getVariable(transBlock);
+    var newReference = getVariable(transVarBlock);
+
+    assertEquals(newValue.referenceCount(), 2);
+    assertEquals(originalValueTypeExpr, newValue.getTypeExpr());
+    assertEquals(originalReferenceTypeExpr, newReference.getTypeExpr());
+    assertEquals(otherReference.getBoundValue(), newValue);
+
+    assertEquals(newReference.getTypeExpr().deref(), newValue.getTypeExpr());
+    assertEquals(otherReference.getTypeExpr().deref(), newValue.getTypeExpr());
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}
