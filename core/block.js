@@ -2696,11 +2696,15 @@ Blockly.Blocks['variables_get_typed'] = {
     var variable = this.getField('VAR').getVariable();
     var expected = this.outputConnection.typeExpr;
     var varName = variable.getVariableName();
-    if (varName in env) {
-      env[varName].unify(expected);
-    } else if (variable.getBoundValue()) {
-      var value = variable.getBoundValue();
+    var value = variable.getBoundValue();
+    var typeInEnv = varName in env && env[varName];
+    if (value && typeInEnv) {
+      goog.asserts.assert(value.getTypeExpr() == typeInEnv);
+    }
+    if (value) {
       value.getTypeExpr().unify(expected);
+    } else if (typeInEnv) {
+      typeInEnv.unify(expected);
     }
     return expected;
   }

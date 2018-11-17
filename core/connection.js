@@ -712,11 +712,15 @@ Blockly.Connection.prototype.setCheck = function(check) {
  *     (to allow chaining).
  */
 Blockly.Connection.prototype.setTypeExpr = function(t, opt_overwrite) {
-  if (this.typeExpr && !opt_overwrite) {
+  var isOverwrite = !!this.typeExpr;
+  if (isOverwrite && !opt_overwrite) {
     console.warn('A type expression has already been stored ' +
         'in the connection.');
   } else {
     this.typeExpr = t;
+    if (isOverwrite && goog.isFunction(this.sourceBlock_.typeExprReplaced)) {
+      this.sourceBlock_.typeExprReplaced();
+    }
   }
   return this;
 }
@@ -737,10 +741,6 @@ Blockly.Connection.prototype.replaceTypeExprWith = function(oldConnection,
     if (opt_createTypeExpr !== false) {
       var newType = Blockly.RenderedTypeExpr.generateTypeVar();
       oldConnection.setTypeExpr(newType, true);
-    }
-
-    if (this.sourceBlock_.typeExprReplaced) {
-      this.sourceBlock_.typeExprReplaced();
     }
   }
 };
