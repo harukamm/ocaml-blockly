@@ -705,3 +705,31 @@ function test_type_unification_resolveNestedReferenceOnNestedValueBlock() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_disconnectReferenceBlock() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var varBlock = workspace.newBlock('variables_get_typed');
+    var boolBlock = workspace.newBlock('logic_boolean_typed');
+    setVariableName(letBlock, 'x');
+    setVariableName(varBlock, 'x');
+
+    letBlock.getInput('EXP1').connection.connect(boolBlock.outputConnection);
+    letBlock.getInput('EXP2').connection.connect(varBlock.outputConnection);
+    var value = getVariable(letBlock);
+    var reference = getVariable(varBlock);
+
+    assertEquals(reference.getTypeExpr().deref().label,
+        Blockly.TypeExpr.BOOL_);
+    assertEquals(reference.getBoundValue(), value);
+
+    letBlock.getInput('EXP2').connection.disconnect(varBlock.outputConnection);
+
+    assertEquals(reference.getTypeExpr().deref().label,
+        Blockly.TypeExpr.BOOL_);
+    assertEquals(reference.getBoundValue(), value);
+  } finally {
+    workspace.dispose();
+  }
+}

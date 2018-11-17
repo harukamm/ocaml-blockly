@@ -2693,10 +2693,15 @@ Blockly.Blocks['variables_get_typed'] = {
   },
 
   infer: function(env) {
-    var var_name = this.getField('VAR').getText();
+    var variable = this.getField('VAR').getVariable();
     var expected = this.outputConnection.typeExpr;
-    if (var_name in env)
-      env[var_name].unify(expected);
+    var varName = variable.getVariableName();
+    if (varName in env) {
+      env[varName].unify(expected);
+    } else if (variable.getBoundValue()) {
+      var value = variable.getBoundValue();
+      value.getTypeExpr().unify(expected);
+    }
     return expected;
   }
 
