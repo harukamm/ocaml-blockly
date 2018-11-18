@@ -591,10 +591,14 @@ Blockly.WorkspaceSvg.prototype.addZoomControls_ = function(bottom) {
 /**
  * Add a flyout element in an element with the given tag name.
  * @param {string} tagName What type of tag the flyout belongs in.
+ * @param {Function=} opt_createFlyout Optional function to create a
+ *     flyout. Layout direction should be consistent with the one
+ *     that 'this.horizontalLayout' specifies.
  * @return {!Element} The element containing the flyout DOM.
  * @private
  */
-Blockly.WorkspaceSvg.prototype.addFlyout_ = function(tagName) {
+Blockly.WorkspaceSvg.prototype.addFlyout_ = function(tagName,
+    opt_createFlyout) {
   var workspaceOptions = {
     disabledPatternId: this.options.disabledPatternId,
     parentWorkspace: this,
@@ -603,14 +607,15 @@ Blockly.WorkspaceSvg.prototype.addFlyout_ = function(tagName) {
     horizontalLayout: this.horizontalLayout,
     toolboxPosition: this.options.toolboxPosition,
     typedVersion: this.options.typedVersion,
-    fixedTypeExprs: this.options.fixedTypeExprs
   };
   /**
    * @type {!Blockly.Flyout}
    * @private
    */
   this.flyout_ = null;
-  if (this.horizontalLayout) {
+  if (goog.isFunction(opt_createFlyout)) {
+    this.flyout_ = opt_createFlyout(workspaceOptions);
+  } else if (this.horizontalLayout) {
     this.flyout_ = new Blockly.HorizontalFlyout(workspaceOptions);
   } else {
     this.flyout_ = new Blockly.VerticalFlyout(workspaceOptions);

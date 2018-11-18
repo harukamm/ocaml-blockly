@@ -6,6 +6,7 @@ goog.require('Blockly.Bubble');
 goog.require('Blockly.Events.BlockChange');
 goog.require('Blockly.Events.Ui');
 goog.require('Blockly.Icon');
+goog.require('Blockly.WorkbenchVerticalFlyout');
 goog.require('Blockly.WorkspaceSvg');
 goog.require('goog.dom');
 
@@ -129,7 +130,6 @@ Blockly.Workbench.prototype.createEditor_ = function() {
         Blockly.TOOLBOX_AT_LEFT,
     horizontalLayout: false,
     typedVersion: this.block_.workspace.options.typedVersion,
-    fixedTypeExprs: true,
     getMetrics: this.getFlyoutMetrics_.bind(this),
     setMetrics: null
   };
@@ -141,7 +141,8 @@ Blockly.Workbench.prototype.createEditor_ = function() {
   // a top level svg. Instead of handling scale themselves, mutators
   // inherit scale from the parent workspace.
   // To fix this, scale needs to be applied at a different level in the dom.
-  var flyoutSvg =  this.workspace_.addFlyout_('g');
+  var flyoutSvg =  this.workspace_.addFlyout_('g',
+      this.createFlyout_.bind(this));
   var background = this.workspace_.createDom('blocklyMutatorBackground');
 
   // Insert the flyout after the <rect> but before the block canvas so that
@@ -151,6 +152,15 @@ Blockly.Workbench.prototype.createEditor_ = function() {
   this.svgDialog_.appendChild(background);
 
   return this.svgDialog_;
+};
+
+/**
+ * Returns a newly created flyout for this workbench workspace.
+ * @param {!Object} workspaceOptions Dictionary of options for the flyout
+ *     workspace.
+ */
+Blockly.Workbench.prototype.createFlyout_ = function(flyoutWorkspaceOptions) {
+  return new Blockly.WorkbenchVerticalFlyout(flyoutWorkspaceOptions, this);
 };
 
 /**

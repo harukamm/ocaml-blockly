@@ -820,14 +820,5 @@ Blockly.Flyout.prototype.placeNewBlock_ = function(oldBlock) {
   var finalOffsetMainWs = finalOffsetPixels.scale(1 / targetWorkspace.scale);
 
   block.moveBy(finalOffsetMainWs.x, finalOffsetMainWs.y);
-
-  if (targetWorkspace.options.typedVersion &&
-      oldBlock.workspace.options.typedVersion) {
-    // If the block is typed, replace type expressions with that of the old
-    // block.
-    var fixedTypeExprs = this.workspace_.options.fixedTypeExprs;
-    block.replaceTypeExprWith(oldBlock, !(fixedTypeExprs === true));
-    block.render(false);
-  }
   return block;
 };
