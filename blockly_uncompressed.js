@@ -76,6 +76,7 @@ goog.addDependency("../../../" + dir + "/core/flyout_button.js", ['Blockly.Flyou
 goog.addDependency("../../../" + dir + "/core/flyout_dragger.js", ['Blockly.FlyoutDragger'], ['Blockly.WorkspaceDragger', 'goog.asserts', 'goog.math.Coordinate']);
 goog.addDependency("../../../" + dir + "/core/flyout_horizontal.js", ['Blockly.HorizontalFlyout'], ['Blockly.Block', 'Blockly.Events', 'Blockly.FlyoutButton', 'Blockly.Flyout', 'Blockly.WorkspaceSvg', 'goog.dom', 'goog.events', 'goog.math.Rect', 'goog.userAgent']);
 goog.addDependency("../../../" + dir + "/core/flyout_vertical.js", ['Blockly.VerticalFlyout'], ['Blockly.Block', 'Blockly.Events', 'Blockly.Flyout', 'Blockly.FlyoutButton', 'Blockly.utils', 'Blockly.WorkspaceSvg', 'goog.dom', 'goog.events', 'goog.math.Rect', 'goog.userAgent']);
+goog.addDependency("../../../" + dir + "/core/flyout_vertical_for_workbench.js", ['Blockly.WorkbenchVerticalFlyout'], ['Blockly.VerticalFlyout', 'goog.asserts']);
 goog.addDependency("../../../" + dir + "/core/generator.js", ['Blockly.Generator'], ['Blockly.Block', 'goog.asserts']);
 goog.addDependency("../../../" + dir + "/core/gesture.js", ['Blockly.Gesture'], ['Blockly.BlockAnimations', 'Blockly.BlockDragger', 'Blockly.BubbleDragger', 'Blockly.constants', 'Blockly.Events.Ui', 'Blockly.FlyoutDragger', 'Blockly.Tooltip', 'Blockly.Touch', 'Blockly.WorkspaceDragger', 'goog.asserts', 'goog.math.Coordinate']);
 goog.addDependency("../../../" + dir + "/core/grid.js", ['Blockly.Grid'], ['Blockly.utils', 'goog.userAgent']);
@@ -107,7 +108,7 @@ goog.addDependency("../../../" + dir + "/core/variables.js", ['Blockly.Variables
 goog.addDependency("../../../" + dir + "/core/variables_dynamic.js", ['Blockly.VariablesDynamic'], ['Blockly.Variables', 'Blockly.Blocks', 'Blockly.constants', 'Blockly.VariableModel', 'goog.string']);
 goog.addDependency("../../../" + dir + "/core/warning.js", ['Blockly.Warning'], ['Blockly.Bubble', 'Blockly.Events.Ui', 'Blockly.Icon']);
 goog.addDependency("../../../" + dir + "/core/widgetdiv.js", ['Blockly.WidgetDiv'], ['Blockly.Css', 'goog.dom', 'goog.dom.TagName', 'goog.style']);
-goog.addDependency("../../../" + dir + "/core/workbench.js", ['Blockly.Workbench'], ['Blockly.Bubble', 'Blockly.Events.BlockChange', 'Blockly.Events.Ui', 'Blockly.Icon', 'Blockly.WorkspaceSvg', 'goog.dom']);
+goog.addDependency("../../../" + dir + "/core/workbench.js", ['Blockly.Workbench'], ['Blockly.Bubble', 'Blockly.Events.BlockChange', 'Blockly.Events.Ui', 'Blockly.Icon', 'Blockly.WorkbenchVerticalFlyout', 'Blockly.WorkspaceSvg', 'goog.dom']);
 goog.addDependency("../../../" + dir + "/core/workspace.js", ['Blockly.Workspace'], ['Blockly.VariableMap', 'Blockly.WorkspaceComment', 'Blockly.WorkspaceTree', 'goog.array', 'goog.math']);
 goog.addDependency("../../../" + dir + "/core/workspace_audio.js", ['Blockly.WorkspaceAudio'], ['goog.userAgent']);
 goog.addDependency("../../../" + dir + "/core/workspace_comment.js", ['Blockly.WorkspaceComment'], ['Blockly.Events.CommentChange', 'Blockly.Events.CommentCreate', 'Blockly.Events.CommentDelete', 'Blockly.Events.CommentMove', 'goog.math.Coordinate']);
@@ -1797,6 +1798,7 @@ goog.require('Blockly.VerticalFlyout');
 goog.require('Blockly.Warning');
 goog.require('Blockly.WidgetDiv');
 goog.require('Blockly.Workbench');
+goog.require('Blockly.WorkbenchVerticalFlyout');
 goog.require('Blockly.Workspace');
 goog.require('Blockly.WorkspaceAudio');
 goog.require('Blockly.WorkspaceComment');
