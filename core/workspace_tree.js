@@ -151,6 +151,24 @@ Blockly.WorkspaceTree.isDescendant = function(childWs, parentWs) {
 };
 
 /**
+ * Finds the child workspace of the given parent workspace.
+ * @param {!Blockly.Workspace} childWs
+ * @param {!Blockly.Workspace} parentWs
+ * @return {Blockly.Workspace|null} The workspace, or null.
+ */
+Blockly.WorkspaceTree.parentBefore = function(childWs, parentWs) {
+  var ws = childWs;
+  while (ws) {
+    var parent = ws.options.parentWorkspace;
+    if (parent == parentWs) {
+      return ws;
+    }
+    ws = parent;
+  }
+  return null;
+};
+
+/**
  * Return a list of workspace whose id is in the subtree.
  * @param {!Blockly.Workspace} workspace Workspace to specify the subtree.
  * @retrun {!Array} List of workspace.

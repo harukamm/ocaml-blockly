@@ -1287,14 +1287,20 @@ Blockly.WorkspaceSvg.prototype.inFrontOf = function(other) {
   }
   goog.asserts.assert(ws1.isMutator || ws2.isMutator,
       'Not implemented for this case.');
+
   // Both of workspace are mutator's.
+  if (commonWs == ws1 || commonWs == ws2) {
+    return commonWs == ws2;
+  } else if (commonWs.isMutator) {
+    ws1 = Blockly.WorkspaceTree.parentBefore(ws1, commonWs);
+    ws2 = Blockly.WorkspaceTree.parentBefore(ws2, commonWs);
+    var bubbleCanvas = commonWs.ownerMutator_.getBubble().getChildBubbleCanvas();
+    // just before the common Ws.
+  } else {
+    var bubbleCanvas = commonWs.getBubbleCanvas();
+  }
   var bubbleSvg1 = ws1.ownerMutator_.getBubble().getSvgRoot();
   var bubbleSvg2 = ws2.ownerMutator_.getBubble().getSvgRoot();
-  var bubbleCanvas = commonWs.getBubbleCanvas();
-  // TODO(harukam): Make it work out even if the following condition is not
-  // satisfied, and remove the assertion.
-  goog.asserts.assert(bubbleCanvas == bubbleSvg1.parentNode &&
-      bubbleSvg1.parentNode == bubbleSvg2.parentNode);
   var i1 = Array.prototype.indexOf.call(bubbleCanvas.childNodes, bubbleSvg1);
   var i2 = Array.prototype.indexOf.call(bubbleCanvas.childNodes, bubbleSvg2);
   return i2 < i1;
