@@ -1708,12 +1708,17 @@ Blockly.Block.prototype.getImplicitContext = function() {
   }
   var workspace = this.workspace;
   var env = {};
+  var mutators = [];
   while (workspace && workspace.isMutator) {
-    var mutator = workspace.ownerMutator_;
+    mutators.push(workspace.ownerMutator_);
+    workspace = workspace.options.parentWorkspace;
+  }
+  // Merge variable contexts from the top parent to child.
+  for (var i = mutators.length - 1; 0 <= i; i--) {
+    var mutator = mutators[i];
     if (goog.isFunction(mutator.getContext)) {
       Object.assign(env, mutator.getContext());
     }
-    workspace = workspace.options.parentWorkspace;
   }
   return env;
 };

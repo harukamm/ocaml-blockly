@@ -812,3 +812,64 @@ function test_type_unification_workbenchReferencesTypeExprCleared() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_nestedWorkbenchContext() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  var nestedWorkbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var letValue = getVariable(letBlock);
+    setVariableName(letBlock, 'xx');
+    workbench = create_mock_workbench(letBlock);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlockWB = blocks[0];
+    var referenceWB = getVariable(referenceBlockWB);
+
+    var letBlockWB = workbench.getWorkspace().newBlock('let_typed');
+    var letValueWB = getVariable(letBlockWB);
+    setVariableName(letBlockWB, 'xx');
+    nestedWorkbench = create_mock_workbench(letBlockWB);
+    var blocks = getFlyoutBlocksFromWorkbench(nestedWorkbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlockNestedWB = blocks[0];
+    var referenceNestedWB = getVariable(referenceBlockNestedWB);
+    assertEquals(referenceNestedWB.getBoundValue(), letValueWB);
+
+    var letBlockNestedWB = nestedWorkbench.getWorkspace().newBlock('let_typed');
+    setVariableName(letBlockNestedWB, 'xx');
+
+    var exp2 = letBlock.getInput('EXP2').connection;
+    var exp1_WB = letBlockWB.getInput('EXP1').connection;
+    var exp2_WB = letBlockWB.getInput('EXP2').connection;
+    var exp2_NestedWB = letBlockNestedWB.getInput('EXP2').connection;
+
+    assertTrue(referenceBlockWB.resolveReference(exp2));
+    assertFalse(referenceBlockWB.resolveReference(exp2_WB));
+    assertFalse(referenceBlockWB.resolveReference(exp2_NestedWB));
+
+    assertEquals(referenceNestedWB.getBoundValue(), letValueWB)
+    assertFalse(referenceBlockNestedWB.resolveReference(exp2));
+    assertTrue(referenceBlockNestedWB.resolveReference(exp2_WB));
+    assertFalse(referenceBlockNestedWB.resolveReference(exp2_NestedWB));
+
+    exp1_WB.connect(referenceBlockWB.outputConnection);
+    var copy = copyAndPasteBlock(referenceBlockNestedWB,
+        workbench.getWorkspace());
+    exp2_WB.connect(copy.outputConnection);
+
+    assertEquals(referenceWB.getTypeExpr().deref(),
+        letValueWB.getTypeExpr().deref());
+    assertEquals(referenceNestedWB.getTypeExpr().deref(),
+        letValueWB.getTypeExpr().deref());
+  } finally {
+    if (nestedWorkbench) {
+      nestedWorkbench.dispose();
+    }
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
