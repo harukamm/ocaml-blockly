@@ -803,17 +803,24 @@ Blockly.Block.prototype.getVarModels = function() {
 
 /**
  * Returns all bound-variables referenced by this block.
+ * @param {boolean=} opt_filter If true, collect only variable references. If
+ *     false, collect only values. If not provided, include both of them.
  * @return {!Array.<!Blockly.BoundVariableAbstract>} List of variables.
  * @package
  */
-Blockly.Block.prototype.getVariables = function() {
+Blockly.Block.prototype.getVariables = function(opt_filter) {
   var vars = [];
+  var filtered = opt_filter === true || opt_filter === false;
   for (var i = 0, input; input = this.inputList[i]; i++) {
     for (var j = 0, field; field = input.fieldRow[j]; j++) {
       if (field.referencesVariables() == Blockly.FIELD_VARIABLE_BINDING) {
         var variable = field.getVariable();
         if (variable) {
-          vars.push(variable);
+          var isReference = variable.isReference();
+          if (!filtered || opt_filter === true && isReference ||
+              opt_filter === false && !isReference) {
+            vars.push(variable);
+          }
         }
       }
     }
@@ -1746,21 +1753,19 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
  *     resolved. Otherwise false.
  */
 Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
-  var variableList = this.getVariables();
+  var referenceList = this.getVariables(true /** Gets only references. */);
   var allBound = true;
-  for (var i = 0, variable; variable = variableList[i]; i++) {
+  for (var i = 0, variable; variable = referenceList[i]; i++) {
     var name = variable.getVariableName();
     var value = env[name];
-    if (variable.isReference()) {
-      var currentValue = variable.getBoundValue();
-      var valid = currentValue ? currentValue == value : !!value;
-      if (valid) {
-        variable.setBoundValue(value);
-      } else if (!opt_bind) {
-        return false;
-      } else {
-        allBound = false;
-      }
+    var currentValue = variable.getBoundValue();
+    var valid = currentValue ? currentValue == value : !!value;
+    if (valid) {
+      variable.setBoundValue(value);
+    } else if (!opt_bind) {
+      return false;
+    } else {
+      allBound = false;
     }
   }
   return opt_bind ? allBound : true;
