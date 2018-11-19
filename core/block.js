@@ -806,7 +806,7 @@ Blockly.Block.prototype.getVarModels = function() {
  * @return {!Array.<!Blockly.BoundVariableAbstract>} List of variables.
  * @package
  */
-Blockly.Block.prototype.getBoundVariables = function() {
+Blockly.Block.prototype.getVariables = function() {
   var vars = [];
   for (var i = 0, input; input = this.inputList[i]; i++) {
     for (var j = 0, field; field = input.fieldRow[j]; j++) {
@@ -1746,7 +1746,7 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
  *     resolved. Otherwise false.
  */
 Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
-  var variableList = this.getBoundVariables();
+  var variableList = this.getVariables();
   var allBound = true;
   for (var i = 0, variable; variable = variableList[i]; i++) {
     var name = variable.getVariableName();
