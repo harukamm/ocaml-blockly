@@ -1668,9 +1668,34 @@ Blockly.Block.prototype.moveBy = function(dx, dy) {
  * @param {boolean=} opt_reset True if types should be reset first.
  */
 Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
-  if (opt_reset)
-    this.clearTypes && this.clearTypes();
-  this.infer && this.infer({});
+  var blocksToUpdate = [this];
+
+  if (this.isInMutator) {
+    // Value blocks basically contain their reference blocks inside, but it
+    // could not be true if reference blocks exist in workbench because
+    // workbench could have implicit value context.
+    // If type-expr of an isolated reference block on workbench are unified
+    // with another type, its value block's type-expr should also be updated
+    // even if they are not connected.
+    var references = Blockly.BoundVariables.getAllVariablesOnBlocks(this,
+        true /** Gets only references. */);
+    var values = Blockly.BoundVariables.getValuesFromReferenceList(references);
+    Array.prototype.push.apply(blocksToUpdate,
+        Blockly.BoundVariables.getAllRootBlocks(values));
+  }
+
+  if (opt_reset) {
+    for (var i = 0, block; block = blocksToUpdate[i]; i++) {
+      if (goog.isFunction(block.clearTypes)) {
+        block.clearTypes();
+      }
+    }
+  }
+  for (var i = 0, block; block = blocksToUpdate[i]; i++) {
+    if (goog.isFunction(block.infer)) {
+      block.infer({});
+    }
+  }
 };
 
 /**

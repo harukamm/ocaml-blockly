@@ -762,25 +762,60 @@ function test_type_unification_workbenchVariableContext() {
 
     arithBlock.getInput('A').connection.disconnect(referenceBlock.outputConnection);
 
-    // TODO: The type-expr of letValue has no been cleared! Fix it.
-    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.INT_);
-    /* The below tests fail though they are expected to pass. */
+    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
 
-//    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
-//    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
-//
-//    var letBlock2 = workbench.getWorkspace().newBlock('let_typed');
-//    var letValue2 = getVariable(letBlock2);
-//    setVariableName(letBlock2, 'j');
-//    var exp2OnLetBlock2 = letBlock2.getInput('EXP2').connection;
-//    assertEquals(reference.getBoundValue(), letValue);
-//    // Can't connect to letBlock2 on the input 'EXP2' because variable
-//    // references named 'j' inside the input must be bound to letValue2.
-//    assertFalse(referenceBlock.resolveReference(null, exp2OnLetBlock2));
+    var letBlock2 = workbench.getWorkspace().newBlock('let_typed');
+    var letValue2 = getVariable(letBlock2);
+    setVariableName(letBlock2, 'j');
+    var exp2OnLetBlock2 = letBlock2.getInput('EXP2').connection;
+    assertEquals(reference.getBoundValue(), letValue);
+    assertNotEquals(reference.getBoundValue(), letValue2);
+    // Can't connect to letBlock2 on the input 'EXP2' because variable
+    // references named 'j' inside the input must be bound to letValue2.
+    assertFalse(referenceBlock.resolveReference(exp2OnLetBlock2));
   } finally {
     workspace.dispose();
     if (workbench) {
       workbench.dispose();
     }
+  }
+}
+
+function test_type_unification_workbenchReferencesTypeExprCleared() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var letValue = getVariable(letBlock);
+    setVariableName(letBlock, 'j');
+    workbench = create_mock_workbench(letBlock);
+    var xml = workbench.getFlyoutLanguageTree_();
+    var childNodes = xml.childNodes;
+    assertEquals(childNodes.length, 1);
+    var referenceBlock = Blockly.Xml.domToBlock(childNodes[0],
+        workbench.getWorkspace());
+    var reference = getVariable(referenceBlock);
+    assertEquals(reference.getBoundValue(), letValue);
+    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+
+    // [ <[if then <[j]> else <>]> .+ <> ]
+    var ifBlock = workbench.getWorkspace().newBlock('logic_ternary_typed');
+    ifBlock.getInput('THEN').connection.connect(referenceBlock.outputConnection);
+    var floatArith = workspace.newBlock('float_arithmetic_typed');
+    floatArith.getInput('A').connection.connect(ifBlock.outputConnection);
+
+    assertEquals(reference.getTypeExpr().deref().label, Blockly.TypeExpr.FLOAT_);
+    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.FLOAT_);
+
+    // [ <> .+ <> ]  [if then <[j]> else <>]
+    floatArith.getInput('A').connection.disconnect();
+
+    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
   }
 }

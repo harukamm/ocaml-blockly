@@ -240,6 +240,40 @@ Blockly.BoundVariables.getAllRootBlocks = function(variables) {
 };
 
 /**
+ * Returns a list of values without duplicates that the given references refer
+ * to.
+ * @param {!Array.<!Blockly.BoundVariableValueReference>} references A list of
+ *     references whose variables values to get.
+ * @return {!Array.<!Blockly.BoundVariableValue>} A list of values.
+ */
+Blockly.BoundVariables.getValuesFromReferenceList = function(references) {
+  var values = [];
+  for (var i = 0, reference; reference = references[i]; i++) {
+    var value = reference.getBoundValue();
+    if (value && values.indexOf(value) == -1) {
+      values.push(value);
+    }
+  }
+  return values;
+};
+
+/**
+ * Collects all of variables which exist in or inside the given block.
+ * @param {!Blockly.Block} block The block to search for variables.
+ * @param {boolean=} opt_filter If true, collect only variable references. If
+ *     false, collect only values. If not provided, include both of them.
+ * @return {!Array.<!Blockly.BoundVariableAbstract>} List of variables.
+ */
+Blockly.BoundVariables.getAllVariablesOnBlocks = function(block, opt_filter) {
+  var variables = [];
+  var descendants = block.getDescendants();
+  for (var i = 0, block; block = descendants[i]; i++) {
+    Array.prototype.push.apply(variables, block.getVariables(opt_filter));
+  }
+  return variables;
+};
+
+/**
  * Returns if any variable references will never be changed when the variable
  * is renamed to the given name.
  * @param {!Blockly.BoundVariableAbstract} variable The variable to be renamed.
