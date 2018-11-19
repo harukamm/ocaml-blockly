@@ -1678,8 +1678,8 @@ Blockly.Block.prototype.getImplicitContext = function() {
   var env = {};
   while (workspace && workspace.isMutator) {
     var mutator = workspace.ownerMutator_;
-    if (mutator.getVariableContext) {
-      Object.env(env, mutator.getVariableContext());
+    if (goog.isFunction(mutator.getContext)) {
+      Object.assign(env, mutator.getContext());
     }
     workspace = workspace.options.parentWorkspace;
   }

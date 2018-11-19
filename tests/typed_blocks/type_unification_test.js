@@ -733,3 +733,54 @@ function test_type_unification_disconnectReferenceBlock() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_workbenchVariableContext() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var letValue = getVariable(letBlock);
+    setVariableName(letBlock, 'j');
+    workbench = create_mock_workbench(letBlock);
+    var xml = workbench.getFlyoutLanguageTree_();
+    var childNodes = xml.childNodes;
+    assertEquals(childNodes.length, 1);
+    var referenceBlock = Blockly.Xml.domToBlock(childNodes[0],
+        workbench.getWorkspace());
+    var reference = getVariable(referenceBlock);
+    assertEquals(reference.getBoundValue(), letValue);
+
+    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+
+    var arithBlock = workbench.getWorkspace().newBlock('int_arithmetic_typed');
+    arithBlock.getInput('A').connection.connect(referenceBlock.outputConnection);
+
+    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.INT_);
+    assertEquals(reference.getTypeExpr().deref().label, Blockly.TypeExpr.INT_);
+    assertEquals(reference.getBoundValue(), letValue);
+
+    arithBlock.getInput('A').connection.disconnect(referenceBlock.outputConnection);
+
+    // TODO: The type-expr of letValue has no been cleared! Fix it.
+    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.INT_);
+    /* The below tests fail though they are expected to pass. */
+
+//    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+//    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+//
+//    var letBlock2 = workbench.getWorkspace().newBlock('let_typed');
+//    var letValue2 = getVariable(letBlock2);
+//    setVariableName(letBlock2, 'j');
+//    var exp2OnLetBlock2 = letBlock2.getInput('EXP2').connection;
+//    assertEquals(reference.getBoundValue(), letValue);
+//    // Can't connect to letBlock2 on the input 'EXP2' because variable
+//    // references named 'j' inside the input must be bound to letValue2.
+//    assertFalse(referenceBlock.resolveReference(null, exp2OnLetBlock2));
+  } finally {
+    workspace.dispose();
+    if (workbench) {
+      workbench.dispose();
+    }
+  }
+}

@@ -111,14 +111,16 @@ function create_mock_workbench(block) {
     typedVersion: true,
     parentWorkspace: block.workspace
   };
+  goog.asserts.assert(goog.isFunction(block.getWorkbenchContext));
   var workspace = new Blockly.Workspace(workspaceOptions);
-  workspace.isMutator = true;
-
   var mutatorMock = {
     block_: block,
     workspace_: workspace,
     getWorkspace: function() {
           return this.workspace_;
+        },
+    getContext: function() {
+          return Blockly.Workbench.prototype.getContext.call(this);
         },
     getFlyoutLanguageTree_: function() {
           var func = Blockly.Workbench.prototype.getFlyoutLanguageTree_;
@@ -132,6 +134,10 @@ function create_mock_workbench(block) {
         }
   };
   block.mutator = mutatorMock;
+
+  workspace.isMutator = true;
+  workspace.ownerMutator_ = mutatorMock;
+
   return mutatorMock;
 }
 

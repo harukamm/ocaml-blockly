@@ -170,6 +170,8 @@ Blockly.Workbench.prototype.init = function() {
   if (this.initialized_) {
     return;
   }
+  goog.asserts.assert(goog.isFunction(this.block_.getWorkbenchContext));
+
   // Create the bubble.
   var anchorXY = this.iconXY_ ? this.iconXY_ : new goog.math.Coordinate(0, 0);
   this.bubble_ = new Blockly.Bubble(
@@ -354,12 +356,24 @@ Blockly.Workbench.prototype.getFlyoutMetrics_ = function() {
 };
 
 /**
+ * Finds variable environment which can be referred to inside this workbench.
+ * @return {!Object} The map to variable value keyed by its name.
+ */
+Blockly.Workbench.prototype.getContext = function() {
+  if (!this.block_) {
+    // This workbench is in the process of being deleted.
+    return {};
+  }
+  return this.block_.getWorkbenchContext();
+};
+
+/**
  * Return a DOM tree of blocks to show in a flyout.
  * @return {Node} DOM tree of blocks.
  */
 Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
   var xml = goog.dom.createDom('xml');
-  var env = this.block_.getWorkbenchContext();
+  var env = this.getContext();
   var names = Object.keys(env);
   for (var i = 0, name; name = names[i]; i++) {
     var variable = env[name];
