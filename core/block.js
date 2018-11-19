@@ -1707,13 +1707,11 @@ Blockly.Block.prototype.getImplicitContext = function() {
  */
 Blockly.Block.prototype.resolveReference = function(parentConnection,
       opt_bind) {
+  var env = Object.assign({}, this.getImplicitContext());
   if (parentConnection) {
     var parentBlock = parentConnection.getSourceBlock();
-    var env = parentBlock.allVisibleVariables(parentConnection);
-  } else {
-    var env = {};
+    Object.assign(env, parentBlock.allVisibleVariables(parentConnection));
   }
-  Object.assign(env, this.getImplicitContext());
 
   var bfsStack = [[this, env]];
   var allSuccess = true;
