@@ -801,7 +801,7 @@ function test_type_unification_workbenchReferencesTypeExprCleared() {
     // [ <[if then <[j]> else <>]> .+ <> ]
     var ifBlock = workbench.getWorkspace().newBlock('logic_ternary_typed');
     ifBlock.getInput('THEN').connection.connect(referenceBlock.outputConnection);
-    var floatArith = workspace.newBlock('float_arithmetic_typed');
+    var floatArith = workbench.getWorkspace().newBlock('float_arithmetic_typed');
     floatArith.getInput('A').connection.connect(ifBlock.outputConnection);
 
     assertEquals(reference.getTypeExpr().deref().label, Blockly.TypeExpr.FLOAT_);

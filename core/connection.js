@@ -299,11 +299,14 @@ Blockly.Connection.prototype.isConnected = function() {
  * Checks whether the current connection can connect with the target
  * connection.
  * @param {Blockly.Connection} target Connection to check compatibility with.
+ * @param {boolean=} opt_final True if two connections will be connected
+ *    immediately if they are found compatible.
  * @return {number} Blockly.Connection.CAN_CONNECT if the connection is legal,
  *    an error code otherwise.
  * @private
  */
-Blockly.Connection.prototype.canConnectWithReason_ = function(target) {
+Blockly.Connection.prototype.canConnectWithReason_ = function(target,
+    opt_final) {
   if (!target) {
     return Blockly.Connection.REASON_TARGET_NULL;
   }
@@ -314,12 +317,14 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target) {
     var blockB = this.sourceBlock_;
     var blockA = target.getSourceBlock();
   }
+  var transferable = blockA && blockB && blockA.isTransferable() &&
+      blockB.isTransferable();
   if (blockA && blockA == blockB) {
     return Blockly.Connection.REASON_SELF_CONNECTION;
   } else if (target.type != Blockly.OPPOSITE_TYPE[this.type]) {
     return Blockly.Connection.REASON_WRONG_TYPE;
   } else if (blockA && blockB && blockA.workspace !== blockB.workspace &&
-      !blockA.isTransferable() && !blockB.isTransferable()) {
+      (opt_final === true || !transferable)) {
     return Blockly.Connection.REASON_DIFFERENT_WORKSPACES;
   } else if (!this.checkType_(target)) {
     return Blockly.Connection.REASON_CHECKS_FAILED;
@@ -334,10 +339,12 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target) {
  * and throws an exception if they are not.
  * @param {Blockly.Connection} target The connection to check compatibility
  *    with.
+ * @param {boolean=} opt_final True if two connections will be connected
+ *    immediately if they are found compatible.
  * @private
  */
-Blockly.Connection.prototype.checkConnection_ = function(target) {
-  switch (this.canConnectWithReason_(target)) {
+Blockly.Connection.prototype.checkConnection_ = function(target, opt_final) {
+  switch (this.canConnectWithReason_(target, opt_final)) {
     case Blockly.Connection.CAN_CONNECT:
       break;
     case Blockly.Connection.REASON_SELF_CONNECTION:
@@ -420,7 +427,7 @@ Blockly.Connection.prototype.connect = function(otherConnection) {
     // Already connected together.  NOP.
     return;
   }
-  this.checkConnection_(otherConnection);
+  this.checkConnection_(otherConnection, true);
   // Determine which block is superior (higher in the source stack).
   if (this.isSuperior()) {
     // Superior block.

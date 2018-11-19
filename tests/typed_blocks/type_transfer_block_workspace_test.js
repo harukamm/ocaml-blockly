@@ -429,3 +429,35 @@ function test_type_transfer_block_workspace_transferringBlockManyTimes() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_blocksOnDifferenceWorkspace() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    workbench = create_mock_workbench(letBlock);
+    var int1 = workbench.getWorkspace().newBlock('int_typed');
+    var exp2 = letBlock.getInput('EXP2').connection;
+
+    var success = false;
+    try {
+      exp2.connect(int1.outputConnection);
+      success = true;
+    } catch (e) {
+      // Connecting blocks must fail because they exist in difference
+      // workspaces, but they are potentially allowed to connect
+      // since both of blocks are allowed to be transferred to another
+      // workspace.
+      assertTrue(exp2.isConnectionAllowed(int1.outputConnection));
+    }
+    assertFalse(success);
+    var transInt = virtually_transfer_workspace(int1, workspace);
+    assertTrue(exp2.isConnectionAllowed(transInt.outputConnection));
+    exp2.connect(transInt.outputConnection);
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
