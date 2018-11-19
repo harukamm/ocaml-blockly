@@ -224,12 +224,23 @@ Blockly.BoundVariables.isUniqueName = function(name, workspace) {
  * inside or directly.
  * @param {!Array.<!Blockly.BoundVariableAbstract>} variables The list of
  *     variables.
+ * @param {boolean=} opt_bounds If true, also collect root blocks which contain
+ *     bound variables of each variable in the list.
  * @return {!Array.<!Blockly.Block>} Root blocks which contain any variable
  *     existing in the give list.
  */
-Blockly.BoundVariables.getAllRootBlocks = function(variables) {
+Blockly.BoundVariables.getAllRootBlocks = function(variables, opt_bounds) {
+  var targetVariables = [];
+  if (opt_bounds === true) {
+    for (var i = 0, variable; variable = variables[i]; i++) {
+      var bounds = variable.getAllBoundVariables();
+      Array.prototype.push.apply(targetVariables, bounds);
+    }
+  } else {
+    targetVariables = variables;
+  }
   var rootBlocks = [];
-  for (var i = 0, variable; variable = variables[i]; i++) {
+  for (var i = 0, variable; variable = targetVariables[i]; i++) {
     var block = variable.getSourceBlock();
     var root = block.getRootBlock();
     if (rootBlocks.indexOf(root) == -1) {
