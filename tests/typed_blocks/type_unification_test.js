@@ -407,11 +407,10 @@ function test_type_unification_useWorkbenchWithinLetTypedBlock() {
 
     outerLetBlock.getInput('EXP2').connection.connect(innerLetBlock.outputConnection);
     workbench = create_mock_workbench(innerLetBlock);
-    var xml = workbench.getFlyoutLanguageTree_();
-    var childNodes = xml.childNodes;
-    assertEquals(childNodes.length, 2);
-    var innersVars = Blockly.Xml.domToBlock(childNodes[0], workspace);
-    var outersVar = Blockly.Xml.domToBlock(childNodes[1], workspace);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench, workspace);
+    assertEquals(blocks.length, 2);
+    var innersVars = blocks[0];
+    var outersVar = blocks[1];
     // workbench.getFlyoutLanguageTree_() does not guarantee any order. If
     // they seems to have been swapped, just swap them.
     if (isVariableOf(outersVar, innerLetBlock, 'j')) {
@@ -454,11 +453,10 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
     outerLetBlock.getInput('EXP2').connection.connect(
         innerLambdaBlock.outputConnection);
     workbench = create_mock_workbench(innerLambdaBlock);
-    var xml = workbench.getFlyoutLanguageTree_();
-    var childNodes = xml.childNodes;
-    assertEquals(childNodes.length, 2);
-    var innersVars = Blockly.Xml.domToBlock(childNodes[0], workspace);
-    var outersVar = Blockly.Xml.domToBlock(childNodes[1], workspace);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench, workspace);
+    assertEquals(blocks.length, 2);
+    var innersVars = blocks[0];
+    var outersVar = blocks[1];
     // workbench.getFlyoutLanguageTree_() does not guarantee any order. If
     // they seems to have been swapped, just swap them.
     if (isVariableOf(outersVar, innerLambdaBlock, 'j')) {
@@ -742,11 +740,9 @@ function test_type_unification_workbenchVariableContext() {
     var letValue = getVariable(letBlock);
     setVariableName(letBlock, 'j');
     workbench = create_mock_workbench(letBlock);
-    var xml = workbench.getFlyoutLanguageTree_();
-    var childNodes = xml.childNodes;
-    assertEquals(childNodes.length, 1);
-    var referenceBlock = Blockly.Xml.domToBlock(childNodes[0],
-        workbench.getWorkspace());
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlock = blocks[0];
     var reference = getVariable(referenceBlock);
     assertEquals(reference.getBoundValue(), letValue);
 
@@ -789,11 +785,9 @@ function test_type_unification_workbenchReferencesTypeExprCleared() {
     var letValue = getVariable(letBlock);
     setVariableName(letBlock, 'j');
     workbench = create_mock_workbench(letBlock);
-    var xml = workbench.getFlyoutLanguageTree_();
-    var childNodes = xml.childNodes;
-    assertEquals(childNodes.length, 1);
-    var referenceBlock = Blockly.Xml.domToBlock(childNodes[0],
-        workbench.getWorkspace());
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlock = blocks[0];
     var reference = getVariable(referenceBlock);
     assertEquals(reference.getBoundValue(), letValue);
     assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());

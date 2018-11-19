@@ -141,6 +141,17 @@ function create_mock_workbench(block) {
   return mutatorMock;
 }
 
+function getFlyoutBlocksFromWorkbench(workbench, opt_workspace) {
+  var workspace = opt_workspace ? opt_workspace : workbench.getWorkspace();
+  var xml = workbench.getFlyoutLanguageTree_();
+  var childNodes = xml.childNodes;
+  var blocks = [];
+  for (var i = 0; i < childNodes.length; i++) {
+    blocks.push(Blockly.Xml.domToBlock(childNodes[i], workspace));
+  }
+  return blocks;
+}
+
 /* End functions for workbenches. */
 
 /**
