@@ -751,7 +751,6 @@ function test_type_unification_workbenchVariableContext() {
     assertEquals(reference.getBoundValue(), letValue);
 
     assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
-    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
 
     var arithBlock = workbench.getWorkspace().newBlock('int_arithmetic_typed');
     arithBlock.getInput('A').connection.connect(referenceBlock.outputConnection);
