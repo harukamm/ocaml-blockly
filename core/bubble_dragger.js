@@ -214,7 +214,7 @@ Blockly.BubbleDragger.prototype.endBubbleDrag = function(
   if (!deleted) {
     // Put everything back onto the bubble canvas.
     if (this.dragSurface_) {
-      this.dragSurface_.clearAndHide(this.workspace_.getBubbleCanvas());
+      this.dragSurface_.clearAndHide(this.draggingBubble_.getParentCanvas());
     }
 
     this.draggingBubble_.setDragging && this.draggingBubble_.setDragging(false);

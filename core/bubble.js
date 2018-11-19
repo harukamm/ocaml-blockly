@@ -59,16 +59,7 @@ Blockly.Bubble = function(workspace, content, shape, anchorXY,
   }
   this.arrow_radians_ = goog.math.toRadians(angle);
 
-  var canvas;
-  if (this.workspace_.isMutator) {
-    // If we put nested ones onto a bubble canvas of the parent workspace,
-    // they will hide inside the parent bubble. To avoid it, put nested ones
-    // onto a bubble canvas of the parent bubble.
-    var parentBubble = this.workspace_.getOwnerBubble();
-    canvas = parentBubble.getChildBubbleCanvas();
-  } else {
-    canvas = this.workspace_.getBubbleCanvas();
-  }
+  var canvas = this.getParentCanvas();
   canvas.appendChild(this.createDom_(content, !!(bubbleWidth && bubbleHeight)));
 
   this.setAnchorLocation(anchorXY);
@@ -297,6 +288,15 @@ Blockly.Bubble.prototype.createDom_ = function(content, hasResize) {
 };
 
 /**
+ * Return the workspace which contains the bubble.
+ * @return {!Blockly.WorkspaceSvg} workspace The workspace on which to draw the
+ *     bubble.
+ */
+Blockly.Bubble.prototype.getContainerWorkspace = function() {
+  return this.workspace_;
+};
+
+/**
  * Return the root node of the bubble's SVG group.
  * @return {Element} The root SVG node of the bubble's group.
  */
@@ -320,7 +320,7 @@ Blockly.Bubble.prototype.setSvgId = function(id) {
  * @private
  */
 Blockly.Bubble.prototype.bubbleMouseDown_ = function(e) {
-  var gesture = this.workspace_.getGesture(e);
+  var gesture = this.mainWorkspace_.getGesture(e);
   if (gesture) {
     gesture.handleBubbleStart(e, this);
   }
@@ -695,6 +695,23 @@ Blockly.Bubble.prototype.getRelativeToSurfaceXY = function() {
   return new goog.math.Coordinate(
       this.anchorXY_.x + this.relativeLeft_,
       this.anchorXY_.y + this.relativeTop_);
+};
+
+/**
+ * Returns the element the root node of the bubble should be attached to.
+ * @return {!Element} The element to be attached to by the root node of the
+ *     bubble.
+ */
+Blockly.Bubble.prototype.getParentCanvas = function() {
+  if (this.workspace_.isMutator) {
+    // If we put nested ones onto a bubble canvas of the parent workspace,
+    // they will hide inside the parent bubble. To avoid it, put nested ones
+    // onto a bubble canvas of the parent bubble.
+    var parentBubble = this.workspace_.getOwnerBubble();
+    return parentBubble.getChildBubbleCanvas();
+  } else {
+    return this.workspace_.getBubbleCanvas();
+  }
 };
 
 /**

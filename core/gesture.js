@@ -464,7 +464,7 @@ Blockly.Gesture.prototype.startDraggingBlock_ = function() {
  */
 Blockly.Gesture.prototype.startDraggingBubble_ = function() {
   this.bubbleDragger_ = new Blockly.BubbleDragger(this.startBubble_,
-      this.startWorkspace_);
+      this.startBubble_.getContainerWorkspace());
   this.bubbleDragger_.startBubbleDrag();
   this.bubbleDragger_.dragBubble(this.mostRecentEvent_,
       this.currentDragDeltaXY_);
