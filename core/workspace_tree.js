@@ -140,8 +140,7 @@ Blockly.WorkspaceTree.lowestCommon = function(workspace1, workspace2) {
  * workspaces are identical, return true.
  * @param {!Blockly.Workspace} childWs
  * @param {!Blockly.Workspace} parentWs
- * @return {Blockly.Workspace} True if the second workspace contains the first
- *     one.
+ * @return {boolean} True if the second workspace contains the first one.
  */
 Blockly.WorkspaceTree.isDescendant = function(childWs, parentWs) {
   var childNode = Blockly.WorkspaceTree.find(childWs.id);
