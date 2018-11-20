@@ -174,12 +174,8 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace,
     Blockly.transferring = null;
   }
 
-  Blockly.Events.disable();
-  try {
-    oldBlock.dispose();
-  } finally {
-    Blockly.Events.enable();
-  }
+  oldBlock.dispose();
+
   return newBlock;
 }
 
