@@ -123,6 +123,14 @@ Blockly.DraggedConnectionManager.prototype.wouldDeleteBlock = function() {
 };
 
 /**
+ * Return whether the closest connection has been found currently.
+ * @return {boolean} True if the closest connection has been found.
+ */
+Blockly.DraggedConnectionManager.prototype.hasClosest = function() {
+  return !!this.closestConnection_;
+};
+
+/**
  * Return whether the block would be connected if dropped immediately, based on
  * information from the most recent move event.
  * @return {boolean} true if the block would be connected if dropped immediately.

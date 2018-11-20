@@ -1125,6 +1125,24 @@ Blockly.BlockSvg.prototype.removeSelect = function() {
 };
 
 /**
+ * Update the style of the block depending on whether the block in an invalid
+ * state.
+ * @param {boolean} enable True if the block is in an invalid state.
+ */
+Blockly.BlockSvg.prototype.setInvalidStyle = function(enable) {
+  var hexColour = this.getColour();
+  var rgb = goog.color.hexToRgb(hexColour);
+  if (enable) {
+    rgb = goog.color.lighten(rgb, 0.6);
+    hexColour = goog.color.rgbArrayToHex(rgb);
+    Blockly.utils.addClass(this.svgGroup_, 'invalid');
+  } else {
+    Blockly.utils.removeClass(this.svgGroup_, 'invalid');
+  }
+  this.svgPath_.setAttribute('fill', hexColour);
+};
+
+/**
  * Update the cursor over this block by adding or removing a class.
  * @param {boolean} enable True if the delete cursor should be shown, false
  *     otherwise.

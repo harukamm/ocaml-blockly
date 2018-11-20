@@ -250,6 +250,7 @@ Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
   this.draggedConnectionManager_.update(delta, this.deleteArea_,
       targetWorkspace);
 
+  this.updateReferenceStateDuringBlockDrag_(targetWorkspace);
   this.updateCursorDuringBlockDrag_();
 };
 
@@ -331,6 +332,26 @@ Blockly.BlockDragger.prototype.maybeDeleteBlock_ = function() {
     trashcan.close();
   }
   return this.wouldDeleteBlock_;
+};
+
+/**
+ * Update the style of block depending on whether variables inside the dragging
+ * block can be resolved in the context of the pointed workspace.
+ * @param {Blockly.Workspace} targetWorkspace The workspace where the dragging
+ *     block would transfer if it's dropped immediately.
+ */
+Blockly.BlockDragger.prototype.updateReferenceStateDuringBlockDrag_ =
+    function(targetWorkspace) {
+  var resolved = true;
+  if (targetWorkspace && !this.draggedConnectionManager_.hasClosest()) {
+    // If the dragging block has found the closest connection, it means that
+    // all of references on the block are bound in their context by connecting
+    // with it. Otherwise check if they can be bound in the workspace's context.
+    if (!this.draggingBlock_.resolveReference(null, false, targetWorkspace)) {
+      resolved = false;
+    }
+  }
+  this.draggingBlock_.setInvalidStyle(!resolved);
 };
 
 /**
