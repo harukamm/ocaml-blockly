@@ -386,7 +386,9 @@ Blockly.FieldBoundVariable.prototype.highlightVariables_ = function(on, e) {
   if (!this.variable_) {
     return;
   }
-  // TODO(harukam): Ignore events if the block is being dragged.
+  if (this.sourceBlock_.workspace.isDragging()) {
+    return;
+  }
   var variables = this.variable_.getAllBoundVariables();
   for (var i = 0, variable; variable = variables[i]; i++) {
     var field = variable.getContainerField();
