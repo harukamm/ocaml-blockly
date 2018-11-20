@@ -1674,9 +1674,9 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
     // Value blocks basically contain their reference blocks inside, but it
     // could not be true if reference blocks exist in workbench because
     // workbench could have implicit value context.
-    // If type-expr of an isolated reference block on workbench are unified
-    // with another type, its value block's type-expr should also be updated
-    // even if they are not connected.
+    // If we update type inference for isolated reference blocks on workbench,
+    // its value block's type-expr should also be updated even if they are not
+    // connected.
     var references = Blockly.BoundVariables.getAllVariablesOnBlocks(this,
         true /** Gets only references. */);
     var values = Blockly.BoundVariables.getValuesFromReferenceList(references);
