@@ -1699,31 +1699,6 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
 };
 
 /**
- * Gets variable environments this block implicitly holds.
- * @return {!Object}
- */
-Blockly.Block.prototype.getImplicitContext = function() {
-  if (this.isInFlyout) {
-    return{};
-  }
-  var workspace = this.workspace;
-  var env = {};
-  var mutators = [];
-  while (workspace && workspace.isMutator) {
-    mutators.push(workspace.ownerMutator_);
-    workspace = workspace.options.parentWorkspace;
-  }
-  // Merge variable contexts from the top parent to child.
-  for (var i = mutators.length - 1; 0 <= i; i--) {
-    var mutator = mutators[i];
-    if (goog.isFunction(mutator.getContext)) {
-      Object.assign(env, mutator.getContext());
-    }
-  }
-  return env;
-};
-
-/**
  * Whether there would be no getter block which refers to a non-existing
  * variable. Check not only this block but also all the blocks nested inside
  * it.
@@ -1737,7 +1712,7 @@ Blockly.Block.prototype.getImplicitContext = function() {
  */
 Blockly.Block.prototype.resolveReference = function(parentConnection,
       opt_bind) {
-  var env = Object.assign({}, this.getImplicitContext());
+  var env = Object.assign({}, this.workspace.getImplicitContext());
   if (parentConnection) {
     var parentBlock = parentConnection.getSourceBlock();
     Object.assign(env, parentBlock.allVisibleVariables(parentConnection));

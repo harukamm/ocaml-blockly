@@ -278,6 +278,31 @@ Blockly.Workspace.prototype.getReferenceDB = function() {
 };
 
 /**
+ * Gets variable environments the workspace implicitly holds.
+ * @return {!Object} Map to variable value keyed by name.
+ */
+Blockly.Workspace.prototype.getImplicitContext = function() {
+  if (this.isFlyout) {
+    return {};
+  }
+  var workspace = this;
+  var env = {};
+  var mutators = [];
+  while (workspace && workspace.isMutator) {
+    mutators.push(workspace.ownerMutator_);
+    workspace = workspace.options.parentWorkspace;
+  }
+  // Merge variable contexts from the top parent to child.
+  for (var i = mutators.length - 1; 0 <= i; i--) {
+    var mutator = mutators[i];
+    if (goog.isFunction(mutator.getContext)) {
+      Object.assign(env, mutator.getContext());
+    }
+  }
+  return env;
+};
+
+/**
  * Find all blocks in workspace.  Blocks are optionally sorted
  * by position; top to bottom (with slight LTR or RTL bias).
  * @param {boolean} ordered Sort the list if true.
