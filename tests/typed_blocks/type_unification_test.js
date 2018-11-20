@@ -948,11 +948,7 @@ function test_type_unification_workbenchBlocksTransferWorkspace() {
     // and copied ones.
     assertFalse(copy.resolveReference(left));
 
-    // TODO(harukam): Add function to check if references inside blocks can be
-    // resolved on the given workspace.
-    // ex) referenceBlock.resolveReferenceOnWorkspace(workspace), which is
-    //     expected to return false.
-    assertTrue(referenceBlock.resolveReference(null));
+    assertFalse(referenceBlock.resolveReference(null, false, workspace));
     assertFalse(copy.resolveReference(null));
     var var1 = workspace.newBlock('variables_get_typed');
     assertFalse(var1.resolveReference(null));

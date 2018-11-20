@@ -1707,16 +1707,31 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
  *     with the parent. If null, the block is not connected to any block.
  * @param {boolean=} opt_bind Bind the getter with the proper variable if
  *     true.
+ * @param {Blockly.Workspace=} opt_workspace If provided, assume that this
+ *     block has transferred to the workspace. Must be identical with a
+ *     connection's workspace if parentConnection is supplied.
  * @return {boolean} True if all of getter blocks inside this block  can refer
  *     to a existing variable.
  */
 Blockly.Block.prototype.resolveReference = function(parentConnection,
-      opt_bind) {
-  var contextWorkspace = parentConnection ?
-      parentConnection.getSourceBlock().workspace : this.workspace;
-  var env = Object.assign({}, contextWorkspace.getImplicitContext());
+      opt_bind, opt_workspace) {
+  var contextWorkspace;
+  var parentBlock;
+
+  // Find the implicit context of the workspace where this block is supposed
+  // to exist.
   if (parentConnection) {
-    var parentBlock = parentConnection.getSourceBlock();
+    parentBlock = parentConnection.getSourceBlock();
+    contextWorkspace = parentBlock.workspace;
+    goog.asserts.assert(!opt_workspace || opt_workspace == contextWorkspace);
+  } else if (opt_workspace) {
+    contextWorkspace = opt_workspace;
+  } else {
+    contextWorkspace = this.workspace;
+  }
+  var env = Object.assign({}, contextWorkspace.getImplicitContext());
+
+  if (parentConnection) {
     Object.assign(env, parentBlock.allVisibleVariables(parentConnection));
   }
 
