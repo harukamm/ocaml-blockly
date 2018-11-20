@@ -129,7 +129,14 @@ Blockly.DraggedConnectionManager.prototype.wouldDeleteBlock = function() {
  * @package
  */
 Blockly.DraggedConnectionManager.prototype.wouldConnectBlock = function() {
-  return !!this.closestConnection_;
+  if (!this.closestConnection_) {
+    return false;
+  }
+  // The dragged block cannot connect with block on the different workspace
+  // *immediately*. The dragged one should transfer to the workspace before that.
+  var currentWorkspace = this.topBlock_.workspace;
+  var targetWorkspace = this.closestConnection_.getSourceBlock().workspace;
+  return currentWorkspace == targetWorkspace;
 };
 
 /**
