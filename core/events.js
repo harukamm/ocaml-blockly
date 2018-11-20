@@ -127,6 +127,12 @@ Blockly.Events.VAR_RENAME = 'var_rename';
 Blockly.Events.UI = 'ui';
 
 /**
+ * Name of event that records a UI change with support for undo/redo.
+ * @const
+ */
+Blockly.Events.UI_WITH_UNDO = 'ui_with_undo';
+
+/**
  * Name of event that creates a comment.
  * @const
  */
@@ -358,6 +364,9 @@ Blockly.Events.fromJson = function(json, workspace) {
       break;
     case Blockly.Events.UI:
       event = new Blockly.Events.Ui(null);
+      break;
+    case Blockly.Events.UI_WITH_UNDO:
+      event = new Blockly.Events.UiWithUndo(null);
       break;
     case Blockly.Events.COMMENT_CREATE:
       event = new Blockly.Events.CommentCreate(null);

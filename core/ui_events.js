@@ -30,6 +30,7 @@ goog.require('Blockly.Events');
 goog.require('Blockly.Events.Abstract');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.math.Coordinate');
 
 /**
@@ -89,3 +90,51 @@ Blockly.Events.Ui.prototype.fromJson = function(json) {
   this.newValue = json['newValue'];
   this.blockId = json['blockId'];
 };
+
+/**
+ * Class for a UI event with support for undo/redo action.
+ * @param {Blockly.Block} block The affected block.
+ * @param {string} element One of 'selected', 'comment', 'mutator', etc.
+ * @param {*} oldValue Previous value of element.
+ * @param {*} newValue New value of element.
+ * @extends {Blockly.Events.Abstract}
+ * @constructor
+ */
+Blockly.Events.UiWithUndo = function(block, element, oldValue, newValue) {
+  goog.asserts.assert(element === 'mutatorOpen',
+      'This class Only supports mutator-open');
+  Blockly.Events.UiWithUndo.superClass_.constructor.call(this, block,
+      element, oldValue, newValue);
+  this.recordUndo = Blockly.Events.recordUndo;
+};
+goog.inherits(Blockly.Events.UiWithUndo, Blockly.Events.Ui);
+
+/**
+ * Type of this event.
+ * @type {string}
+ */
+Blockly.Events.UiWithUndo.prototype.type = Blockly.Events.UI_WITH_UNDO;
+
+/**
+ * Run an event.
+ * @param {boolean} forward True if run forward, false if run backward (undo).
+ */
+Blockly.Events.UiWithUndo.prototype.run = function(forward) {
+  var workspace = this.getEventWorkspace_();
+  var block = workspace.getBlockById(this.blockId);
+
+  if (this.oldValue == this.newValue) {
+    return;
+  }
+  switch (this.element) {
+    case 'mutatorOpen':
+      if (block.mutator) {
+        var value = forward ? this.newValue : this.oldValue;
+        block.mutator.setVisible(value);
+      }
+      break;
+    default:
+      return;
+  }
+};
+

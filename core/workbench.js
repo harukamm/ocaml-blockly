@@ -284,8 +284,10 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
   if (!this.initialized_) {
     this.init();
   }
-  Blockly.Events.fire(
-      new Blockly.Events.Ui(this.block_, 'mutatorOpen', !visible, visible));
+  if (Blockly.Events.isEnabled()) {
+    Blockly.Events.fire(new Blockly.Events.UiWithUndo(this.block_,
+      'mutatorOpen', !visible, visible));
+  }
 
   // Show or hide the bubble. It also shows/hides the mutator because the
   // bubble contains whole the mutator.
