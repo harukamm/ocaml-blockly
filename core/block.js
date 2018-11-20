@@ -1753,7 +1753,7 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
     for (var i = 0, child; child = block.childBlocks_[i]; i++) {
       var outputConn = child.outputConnection;
       var targetConn = outputConn && outputConn.targetConnection;
-      var additionalEnv = block.allVisibleVariables(targetConn, false);
+      var additionalEnv = block.getVisibleVariablesImpl(targetConn);
       var envOfChild = Object.assign({}, envOfParent);
       Object.assign(envOfChild, additionalEnv);
       bfsStack.push([child, envOfChild]);
@@ -1795,25 +1795,31 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
  * Return all variables which is declared in blocks, and can be used later in
  * the given connection's input.
  * @param {!Blockly.Connection} connection Connection to specify a scope.
- * @param {boolean=} opt_bubble If false, just get variables in this block.
- *   If true, also get variables its ancestor blocks. Defaults to true.
  * @return {Object} Object mapping variable name to its variable representation.
  */
-Blockly.Block.prototype.allVisibleVariables = function(conn, opt_bubble) {
+Blockly.Block.prototype.allVisibleVariables = function(conn) {
   var env = {};
   // TODO(harukam): Use ordered dictionary to keep the order of variable
   // declaration.
   if (conn.getSourceBlock() == this) {
-    if (opt_bubble !== false && this.parentBlock_) {
+    if (this.parentBlock_) {
       var targetConnection = this.outputConnection.targetConnection;
-      env = this.parentBlock_.allVisibleVariables(targetConnection, true);
+      env = this.parentBlock_.allVisibleVariables(targetConnection);
     }
-    if (goog.isFunction(this.getVisibleVariables)) {
-      var scopeVariables = this.getVisibleVariables(conn);
-      env = Object.assign(env, scopeVariables);
-    }
+    env = Object.assign(env, this.getVisibleVariablesImpl(conn));
   }
   return env;
+};
+
+/**
+ * Finds a list of variable values on this block which are referable inside
+ * the input of the given connection.
+ * @param {!Blockly.Connection} conn The connection.
+ * @return {!Object} Map to variable values by its name.
+ */
+Blockly.Block.prototype.getVisibleVariablesImpl = function(conn) {
+  return goog.isFunction(this.getVisibleVariables) ?
+      this.getVisibleVariables(conn) : {};
 };
 
 /**
