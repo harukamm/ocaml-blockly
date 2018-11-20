@@ -1712,7 +1712,9 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
  */
 Blockly.Block.prototype.resolveReference = function(parentConnection,
       opt_bind) {
-  var env = Object.assign({}, this.workspace.getImplicitContext());
+  var contextWorkspace = parentConnection ?
+      parentConnection.getSourceBlock().workspace : this.workspace;
+  var env = Object.assign({}, contextWorkspace.getImplicitContext());
   if (parentConnection) {
     var parentBlock = parentConnection.getSourceBlock();
     Object.assign(env, parentBlock.allVisibleVariables(parentConnection));

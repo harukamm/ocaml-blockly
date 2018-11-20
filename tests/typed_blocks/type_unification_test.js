@@ -905,13 +905,10 @@ function test_type_unification_howReferenceBlockDiffers() {
     assertEquals(referenceWB.getTypeExpr().deref(), letValueWB.getTypeExpr());
     var intArithWB = workspace.newBlock('int_arithmetic_typed');
     var left = intArithWB.getInput('A').connection;
-    // TODO(harukam): Fix the following problem. Reference resolution is
-    // expected to fail, but it is successful.
-    assertTrue(referenceBlockWB.resolveReference(left));
-    // assertFalse(referenceBlockWB.resolveReference(left));
+    assertFalse(referenceBlockWB.resolveReference(left));
     var copy = copyAndPasteBlock(referenceBlockWB, intArithWB.workspace);
-    // TODO(harukam): The result of reference resolution must be consistent
-    // between blocks and copied ones.
+    // The result of reference resolution must be consistent between blocks
+    // and copied ones.
     assertFalse(copy.resolveReference(left));
 
     // Conditions hold in "created manually" case.
@@ -945,13 +942,10 @@ function test_type_unification_workbenchBlocksTransferWorkspace() {
 
     var floatArith = workspace.newBlock('float_arithmetic_typed');
     var left = floatArith.getInput('A').connection;
-    // TODO(harukam): Fix the following problem. Reference resolution is
-    // expected to fail, but it is successful.
-    assertTrue(referenceBlock.resolveReference(left));
-    // assertFalse(referenceBlock.resolveReference(left));
+    assertFalse(referenceBlock.resolveReference(left));
     var copy = copyAndPasteBlock(referenceBlock, floatArith.workspace);
-    // TODO(harukam): The result of reference resolution must be consistent
-    // between blocks and copied ones.
+    // The result of reference resolution must be consistent between blocks
+    // and copied ones.
     assertFalse(copy.resolveReference(left));
   } finally {
     if (workbench) {
