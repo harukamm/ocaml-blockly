@@ -380,6 +380,7 @@ Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
     // TODO(harukam): Avoid providing prototype name using string literal.
     var getterBlock = this.workspace_.newBlock('variables_get_typed');
     var field = getterBlock.getField('VAR');
+    field.initModel();
     field.setVariableName(name);
     field.setBoundValue(variable);
     var dom = Blockly.Xml.blockToDom(getterBlock);
