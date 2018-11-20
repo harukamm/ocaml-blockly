@@ -1795,18 +1795,30 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
  * Return all variables which is declared in blocks, and can be used later in
  * the given connection's input.
  * @param {!Blockly.Connection} connection Connection to specify a scope.
+ * @param {boolean=} opt_implicit If true, also collect implicit context of the
+ *     workspace.
  * @return {Object} Object mapping variable name to its variable representation.
  */
-Blockly.Block.prototype.allVisibleVariables = function(conn) {
-  var env = {};
+Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit) {
+  if (conn.getSourceBlock() != this) {
+    return {};
+  }
+  var env = opt_implicit == true ? this.workspace.getImplicitContext() : {};
+
   // TODO(harukam): Use ordered dictionary to keep the order of variable
   // declaration.
-  if (conn.getSourceBlock() == this) {
-    if (this.parentBlock_) {
-      var targetConnection = this.outputConnection.targetConnection;
-      env = this.parentBlock_.allVisibleVariables(targetConnection);
-    }
-    env = Object.assign(env, this.getVisibleVariablesImpl(conn));
+  var blocksToCheck = [[this, conn]];
+  var block = this;
+  while (block && block.getParent()) {
+    var targetConnection = block.outputConnection.targetConnection;
+    block = block.getParent();
+    blocksToCheck.push([block, targetConnection]);
+  }
+
+  for (var i = blocksToCheck.length - 1, pair; pair = blocksToCheck[i]; i--) {
+    var block = pair[0];
+    var connection = pair[1];
+    env = Object.assign(env, block.getVisibleVariablesImpl(connection));
   }
   return env;
 };
