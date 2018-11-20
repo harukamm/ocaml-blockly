@@ -873,3 +873,90 @@ function test_type_unification_nestedWorkbenchContext() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_howReferenceBlockDiffers() {
+  // This test shows the difference between reference block created by
+  // workbench and one created manually using workspace.newBlock().
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    // Blocks for "created by workbench" case.
+    var letBlockWB = workspace.newBlock('let_typed');
+    var letValueWB = getVariable(letBlockWB);
+    setVariableName(letBlockWB, 'j');
+    workbench = create_mock_workbench(letBlockWB);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlockWB = blocks[0];
+    var referenceWB = getVariable(referenceBlockWB);
+
+    // Blocks for "created manually" case.
+    var letBlockMN = workspace.newBlock('let_typed');
+    var letValueMN = getVariable(letBlockMN);
+    setVariableName(letBlockMN, 'k');
+    var referenceBlockMN = workspace.newBlock('variables_get_typed');
+    var referenceMN = getVariable(referenceBlockMN);
+    setVariableName(referenceBlockMN, 'k');
+    referenceMN.setBoundValue(letValueMN);
+
+    // Conditions hold in "created by workbench" case.
+    assertTrue(isVariableOf(referenceBlockWB, letBlockWB, 'j'));
+    assertEquals(referenceWB.getBoundValue(), letValueWB);
+    assertEquals(referenceWB.getTypeExpr().deref(), letValueWB.getTypeExpr());
+    var intArithWB = workspace.newBlock('int_arithmetic_typed');
+    var left = intArithWB.getInput('A').connection;
+    // TODO(harukam): Fix the following problem. Reference resolution is
+    // expected to fail, but it is successful.
+    assertTrue(referenceBlockWB.resolveReference(left));
+    // assertFalse(referenceBlockWB.resolveReference(left));
+    var copy = copyAndPasteBlock(referenceBlockWB, intArithWB.workspace);
+    // TODO(harukam): The result of reference resolution must be consistent
+    // between blocks and copied ones.
+    assertFalse(copy.resolveReference(left));
+
+    // Conditions hold in "created manually" case.
+    assertTrue(isVariableOf(referenceBlockMN, letBlockMN, 'k'));
+    assertEquals(referenceMN.getBoundValue(), letValueMN);
+    assertNotEquals(referenceMN.getTypeExpr(), letValueMN.getTypeExpr());
+    assertEquals(referenceMN.getTypeExpr().deref(), letValueMN.getTypeExpr());
+    var intArithMN = workspace.newBlock('int_arithmetic_typed');
+    var left = intArithMN.getInput('A').connection;
+    assertFalse(referenceBlockMN.resolveReference(left));
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
+
+function test_type_unification_workbenchBlocksTransferWorkspace() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var letValue = getVariable(letBlock);
+    setVariableName(letBlock, 'j');
+    workbench = create_mock_workbench(letBlock);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlock = blocks[0];
+    var reference = getVariable(referenceBlock);
+
+    var floatArith = workspace.newBlock('float_arithmetic_typed');
+    var left = floatArith.getInput('A').connection;
+    // TODO(harukam): Fix the following problem. Reference resolution is
+    // expected to fail, but it is successful.
+    assertTrue(referenceBlock.resolveReference(left));
+    // assertFalse(referenceBlock.resolveReference(left));
+    var copy = copyAndPasteBlock(referenceBlock, floatArith.workspace);
+    // TODO(harukam): The result of reference resolution must be consistent
+    // between blocks and copied ones.
+    assertFalse(copy.resolveReference(left));
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
