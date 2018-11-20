@@ -1782,7 +1782,7 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
  */
 Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
   var referenceList = this.getVariables(true /** Gets only references. */);
-  var allBound = true;
+  var allSuccess = true;
   for (var i = 0, variable; variable = referenceList[i]; i++) {
     var name = variable.getVariableName();
     var value = env[name];
@@ -1793,10 +1793,10 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
     } else if (opt_bind !== true) {
       return false;
     } else {
-      allBound = false;
+      allSuccess = false;
     }
   }
-  return opt_bind ? allBound : true;
+  return allSuccess;
 };
 
 /**
