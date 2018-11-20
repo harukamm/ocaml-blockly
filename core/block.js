@@ -1752,7 +1752,7 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
 
     var success = block.resolveReferenceWithEnv_(envOfParent, opt_bind);
     allSuccess = allSuccess && success;
-    if (!success && !opt_bind) {
+    if (!success && opt_bind !== true) {
       // Some of references can not be resolved. If no need to bind other
       // references, just quit.
       return false;
@@ -1790,7 +1790,7 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
     var valid = currentValue ? currentValue == value : !!value;
     if (valid) {
       variable.setBoundValue(value);
-    } else if (!opt_bind) {
+    } else if (opt_bind !== true) {
       return false;
     } else {
       allBound = false;
