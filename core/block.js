@@ -1796,14 +1796,14 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
  * the given connection's input.
  * @param {!Blockly.Connection} connection Connection to specify a scope.
  * @param {boolean=} opt_implicit If true, also collect implicit context of the
- *     workspace.
+ *     workspace. Defaults to false.
  * @return {Object} Object mapping variable name to its variable representation.
  */
 Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit) {
   if (conn.getSourceBlock() != this) {
     return {};
   }
-  var env = opt_implicit == true ? this.workspace.getImplicitContext() : {};
+  var env = opt_implicit === true ? this.workspace.getImplicitContext() : {};
 
   // TODO(harukam): Use ordered dictionary to keep the order of variable
   // declaration.
