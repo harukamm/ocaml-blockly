@@ -293,8 +293,8 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
       var local = manager.localConnection();
       var closest = manager.closestConnection();
       var replaceCallback = function(newBlock) {
-        this.draggedConnectionManager_.replaceBlock(newBlock);
-        this.draggingBlock_ = newBlock;
+          this.draggedConnectionManager_.replaceBlock(newBlock);
+          this.draggingBlock_ = newBlock;
       }
       this.workspaceTransferManager_.placeNewBlock(
           local, closest, replaceCallback.bind(this));
