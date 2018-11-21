@@ -123,11 +123,19 @@ Blockly.DraggedConnectionManager.prototype.wouldDeleteBlock = function() {
 };
 
 /**
- * Return whether the closest connection has been found currently.
- * @return {boolean} True if the closest connection has been found.
+ * Return the closest connection based on the most recent move event.
+ * @return {Blockly.Connection} The closest connection or null.
  */
-Blockly.DraggedConnectionManager.prototype.hasClosest = function() {
-  return !!this.closestConnection_;
+Blockly.DraggedConnectionManager.prototype.closestConnection = function() {
+  return this.closestConnection_ || null;
+};
+
+/**
+ * Return the connection that would connect to the closest connection.
+ * @return {Blockly.Connection} The connection.
+ */
+Blockly.DraggedConnectionManager.prototype.localConnection = function() {
+  return this.localConnection_ || null;
 };
 
 /**
