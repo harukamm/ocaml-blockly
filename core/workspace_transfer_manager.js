@@ -190,7 +190,7 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
   var position = goog.math.Coordinate.sum(localXY, surfaceXY);
   newBlock.moveBy(position.x, position.y);
 
-  if (opt_onReplace) {
+  if (goog.isFunction(opt_onReplace)) {
     opt_onReplace(newBlock);
   }
   oldBlock.dispose();
