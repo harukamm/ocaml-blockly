@@ -392,7 +392,7 @@ Blockly.Block.prototype.getEquivalentConnection = function(connection) {
   if (this.type !== targetBlock.type) {
     return null;
   } else if (this == targetBlock) {
-    return conn;
+    return connection;
   }
   var thisConnection = null;
   if (targetBlock.outputConnection == connection) {
