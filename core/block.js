@@ -1809,7 +1809,7 @@ Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit) {
   // declaration.
   var blocksToCheck = [[this, conn]];
   var block = this;
-  while (block && block.getParent()) {
+  while (block.getParent()) {
     var targetConnection = block.outputConnection.targetConnection;
     block = block.getParent();
     blocksToCheck.push([block, targetConnection]);
