@@ -94,6 +94,14 @@ Blockly.BlockDragger = function(block, workspace) {
   this.wouldDeleteBlock_ = false;
 
   /**
+   * Whether variables check was successful when the last drag event was fired.
+   * Used to find if the result is changed.
+   * @type {boolean}
+   * @private
+   */
+  this.lastResolvedResult_ = false;
+
+  /**
    * The location of the top left corner of the dragging block just before the
    * the drag in workspace coordinates.
    * @type {!goog.math.Coordinate}
@@ -351,7 +359,11 @@ Blockly.BlockDragger.prototype.updateReferenceStateDuringBlockDrag_ =
       resolved = false;
     }
   }
-  this.draggingBlock_.setInvalidStyle(!resolved);
+
+  if (this.lastResolvedResult_ !== resolved) {
+    this.lastResolvedResult_ = resolved;
+    this.draggingBlock_.setInvalidStyle(!resolved);
+  }
 };
 
 /**
