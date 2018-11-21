@@ -499,3 +499,34 @@ function test_type_transfer_block_workspace_bugResolvedVariableConnectFails() {
     workspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_clearTypeInferenceByDisposeOfBlock() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var letValue = getVariable(letBlock);
+    setVariableName(letBlock, 'x');
+    workbench = create_mock_workbench(letBlock);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlockWB = blocks[0];
+    var referenceWB = getVariable(referenceBlockWB);
+    var referenceTypExpr = referenceWB.getTypeExpr();
+
+    var intArith1 = workbench.getWorkspace().newBlock('int_arithmetic_typed');
+    var left = intArith1.getInput('A').connection;
+    left.connect(referenceBlockWB.outputConnection);
+
+    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.INT_);
+
+    intArith1.dispose();
+
+    assertEquals(referenceTypExpr.deref(), letValue.getTypeExpr());
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}

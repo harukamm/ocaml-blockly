@@ -872,6 +872,11 @@ Blockly.BlockSvg.prototype.dispose = function(healStack, animate) {
 
   goog.dom.removeNode(this.svgGroup_);
   blockWorkspace.resizeContents();
+
+  // Rerender remaining blocks on related workspaces because type-exprs could
+  // have been changed by disconnecting blocks.
+  blockWorkspace.renderRelatedWorkspaces();
+
   // Sever JavaScript to DOM connections.
   this.svgGroup_ = null;
   this.svgPath_ = null;
