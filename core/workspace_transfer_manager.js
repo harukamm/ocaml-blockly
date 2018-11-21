@@ -155,13 +155,19 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
  * new block takes the place of it. Throws an error if the dragged block would
  * not transfer.
  * This should be called at the end of a drag.
+ * @param {Blockly.Connection} localConnection The connection of the dragged
+ *     block that is due to connect to pendingTargetConnection.
+ * @param {Blockly.Connection} pendingTargetConnection The connection the
+ *     block is determined to connect to. If null, localConnection is also
+ *     null.
  * @param {Function=} opt_onReplace An optional function to be called before
  *     dispose of the old block.
  * @return {Block.Block} The block positioned in the same location with the
  *     current block.
  * @package
  */
-Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplace) {
+Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(
+    localConnection, pendingTargetConnection, opt_onReplace) {
   if (!this.wouldTransfer()) {
     throw 'The block would not transfer workspace.';
   }
@@ -175,13 +181,19 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
   // block.
   Blockly.transferring = oldBlock;
 
+  this.storePendingTarget_(oldBlock, localConnection, pendingTargetConnection);
+
+  var newBlock;
   try {
     // TODO: Define a transfer event in Blockly.Events, and fire it.
     var xml = Blockly.Xml.blockToDom(oldBlock);
-    var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
+    newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
     newBlock.replaceTypeExprWith(oldBlock);
   } finally {
     Blockly.transferring = null;
+    // Never forget to clear the pending target connection if it's stored.
+    this.storePendingTarget_(oldBlock, localConnection, null);
+    this.storePendingTarget_(newBlock, localConnection, null);
   }
 
   // Aline this block according to the new surface.
@@ -204,6 +216,33 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(opt_onReplac
   this.pointedWorkspace_ = null;
 
   return newBlock;
+};
+
+/**
+ * Helper function to store the waiting target connection to the given
+ * block's connection if it's found necessary.
+ * @param {!Blockly.Block} block The block which has a connection to store.
+ * @param {Blockly.Connection} connection The connection whose equivalent
+ *     connection on the given block to store. If null, does nothing.
+ * @param {Blockly.Connection} pendingTargetConnection The connection which is
+ *     waiting for connecting to the connection. If null, clear the stored
+ *     pending connection.
+ */
+Blockly.WorkspaceTransferManager.prototype.storePendingTarget_ = function(
+    block, connection, pendingTargetConnection) {
+  if (!connection) {
+    return;
+  }
+  var block = connection.getSourceBlock();
+  var equivalent = block.getEquivalentConnection(connection);
+  if (equivalent !== block.outputConnection) {
+    return;
+  }
+  if (!pendingTargetConnection) {
+    connection.storePendingTargetConnection(null);
+  } else if (pendingTargetConnection.isSuperior()) {
+    connection.storePendingTargetConnection(pendingTargetConnection);
+  }
 };
 
 /**
