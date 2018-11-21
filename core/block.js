@@ -2543,7 +2543,7 @@ Blockly.Blocks['lambda_typed'] = {
    */
   getWorkbenchContext: function() {
     var returnInput = this.getInput('RETURN');
-    return this.allVisibleVariables(returnInput.connection);
+    return this.allVisibleVariables(returnInput.connection, true);
   },
 
   clearTypes: function() {
@@ -2831,7 +2831,7 @@ Blockly.Blocks['let_typed'] = {
    */
   getWorkbenchContext: function() {
     var exp2 = this.getInput('EXP2');
-    return this.allVisibleVariables(exp2.connection);
+    return this.allVisibleVariables(exp2.connection, true);
   },
 
   /**

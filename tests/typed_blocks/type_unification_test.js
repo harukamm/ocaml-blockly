@@ -959,3 +959,65 @@ function test_type_unification_workbenchBlocksTransferWorkspace() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_2levelNestWorkbenchImplicitContext() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  var nestedWorkbench;
+  var nested2Workbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var letValue = getVariable(letBlock);
+    setVariableName(letBlock, 'f');
+    workbench = create_mock_workbench(letBlock);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlockWB = blocks[0];
+    var referenceWB = getVariable(referenceBlockWB);
+
+    var letBlockWB = workbench.getWorkspace().newBlock('let_typed');
+    var letValueWB = getVariable(letBlockWB);
+    setVariableName(letBlockWB, 'j');
+    nestedWorkbench = create_mock_workbench(letBlockWB);
+    blocks = getFlyoutBlocksFromWorkbench(nestedWorkbench);
+    assertEquals(blocks.length, 2);
+    var referenceBlockNestedWB1 = blocks[0];
+    var referenceBlockNestedWB2 = blocks[1];
+    var referenceNestedWB1 = getVariable(referenceBlockNestedWB1);
+    var referenceNestedWB2 = getVariable(referenceBlockNestedWB2);
+    assertEquals(referenceNestedWB1.getBoundValue(), letValue);
+    assertEquals(referenceNestedWB2.getBoundValue(), letValueWB);
+
+    var letBlockNestedWB = nestedWorkbench.getWorkspace().newBlock('let_typed');
+    var letValueNestedWB = getVariable(letBlockNestedWB);
+    setVariableName(letBlockNestedWB, 'f');
+    nested2Workbench = create_mock_workbench(letBlockNestedWB);
+    blocks = getFlyoutBlocksFromWorkbench(nested2Workbench);
+    assertEquals(blocks.length, 2);
+    // Variable 'f' that 'letValue' represents is just overwritten in the
+    // context. Blocks in workbench flyout are not always in order of
+    // occurrence.
+    assertEquals(getVariable(blocks[0]).getBoundValue(), letValueNestedWB);
+    assertEquals(getVariable(blocks[1]).getBoundValue(), letValueWB);
+    // If blocks are in order of occurrence, blocks[0] should have referred to
+    // 'letValueWB', and blocks[1] to 'letValueNestedWB'.
+
+    setVariableName(letBlock, 'x');
+    blocks = getFlyoutBlocksFromWorkbench(nested2Workbench);
+    assertEquals(blocks.length, 3);
+    assertEquals(getVariable(blocks[0]).getBoundValue(), letValue);
+    assertEquals(getVariable(blocks[1]).getBoundValue(), letValueWB);
+    assertEquals(getVariable(blocks[2]).getBoundValue(), letValueNestedWB);
+  } finally {
+    if (nested2Workbench) {
+      nested2Workbench.dispose();
+    }
+    if (nestedWorkbench) {
+      nestedWorkbench.dispose();
+    }
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
