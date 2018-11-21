@@ -461,3 +461,41 @@ function test_type_transfer_block_workspace_blocksOnDifferenceWorkspace() {
     workspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_bugResolvedVariableConnectFails() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var letValue = getVariable(letBlock);
+    setVariableName(letBlock, 'x');
+    workbench = create_mock_workbench(letBlock);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlockWB = blocks[0];
+    var referenceWB = getVariable(referenceBlockWB);
+
+    // [ <[x]> + <> ] on workbench
+    var exp2 = letBlock.getInput('EXP2').connection;
+    var intArith1 = workbench.getWorkspace().newBlock('int_arithmetic_typed');
+    intArith1.getInput('A').connection.connect(
+        referenceBlockWB.outputConnection);
+    assertTrue(intArith1.resolveReference(exp2));
+    var success = true;
+    try {
+      // Transfer the arithmetic blocks [ <[x]> + <> ] to another workspace.
+      var intArith1_trans = virtually_transfer_workspace(intArith1, workspace);
+    } catch (e) {
+      success = false;
+    }
+    assertTrue(intArith1.resolveReference(exp2));
+    // TODO: Transferring blocks fail though all variables get resolved! Fix it!
+    assertTrue(success);
+    exp2.connect(intArith1_trans.outputConnection);
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}

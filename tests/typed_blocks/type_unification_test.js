@@ -966,7 +966,7 @@ function test_type_unification_2levelNestWorkbenchImplicitContext() {
   var nestedWorkbench;
   var nested2Workbench;
   try {
-    var letBlock = workspace.newBlock('let_typed');
+    var letBlock = workspace.newBlock('lambda_typed');
     var letValue = getVariable(letBlock);
     setVariableName(letBlock, 'f');
     workbench = create_mock_workbench(letBlock);
