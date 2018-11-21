@@ -640,6 +640,26 @@ Blockly.Connection.prototype.targetBlock = function() {
 };
 
 /**
+ * Returns whether all variables on both of connection's block can be resolved
+ * when this connection connects to the given connection.
+ * @param {Blockly.Connection=} otherConnection Connection to compare against.
+ *     If not provided, check if variables only on the block contains can be
+ *     resolved.
+ * @return {boolean} True if variables on blocks can be resolved.
+ */
+Blockly.Connection.prototype.checkBoundVariables = function(otherConnection) {
+  if (otherConnection) {
+    var superior = this.isSuperior() ? this : otherConnection;
+    var inferior = superior == this ? otherConnection : this;
+    var childBlock = inferior.getSourceBlock();
+  } else {
+    var superior = null;
+    var childBlock = this.getSourceBlock();
+  }
+  return childBlock.resolveReference(superior);
+};
+
+/**
  * Is this connection compatible with another connection with respect to the
  * value type system.  E.g. square_root("Hello") is not compatible.
  * @param {!Blockly.Connection} otherConnection Connection to compare against.
@@ -652,10 +672,7 @@ Blockly.Connection.prototype.checkType_ = function(otherConnection) {
     if (!this.typeExpr.ableToUnify(otherConnection.typeExpr)) {
       return false;
     }
-    var superior = this.isSuperior() ? this : otherConnection;
-    var inferior = superior == this ? otherConnection : this;
-    var childBlock = inferior.getSourceBlock();
-    return childBlock.resolveReference(superior);
+    return this.checkBoundVariables(otherConnection);
   }
   if (!this.typeExpr && otherConnection.typeExpr) {
     return false;
