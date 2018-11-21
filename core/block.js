@@ -381,6 +381,40 @@ Blockly.Block.prototype.getConnections_ = function(_all) {
 };
 
 /**
+ * Search a list of connections for a equivalent one to the given connection
+ * on another block.
+ * @param {!Blockly.Connection} connection The connection whose corresponding
+ *     connection to search for.
+ * this.localConnection_ in the old block.
+ */
+Blockly.Block.prototype.getEquivalentConnection = function(connection) {
+  var targetBlock = connection.getSourceBlock();
+  if (this.type !== targetBlock.type) {
+    return null;
+  } else if (this == targetBlock) {
+    return conn;
+  }
+  var thisConnection = null;
+  if (targetBlock.outputConnection == connection) {
+    thisConnection = this.outputConnection;
+  } else if (targetBlock.previousConnection == connection) {
+    thisConnection = this.previouseConnection;
+  } else if (targetBlock.nextConnection == connection) {
+    thisConnection = this.nextConnection;
+  } else if (targetBlock.lastConnectionInStack() == connection) {
+    thisConnection = this.lastConnectionInStack();
+  } else {
+    var parentInput = goog.array.find(targetBlock.inputList, function(input) {
+      return input.connection == connection;
+    }, this);
+    if (parentInput) {
+      thisConnection = this.getInput(parentInput.name).connection;
+    }
+  }
+  return thisConnection;
+};
+
+/**
  * Walks down a stack of blocks and finds the last next connection on the stack.
  * @return {Blockly.Connection} The last next connection on the stack, or null.
  * @package
