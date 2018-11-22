@@ -99,7 +99,7 @@ Blockly.BlockDragger = function(block, workspace) {
    * @type {boolean}
    * @private
    */
-  this.lastResolvedResult_ = false;
+  this.lastResolvedResult_ = true;
 
   /**
    * The location of the top left corner of the dragging block just before the
