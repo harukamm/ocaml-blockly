@@ -1766,7 +1766,9 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
   var env = Object.assign({}, contextWorkspace.getImplicitContext());
 
   if (parentConnection) {
-    Object.assign(env, parentBlock.allVisibleVariables(parentConnection));
+    Object.assign(env, parentBlock.allVisibleVariables(parentConnection,
+        false /** Excludes the default implicit context. */,
+        true  /** Includes the potential context. */));
   }
 
   var bfsStack = [[this, env]];
@@ -1831,9 +1833,11 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
  * @param {!Blockly.Connection} connection Connection to specify a scope.
  * @param {boolean=} opt_implicit If true, also collect implicit context of the
  *     workspace. Defaults to false.
+ * @param {boolean=} opt_potential If true, also include potential context.
  * @return {Object} Object mapping variable name to its variable representation.
  */
-Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit) {
+Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit,
+    opt_potential) {
   if (conn.getSourceBlock() != this) {
     return {};
   }
@@ -1848,6 +1852,9 @@ Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit) {
     block = block.getParent();
     blocksToCheck.push([block, targetConnection]);
   }
+  if (opt_potential === true) {
+    Object.assign(env, this.getPotentialContext());
+  }
 
   for (var i = blocksToCheck.length - 1, pair; pair = blocksToCheck[i]; i--) {
     var block = pair[0];
@@ -1855,6 +1862,35 @@ Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit) {
     env = Object.assign(env, block.getVisibleVariablesImpl(connection));
   }
   return env;
+};
+
+/**
+ * Finds the list of variables on the block which this block is due to connect
+ * to. Returns empty unless another block is currently transferring and this
+ * block would take the place of the transferring block.
+ * @return {!Object} Object mapping variable name to variable representation.
+ */
+Blockly.Block.prototype.getPotentialContext = function() {
+  if (!Blockly.transferring.block ||
+      !Blockly.transferring.localConnection ||
+      !Blockly.transferring.pendingTargetConnection) {
+    return;
+  }
+  if (this.isTransferring() || this.getParent()) {
+    return;
+  }
+  // TODO(harukam): Check if this block is the newly created one that takes
+  // the place of transferring block.
+  var oldLocalConnection = Blockly.transferring.localConnection;
+  var newLocalConnection = this.getEquivalentConnection(oldLocalConnection);
+  var pendingTargetConnection = Blockly.transferring.pendingTargetConnection;
+
+  if (newLocalConnection == this.outputConnection) {
+    var pendingTargetBlock = pendingTargetConnection.getSourceBlock();
+    return pendingTargetBlock.allVisibleVariables(pendingTargetConnection,
+        false /** Excludes the default implicit context. */,
+        false /** Excludes the potential context. */);
+  }
 };
 
 /**
