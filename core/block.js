@@ -1167,11 +1167,11 @@ Blockly.Block.prototype.setTransferable = function(transferable) {
  * @return {boolean} True if this block is in the process of transferring.
  */
 Blockly.Block.prototype.isTransferring = function() {
-  if (!Blockly.transferring) {
+  if (!Blockly.transferring.block) {
     return false;
   }
-  if (Blockly.transferring.workspace != this.workspace) {
-    var transBlock = Blockly.transferring;
+  var transBlock = Blockly.transferring.block;
+  if (transBlock.workspace != this.workspace) {
     var mutatorWs = transBlock.mutator && transBlock.mutator.getWorkspace();
     return !!mutatorWs &&
         Blockly.WorkspaceTree.isDescendant(this.workspace, mutatorWs);
@@ -1179,7 +1179,7 @@ Blockly.Block.prototype.isTransferring = function() {
 
   var block = this;
   while (block) {
-    if (Blockly.transferring == block) {
+    if (transBlock == block) {
       return true;
     }
     block = block.getParent();

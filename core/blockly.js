@@ -77,11 +77,16 @@ Blockly.mainWorkspace = null;
 Blockly.selected = null;
 
 /**
- * Block currently in the process of transferring.
- * Must be a root block.
- * @type {Blockly.Block}
+ * Block currently in the process of transferring and connections that would
+ * be connected to each other when block's transferring is done.
+ * The block must be a root block.
+ * @type {!Object}
  */
-Blockly.transferring = null;
+Blockly.transferring = {
+  block: null,
+  localConnection: null,
+  pendingTargetConnection: null
+};
 
 /**
  * All of the connections on blocks that are currently being dragged.

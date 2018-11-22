@@ -171,17 +171,13 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(
   if (!this.wouldTransfer()) {
     throw 'The block would not transfer workspace.';
   }
-  goog.asserts.assert(!Blockly.transferring, 'Another blocks are ' +
-      'currently transferring.');
-
   var oldBlock = this.topBlock_;
 
   // Starts to transfer the block's workspace, which means the block would be
   // deleted after transferring, and it would be replaced with a newly created
   // block.
-  Blockly.transferring = oldBlock;
-
-  this.storePendingTarget_(oldBlock, localConnection, pendingTargetConnection);
+  this.setStartTransferring_(oldBlock, localConnection,
+      pendingTargetConnection);
 
   var newBlock;
   try {
@@ -190,10 +186,7 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(
     newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
     newBlock.replaceTypeExprWith(oldBlock);
   } finally {
-    Blockly.transferring = null;
-    // Never forget to clear the pending target connection if it's stored.
-    this.storePendingTarget_(oldBlock, localConnection, null);
-    this.storePendingTarget_(newBlock, localConnection, null);
+    this.setStartTransferring_(null);
   }
 
   // Aline this block according to the new surface.
@@ -216,6 +209,38 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(
   this.pointedWorkspace_ = null;
 
   return newBlock;
+};
+
+/**
+ * Store the block which starts to transfer to another workspace. Also record
+ * two connections that would be connected to each other when the block has
+ * transferred.
+ * If the block is null, just clear a stored block and connections.
+ * @param {Blockly.Block} block The block which starts to transfer to another
+ *     workspace.
+ * @param {Blockly.Connection=} opt_connection The connection that would
+ *     connect to opt_pendingTargetConnection. If provided, it should belong
+ *     to the block.
+ * @param {Blockly.Connection=} opt_pendingTargetConnection The connection
+ *     which is due to connect to the connection.
+ */
+Blockly.WorkspaceTransferManager.prototype.setStartTransferring_ = function(
+    block, connection, pendingTargetConnection) {
+  goog.asserts.assert(!connection || connection.getSourceBlock() == block);
+
+  if (block) {
+    var storedBlock = Blockly.transferring.block;
+    goog.asserts.assert(!storedBlock || storedBlock == block,
+        'Another blocks are currently transferring.');
+    Blockly.transferring.block = block;
+    Blockly.transferring.localConnection = connection ? connection : null;
+    Blockly.transferring.pendingTargetConnection =
+        pendingTargetConnection ? pendingTargetConnection : null;
+  } else {
+    Blockly.transferring.block = null;
+    Blockly.transferring.localConnection = null;
+    Blockly.transferring.pendingTargetConnection = null;
+  }
 };
 
 /**
