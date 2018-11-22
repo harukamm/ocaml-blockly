@@ -104,7 +104,10 @@ Blockly.WorkspaceTree.prototype.getParent_ = function() {
   if (this.workspace.options.parentWorkspace) {
     var parentId = this.workspace.options.parentWorkspace.id;
     var parentNode = Blockly.WorkspaceTree.find(parentId);
-    return parentNode;
+    var childId = this.workspace.id;
+    if (parentNode && childId in parentNode.children) {
+      return parentNode;
+    }
   }
   return null;
 };
