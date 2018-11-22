@@ -300,25 +300,26 @@ function test_type_transfer_block_workspace_cyclicReferences() {
     assertEquals(outerValue, referenceX.getBoundValue());
     assertEquals(value, referenceY.getBoundValue());
 
-    // Tests below fail for now because new blocks don't have the 'outerValue'
-    // on their variable environment. The new blocks are not connected to
-    // 'otherLetBlock' which contains 'outerValue'.
+    function checks() {
+      assertEquals(outerValue.referenceCount(), 2);
+      assertEquals(outerValue, referenceX.getBoundValue());
+    }
+    var localConnection = originalLetBlock.outputConnection;
+    var targetConnection = outerLetBlock.getInput('EXP2').connection;
+    var newLetBlock = virtually_transfer_workspace(originalLetBlock,
+        workspace, localConnection, targetConnection, checks);
+    var newValue = getVariable(newLetBlock);
+    var newVarBlockX = newLetBlock.getInputTargetBlock('EXP1');
+    var newVarBlockY = newLetBlock.getInputTargetBlock('EXP2');
+    var newReferenceX = getVariable(newVarBlockX);
+    var newReferenceY = getVariable(newVarBlockY);
 
-    // function checks() {
-    //   assertEquals(outerValue.referenceCount(), 2);
-    //   assertEquals(outerValue, referenceX.getBoundValue());
-    // }
-    // var newLetBlock = virtually_transfer_workspace(originalLetBlock,
-    //     otherWorkspace, checks);
-    // var newVarBlockX = newLetBlock.getInputTargetBlock('EXP1');
-    // var newVarBlockY = newLetBlock.getInputTargetBlock('EXP2');
-    // var newReferenceX = getVariable(newVarBlockX);
-    // var newReferenceY = getVariable(newVarBlockY);
+    assertEquals(outerValue.referenceCount(), 1);
 
-    // assertEquals(outerValue.referenceCount(), 1);
-
-    // assertEquals(outerValue, newReferenceX.getBoundValue());
-    // assertEquals(newValue, referenceY.getBoundValue());
+    assertEquals(null, referenceX.getBoundValue());
+    assertEquals(null, referenceY.getBoundValue());
+    assertEquals(outerValue, newReferenceX.getBoundValue());
+    assertEquals(newValue, newReferenceY.getBoundValue());
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();
