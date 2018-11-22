@@ -875,7 +875,9 @@ Blockly.BlockSvg.prototype.dispose = function(healStack, animate) {
 
   // Rerender remaining blocks on related workspaces because type-exprs could
   // have been changed by disconnecting blocks.
-  blockWorkspace.renderRelatedWorkspaces();
+  if (!blockWorkspace.isFlyout) {
+    blockWorkspace.renderRelatedWorkspaces();
+  }
 
   // Sever JavaScript to DOM connections.
   this.svgGroup_ = null;
