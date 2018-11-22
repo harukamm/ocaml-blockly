@@ -486,7 +486,7 @@ function test_type_transfer_block_workspace_bugResolvedVariableConnectFails() {
     try {
       // Transfer the arithmetic blocks [ <[x]> + <> ] to another workspace.
       var intArith1_trans = virtually_transfer_workspace(intArith1, workspace,
-          intArith1_trans.outputConnection, exp2);
+          intArith1.outputConnection, exp2);
     } catch (e) {
       success = false;
     }
