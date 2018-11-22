@@ -287,24 +287,7 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
     this.draggingBlock_.setDragging(false);
     this.draggingBlock_.setInvalidStyle(false);
     this.fireMoveEvent_();
-    if (this.workspaceTransferManager_ &&
-        this.workspaceTransferManager_.wouldTransfer()) {
-      var manager = this.draggedConnectionManager_;
-      var local = manager.localConnection();
-      var closest = manager.closestConnection();
-      var replaceCallback = function(newBlock) {
-          this.draggedConnectionManager_.replaceBlock(newBlock);
-          this.draggingBlock_ = newBlock;
-      }
-      this.workspaceTransferManager_.placeNewBlock(
-          local, closest, replaceCallback.bind(this));
-    }
-    if (this.draggedConnectionManager_.wouldConnectBlock()) {
-      // Applying connections also rerenders the relevant blocks.
-      this.draggedConnectionManager_.applyConnections();
-    } else {
-      this.draggingBlock_.render();
-    }
+    this.transferAndConnect_();
     this.draggingBlock_.scheduleSnapAndBump();
   }
   this.workspace_.setResizesEnabled(true);
@@ -322,6 +305,32 @@ Blockly.BlockDragger.prototype.fireMoveEvent_ = function() {
   event.oldCoordinate = this.startXY_;
   event.recordNew();
   Blockly.Events.fire(event);
+};
+
+/**
+ * Let the dragged block transfer to another workspace if it's needed, and
+ * connect to the closest connection.
+ * @private
+ */
+Blockly.BlockDragger.prototype.transferAndConnect_ = function() {
+  if (this.workspaceTransferManager_ &&
+      this.workspaceTransferManager_.wouldTransfer()) {
+    var manager = this.draggedConnectionManager_;
+    var local = manager.localConnection();
+    var closest = manager.closestConnection();
+    var replaceCallback = function(newBlock) {
+        this.draggedConnectionManager_.replaceBlock(newBlock);
+        this.draggingBlock_ = newBlock;
+    }
+    this.workspaceTransferManager_.placeNewBlock(
+        local, closest, replaceCallback.bind(this));
+  }
+  if (this.draggedConnectionManager_.wouldConnectBlock()) {
+    // Applying connections also rerenders the relevant blocks.
+    this.draggedConnectionManager_.applyConnections();
+  } else {
+    this.draggingBlock_.render();
+  }
 };
 
 /**
