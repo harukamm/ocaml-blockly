@@ -40,3 +40,31 @@ function test_type_workspace_tree_getParent() {
   ws4.options.parentWorkspace = ws1;
   assertEquals(node4.getParent_(), null);
 }
+
+function test_type_workspace_tree_getFamily() {
+  var ws1 = create_dummy_workspace();
+  var ws2 = create_dummy_workspace(ws1);
+  var ws3 = create_dummy_workspace(ws1);
+  var ws4 = create_dummy_workspace(ws3);
+
+  assertEquals(Blockly.WorkspaceTree.getFamily(ws1).length, 4);
+  assertEquals(Blockly.WorkspaceTree.getFamily(ws2).length, 4);
+  assertEquals(Blockly.WorkspaceTree.getFamily(ws3).length, 4);
+  assertEquals(Blockly.WorkspaceTree.getFamily(ws4).length, 4);
+
+  ws4.options.parentWorkspace = ws1;
+  assertEquals(Blockly.WorkspaceTree.getFamily(ws4).length, 1);
+  assertEquals(Blockly.WorkspaceTree.getFamily(ws4)[0], ws4);
+
+  ws4.options.parentWorkspace = ws3;
+  Blockly.WorkspaceTree.remove(ws4);
+  ws4.options.parentWorkspace = ws1;
+  Blockly.WorkspaceTree.add(ws4);
+
+  var node4 = Blockly.WorkspaceTree.find(ws4.id);
+  assertEquals(Blockly.WorkspaceTree.getFamily(ws4).length, 4);
+  assertEquals(node4.getParent_().workspace, ws1);
+
+  Blockly.WorkspaceTree.remove(ws1);
+  assertEquals(Blockly.WorkspaceTree.getFamily(ws1).length, 0);
+}

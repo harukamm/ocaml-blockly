@@ -210,8 +210,21 @@ Blockly.WorkspaceTree.getChildren = function(workspace) {
  * @return {!Array} List of related workspace.
  */
 Blockly.WorkspaceTree.getFamily = function(workspace) {
-  var mainWorkspace = workspace.getMainWorkspace();
-  var children = Blockly.WorkspaceTree.getChildren(mainWorkspace);
-  var family = [mainWorkspace].concat(children);
-  return family;
+  var node = Blockly.WorkspaceTree.find(workspace.id);
+
+  // Make sure if the workspace exist in tree. If it doesn't exist, it means
+  // that the workspace is already disposed of, so must return an empty array.
+  if (node) {
+    var prevParent;
+    while (node) {
+      prevParent = node;
+      node = node.getParent_();
+    }
+    var mainNode = prevParent;
+    var mainWorkspace = mainNode.workspace;
+    var children = Blockly.WorkspaceTree.getChildren(mainWorkspace);
+    return [mainWorkspace].concat(children);
+  } else {
+    return [];
+  }
 };
