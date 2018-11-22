@@ -68,14 +68,23 @@ Blockly.WorkspaceTree.findWorkspace = function(id) {
 Blockly.WorkspaceTree.remove = function(workspace) {
   var id = workspace.id;
   var node = Blockly.WorkspaceTree.find(id);
-  if (!node) {
-    return;
+  if (node) {
+    Blockly.WorkspaceTree.removeNode(node);
   }
-  delete Blockly.WorkspaceTree.NodeMap_[id];
+};
+
+Blockly.WorkspaceTree.removeNode = function(node) {
+  var childIds = Object.keys(node.children);
+  for (var i = 0, id; id = childIds[i]; i++) {
+    var childNode = node.children[id];
+    Blockly.WorkspaceTree.removeNode(childNode);
+  }
   var parentNode = node.getParent_();
+  var id = node.workspace.id;
   if (parentNode) {
     delete parentNode.children[id];
   }
+  delete Blockly.WorkspaceTree.NodeMap_[id];
 };
 
 /**
