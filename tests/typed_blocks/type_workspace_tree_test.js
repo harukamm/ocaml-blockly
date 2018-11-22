@@ -68,3 +68,28 @@ function test_type_workspace_tree_getFamily() {
   Blockly.WorkspaceTree.remove(ws1);
   assertEquals(Blockly.WorkspaceTree.getFamily(ws1).length, 0);
 }
+
+function test_type_workspace_tree_getParentBefore() {
+  var ws1 = create_dummy_workspace();
+  var ws2 = create_dummy_workspace(ws1);
+  var ws3 = create_dummy_workspace(ws1);
+  var ws4 = create_dummy_workspace(ws3);
+  var ws5 = create_dummy_workspace(ws4);
+
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws5, ws1), ws3);
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws5, ws2), null);
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws4, ws3), ws4);
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws3, ws2), null);
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws4, ws4), null);
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws1, ws5), null);
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws2, ws2), null);
+
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws5, ws3), ws4);
+  var node4 = Blockly.WorkspaceTree.find(ws4.id);
+  delete node4.children[ws5.id];
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws5, ws3), null);
+
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws2, ws1), ws2);
+  ws2.options.parentWorkspace = null;
+  assertEquals(Blockly.WorkspaceTree.parentBefore(ws2, ws1), null);
+}

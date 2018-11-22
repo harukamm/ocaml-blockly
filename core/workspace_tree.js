@@ -168,13 +168,13 @@ Blockly.WorkspaceTree.isDescendant = function(childWs, parentWs) {
  * @return {Blockly.Workspace|null} The workspace, or null.
  */
 Blockly.WorkspaceTree.parentBefore = function(childWs, parentWs) {
-  var ws = childWs;
-  while (ws) {
-    var parent = ws.options.parentWorkspace;
-    if (parent == parentWs) {
-      return ws;
+  var node = Blockly.WorkspaceTree.find(childWs.id);
+  while (node) {
+    var parentNode = node.getParent_();
+    if (parentNode && parentNode.workspace == parentWs) {
+      return node.workspace;
     }
-    ws = parent;
+    node = parentNode;
   }
   return null;
 };
