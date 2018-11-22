@@ -494,8 +494,10 @@ function test_type_transfer_block_workspace_bugResolvedVariableConnectFails() {
     } catch (e) {
       success = false;
     }
+    assertEquals(intArith1.outputConnection.pendingTargetConnection, null);
     assertTrue(intArith1.resolveReference(exp2));
     // TODO: Transferring blocks fail though all variables get resolved! Fix it!
+    // assertEquals(intArith1_trans.outputConnection.pendingTargetConnection, null);
     // assertTrue(success);
     // exp2.connect(intArith1_trans.outputConnection);
   } finally {
