@@ -161,13 +161,10 @@ function getFlyoutBlocksFromWorkbench(workbench, opt_workspace) {
 function virtually_transfer_workspace(oldBlock, targetWorkspace,
     opt_localConnection, opt_pendingTargetConnection,
     opt_testDuringTransferring) {
-  assertTrue(!Blockly.transferring);
-  Blockly.transferring = oldBlock;
-
   var local = opt_localConnection ? opt_localConnection : null;
   var target = opt_pendingTargetConnection ?
       opt_pendingTargetConnection : null;
-  storePendingTarget(oldBlock, local, target);
+  setStartTransferring_(oldBlock, local, target);
   try {
     var xml = Blockly.Xml.blockToDom(oldBlock);
     var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace);
@@ -176,14 +173,17 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace,
       opt_testDuringTransferring(oldBlock, newBlock);
     }
   } finally {
-    Blockly.transferring = null;
-    storePendingTarget(oldBlock, local, target);
-    storePendingTarget(newBlock, local, target);
+    setStartTransferring_(null);
   }
 
   oldBlock.dispose();
 
   return newBlock;
+}
+
+function setStartTransferring_(block, connection, pendingTargetConnection) {
+  Blockly.WorkspaceTransferManager.prototype.setStartTransferring_.call(null,
+      block, connection, pendingTargetConnection);
 }
 
 function storePendingTarget(block, connection, pendingTargetConnection) {

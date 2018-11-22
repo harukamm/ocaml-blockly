@@ -482,22 +482,16 @@ function test_type_transfer_block_workspace_bugResolvedVariableConnectFails() {
         referenceBlockWB.outputConnection);
     assertTrue(intArith1.resolveReference(exp2));
 
-    function check(oldBlock, newBlock) {
-      assertEquals(oldBlock.outputConnection.pendingTargetConnection, exp2);
-      assertEquals(newBlock.outputConnection.pendingTargetConnection, exp2);
-    }
     var success = true;
     try {
       // Transfer the arithmetic blocks [ <[x]> + <> ] to another workspace.
       var intArith1_trans = virtually_transfer_workspace(intArith1, workspace,
-          intArith1_trans.outputConnection, exp2, check);
+          intArith1_trans.outputConnection, exp2);
     } catch (e) {
       success = false;
     }
-    assertEquals(intArith1.outputConnection.pendingTargetConnection, null);
     assertTrue(intArith1.resolveReference(exp2));
     // TODO: Transferring blocks fail though all variables get resolved! Fix it!
-    // assertEquals(intArith1_trans.outputConnection.pendingTargetConnection, null);
     // assertTrue(success);
     // exp2.connect(intArith1_trans.outputConnection);
   } finally {
