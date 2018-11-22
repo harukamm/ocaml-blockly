@@ -186,11 +186,6 @@ function setStartTransferring_(block, connection, pendingTargetConnection) {
       block, connection, pendingTargetConnection);
 }
 
-function storePendingTarget(block, connection, pendingTargetConnection) {
-  Blockly.WorkspaceTransferManager.prototype.storePendingTarget_.call(null,
-      block, connection, pendingTargetConnection);
-}
-
 function repeat_transfer_workspace(oldBlock, targetWorkspace, opt_times) {
   var times = opt_times ? opt_times : 5;
   var block = oldBlock;

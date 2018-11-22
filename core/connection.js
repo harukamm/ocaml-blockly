@@ -74,12 +74,6 @@ Blockly.Connection.REASON_SHADOW_PARENT = 6;
 Blockly.Connection.prototype.targetConnection = null;
 
 /**
- * Connection this connection is due to connect to.
- * @type {Blockly.Connection}
- */
-Blockly.Connection.prototype.pendingTargetConnection = null;
-
-/**
  * List of compatible value types.  Null if all types are compatible.
  * @type {Array}
  * @private
@@ -772,28 +766,6 @@ Blockly.Connection.prototype.replaceTypeExprWith = function(oldConnection,
       var newType = Blockly.RenderedTypeExpr.generateTypeVar();
       oldConnection.setTypeExpr(newType, true);
     }
-  }
-};
-
-/**
- * Store the target connection that is due to connect to this connection.
- * Called only if the waiting target connection needs to be stored temporarily.
- * @param {Blockly.Connection=} pendingTarget Connection scheduled but not
- *     yet connecting to this connection. If null, remove the existing pending
- *     connection.
- */
-Blockly.Connection.prototype.storePendingTargetConnection = function(
-    pendingTarget) {
-  goog.asserts.assert(!this.targetConnection, 'The connection has already ' +
-      'connected.');
-
-  if (pendingTarget) {
-    goog.asserts.assert(!this.pendingTargetConnection ||
-        this.pendingTargetConnection == pendingTarget,
-        'The connection is scheduled to connect to another connection.');
-    this.pendingTargetConnection = pendingTarget;
-  } else {
-    this.pendingTargetConnection = null;
   }
 };
 

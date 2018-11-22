@@ -244,33 +244,6 @@ Blockly.WorkspaceTransferManager.prototype.setStartTransferring_ = function(
 };
 
 /**
- * Helper function to store the waiting target connection to the given
- * block's connection if it's found necessary.
- * @param {!Blockly.Block} block The block which has a connection to store.
- * @param {Blockly.Connection} connection The connection whose equivalent
- *     connection on the given block to store. If null, does nothing.
- * @param {Blockly.Connection} pendingTargetConnection The connection which is
- *     waiting for connecting to the connection. If null, clear the stored
- *     pending connection.
- */
-Blockly.WorkspaceTransferManager.prototype.storePendingTarget_ = function(
-    block, connection, pendingTargetConnection) {
-  if (!connection) {
-    return;
-  }
-  var block = connection.getSourceBlock();
-  var equivalent = block.getEquivalentConnection(connection);
-  if (equivalent !== block.outputConnection) {
-    return;
-  }
-  if (!pendingTargetConnection) {
-    connection.storePendingTargetConnection(null);
-  } else if (pendingTargetConnection.isSuperior()) {
-    connection.storePendingTargetConnection(pendingTargetConnection);
-  }
-};
-
-/**
  * Update the pointed workspace based on the most recent move location.
  * @param {!Event} e The mouseup/touchend event.
  * @package
