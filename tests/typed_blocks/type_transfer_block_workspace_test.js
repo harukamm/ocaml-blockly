@@ -482,16 +482,19 @@ function test_type_transfer_block_workspace_bugResolvedVariableConnectFails() {
         referenceBlockWB.outputConnection);
     assertTrue(intArith1.resolveReference(exp2));
 
-    var success = true;
-    try {
-      // Transfer the arithmetic blocks [ <[x]> + <> ] to another workspace.
-      var intArith1_trans = virtually_transfer_workspace(intArith1, workspace,
-          intArith1.outputConnection, exp2);
-    } catch (e) {
-      success = false;
+    function check(oldBlock, newBlock) {
+      var env = newBlock.getPotentialContext();
+      assertTrue('x' in env);
+      assertEquals(Object.keys(env).length, 1);
+      assertEquals(env['x'], letValue);
+      env = newBlock.allVisibleVariables();
+      assertEquals(Object.keys(env).length, 0);
     }
+
+    // Transfer the arithmetic blocks [ <[x]> + <> ] to another workspace.
+    var intArith1_trans = virtually_transfer_workspace(intArith1, workspace,
+        intArith1.outputConnection, exp2);
     assertTrue(intArith1.resolveReference(exp2));
-    assertTrue(success);
     exp2.connect(intArith1_trans.outputConnection);
   } finally {
     if (workbench) {
