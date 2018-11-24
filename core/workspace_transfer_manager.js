@@ -161,7 +161,7 @@ Blockly.WorkspaceTransferManager.prototype.allowedToTransferTo_ = function(
       }
     }
   }
-  return true;
+  return workspace.getMainWorkspace() == this.mainWorkspace_;
 };
 
 /**
