@@ -1309,14 +1309,21 @@ Blockly.WorkspaceSvg.prototype.inFrontOf = function(other) {
 /**
  * Detect which workspace the mouse event occurs inside.
  * @param {!Event} e The mouseup/touchend event.
- * @return {!Blockly.WorkspaceSvg} The workspace where mouse event occurs.
+ * @param {Array.<!Blockly.WorkspaceSvg>} opt_workspaceList If provided, find
+ *     the matched workspace from this list of workspaces.
+ * @return {Blockly.WorkspaceSvg} The workspace where mouse event occurs. If
+ *     it's not found, returns null.
  */
-Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
+Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e,
+    opt_workspaceList) {
   var xy = new goog.math.Coordinate(e.clientX, e.clientY);
-  var mainWS = this.getMainWorkspace();
-  var children = Blockly.WorkspaceTree.getChildren(mainWS);
-  var targetWS = mainWS;
-  for (var i = 0, ws; ws = children[i]; i++) {
+  if (opt_workspaceList) {
+    var workspaceList = opt_workspaceList;
+  } else {
+    var workspaceList = Blockly.WorkspaceTree.getFamily(this);
+  }
+  var targetWS = null;
+  for (var i = 0, ws; ws = workspaceList[i]; i++) {
     if (ws.isInMutator()) {
       ws.recordWorkspaceArea();
     }
@@ -1324,14 +1331,12 @@ Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e) {
       continue;
     }
     // Check the layout order for workspace.
-    if (ws.inFrontOf(targetWS)) {
+    if (!targetWS || ws.inFrontOf(targetWS)) {
       targetWS = ws;
     }
   }
   // Color the outside edge of all workspaces for debugging.
-  var workspaces = [mainWS];
-  Array.prototype.push.apply(workspaces, children);
-  Blockly.utils.showRects(workspaces, targetWS);
+  Blockly.utils.showRects(workspaceList, targetWS);
 
   return targetWS;
 };

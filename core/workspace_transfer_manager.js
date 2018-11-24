@@ -262,7 +262,9 @@ Blockly.WorkspaceTransferManager.prototype.setStartTransferring_ = function(
  * @package
  */
 Blockly.WorkspaceTransferManager.prototype.update = function(e) {
-  this.pointedWorkspace_ = this.workspace_.detectWorkspace(e);
+  var pointedWS =
+      this.workspace_.detectWorkspace(e, this.availableWorkspaces_);
+  this.pointedWorkspace_ = pointedWS ? pointedWS : this.mainWorkspace_;
 
   // Other delete areas of workspaces the block are able to transfer to also
   // affect the block.
@@ -288,7 +290,9 @@ Blockly.WorkspaceTransferManager.prototype.initAvailableWorkspaces_ = function()
   var familyWs = Blockly.WorkspaceTree.getFamily(this.workspace_);
   var available = [];
   for (var i = 0, ws; ws = familyWs[i]; i++) {
-    available.push(ws);
+    if (this.allowedToTransferTo_(ws)) {
+      available.push(ws);
+    }
   }
   return available;
 };
