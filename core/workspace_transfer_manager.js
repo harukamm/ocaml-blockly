@@ -134,15 +134,25 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
   if (this.topBlock_.getParent()) {
     return false;
   }
+  return this.allowedToTransferTo_(this.pointedWorkspace_);
+};
+
+/**
+ * Returns if the dragged block is allowed to transfer to the given workspace.
+ * @param {!Blockly.Workspace} workspace The workspace to check if the dragged
+ *     block can transfer to.
+ * @return {boolean} True if the block can transfer to the workspace.
+ */
+Blockly.WorkspaceTransferManager.prototype.allowedToTransferTo_ = function(
+    workspace) {
   // TODO(harukam): The following check must be done for each nested blocks
   // inside this.topBlock_, not only the block itself.
   var mutator = this.topBlock_.mutator;
   var mutatorWorkspace = mutator ? mutator.getWorkspace() : null;
-  if (mutatorWorkspace && this.pointedWorkspace_.isMutator) {
+  if (mutatorWorkspace && workspace.isMutator) {
     // It's not allowed to transfer blocks to a workspace of blocks' mutator
     // and its child workspaces.
-    if (Blockly.WorkspaceTree.isDescendant(this.pointedWorkspace_,
-        mutatorWorkspace)) {
+    if (Blockly.WorkspaceTree.isDescendant(workspace, mutatorWorkspace)) {
       return false;
     }
   }
