@@ -145,6 +145,9 @@ Blockly.WorkspaceTransferManager.prototype.wouldTransfer = function() {
  */
 Blockly.WorkspaceTransferManager.prototype.allowedToTransferTo_ = function(
     workspace) {
+  if (!workspace.options.typedVersion) {
+    return false;
+  }
   // TODO(harukam): The following check must be done for each nested blocks
   // inside this.topBlock_, not only the block itself.
   var mutator = this.topBlock_.mutator;
