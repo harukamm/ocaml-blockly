@@ -1188,6 +1188,21 @@ Blockly.Block.prototype.isTransferring = function() {
 };
 
 /**
+ * Find a list of mutators which belong to this block or its nested blocks.
+ * @return {!Array} A list of mutators.
+ */
+Blockly.Block.prototype.getAllMutators = function() {
+  var blocks = this.getDescendants();
+  var mutators = [];
+  for (var i = 0, child; child = blocks[i]; i++) {
+    if (child.mutator) {
+      mutators.push(child.mutator);
+    }
+  }
+  return mutators;
+};
+
+/**
  * Is this block allowed to be copied?
  * @return {boolean} True if this block are copyable.
  */

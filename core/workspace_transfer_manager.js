@@ -148,15 +148,17 @@ Blockly.WorkspaceTransferManager.prototype.allowedToTransferTo_ = function(
   if (!workspace.options.typedVersion) {
     return false;
   }
-  // TODO(harukam): The following check must be done for each nested blocks
-  // inside this.topBlock_, not only the block itself.
-  var mutator = this.topBlock_.mutator;
-  var mutatorWorkspace = mutator ? mutator.getWorkspace() : null;
-  if (mutatorWorkspace && workspace.isMutator) {
+  var parentBefore = Blockly.WorkspaceTree.parentBefore(workspace,
+      this.workspace_);
+  if (workspace.isMutator && parentBefore) {
     // It's not allowed to transfer blocks to a workspace of blocks' mutator
     // and its child workspaces.
-    if (Blockly.WorkspaceTree.isDescendant(workspace, mutatorWorkspace)) {
-      return false;
+    var mutators = this.topBlock_.getAllMutators();
+    for (var i = 0, mutator; mutator = mutators[i]; i++) {
+      var mutatorWorkspace = mutator ? mutator.getWorkspace() : null;
+      if (mutatorWorkspace && mutatorWorkspace == parentBefore) {
+        return false;
+      }
     }
   }
   return true;

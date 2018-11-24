@@ -154,6 +154,28 @@ function getFlyoutBlocksFromWorkbench(workbench, opt_workspace) {
 
 /* End functions for workbenches. */
 
+function create_mock_transfer_manager(block) {
+  var manager = {
+    topBlock_: block,
+    workspace_: block.workspace,
+    mainWorkspace_: block.workspace.getMainWorkspace(),
+    initAvailableWorkspaces_: function() {
+      return Blockly.WorkspaceTransferManager.prototype.initAvailableWorkspaces_.call(
+          this);
+    },
+    allowedToTransferTo_: function(workspace) {
+      return Blockly.WorkspaceTransferManager.prototype.allowedToTransferTo_.call(
+          this, workspace);
+    },
+    dispose: function() {
+      this.topBlock_ = null;
+      this.workspace_ = null;
+      this.mainWorkspace_ = null;
+    }
+  };
+  return manager;
+}
+
 /**
  * Transfer block's workspace to the given workspace in the same way as
  * placeNewBlock() in Blockly.WorkspaceTransferManager.
