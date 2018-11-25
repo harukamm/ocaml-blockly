@@ -148,18 +148,10 @@ Blockly.WorkspaceTransferManager.prototype.allowedToTransferTo_ = function(
   if (!workspace.options.typedVersion) {
     return false;
   }
-  var parentBefore = Blockly.WorkspaceTree.parentBefore(workspace,
-      this.workspace_);
-  if (workspace.isMutator && parentBefore) {
-    // It's not allowed to transfer blocks to a workspace of blocks' mutator
-    // and its child workspaces.
-    var mutators = this.topBlock_.getAllMutators();
-    for (var i = 0, mutator; mutator = mutators[i]; i++) {
-      var mutatorWorkspace = mutator ? mutator.getWorkspace() : null;
-      if (mutatorWorkspace && mutatorWorkspace == parentBefore) {
-        return false;
-      }
-    }
+  // It's not allowed to transfer blocks to a workspace of blocks' mutator
+  // and its child workspaces.
+  if (Blockly.WorkspaceTree.isUnderBlocks(workspace, this.topBlock_)) {
+    return false;
   }
   return workspace.getMainWorkspace() == this.mainWorkspace_;
 };

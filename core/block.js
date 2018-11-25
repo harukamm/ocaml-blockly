@@ -1172,9 +1172,7 @@ Blockly.Block.prototype.isTransferring = function() {
   }
   var transBlock = Blockly.transferring.block;
   if (transBlock.workspace != this.workspace) {
-    var mutatorWs = transBlock.mutator && transBlock.mutator.getWorkspace();
-    return !!mutatorWs &&
-        Blockly.WorkspaceTree.isDescendant(this.workspace, mutatorWs);
+    return Blockly.WorkspaceTree.isUnderBlocks(this.workspace, transBlock);
   }
 
   var block = this;

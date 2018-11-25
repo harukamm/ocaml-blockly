@@ -228,3 +228,29 @@ Blockly.WorkspaceTree.getFamily = function(workspace) {
     return [];
   }
 };
+
+/**
+ * Returns the workspace is a mutator the given block or its nested blocks
+ * contain directly or indirectly. Would return true if the workspace is a nth
+ * level nested mutator of the blocks, for instance.
+ * @param {!Blockly.Workspace} workspace The workspace to be checked if it's
+ *     held by the blocks.
+ * @param {!Blockly.Block} block The block which might contain the mutator
+ *     workspace inside.
+ * @return {boolean} True if the workspace is held by the block or its nested
+ *     blocks.
+ */
+Blockly.WorkspaceTree.isUnderBlocks = function(workspace, block) {
+  var parentBefore = Blockly.WorkspaceTree.parentBefore(workspace,
+      block.workspace);
+  if (workspace.isMutator && parentBefore) {
+    var mutators = block.getAllMutators();
+    for (var i = 0, mutator; mutator = mutators[i]; i++) {
+      var mutatorWorkspace = mutator ? mutator.getWorkspace() : null;
+      if (mutatorWorkspace && mutatorWorkspace == parentBefore) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
