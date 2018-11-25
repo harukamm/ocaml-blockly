@@ -535,3 +535,24 @@ function test_type_transfer_block_workspace_clearTypeInferenceByDisposeOfBlock()
     workspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_fixOldListBlockTypeExpr() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    var list = workspace.newBlock('lists_create_with_typed');
+    assertEquals(list.outputConnection.typeExpr.label, Blockly.TypeExpr.LIST_);
+    function check(oldBlock, newBlock) {
+      assertEquals(oldBlock, list);
+      // TODO: The old block does not have list type expression any longer.
+      // Fix connection.replaceTypeExprWith().
+      assertEquals(oldBlock.outputConnection.typeExpr.label,
+          Blockly.TypeExpr.LIST_);
+    }
+    var transBlock = virtually_transfer_workspace(
+        list, otherWorkspace, null, null, check);
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}
