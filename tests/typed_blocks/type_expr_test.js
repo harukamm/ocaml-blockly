@@ -126,3 +126,20 @@ function test_type_expr_disconnect_types() {
   // Can not disconnect types if either one is a primitive type.
   assertEquals(tvar3.deref().label, Blockly.TypeExpr.INT_);
 }
+
+function test_type_expr_replaceTypeExprWith() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock1 = workspace.newBlock('let_typed');
+    var letBlock2 = workspace.newBlock('let_typed');
+    letBlock2.replaceTypeExprWith(letBlock1, false);
+    var typeExp1_1 = letBlock1.getInput('EXP1').connection.typeExpr;
+    var typeExp1_2 = letBlock2.getInput('EXP1').connection.typeExpr;
+    var typeExp2_1 = letBlock1.outputConnection.typeExpr;
+    var typeExp2_2 = letBlock2.outputConnection.typeExpr;
+    assertEquals(typeExp1_1, typeExp1_2);
+    assertEquals(typeExp2_1, typeExp2_2);
+  } finally {
+    workspace.dispose();
+  }
+}

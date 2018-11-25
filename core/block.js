@@ -1043,7 +1043,8 @@ Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock,
       var oldInput = oldBlock.inputList[i];
       if (input.connection) {
         goog.asserts.assert(input.name === oldInput.name);
-        input.connection.replaceTypeExprWith(oldInput.connection);
+        input.connection.replaceTypeExprWith(oldInput.connection,
+            opt_createTypeExpr);
         var targetBlock = input.connection.targetBlock();
         var oldTargetBlock = oldInput.connection.targetBlock();
         if (targetBlock && oldTargetBlock) {
