@@ -1327,6 +1327,11 @@ Blockly.WorkspaceSvg.prototype.detectWorkspace = function(e,
     if (ws.isInMutator()) {
       ws.recordWorkspaceArea();
     }
+    // TODO(harukam): It doesn't always mean that ws is shown because the
+    // return value of ws.isVisible() is true. It depends on whether its parent
+    // workspace is shown or not. To avoid this problem, search for the matched
+    // workspace in order by parent workspace then child one, and stop
+    // searching the descendent workspaces if a workspace is not visible.
     if (!ws.isVisible() || !ws.workspaceArea_.contains(xy)) {
       continue;
     }
