@@ -276,7 +276,8 @@ Blockly.Xml.blockToDom = function(block, opt_noId, opt_rootBlock) {
         container.appendChild(Blockly.Xml.cloneShadow_(shadow));
       }
       if (childBlock) {
-        var childBlockXml = Blockly.Xml.blockToDom(childBlock, opt_noId, block);
+        var childBlockXml = Blockly.Xml.blockToDom(childBlock, opt_noId,
+            rootBlock);
         container.appendChild(childBlockXml);
         empty = false;
       }
@@ -310,7 +311,7 @@ Blockly.Xml.blockToDom = function(block, opt_noId, opt_rootBlock) {
 
   var nextBlock = block.getNextBlock();
   if (nextBlock) {
-    var nextBlockXml = Blockly.Xml.blockToDom(nextBlock, opt_noId, block);
+    var nextBlockXml = Blockly.Xml.blockToDom(nextBlock, opt_noId, rootBlock);
     var container = goog.dom.createDom('next', null, nextBlockXml);
     element.appendChild(container);
   }
