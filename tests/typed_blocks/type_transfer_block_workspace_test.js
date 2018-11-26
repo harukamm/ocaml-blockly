@@ -556,3 +556,83 @@ function test_type_transfer_block_workspace_fixOldListBlockTypeExpr() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_nestedReferenceBlocksTransfer() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var letValue = getVariable(letBlock);
+    setVariableName(letBlock, 'x');
+    workbench = create_mock_workbench(letBlock);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlockWB = blocks[0];
+    var referenceWB = getVariable(referenceBlockWB);
+    var referenceTypExpr = referenceWB.getTypeExpr();
+
+    var floatArith = workbench.getWorkspace().newBlock('float_arithmetic_typed');
+    var left = floatArith.getInput('A').connection;
+    var exp2 = letBlock.getInput('EXP2').connection;
+
+    assertTrue(referenceBlockWB.resolveReference(left));
+    left.connect(referenceBlockWB.outputConnection);
+    assertEquals(referenceTypExpr.deref().label, Blockly.TypeExpr.FLOAT_);
+
+    assertTrue(referenceBlockWB.resolveReference(exp2));
+    var transBlock = virtually_transfer_workspace(floatArith, workspace,
+        floatArith.outputConnection, exp2);
+    var referenceBlock = transBlock.getInputTargetBlock('A');
+    var referenceTypExpr = getVariable(referenceBlock).getTypeExpr();
+    // 'referenceTypExpr' already refers to float type before 'transBlock' got
+    // connected to 'exp2' because type expressions in 'transBlock' have been
+    // replaced with those in 'floatArith.'
+    assertEquals(referenceTypExpr.deref().label, Blockly.TypeExpr.FLOAT_);
+    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.FLOAT_);
+    // 'transBlock' connects to 'exp2.'
+    exp2.connect(transBlock.outputConnection);
+    assertEquals(referenceTypExpr.deref().label, Blockly.TypeExpr.FLOAT_);
+    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.FLOAT_);
+    assertEquals(letBlock.getInput('EXP2').connection.typeExpr.deref().label,
+        Blockly.TypeExpr.FLOAT_);
+    // Variables on 'transBlock' are not bound in its context, but
+    // disconnecting it from 'exp2' input is allowed for now.
+    assertFalse(transBlock.resolveReference(null));
+    assertTrue(transBlock.resolveReference(exp2));
+    exp2.disconnect();
+
+    assertEquals(referenceTypExpr.deref().label, Blockly.TypeExpr.FLOAT_);
+    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.FLOAT_);
+
+    transBlock = virtually_transfer_workspace(transBlock,
+        workbench.getWorkspace());
+    referenceBlockWB = transBlock.getInputTargetBlock('A');
+    referenceBlockWB.outputConnection.disconnect();
+    referenceTypExpr = getVariable(referenceBlockWB).getTypeExpr();
+    assertEquals(referenceTypExpr.deref(), letValue.getTypeExpr());
+
+    var list = workbench.getWorkspace().newBlock('lists_create_with_typed');
+    var add0 = list.getInput('ADD0').connection;
+    assertTrue(referenceBlockWB.resolveReference(add0));
+    add0.connect(referenceBlockWB.outputConnection);
+
+    assertTrue(referenceBlockWB.resolveReference(exp2));
+
+    function check(oldBlock, newBlock) {
+      // Type expressions in the oldBlock have been removed.
+      assertNull(oldBlock.outputConnection.typeExpr);
+      assertNull(oldBlock.getInput('ADD0').connection.typeExpr);
+      assertNull(oldBlock.getInput('ADD1').connection.typeExpr);
+      assertNull(oldBlock.getInput('ADD2').connection.typeExpr);
+    }
+
+    var transBlock = virtually_transfer_workspace(list, workspace,
+        list.outputConnection, exp2, check);
+    exp2.connect(transBlock.outputConnection);
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
