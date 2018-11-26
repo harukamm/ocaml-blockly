@@ -228,7 +228,7 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   }
 
   // Sorin
-  if (parentConnection.typeExpr && childConnection.typeExpr && !this.typeCheckDisabled_) {
+  if (this.typeExprEnabled()) {
     if (!childBlock.resolveReference(parentConnection, true)) {
       throw 'Connecting these blocks will occur invalid variable reference.';
     }
@@ -244,7 +244,7 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   // Establish the connections.
   Blockly.Connection.connectReciprocally_(parentConnection, childConnection);
 
-  if (!this.typeCheckDisabled_) {
+  if (this.typeExprEnabled()) {
     var rootBlock = parentBlock.getRootBlock();
     rootBlock.updateTypeInference();
   }
@@ -439,8 +439,8 @@ Blockly.Connection.prototype.connect = function(otherConnection,
     return;
   }
   if (opt_disableTypeCheck === true) {
-    this.typeCheckDisabled_ = true;
-    otherConnection.typeCheckDisabled_ = true;
+    this.disableTypeCheck(true);
+    otherConnection.disableTypeCheck(true);
   }
   this.checkConnection_(otherConnection, true);
   // Determine which block is superior (higher in the source stack).
@@ -452,8 +452,8 @@ Blockly.Connection.prototype.connect = function(otherConnection,
     otherConnection.connect_(this);
   }
   if (opt_disableTypeCheck === true) {
-    this.typeCheckDisabled_ = false;
-    otherConnection.typeCheckDisabled_ = false;
+    this.disableTypeCheck(false);
+    otherConnection.disableTypeCheck(false);
   }
 };
 
@@ -687,7 +687,7 @@ Blockly.Connection.prototype.checkBoundVariables = function(otherConnection) {
  */
 Blockly.Connection.prototype.checkType_ = function(otherConnection) {
   // Sorin
-  if (this.typeExpr && otherConnection.typeExpr && !this.typeCheckDisabled_) {
+  if (this.typeExprEnabled()) {
     if (!this.typeExpr.ableToUnify(otherConnection.typeExpr)) {
       return false;
     }
@@ -785,6 +785,23 @@ Blockly.Connection.prototype.replaceTypeExprWith = function(oldConnection,
       oldConnection.setTypeExpr(null, true);
     }
   }
+};
+
+/**
+ * Returns if type expression is available for checking the connection.
+ * @return {boolean} True if type expression is available.
+ */
+Blockly.Connection.prototype.typeExprEnabled = function() {
+  return !!this.typeExpr && !this.typeCheckDisabled_;
+};
+
+/**
+ * Enable or disable to check the connection based on type expression.
+ * @param {boolean} disable If true, disable to check the connection using type
+ *     expression. Otherwise, enable it.
+ */
+Blockly.Connection.prototype.disableTypeCheck = function(disable) {
+  this.typeCheckDisabled_ = disable;
 };
 
 /**
