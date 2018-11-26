@@ -543,11 +543,11 @@ function test_type_transfer_block_workspace_fixOldListBlockTypeExpr() {
     var list = workspace.newBlock('lists_create_with_typed');
     assertEquals(list.outputConnection.typeExpr.label, Blockly.TypeExpr.LIST_);
     function check(oldBlock, newBlock) {
-      assertEquals(oldBlock, list);
-      // TODO: The old block does not have list type expression any longer.
-      // Fix connection.replaceTypeExprWith().
-      assertEquals(oldBlock.outputConnection.typeExpr.label,
-          Blockly.TypeExpr.LIST_);
+      // Type expressions in the oldBlock have been removed.
+      assertNull(oldBlock.outputConnection.typeExpr);
+      assertNull(oldBlock.getInput('ADD0').connection.typeExpr);
+      assertNull(oldBlock.getInput('ADD1').connection.typeExpr);
+      assertNull(oldBlock.getInput('ADD2').connection.typeExpr);
     }
     var transBlock = virtually_transfer_workspace(
         list, otherWorkspace, null, null, check);

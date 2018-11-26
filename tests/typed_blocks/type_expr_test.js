@@ -139,6 +139,15 @@ function test_type_expr_replaceTypeExprWith() {
     var typeExp2_2 = letBlock2.outputConnection.typeExpr;
     assertEquals(typeExp1_1, typeExp1_2);
     assertEquals(typeExp2_1, typeExp2_2);
+
+    var listBlock1 = workspace.newBlock('lists_create_with_typed');
+    var boolBlock = workspace.newBlock('logic_boolean_typed');
+    listBlock1.getInput('ADD0').connection.connect(boolBlock.outputConnection);
+    var listBlock2 = workspace.newBlock('lists_create_with_typed');
+    listBlock2.replaceTypeExprWith(listBlock1, true);
+    assertEquals(listBlock2.outputConnection.typeExpr.element_type.deref().label,
+        Blockly.TypeExpr.BOOL_);
+    assertNull(listBlock1.outputConnection.typeExpr);
   } finally {
     workspace.dispose();
   }

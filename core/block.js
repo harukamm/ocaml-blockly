@@ -1021,12 +1021,13 @@ Blockly.Block.prototype.setOutputTypeExpr = function(typeExpr, opt_overwrite) {
  * expressions on them.
  * @param {!Blockly.Block} oldBlock The block whose type expressions to replace
  *     that of this block.
- * @param {boolean=} opt_createTypeExpr If true, newly created type expressions
- *     are stored to the oldBlock after the replacement. If false, does not
- *     create. Defaults to true.
+ * @param {boolean=} opt_removeTypeExpr If true, remove references to type
+ *     expressions which has been stored in the oldBlock after the replacement.
+ *     If false, just leave them as they are. Removing them is recommended if
+ *     the oldBlock is being deleted. Defaults to true.
  */
 Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock,
-    opt_createTypeExpr) {
+    opt_removeTypeExpr) {
   var pairsToUnify = [[this, oldBlock]];
   while (pairsToUnify.length) {
     var pair = pairsToUnify.pop();
@@ -1037,14 +1038,14 @@ Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock,
     }
     if (thisBlock.outputConnection) {
       thisBlock.outputConnection.replaceTypeExprWith(
-          oldBlock.outputConnection, opt_createTypeExpr);
+          oldBlock.outputConnection, opt_removeTypeExpr);
     }
     for (var i = 0, input; input = thisBlock.inputList[i]; i++) {
       var oldInput = oldBlock.inputList[i];
       if (input.connection) {
         goog.asserts.assert(input.name === oldInput.name);
         input.connection.replaceTypeExprWith(oldInput.connection,
-            opt_createTypeExpr);
+            opt_removeTypeExpr);
         var targetBlock = input.connection.targetBlock();
         var oldTargetBlock = oldInput.connection.targetBlock();
         if (targetBlock && oldTargetBlock) {
@@ -1053,9 +1054,6 @@ Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock,
       }
     }
   }
-  // oldBlock now refers to newly created type expressions. Trigger a type
-  // inference.
-  oldBlock.updateTypeInference();
 };
 
 /**
@@ -1716,6 +1714,10 @@ Blockly.Block.prototype.moveBy = function(dx, dy) {
  * @param {boolean=} opt_reset True if types should be reset first.
  */
 Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
+  if (!this.outputConnection.typeExpr) {
+    // This block has no type-expr, or it is removed deleted.
+    return;
+  }
   var blocksToUpdate = [this];
 
   if (this.isInMutator) {

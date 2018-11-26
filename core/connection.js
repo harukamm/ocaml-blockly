@@ -753,18 +753,17 @@ Blockly.Connection.prototype.setTypeExpr = function(t, opt_overwrite) {
  * Replace a connection's type expression with another connection.
  * @param {!Blockly.Connection} oldConnection The connection whose type
  *     expression to be moved to this connection.
- * @param {boolean=} opt_createTypeExpr If true, newly created type expressions
- *     are stored to the oldConnection after the replacement. If false, does
- *     not create. Defaults to true.
+ * @param {boolean=} opt_removeTypeExpr If true, remove references to type
+ *     expressions which has been stored in the oldBlock after the replacement.
+ *     If false, just leave them as they are. Defaults to true.
  */
 Blockly.Connection.prototype.replaceTypeExprWith = function(oldConnection,
-    opt_createTypeExpr) {
+    opt_removeTypeExpr) {
   if (this.typeExpr && oldConnection.typeExpr) {
     this.setTypeExpr(oldConnection.typeExpr, true);
 
-    if (opt_createTypeExpr !== false) {
-      var newType = Blockly.RenderedTypeExpr.generateTypeVar();
-      oldConnection.setTypeExpr(newType, true);
+    if (opt_removeTypeExpr !== false) {
+      oldConnection.setTypeExpr(null, true);
     }
   }
 };
