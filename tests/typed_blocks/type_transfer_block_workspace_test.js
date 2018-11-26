@@ -636,3 +636,58 @@ function test_type_transfer_block_workspace_nestedReferenceBlocksTransfer() {
     workspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_NestedReferenceBlockInExp2() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var intArith = workspace.newBlock('int_arithmetic_typed');
+    var varBlock = workspace.newBlock('variables_get_typed');
+    letBlock.getInput('EXP2').connection.connect(intArith.outputConnection);
+    intArith.getInput('A').connection.connect(varBlock.outputConnection);
+    var transBlock = virtually_transfer_workspace(letBlock, otherWorkspace);
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}
+
+function test_type_transfer_block_workspace_fixedWorkbenchDeleted() {
+  var workspace = create_typed_workspace();
+  var workbench1, workbench2;
+  try {
+    var letBlock1 = workspace.newBlock('let_typed');
+    var letValue = getVariable(letBlock1);
+    setVariableName(letBlock1, 'x');
+    workbench1 = create_mock_workbench(letBlock1);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench1);
+    assertEquals(blocks.length, 1);
+    var referenceBlockWB = blocks[0];
+    var listBlockWB = workbench1.getWorkspace().newBlock('lists_create_with_typed');
+    var boolBlockWB = workbench1.getWorkspace().newBlock('logic_boolean_typed');
+    listBlockWB.getInput('ADD0').connection.connect(
+        referenceBlockWB.outputConnection);
+    listBlockWB.getInput('ADD1').connection.connect(
+        boolBlockWB.outputConnection);
+
+    var exp2 = letBlock1.getInput('EXP2').connection;
+    var listTrans = virtually_transfer_workspace(listBlockWB, workspace,
+        listBlockWB.outputConnection, exp2);
+    exp2.connect(listTrans.outputConnection);
+
+    var letBlock2 = workspace.newBlock('let_typed');
+    workbench2 = create_mock_workbench(letBlock2);
+
+    assertTrue(letBlock1.resolveReference(null));
+    var letTrans = virtually_transfer_workspace(letBlock1, workbench2.getWorkspace());
+  } finally {
+    if (workbench1) {
+      workbench1.dispose();
+    }
+    if (workbench2) {
+      workbench2.dispose();
+    }
+    workspace.dispose();
+  }
+}

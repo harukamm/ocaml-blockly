@@ -131,6 +131,13 @@ Blockly.Connection.prototype.dbOpposite_ = null;
 Blockly.Connection.prototype.hidden_ = null;
 
 /**
+ * Whether type checks for this connection is disabled for now.
+ * @type {boolean}
+ * @private
+ */
+Blockly.Connection.prototype.typeCheckDisabled_ = null;
+
+/**
  * Connect two connections together.  This is the connection on the superior
  * block.
  * @param {!Blockly.Connection} childConnection Connection on inferior block.
@@ -221,7 +228,7 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   }
 
   // Sorin
-  if (parentConnection.typeExpr && childConnection.typeExpr) {
+  if (parentConnection.typeExpr && childConnection.typeExpr && !this.typeCheckDisabled_) {
     if (!childBlock.resolveReference(parentConnection, true)) {
       throw 'Connecting these blocks will occur invalid variable reference.';
     }
@@ -237,8 +244,10 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   // Establish the connections.
   Blockly.Connection.connectReciprocally_(parentConnection, childConnection);
 
-  var rootBlock = parentBlock.getRootBlock();
-  rootBlock.updateTypeInference();
+  if (!this.typeCheckDisabled_) {
+    var rootBlock = parentBlock.getRootBlock();
+    rootBlock.updateTypeInference();
+  }
 
   // Demote the inferior block so that one is a child of the superior one.
   childBlock.setParent(parentBlock);
@@ -421,11 +430,17 @@ Blockly.Connection.prototype.isConnectionAllowed = function(candidate) {
 /**
  * Connect this connection to another connection.
  * @param {!Blockly.Connection} otherConnection Connection to connect to.
+ * @param {boolean=} opt_disableTypeCheck If true, disable type-expr checks.
  */
-Blockly.Connection.prototype.connect = function(otherConnection) {
+Blockly.Connection.prototype.connect = function(otherConnection,
+    opt_disableTypeCheck) {
   if (this.targetConnection == otherConnection) {
     // Already connected together.  NOP.
     return;
+  }
+  if (opt_disableTypeCheck === true) {
+    this.typeCheckDisabled_ = true;
+    otherConnection.typeCheckDisabled_ = true;
   }
   this.checkConnection_(otherConnection, true);
   // Determine which block is superior (higher in the source stack).
@@ -435,6 +450,10 @@ Blockly.Connection.prototype.connect = function(otherConnection) {
   } else {
     // Inferior block.
     otherConnection.connect_(this);
+  }
+  if (opt_disableTypeCheck === true) {
+    this.typeCheckDisabled_ = false;
+    otherConnection.typeCheckDisabled_ = false;
   }
 };
 
@@ -668,7 +687,7 @@ Blockly.Connection.prototype.checkBoundVariables = function(otherConnection) {
  */
 Blockly.Connection.prototype.checkType_ = function(otherConnection) {
   // Sorin
-  if (this.typeExpr && otherConnection.typeExpr) {
+  if (this.typeExpr && otherConnection.typeExpr && !this.typeCheckDisabled_) {
     if (!this.typeExpr.ableToUnify(otherConnection.typeExpr)) {
       return false;
     }

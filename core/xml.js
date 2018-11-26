@@ -593,9 +593,11 @@ Blockly.Xml.appendDomToWorkspace = function(xml, workspace) {
  * workspace.
  * @param {!Element} xmlBlock XML block element.
  * @param {!Blockly.Workspace} workspace The workspace.
+ * @param {boolean=} opt_disableTypeCheck If true, disable type-expr checks
+ *     while building a block.
  * @return {!Blockly.Block} The root block created.
  */
-Blockly.Xml.domToBlock = function(xmlBlock, workspace) {
+Blockly.Xml.domToBlock = function(xmlBlock, workspace, opt_disableTypeCheck) {
   if (xmlBlock instanceof Blockly.Workspace) {
     var swap = xmlBlock;
     xmlBlock = workspace;
@@ -607,7 +609,8 @@ Blockly.Xml.domToBlock = function(xmlBlock, workspace) {
   Blockly.Events.disable();
   var variablesBeforeCreation = workspace.getAllVariables();
   try {
-    var topBlock = Blockly.Xml.domToBlockHeadless_(xmlBlock, workspace);
+    var topBlock = Blockly.Xml.domToBlockHeadless_(xmlBlock, workspace,
+        opt_disableTypeCheck);
     // Generate list of all blocks.
     var blocks = topBlock.getDescendants(false);
     if (workspace.rendered) {
@@ -679,10 +682,13 @@ Blockly.Xml.domToVariables = function(xmlVariables, workspace) {
  * workspace.
  * @param {!Element} xmlBlock XML block element.
  * @param {!Blockly.Workspace} workspace The workspace.
+ * @param {boolean=} opt_disableTypeCheck If true, disable type-expr checks
+ *     while building a block.
  * @return {!Blockly.Block} The root block created.
  * @private
  */
-Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace) {
+Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace,
+    opt_disableTypeCheck) {
   var block = null;
   var prototypeName = xmlBlock.getAttribute('type');
   if (!prototypeName) {
@@ -692,6 +698,7 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace) {
   block = workspace.newBlock(prototypeName, id);
 
   var blockChild = null;
+  var disableTypeCheck = opt_disableTypeCheck === true;
   for (var i = 0, xmlChild; xmlChild = xmlBlock.childNodes[i]; i++) {
     if (xmlChild.nodeType == 3) {
       // Ignore any text at the <block> level.  It's all whitespace anyway.
@@ -769,11 +776,13 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace) {
         }
         if (childBlockElement) {
           blockChild = Blockly.Xml.domToBlockHeadless_(childBlockElement,
-              workspace);
+              workspace, disableTypeCheck);
           if (blockChild.outputConnection) {
-            input.connection.connect(blockChild.outputConnection);
+            input.connection.connect(blockChild.outputConnection,
+                disableTypeCheck);
           } else if (blockChild.previousConnection) {
-            input.connection.connect(blockChild.previousConnection);
+            input.connection.connect(blockChild.previousConnection,
+                disableTypeCheck);
           } else {
             throw Error(
                 'Child block does not have output or previous statement.');
@@ -793,11 +802,12 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace) {
             throw Error('Next statement is already connected.');
           }
           blockChild = Blockly.Xml.domToBlockHeadless_(childBlockElement,
-              workspace);
+              workspace, disableTypeCheck);
           if (!blockChild.previousConnection) {
             throw Error('Next block does not have previous statement.');
           }
-          block.nextConnection.connect(blockChild.previousConnection);
+          block.nextConnection.connect(blockChild.previousConnection,
+              disableTypeCheck);
         }
         break;
       default:
