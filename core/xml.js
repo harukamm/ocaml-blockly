@@ -918,12 +918,14 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   var variable = field.getVariable();
   variable.setVariableName(text);
   if (isForValue) {
-    var workspace = getWorkspaceFromDom(xml);
-    var variableInDB = Blockly.BoundVariables.getValueById(workspace, xml.id);
-    if (!workspace.isFlyout && variableInDB) {
-      // Copy the existing variable to this field's variable because a single
-      // bound-variable can not be shared by multiple blocks.
-      variableInDB.copyTo(variable);
+    if (xml.hasAttribute('workspace-id')) {
+      var workspace = getWorkspaceFromDom(xml);
+      var variableInDB = Blockly.BoundVariables.getValueById(workspace, xml.id);
+      if (!workspace.isFlyout && variableInDB) {
+        // Copy the existing variable to this field's variable because a single
+        // bound-variable can not be shared by multiple blocks.
+        variableInDB.copyTo(variable);
+      }
     }
   } else {
     var childDom = xml.children.length && xml.children[0];
@@ -940,7 +942,6 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
       }
     }
   }
-  field.setValue(variable.getId(), variable.getWorkspace());
 };
 
 /**

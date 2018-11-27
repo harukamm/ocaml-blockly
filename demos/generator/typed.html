@@ -123,6 +123,14 @@
         alert(e);
       }
     }
+
+    function fromXMLString(str, opt_workspace) {
+      var workspace = opt_workspace ? opt_workspace : Blockly.mainWorkspace;
+      var parser = new DOMParser();
+      var xml = parser.parseFromString(str, "text/xml");
+      var block = Blockly.Xml.domToBlock(xml.children[0], workspace);
+      return block;
+    }
   </script>
 
 </body>
