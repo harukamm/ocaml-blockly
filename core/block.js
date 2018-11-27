@@ -1171,17 +1171,9 @@ Blockly.Block.prototype.isTransferring = function() {
   }
   var transBlock = Blockly.transferring.block;
   if (transBlock.workspace != this.workspace) {
-    return Blockly.WorkspaceTree.isUnderBlocks(this.workspace, transBlock);
+    return !!this.workspace.isTransferring_;
   }
-
-  var block = this;
-  while (block) {
-    if (transBlock == block) {
-      return true;
-    }
-    block = block.getParent();
-  }
-  return false;
+  return !!this.isTransferring_;
 };
 
 /**
@@ -1736,13 +1728,13 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
 
   if (opt_reset) {
     for (var i = 0, block; block = blocksToUpdate[i]; i++) {
-      if (goog.isFunction(block.clearTypes)) {
+      if (!block.isTransferring() && goog.isFunction(block.clearTypes)) {
         block.clearTypes();
       }
     }
   }
   for (var i = 0, block; block = blocksToUpdate[i]; i++) {
-    if (goog.isFunction(block.infer)) {
+    if (!block.isTransferring() && goog.isFunction(block.infer)) {
       block.infer({});
     }
   }

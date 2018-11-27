@@ -670,12 +670,20 @@ function test_type_transfer_block_workspace_fixedWorkbenchDeleted() {
         referenceBlockWB.outputConnection);
     listBlockWB.getInput('ADD1').connection.connect(
         boolBlockWB.outputConnection);
+    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.BOOL_);
 
     var exp2 = letBlock1.getInput('EXP2').connection;
     var listTrans = virtually_transfer_workspace(listBlockWB, workspace,
         listBlockWB.outputConnection, exp2);
     exp2.connect(listTrans.outputConnection);
+    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.BOOL_);
 
+    var listTrans2 = virtually_transfer_workspace(listTrans,
+        workbench1.getWorkspace());
+    assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.BOOL_);
+
+    workbench1.dispose();
+    workbench1 = null;
     var letBlock2 = workspace.newBlock('let_typed');
     workbench2 = create_mock_workbench(letBlock2);
 
