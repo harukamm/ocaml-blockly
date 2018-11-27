@@ -192,19 +192,20 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace,
     // Create a new block with disabling type checks.
     var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace, true);
     newBlock.replaceTypeExprWith(oldBlock);
-    // The block has been built up. Finally trigger a type inference and variable
-    // resolution to make sure that the block follows the connection rule.
-    newBlock.resolveReference(null, true);
-    newBlock.updateTypeInference();
 
     if (goog.isFunction(opt_testDuringTransferring)) {
       opt_testDuringTransferring(oldBlock, newBlock);
     }
+    oldBlock.dispose();
+
+    // A new block has been built up and completely taken the place of the
+    // old one completely. Finally trigger a type inference and variable
+    // resolution to make sure that the block follows the connection rule.
+    newBlock.resolveReference(null, true);
+    newBlock.updateTypeInference();
   } finally {
     setStartTransferring_(null);
   }
-
-  oldBlock.dispose();
 
   return newBlock;
 }
