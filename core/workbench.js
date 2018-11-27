@@ -119,22 +119,7 @@ Blockly.Workbench.prototype.createEditor_ = function() {
   this.svgDialog_ = Blockly.utils.createSvgElement('svg',
       {'x': Blockly.Bubble.BORDER_WIDTH, 'y': Blockly.Bubble.BORDER_WIDTH},
       null);
-  var workspaceOptions = {
-    languageTree: null,
-      // TODO: Specify the tree. Workbench can accept blocks of any type.
-    parentWorkspace: this.block_.workspace,
-    pathToMedia: this.block_.workspace.options.pathToMedia,
-    RTL: this.block_.RTL,
-    toolboxPosition: this.block_.RTL ? Blockly.TOOLBOX_AT_RIGHT :
-        Blockly.TOOLBOX_AT_LEFT,
-    horizontalLayout: false,
-    typedVersion: this.block_.workspace.options.typedVersion,
-    getMetrics: this.getFlyoutMetrics_.bind(this),
-    setMetrics: null
-  };
-  this.workspace_ = new Blockly.WorkspaceSvg(workspaceOptions);
-  this.workspace_.isMutator = true;
-  this.workspace_.ownerMutator_ = this;
+  this.initWorkspace_();
 
   // Mutator flyouts go inside the mutator workspace's <g> rather than in
   // a top level svg. Instead of handling scale themselves, mutators
@@ -182,6 +167,28 @@ Blockly.Workbench.prototype.init = function() {
   this.workspace_.flyout_.init(this.workspace_);
 
   this.initialized_ = true;
+};
+
+Blockly.Workbench.prototype.initWorkspace_ = function() {
+  if (this.workspace_) {
+    return;
+  }
+  var workspaceOptions = {
+    languageTree: null,
+      // TODO: Specify the tree. Workbench can accept blocks of any type.
+    parentWorkspace: this.block_.workspace,
+    pathToMedia: this.block_.workspace.options.pathToMedia,
+    RTL: this.block_.RTL,
+    toolboxPosition: this.block_.RTL ? Blockly.TOOLBOX_AT_RIGHT :
+        Blockly.TOOLBOX_AT_LEFT,
+    horizontalLayout: false,
+    typedVersion: this.block_.workspace.options.typedVersion,
+    getMetrics: this.getFlyoutMetrics_.bind(this),
+    setMetrics: null
+  };
+  this.workspace_ = new Blockly.WorkspaceSvg(workspaceOptions);
+  this.workspace_.isMutator = true;
+  this.workspace_.ownerMutator_ = this;
 };
 
 /**
