@@ -254,3 +254,23 @@ Blockly.WorkspaceTree.isUnderBlocks = function(workspace, block) {
   }
   return false;
 };
+
+/**
+ * Get all of mutator workspaces which belong to the given block directly or
+ * indirectly.
+ * @param {!Blockly.Block} block The block whose mutators to search for.
+ * @return {!Array.<!Blockly.Workspace>} A list of mutator workspaces.
+ */
+Blockly.WorkspaceTree.getChildrenUnderBlock = function(block) {
+  var mutatorsOnBlock = block.getAllMutators();
+  var children = [];
+  for (var i = 0, mutator; mutator = mutatorsOnBlock[i]; i++) {
+    var mutatorWorkspace = mutator.getWorkspace();
+    if (mutatorWorkspace) {
+      children.push(mutatorWorkspace);
+      var nested = Blockly.WorkspaceTree.getChildren(mutatorWorkspace);
+      Array.prototype.push.apply(children, nested);
+    }
+  }
+  return children;
+};

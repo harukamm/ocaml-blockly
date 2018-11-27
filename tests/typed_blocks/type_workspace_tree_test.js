@@ -7,6 +7,47 @@ function create_dummy_workspace(parentWs) {
   return workspace;
 }
 
+function create_dummy_block(workspace, childBlocks) {
+  return {
+    workspace: workspace,
+    getDescendants: function() {
+      return Blockly.Block.prototype.getDescendants.call(this);
+    },
+    getChildren: function() {
+      return childBlocks;
+    },
+    getAllMutators: function() {
+      return Blockly.Block.prototype.getAllMutators.call(this);
+    }
+  };
+}
+
+function create_dummy_workbench(block) {
+  var workspace = create_dummy_workspace(block.workspace);
+  var workbench = {
+    getWorkspace: function() {return workspace;}
+  };
+  block.mutator = workbench;
+  return workbench;
+}
+
+function isSameSet(arr1, arr2) {
+  if (arr1.length != arr2.length) {
+    return false;
+  }
+  var checked = [];
+  for (var i = 0, x; x = arr1[i]; i++) {
+    var index = arr2.indexOf(x);
+    if (index == -1) {
+      return false;
+    } else if (checked[index]) {
+      return false;
+    }
+    checked[index] = true;
+  }
+  return true;
+}
+
 function test_type_workspace_tree_removeChildren() {
   var ws1 = create_dummy_workspace();
   var ws2 = create_dummy_workspace(ws1);
@@ -92,4 +133,58 @@ function test_type_workspace_tree_getParentBefore() {
   assertEquals(Blockly.WorkspaceTree.parentBefore(ws2, ws1), ws2);
   ws2.options.parentWorkspace = null;
   assertEquals(Blockly.WorkspaceTree.parentBefore(ws2, ws1), null);
+}
+
+function test_type_workspace_tree_getMutatorsUnderBlock() {
+  var ws1 = create_dummy_workspace();
+  var ws2 = create_dummy_workspace(ws1);
+  var b1 = create_dummy_block(ws2, []);
+  var b2 = create_dummy_block(ws2, [b1]);
+  var b3 = create_dummy_block(ws2, [b2]);
+  var wb_b1 = create_dummy_workbench(b1);
+  var wb_b3 = create_dummy_workbench(b3);
+
+  var ws3 = create_dummy_workspace(ws1);
+  var b4 = create_dummy_block(ws3, []);
+  var wb_b4 = create_dummy_workbench(b4);
+
+  var ws4 = create_dummy_workspace(ws3);
+  var b5 = create_dummy_block(ws4, []);
+  var b6 = create_dummy_block(ws4, [b5]);
+  var wb_b6 = create_dummy_workbench(b6);
+  var b7 = create_dummy_block(wb_b6.getWorkspace(), []);
+  var wb_b7 = create_dummy_workbench(b7);
+
+  var ws5 = create_dummy_workspace(ws4);
+  var b8 = create_dummy_block(ws5, []);
+  var wb_b8 = create_dummy_workbench(b8);
+
+  var ms = Blockly.WorkspaceTree.getChildrenUnderBlock(b1);
+  assertTrue(isSameSetHelp(ms, [wb_b1]));
+
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(b2);
+  assertTrue(isSameSetHelp(ms, [wb_b1]));
+
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(b3);
+  assertTrue(isSameSetHelp(ms, [wb_b1, wb_b3]));
+
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(b4);
+  assertTrue(isSameSetHelp(ms, [wb_b4]));
+
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(b5);
+  assertTrue(isSameSetHelp(ms, []));
+
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(b6);
+  assertTrue(isSameSetHelp(ms, [wb_b6, wb_b7]));
+
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(b7);
+  assertTrue(isSameSetHelp(ms, [wb_b7]));
+
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(b8);
+  assertTrue(isSameSetHelp(ms, [wb_b8]));
+
+  function isSameSetHelp(arr1, arr2) {
+    var arr2 = goog.array.map(arr2, function(m) {return m.getWorkspace();});
+    return isSameSet(arr1, arr2);
+  }
 }
