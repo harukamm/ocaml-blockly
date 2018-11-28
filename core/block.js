@@ -1057,6 +1057,32 @@ Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock,
 };
 
 /**
+ * Replace each of mutator workspaces this blocks contain with the
+ * corresponding one of the given block.
+ * @param {!Blockly.Block} oldBlock The block whose mutator workspaces to
+ *     replace those of this blocks with.
+ */
+Blockly.Block.prototype.replaceMutatorWorkspaceWith = function(oldBlock) {
+  var newBlockDesc = this.getDescendants(true);
+  var oldBlockDesc = oldBlock.getDescendants(true);
+  for (var i = 0, oldChild; oldChild = oldBlockDesc[i]; i++) {
+    var newChild = newBlockDesc[i];
+    goog.asserts.assert(oldChild.type === newChild.type);
+    if (oldChild.mutator) {
+      var oldMutator = oldChild.mutator;
+      var workspace = oldMutator.getWorkspace();
+      if (workspace) {
+        var newMutator = newChild.mutator;
+        goog.asserts.assert(newMutator);
+
+        oldMutator.releaseWorkspace();
+        newMutator.replaceWorkspace(workspace);
+      }
+    }
+  }
+};
+
+/**
  * Set whether value inputs are arranged horizontally or vertically.
  * @param {boolean} newBoolean True if inputs are horizontal.
  */

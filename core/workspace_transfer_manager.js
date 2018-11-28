@@ -243,10 +243,12 @@ Blockly.WorkspaceTransferManager.prototype.setStartTransferring_ = function(
 };
 
 Blockly.WorkspaceTransferManager.prototype.execTransferring_ = function(
-    transferringBlock, opt_onReplace) {
+    transferringBlock, opt_beforeDispose) {
   var xml = Blockly.Xml.blockToDom(transferringBlock);
-  var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
+  // Create a new block with disabling type checks.
+  var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_, true);
   newBlock.replaceTypeExprWith(transferringBlock);
+  newBlock.replaceMutatorWorkspaceWith(transferringBlock);
 
   // Aline this block according to the new surface.
   var localXY = transferringBlock.getRelativeToSurfaceXY();
@@ -254,10 +256,16 @@ Blockly.WorkspaceTransferManager.prototype.execTransferring_ = function(
   var position = goog.math.Coordinate.sum(localXY, surfaceXY);
   newBlock.moveBy(position.x, position.y);
 
-  if (goog.isFunction(opt_onReplace)) {
-    opt_onReplace(newBlock);
+  if (goog.isFunction(opt_beforeDispose)) {
+    opt_beforeDispose(newBlock);
   }
   transferringBlock.dispose();
+
+  // A new block has been built up and completely taken the place of the
+  // old one completely. Finally trigger a type inference and variable
+  // resolution to make sure that the block follows the connection rule.
+  newBlock.resolveReference(null, true);
+  newBlock.updateTypeInference();
 
   return newBlock;
 };
