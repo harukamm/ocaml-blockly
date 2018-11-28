@@ -44,14 +44,17 @@ goog.require('goog.userAgent');
  *     point.
  * @param {?number} bubbleWidth Width of bubble, or null if not resizable.
  * @param {?number} bubbleHeight Height of bubble, or null if not resizable.
+ * @param {Element=} opt_childBubbleCanvas SVG element to form the nested
+ *     bubble surface.
  * @constructor
  */
 Blockly.Bubble = function(workspace, content, shape, anchorXY,
-    bubbleWidth, bubbleHeight) {
+    bubbleWidth, bubbleHeight, opt_childBubbleCanvas) {
   this.workspace_ = workspace;
   this.mainWorkspace_ = workspace.getMainWorkspace();
   this.content_ = content;
   this.shape_ = shape;
+  this.childBubbleCanvas_ = opt_childBubbleCanvas || null;
 
   var angle = Blockly.Bubble.ARROW_ANGLE;
   if (this.workspace_.RTL) {
@@ -281,8 +284,13 @@ Blockly.Bubble.prototype.createDom_ = function(content, hasResize) {
     this.resizeGroup_ = null;
   }
   this.bubbleGroup_.appendChild(content);
-  this.childBubbleCanvas_ = Blockly.utils.createSvgElement('g',
-      {'class': 'blocklyChildBubbleCanvas'}, this.bubbleGroup_);
+
+  if (this.childBubbleCanvas_) {
+    this.bubbleGroup_.appendChild(this.childBubbleCanvas_);
+  } else {
+    this.childBubbleCanvas_ = Blockly.utils.createSvgElement('g',
+        {'class': 'blocklyChildBubbleCanvas'}, this.bubbleGroup_);
+  }
 
   return this.bubbleGroup_;
 };

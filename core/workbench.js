@@ -160,10 +160,13 @@ Blockly.Workbench.prototype.init = function() {
   goog.asserts.assert(goog.isFunction(this.block_.getWorkbenchContext));
 
   // Create the bubble.
+  var childBubblCanvas = this.childBubbleCanvas_ ?
+      this.childBubbleCanvas_ : null;
   var anchorXY = this.iconXY_ ? this.iconXY_ : new goog.math.Coordinate(0, 0);
   this.bubble_ = new Blockly.Bubble(
       /** @type {!Blockly.WorkspaceSvg} */ (this.block_.workspace),
-      this.createEditor_(), this.block_.svgPath_, anchorXY, null, null);
+      this.createEditor_(), this.block_.svgPath_, anchorXY, null, null,
+      childBubblCanvas);
   // Expose this mutator's block's ID on its top-level SVG group.
   this.bubble_.setSvgId(this.block_.id);
 
@@ -493,6 +496,11 @@ Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
 
   this.workspace_.recordDeleteAreas();
   this.workspace_.recordWorkspaceArea();
+
+  var bubble = workbench.getBubble();
+  var originalChildBubble = bubble.getChildBubbleCanvas();
+  originalChildBubble.parentNode.removeChild(originalChildBubble);
+  this.childBubbleCanvas_ = originalChildBubble;
 };
 
 /**
