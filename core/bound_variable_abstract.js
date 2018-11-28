@@ -41,7 +41,7 @@ Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr) {
 
   /**
    * The type expression of this variable.
-   * @type {string}
+   * @type {Blockly.TypeExpr}
    */
   this.typeExpr_ = typeExpr;
 
