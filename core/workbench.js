@@ -173,19 +173,7 @@ Blockly.Workbench.prototype.initWorkspace_ = function() {
   if (this.workspace_) {
     return;
   }
-  var workspaceOptions = {
-    languageTree: null,
-      // TODO: Specify the tree. Workbench can accept blocks of any type.
-    parentWorkspace: this.block_.workspace,
-    pathToMedia: this.block_.workspace.options.pathToMedia,
-    RTL: this.block_.RTL,
-    toolboxPosition: this.block_.RTL ? Blockly.TOOLBOX_AT_RIGHT :
-        Blockly.TOOLBOX_AT_LEFT,
-    horizontalLayout: false,
-    typedVersion: this.block_.workspace.options.typedVersion,
-    getMetrics: this.getFlyoutMetrics_.bind(this),
-    setMetrics: null
-  };
+  var workspaceOptions = this.createWorkspaceOptions_();
   this.workspace_ = new Blockly.WorkspaceSvg(workspaceOptions);
   this.workspace_.isMutator = true;
   this.workspace_.ownerMutator_ = this;
@@ -466,6 +454,24 @@ Blockly.Workbench.prototype.replaceWorkspace = function(workspace) {
   workspace.isMutator = true;
   workspace.ownerMutator_ = this;
   this.workspace_ = workspace;
+};
+
+/**
+ * Returns workspace options for this mutator's workspace.
+ * @return {!Object} Dictionary of options.
+ */
+Blockly.Workbench.prototype.createWorkspaceOptions_ = function() {
+  var options = {};
+  options.parentWorkspace = this.block_.workspace;
+  options.pathToMedia = this.block_.workspace.options.pathToMedia;
+  options.RTL = this.block_.RTL;
+  options.toolboxPosition = this.block_.RTL ? Blockly.TOOLBOX_AT_RIGHT :
+      Blockly.TOOLBOX_AT_LEFT;
+  options.horizontalLayout = false;
+  options.typedVersion = this.block_.workspace.options.typedVersion;
+  options.getMetrics = this.getFlyoutMetrics_.bind(this);
+  options.setMetrics = null;
+  return options;
 };
 
 /**
