@@ -36,6 +36,7 @@ function create_dummy_workbench(block) {
     getWorkspace: function() {
       return this.workspace_;
     },
+    removeChangeListener: function() {},
     releaseWorkspace: function() {
       Blockly.Workbench.prototype.releaseWorkspace.call(this);
     },

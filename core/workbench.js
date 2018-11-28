@@ -441,6 +441,7 @@ Blockly.Workbench.prototype.removeChangeListener = function() {
  */
 Blockly.Workbench.prototype.releaseWorkspace = function() {
   if (this.workspace_) {
+    this.removeChangeListener();
     Blockly.WorkspaceTree.setParent(this.workspace_, null);
     this.workspace_.ownerMutator_ = null;
     this.workspace_ = null;
