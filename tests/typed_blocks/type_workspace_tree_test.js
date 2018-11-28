@@ -2,7 +2,13 @@
 
 function create_dummy_workspace(parentWs) {
   var options = {parentWorkspace: parentWs ? parentWs : null};
-  var workspace = {id: Blockly.utils.genUid(), options};
+  var workspace = {
+    id: Blockly.utils.genUid(),
+    options: options,
+    dispose: function() {
+      Blockly.WorkspaceTree.remove(this);
+    }
+  };
   Blockly.WorkspaceTree.add(workspace);
   return workspace;
 }
@@ -25,7 +31,17 @@ function create_dummy_block(workspace, childBlocks) {
 function create_dummy_workbench(block) {
   var workspace = create_dummy_workspace(block.workspace);
   var workbench = {
-    getWorkspace: function() {return workspace;}
+    block_: block,
+    workspace_: workspace,
+    getWorkspace: function() {
+      return this.workspace_;
+    },
+    releaseWorkspace: function() {
+      Blockly.Workbench.prototype.releaseWorkspace.call(this);
+    },
+    replaceWorkspace: function(workspace) {
+      Blockly.Workbench.prototype.replaceWorkspace.call(this, workspace);
+    }
   };
   block.mutator = workbench;
   return workbench;
@@ -193,5 +209,40 @@ function test_type_workspace_tree_getMutatorsUnderBlock() {
 
   ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b8);
   assertTrue(isSameSetMutator(ms, [obj.wb_b8]));
+}
 
+function test_type_workspace_tree_changeMutatorParent() {
+  var obj = createDummyWorkbenches();
+
+  var ws = obj.wb_b8.getWorkspace();
+  var node = Blockly.WorkspaceTree.find(ws.id);
+  assertEquals(node.getParent_().workspace, obj.ws5);
+  obj.wb_b8.releaseWorkspace();
+  obj.wb_b2 = create_dummy_workbench(obj.b2);
+  obj.wb_b2.replaceWorkspace(ws);
+  assertEquals(node.getParent_().workspace, obj.ws2);
+  assertNull(obj.wb_b8.getWorkspace());
+  assertEquals(obj.wb_b2.getWorkspace(), ws);
+
+  var ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b8);
+  assertTrue(isSameSetMutator(ms, []));
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b2);
+  assertTrue(isSameSetMutator(ms, [obj.wb_b1, obj.wb_b2]));
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b3);
+  assertTrue(isSameSetMutator(ms, [obj.wb_b1, obj.wb_b3, obj.wb_b2]));
+
+  ws = obj.wb_b6.getWorkspace();
+  node = Blockly.WorkspaceTree.find(ws.id);
+  assertEquals(node.getParent_().workspace, obj.ws4);
+  obj.wb_b6.releaseWorkspace();
+  obj.wb_b5 = create_dummy_workbench(obj.b5);
+  obj.wb_b5.replaceWorkspace(ws);
+  assertEquals(node.getParent_().workspace, obj.ws4);
+  assertNull(obj.wb_b6.getWorkspace());
+  assertEquals(obj.wb_b5.getWorkspace(), ws);
+
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b6);
+  assertTrue(isSameSetMutator(ms, [obj.wb_b7, obj.wb_b5]));
+  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b5);
+  assertTrue(isSameSetMutator(ms, [obj.wb_b7, obj.wb_b5]));
 }

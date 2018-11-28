@@ -120,13 +120,14 @@ Blockly.WorkspaceTree.prototype.getParent_ = function() {
  */
 Blockly.WorkspaceTree.prototype.setParent_ = function(newParentNode) {
   var parentNode = this.getParent_();
+  var id = this.workspace.id;
   if (parentNode) {
     // Remove the current parent node.
-    delete parentNode.children[this.id];
+    delete parentNode.children[id];
     this.workspace.options.parentWorkspace = null;
   }
   if (newParentNode) {
-    newParentNode.children[this.id] = this;
+    newParentNode.children[id] = this;
     this.workspace.options.parentWorkspace = newParentNode.workspace;
   }
 };
