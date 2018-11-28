@@ -445,6 +445,9 @@ Blockly.Workbench.prototype.releaseWorkspace = function() {
  *     mutator.
  */
 Blockly.Workbench.prototype.replaceWorkspace = function(workspace) {
+  if (this.initialized_) {
+    throw 'The mutator\'s DOM is already initialized.';
+  }
   if (this.workspace_) {
     this.workspace_.ownerMutator_ = null;
     this.workspace_.dispose();
