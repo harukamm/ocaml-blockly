@@ -2135,6 +2135,26 @@ Blockly.WorkspaceSvg.prototype.clear = function() {
 };
 
 /**
+ * Update the current workspace options according to the given options.
+ * @param {!Object} Workspace options to update. Throws an error if it contains
+ *     a property which does not exist in the original options.
+ */
+Blockly.WorkspaceSvg.prototype.updateOptions = function(options) {
+  Blockly.WorkspaceSvg.superClass_.updateOptions.call(this, options);
+
+  this.getMetrics =
+      options.getMetrics || Blockly.WorkspaceSvg.getTopLevelWorkspaceMetrics_;
+  this.setMetrics =
+      options.setMetrics || Blockly.WorkspaceSvg.setTopLevelWorkspaceMetrics_;
+
+  if (this.audioManager_) {
+    this.audioManager_.dispose();
+    this.audioManager_ = null;
+  }
+  this.audioManager_ = new Blockly.WorkspaceAudio(options.parentWorkspace);
+};
+
+/**
  * Register a callback function associated with a given key, for clicks on
  * buttons and labels in the flyout.
  * For instance, a button specified by the XML
