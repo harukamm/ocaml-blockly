@@ -299,9 +299,12 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
   // bubble contains whole the mutator.
   this.bubble_.setVisible(visible);
   // Update the visibility of the workspace for its components.
-  this.workspace_.setVisible(visible);
+  if (this.workspace_) {
+    this.workspace_.setVisible(visible);
+  }
 
   if (visible) {
+    goog.asserts.assert(this.workspace_, 'The workspace has been removed.');
     var tree = this.getFlyoutLanguageTree_();
     this.workspace_.flyout_.show(tree.childNodes);
 
