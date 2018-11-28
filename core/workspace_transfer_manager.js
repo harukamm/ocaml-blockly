@@ -242,6 +242,16 @@ Blockly.WorkspaceTransferManager.prototype.setStartTransferring_ = function(
   }
 };
 
+/**
+ * Clone the transferring block on the pointed workspace, and dispose of the
+ * original one. The new cloned block takes the place of the transferring block
+ * by moving some components (mutators, type expression, and variables
+ * reference) and positioning it in the same location with the original one.
+ * @param {Function=} opt_beforeDispose An optional function to be called
+ *     before dispose of the transferring block.
+ * @return {!Block.Block} The block positioned in the same location with the
+ *     transferring block.
+ */
 Blockly.WorkspaceTransferManager.prototype.execTransferring_ = function(
     transferringBlock, opt_beforeDispose) {
   var xml = Blockly.Xml.blockToDom(transferringBlock);
