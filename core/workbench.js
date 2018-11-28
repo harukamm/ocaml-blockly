@@ -469,6 +469,13 @@ Blockly.Workbench.prototype.replaceWorkspace = function(workspace) {
 };
 
 /**
+ * Returns if this mutator is a workbench.
+ */
+Blockly.Workbench.prototype.isWorkbench = function() {
+  return true;
+};
+
+/**
  * Reconnect an block to a mutated input.
  * @param {Blockly.Connection} connectionChild Connection on child block.
  * @param {!Blockly.Block} block Parent block.

@@ -1071,10 +1071,9 @@ Blockly.Block.prototype.replaceMutatorWorkspaceWith = function(oldBlock) {
     if (oldChild.mutator) {
       var oldMutator = oldChild.mutator;
       var workspace = oldMutator.getWorkspace();
-      if (workspace) {
+      if (workspace && oldMutator.isWorkbench()) {
         var newMutator = newChild.mutator;
-        goog.asserts.assert(newMutator);
-
+        goog.asserts.assert(newMutator && newMutator.isWorkbench());
         oldMutator.releaseWorkspace();
         newMutator.replaceWorkspace(workspace);
       }

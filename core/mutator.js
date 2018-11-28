@@ -412,6 +412,13 @@ Blockly.Mutator.prototype.dispose = function() {
 };
 
 /**
+ * Returns if this mutator is a workbench.
+ */
+Blockly.Mutator.prototype.isWorkbench = function() {
+  return false;
+};
+
+/**
  * Reconnect an block to a mutated input.
  * @param {Blockly.Connection} connectionChild Connection on child block.
  * @param {!Blockly.Block} block Parent block.
