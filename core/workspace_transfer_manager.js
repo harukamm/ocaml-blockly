@@ -189,23 +189,10 @@ Blockly.WorkspaceTransferManager.prototype.placeNewBlock = function(
   var newBlock;
   try {
     // TODO: Define a transfer event in Blockly.Events, and fire it.
-    var xml = Blockly.Xml.blockToDom(oldBlock);
-    newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
-    newBlock.replaceTypeExprWith(oldBlock);
+    newBlock = this.execTransferring_(oldBlock, opt_onReplace);
   } finally {
     this.setStartTransferring_(null);
   }
-
-  // Aline this block according to the new surface.
-  var localXY = oldBlock.getRelativeToSurfaceXY();
-  var surfaceXY = this.workspace_.getRelativeToWorkspaceXY(this.pointedWorkspace_);
-  var position = goog.math.Coordinate.sum(localXY, surfaceXY);
-  newBlock.moveBy(position.x, position.y);
-
-  if (goog.isFunction(opt_onReplace)) {
-    opt_onReplace(newBlock);
-  }
-  oldBlock.dispose();
 
   // Expect that there is nothing for this manager to do because this function
   // is called at the end of a drag, but change the properties just in case.
@@ -253,6 +240,26 @@ Blockly.WorkspaceTransferManager.prototype.setStartTransferring_ = function(
     Blockly.transferring.localConnection = null;
     Blockly.transferring.pendingTargetConnection = null;
   }
+};
+
+Blockly.WorkspaceTransferManager.prototype.execTransferring_ = function(
+    transferringBlock, opt_onReplace) {
+  var xml = Blockly.Xml.blockToDom(transferringBlock);
+  var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_);
+  newBlock.replaceTypeExprWith(transferringBlock);
+
+  // Aline this block according to the new surface.
+  var localXY = transferringBlock.getRelativeToSurfaceXY();
+  var surfaceXY = this.workspace_.getRelativeToWorkspaceXY(this.pointedWorkspace_);
+  var position = goog.math.Coordinate.sum(localXY, surfaceXY);
+  newBlock.moveBy(position.x, position.y);
+
+  if (goog.isFunction(opt_onReplace)) {
+    opt_onReplace(newBlock);
+  }
+  transferringBlock.dispose();
+
+  return newBlock;
 };
 
 /**
