@@ -441,10 +441,14 @@ Blockly.Workbench.prototype.releaseWorkspace = function() {
 
 /**
  * Replace the mutator workspace with the given workspace.
- * @param {!Blockly.WorkspaceSvg} workspace The workspace to set to this
- *     mutator.
+ * @param {!Blockly.Workbench} workbench The mutator whose workspace to be
+ *     stored to this mutator.
  */
-Blockly.Workbench.prototype.replaceWorkspace = function(workspace) {
+Blockly.Workbench.prototype.replaceWorkspace = function(workbench) {
+  var workspace = workbench.getWorkspace();
+  if (!workspace) {
+    return;
+  }
   if (this.initialized_) {
     throw 'The mutator\'s DOM is already initialized.';
   }
@@ -453,6 +457,8 @@ Blockly.Workbench.prototype.replaceWorkspace = function(workspace) {
     this.workspace_.dispose();
     this.workspace_ = null;
   }
+  workbench.releaseWorkspace();
+
   Blockly.WorkspaceTree.setParent(workspace, this.block_.workspace);
   workspace.isMutator = true;
   workspace.ownerMutator_ = this;

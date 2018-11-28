@@ -131,8 +131,8 @@ function create_mock_workbench(block) {
     releaseWorkspace: function() {
           Blockly.Workbench.prototype.releaseWorkspace.call(this);
         },
-    replaceWorkspace: function(workspace) {
-          Blockly.Workbench.prototype.replaceWorkspace.call(this, workspace);
+    replaceWorkspace: function(workbench) {
+          Blockly.Workbench.prototype.replaceWorkspace.call(this, workbench);
         },
     dispose: function() {
           this.block_.mutator = null;
@@ -236,9 +236,7 @@ function mock_replaceMutatorWorkspaceWith(newBlock, oldBlock) {
       var oldMutator = oldChild.mutator;
       var workspace = oldMutator.getWorkspace();
       var newMutator = create_mock_workbench(newChild);
-
-      oldMutator.releaseWorkspace();
-      newMutator.replaceWorkspace(workspace);
+      newMutator.replaceWorkspace(oldMutator);
     }
   }
 }

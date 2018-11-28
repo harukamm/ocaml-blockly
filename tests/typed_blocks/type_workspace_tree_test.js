@@ -41,8 +41,8 @@ function create_dummy_workbench(block) {
     releaseWorkspace: function() {
       Blockly.Workbench.prototype.releaseWorkspace.call(this);
     },
-    replaceWorkspace: function(workspace) {
-      Blockly.Workbench.prototype.replaceWorkspace.call(this, workspace);
+    replaceWorkspace: function(workbench) {
+      Blockly.Workbench.prototype.replaceWorkspace.call(this, workbench);
     }
   };
   block.mutator = workbench;
@@ -219,9 +219,8 @@ function test_type_workspace_tree_changeMutatorParent() {
   var ws = obj.wb_b8.getWorkspace();
   var node = Blockly.WorkspaceTree.find(ws.id);
   assertEquals(node.getParent_().workspace, obj.ws5);
-  obj.wb_b8.releaseWorkspace();
   obj.wb_b2 = create_dummy_workbench(obj.b2);
-  obj.wb_b2.replaceWorkspace(ws);
+  obj.wb_b2.replaceWorkspace(obj.wb_b8);
   assertEquals(node.getParent_().workspace, obj.ws2);
   assertNull(obj.wb_b8.getWorkspace());
   assertEquals(obj.wb_b2.getWorkspace(), ws);
@@ -236,9 +235,8 @@ function test_type_workspace_tree_changeMutatorParent() {
   ws = obj.wb_b6.getWorkspace();
   node = Blockly.WorkspaceTree.find(ws.id);
   assertEquals(node.getParent_().workspace, obj.ws4);
-  obj.wb_b6.releaseWorkspace();
   obj.wb_b5 = create_dummy_workbench(obj.b5);
-  obj.wb_b5.replaceWorkspace(ws);
+  obj.wb_b5.replaceWorkspace(obj.wb_b6);
   assertEquals(node.getParent_().workspace, obj.ws4);
   assertNull(obj.wb_b6.getWorkspace());
   assertEquals(obj.wb_b5.getWorkspace(), ws);

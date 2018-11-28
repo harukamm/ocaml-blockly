@@ -1071,11 +1071,10 @@ Blockly.Block.prototype.replaceMutatorWorkspaceWith = function(oldBlock) {
     if (oldChild.mutator) {
       var oldMutator = oldChild.mutator;
       var workspace = oldMutator.getWorkspace();
-      if (workspace && oldMutator.isWorkbench()) {
+      if (oldMutator.isWorkbench()) {
         var newMutator = newChild.mutator;
         goog.asserts.assert(newMutator && newMutator.isWorkbench());
-        oldMutator.releaseWorkspace();
-        newMutator.replaceWorkspace(workspace);
+        newMutator.replaceWorkspace(oldMutator);
       }
     }
   }
