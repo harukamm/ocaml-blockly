@@ -111,6 +111,9 @@ Blockly.Workbench.prototype.iconClick_ = function(e) {
  * @private
  */
 Blockly.Workbench.prototype.createEditor_ = function() {
+  if (this.svgDialog_) {
+    return this.svgDialog_;
+  }
   /* Create the editor.  Here's the markup that will be generated:
   <svg>
     [Workspace]
@@ -449,7 +452,7 @@ Blockly.Workbench.prototype.replaceWorkspace = function(workbench) {
   if (!workspace) {
     return;
   }
-  if (this.initialized_) {
+  if (this.initialized_ || this.svgDialog_) {
     throw 'The mutator\'s DOM is already initialized.';
   }
   if (this.workspace_) {
@@ -463,15 +466,33 @@ Blockly.Workbench.prototype.replaceWorkspace = function(workbench) {
   workspace.isMutator = true;
   workspace.ownerMutator_ = this;
   this.workspace_ = workspace;
-  this.adaptWorkspace_();
+  this.adaptWorkspace_(workbench);
 };
 
 /**
  * Adapts the workspace to this mutator condition. Called when the mutator
  * workspace is replaced with another one.
+ * @param {!Blockly.Workbench} workbench The workbench the workspace originally
+ *     belonged to.
  */
-Blockly.Workbench.prototype.adaptWorkspace_ = function() {
+Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
   this.workspace_.updateOptions(this.createWorkspaceOptions_());
+
+  var originalSvgDialog = workbench.svgDialog_;
+  originalSvgDialog.parentNode.removeChild(originalSvgDialog);
+  this.svgDialog_ = originalSvgDialog;
+
+  // Recreate the flyout because the old flyout refers to the original mutator.
+  this.workspace_.clearFlyout();
+  workbench.flyoutSvg_.remove();
+
+  this.flyoutSvg_ = this.workspace_.addFlyout_('g',
+      this.createFlyout_.bind(this));
+  this.background_ = workbench.background_;
+  this.background_.insertBefore(this.flyoutSvg_, this.workspace_.getCanvas());
+
+  this.workspace_.recordDeleteAreas();
+  this.workspace_.recordWorkspaceArea();
 };
 
 /**

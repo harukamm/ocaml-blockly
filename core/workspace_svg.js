@@ -2155,6 +2155,16 @@ Blockly.WorkspaceSvg.prototype.updateOptions = function(options) {
 };
 
 /**
+ * Clear a flyout in the workspace if it exists.
+ */
+Blockly.WorkspaceSvg.prototype.clearFlyout = function() {
+  if (this.flyout_) {
+    this.flyout_.dispose();
+    this.flyout_ = null;
+  }
+};
+
+/**
  * Register a callback function associated with a given key, for clicks on
  * buttons and labels in the flyout.
  * For instance, a button specified by the XML
