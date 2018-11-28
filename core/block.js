@@ -1730,7 +1730,7 @@ Blockly.Block.prototype.moveBy = function(dx, dy) {
  * @param {boolean=} opt_reset True if types should be reset first.
  */
 Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
-  if (!this.outputConnection.typeExpr) {
+  if (!this.outputConnection || !this.outputConnection.typeExpr) {
     // This block has no type-expr, or it is removed deleted.
     return;
   }
