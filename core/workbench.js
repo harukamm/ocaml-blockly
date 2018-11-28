@@ -142,6 +142,24 @@ Blockly.Workbench.prototype.createEditor_ = function() {
 };
 
 /**
+ * Remove the svg elements in this workbench.
+ */
+Blockly.Workbench.prototype.removeSvgElements = function() {
+  if (!this.svgDialog_) {
+    return;
+  }
+  this.background_.removeChild(this.flyoutSvg_);
+  this.flyoutSvg_ = null;
+  this.svgDialog_.removeChild(this.background_);
+  this.background_ = null;
+
+  if (this.bubble_) {
+    this.bubble_.removeContent();
+  }
+  this.svgDialog_ = null;
+};
+
+/**
  * Returns a newly created flyout for this workbench workspace.
  * @param {!Object} workspaceOptions Dictionary of options for the flyout
  *     workspace.
@@ -482,16 +500,19 @@ Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
   this.workspace_.updateOptions(this.createWorkspaceOptions_());
 
   var originalSvgDialog = workbench.svgDialog_;
-  originalSvgDialog.parentNode.removeChild(originalSvgDialog);
-  this.svgDialog_ = originalSvgDialog;
+  var originalBackground = workbench.background_;
+
+  workbench.removeSvgElements();
 
   // Recreate the flyout because the old flyout refers to the original mutator.
   this.workspace_.clearFlyout();
-  workbench.flyoutSvg_.remove();
 
   this.flyoutSvg_ = this.workspace_.addFlyout_('g',
       this.createFlyout_.bind(this));
-  this.background_ = workbench.background_;
+
+  this.background_ = originalBackground;
+  this.svgDialog_ = originalSvgDialog;
+
   this.background_.insertBefore(this.flyoutSvg_, this.workspace_.getCanvas());
 
   this.workspace_.recordDeleteAreas();

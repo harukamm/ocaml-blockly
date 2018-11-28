@@ -739,6 +739,14 @@ Blockly.Bubble.prototype.removeChildBubbleCanvas = function() {
 };
 
 /**
+ * Remove the content this bubble holds.
+ */
+Blockly.Bubble.prototype.removeContent = function() {
+  this.bubbleGroup_.removeChild(this.content_);
+  this.content_ = null;
+};
+
+/**
  * Set whether auto-layout of this bubble is enabled.  The first time a bubble
  * is shown it positions itself to not cover any blocks.  Once a user has
  * dragged it to reposition, it renders where the user put it.
