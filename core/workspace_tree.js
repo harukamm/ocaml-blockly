@@ -113,6 +113,26 @@ Blockly.WorkspaceTree.prototype.getParent_ = function() {
 };
 
 /**
+ * Set the parent of this node. If this node already has a parent, remove it
+ * first.
+ * @param {Blockly.WorkspaceTree|null} newParentNode The parent node for this
+ *     node. Null just to remove the current parent node.
+ */
+Blockly.WorkspaceTree.prototype.setParent_ = function(newParentNode) {
+  var parentNode = this.getParent_();
+  if (parentNode) {
+    // Remove the current parent node.
+    delete parentNode.children[this.id];
+    this.workspace.options.parentWorkspace = null;
+  }
+  if (newParentNode) {
+    newParentNode.children[this.id] = this;
+    this.workspace.options.parentWorkspace = newParentNode.workspace;
+  }
+};
+
+
+/**
  * Find the lowest common ancestor between the given 2 nodes.
  * @param {!Blockly.WorkspaceTree} node1
  * @param {!Blockly.WorkspaceTree} node2
@@ -159,6 +179,22 @@ Blockly.WorkspaceTree.isDescendant = function(childWs, parentWs) {
   var parentNode = Blockly.WorkspaceTree.find(parentWs.id);
   var lca = Blockly.WorkspaceTree.lca_(childNode, parentNode);
   return lca == parentNode;
+};
+
+/**
+ * Change a parent workspace of the given workspace.
+ * @param {!Blockly.Workspace} childWs
+ * @param {Blockly.WorkspaceTree|null} newParentNode The parent node for this
+ *     node. Null just to remove the current parent node.
+ */
+Blockly.WorkspaceTree.setParent = function(childWs, parentWs) {
+  var childNode = Blockly.WorkspaceTree.find(childWs.id);
+  if (parentWs) {
+    var parentNode = Blockly.WorkspaceTree.find(parentWs.id);
+    childNode.setParent_(parentNode);
+  } else {
+    childNode.setParent_(null);
+  }
 };
 
 /**

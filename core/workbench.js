@@ -436,6 +436,35 @@ Blockly.Workbench.prototype.removeChangeListener = function() {
 };
 
 /**
+ * Release ownership of the current workspace in a mutator without destroying
+ * it.
+ */
+Blockly.Workbench.prototype.releaseWorkspace = function() {
+  if (this.workspace_) {
+    Blockly.WorkspaceTree.setParent(this.workspace_, null);
+    this.workspace_.ownerMutator_ = null;
+    this.workspace_ = null;
+  }
+};
+
+/**
+ * Replace the mutator workspace with the given workspace.
+ * @param {!Blockly.WorkspaceSvg} workspace The workspace to set to this
+ *     mutator.
+ */
+Blockly.Workbench.prototype.replaceWorkspace = function(workspace) {
+  if (this.workspace_) {
+    this.workspace_.ownerMutator_ = null;
+    this.workspace_.dispose();
+    this.workspace_ = null;
+  }
+  Blockly.WorkspaceTree.setParent(workspace, this.block_.workspace);
+  workspace.isMutator = true;
+  workspace.ownerMutator_ = this;
+  this.workspace_ = workspace;
+};
+
+/**
  * Reconnect an block to a mutated input.
  * @param {Blockly.Connection} connectionChild Connection on child block.
  * @param {!Blockly.Block} block Parent block.

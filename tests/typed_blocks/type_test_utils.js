@@ -126,11 +126,19 @@ function create_mock_workbench(block) {
           var func = Blockly.Workbench.prototype.getFlyoutLanguageTree_;
           return func.call(this);
         },
+    releaseWorkspace: function() {
+          Blockly.Workbench.prototype.releaseWorkspace.call(this);
+        },
+    replaceWorkspace: function(workspace) {
+          Blockly.Workbench.prototype.replaceWorkspace.call(this, workspace);
+        },
     dispose: function() {
           this.block_.mutator = null;
           this.block_ = null;
-          this.workspace_.dispose();
-          this.workspace_ = null;
+          if (this.workspace_) {
+            this.workspace_.dispose();
+            this.workspace_ = null;
+          }
         }
   };
   block.mutator = mutatorMock;
