@@ -724,10 +724,18 @@ Blockly.Bubble.prototype.getParentCanvas = function() {
 
 /**
  * Get the SVG element that forms the nested bubble surface.
- * @return {!SVGElement} SVG element.
+ * @return {SVGElement} SVG element.
  */
 Blockly.Bubble.prototype.getChildBubbleCanvas = function() {
   return this.childBubbleCanvas_;
+};
+
+/**
+ * Remove the SVG element that forms the nested bubble surface.
+ */
+Blockly.Bubble.prototype.removeChildBubbleCanvas = function() {
+  this.bubbleGroup_.removeChild(this.childBubbleCanvas_);
+  this.childBubbleCanvas_ = null;
 };
 
 /**

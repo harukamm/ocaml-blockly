@@ -499,7 +499,7 @@ Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
 
   var bubble = workbench.getBubble();
   var originalChildBubble = bubble.getChildBubbleCanvas();
-  originalChildBubble.parentNode.removeChild(originalChildBubble);
+  bubble.removeChildBubbleCanvas();
   this.childBubbleCanvas_ = originalChildBubble;
 };
 
