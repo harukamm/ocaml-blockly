@@ -94,7 +94,7 @@ Blockly.BoundVariableAbstract.prototype.getContainerField = function() {
 
 /**
  * Returns the type expression of this variable.
- * @return {!Blockly.TypeExpr} The type expression of this variable.
+ * @return {Blockly.TypeExpr} The type expression of this variable, or null.
  */
 Blockly.BoundVariableAbstract.prototype.getTypeExpr = function() {
   return this.typeExpr_;
@@ -102,8 +102,9 @@ Blockly.BoundVariableAbstract.prototype.getTypeExpr = function() {
 
 /**
  * Store the given type expression in this variable.
- * @param {!Blockly.TypeExpr} typeExpr The type expression to be stored in this
- *     variable.
+ * @param {Blockly.TypeExpr|null} typeExpr The type expression to be stored in
+ *     this variable, or could be null if another block takes the place of the
+ *     block.
  */
 Blockly.BoundVariableAbstract.prototype.setTypeExpr = function(typeExpr) {
   this.typeExpr_ = typeExpr;

@@ -142,7 +142,11 @@ Blockly.BoundVariableValueReference.prototype.setBoundValue = function(value) {
   }
   this.value_ = value;
   value.storeReference(this);
-  this.value_.getTypeExpr().unify(this.typeExpr_);
+  var valueTypeExpr = this.value_.getTypeExpr();
+  if (!valueTypeExpr) {
+    throw 'The type expression of a new value to refer to must be provided.';
+  }
+  valueTypeExpr.unify(this.typeExpr_);
 
   this.referenceChange_();
 };
@@ -153,7 +157,10 @@ Blockly.BoundVariableValueReference.prototype.setBoundValue = function(value) {
 Blockly.BoundVariableValueReference.prototype.removeBoundValue = function() {
   if (this.value_) {
     this.value_.removeReference(this);
-    this.value_.getTypeExpr().disconnect(this.typeExpr_);
+    var valueTypeExpr = this.value_.getTypeExpr();
+    if (valueTypeExpr && this.typeExpr_) {
+      valueTypeExpr.disconnect(this.typeExpr_);
+    }
     this.value_ = null;
   }
 };
