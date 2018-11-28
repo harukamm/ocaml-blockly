@@ -153,7 +153,7 @@ Blockly.BoundVariableValueReference.prototype.setBoundValue = function(value) {
 Blockly.BoundVariableValueReference.prototype.removeBoundValue = function() {
   if (this.value_) {
     this.value_.removeReference(this);
-    this.value_.getTypeExpr().disconnect(this.value_.typeExpr_);
+    this.value_.getTypeExpr().disconnect(this.typeExpr_);
     this.value_ = null;
   }
 };
