@@ -1169,9 +1169,8 @@ Blockly.Block.prototype.isTransferring = function() {
   if (!Blockly.transferring.block) {
     return false;
   }
-  var transBlock = Blockly.transferring.block;
-  if (transBlock.workspace != this.workspace) {
-    return !!this.workspace.isTransferring_;
+  if (Blockly.transferring.block.workspace != this.workspace) {
+    return false;
   }
   return !!this.isTransferring_;
 };

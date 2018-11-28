@@ -248,10 +248,6 @@ Blockly.WorkspaceTransferManager.prototype.setStartTransferring_ = function(
     for (var i = 0, child; child = descendants[i]; i++) {
       child.isTransferring_ = true;
     }
-    var mutators = Blockly.WorkspaceTree.getChildrenUnderBlock(block);
-    for (var i = 0, mutator; mutator = mutators[i]; i++) {
-      mutator.isTransferring_ = true;
-    }
   } else {
     Blockly.transferring.block = null;
     Blockly.transferring.localConnection = null;

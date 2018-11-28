@@ -217,7 +217,10 @@ Blockly.BoundVariableValue.prototype.copyTo = function(variable) {
   // The transferring block is scheduled to be disposed of when it has finished
   // transferring, so move some of references.
 
-  for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
+  // Copy the list of references. this.referenceList_ could be changed during
+  // the following loop.
+  var referenceList = [].concat(this.referenceList_);
+  for (var i = 0, reference; reference = referenceList[i]; i++) {
     var referenceBlock = reference.getSourceBlock();
     if (referenceBlock.isTransferring()) {
       // The reference's block is also scheduled to be disposed of, so we don't

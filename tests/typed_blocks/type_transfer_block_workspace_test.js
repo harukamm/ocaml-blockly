@@ -146,14 +146,15 @@ function test_type_transfer_block_workspace_mutatorBlocksTransferred() {
     getVariable(varBlock3).setBoundValue(letWBValue);
     getVariable(varBlock4).setBoundValue(letValue);
     getVariable(varBlockIsolated).setBoundValue(letValue);
+    assertTrue(letValue.referenceCount() == 4);
 
     function testsConditionDuringTransferring() {
       assertTrue(letBlockOnMain.isTransferring());
-      assertTrue(letBlockOnWB.isTransferring());
+      assertTrue(!letBlockOnWB.isTransferring());
       assertTrue(varBlock1.isTransferring());
-      assertTrue(varBlock2.isTransferring());
-      assertTrue(varBlock3.isTransferring());
-      assertTrue(varBlock4.isTransferring());
+      assertTrue(!varBlock2.isTransferring());
+      assertTrue(!varBlock3.isTransferring());
+      assertTrue(!varBlock4.isTransferring());
       assertTrue(!varBlockIsolated.isTransferring());
     }
 
@@ -161,9 +162,12 @@ function test_type_transfer_block_workspace_mutatorBlocksTransferred() {
         null, null, testsConditionDuringTransferring);
     var newLetValue = getVariable(newBlock);
     var newVarBlock1 = newBlock.getInputTargetBlock('EXP2');
-    assertTrue(newLetValue.referenceCount() == 2);
+    assertTrue(newLetValue.referenceCount() == 4);
     assertTrue(getVariable(newVarBlock1).getBoundValue() == newLetValue);
     assertTrue(getVariable(varBlockIsolated).getBoundValue() == newLetValue);
+    assertTrue(getVariable(varBlock2).getBoundValue() == newLetValue);
+    assertTrue(getVariable(varBlock3).getBoundValue() == letWBValue);
+    assertTrue(getVariable(varBlock4).getBoundValue() == newLetValue);
 
     // otherWorkspace has blocks 'newBlock' and 'newVarBlock1'.
     assertTrue(otherWorkspace.getAllBlocks().length == 2);
@@ -682,22 +686,21 @@ function test_type_transfer_block_workspace_fixedWorkbenchDeleted() {
         workbench1.getWorkspace());
     assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.BOOL_);
 
-    workbench1.dispose();
-    workbench1 = null;
+    //workbench1.dispose();
+    //workbench1 = null;
     var letBlock2 = workspace.newBlock('let_typed');
     workbench2 = create_mock_workbench(letBlock2);
 
     assertTrue(letBlock1.resolveReference(null));
+    var originalWB1 = workbench1.getWorkspace();
     var letTrans = virtually_transfer_workspace(letBlock1,
         workbench2.getWorkspace());
+    assertNotEquals(workbench1, letTrans.mutator);
+    assertEquals(originalWB1, letTrans.mutator.getWorkspace());
+
     var letValueTrans = getVariable(letTrans);
-    // TODO: letBlock1 has transferred to the workbench2.getWorkspace(), but
-    // the block's mutator is not restored. Fix it to satisfy the following
-    // condition.
-    // assertEquals(letValueTrans.getTypeExpr().deref().label,
-    //     Blockly.TypeExpr.BOOL_);
-    assertEquals(letValueTrans.getTypeExpr().deref(),
-        letValueTrans.getTypeExpr());
+    assertEquals(letValueTrans.getTypeExpr().deref().label,
+        Blockly.TypeExpr.BOOL_);
   } finally {
     if (workbench1) {
       workbench1.dispose();
