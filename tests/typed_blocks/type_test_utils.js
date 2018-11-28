@@ -127,6 +127,7 @@ function create_mock_workbench(block) {
           return func.call(this);
         },
     removeChangeListener: function() {},
+    adaptWorkspace_: function() {},
     releaseWorkspace: function() {
           Blockly.Workbench.prototype.releaseWorkspace.call(this);
         },

@@ -454,6 +454,15 @@ Blockly.Workbench.prototype.replaceWorkspace = function(workspace) {
   workspace.isMutator = true;
   workspace.ownerMutator_ = this;
   this.workspace_ = workspace;
+  this.adaptWorkspace_();
+};
+
+/**
+ * Adapts the workspace to this mutator condition. Called when the mutator
+ * workspace is replaced with another one.
+ */
+Blockly.Workbench.prototype.adaptWorkspace_ = function() {
+  this.workspace_.updateOptions(this.createWorkspaceOptions_());
 };
 
 /**

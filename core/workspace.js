@@ -665,6 +665,23 @@ Blockly.Workspace.prototype.getMainWorkspace = function() {
 };
 
 /**
+ * Update the current workspace options according to the given options.
+ * @param {!Object} Workspace options to update. Throws an error if it contains
+ *     a property which does not exist in the original options.
+ */
+Blockly.Workspace.prototype.updateOptions = function(options) {
+  var props = Object.keys(options);
+  for (var i = 0, prop; prop = props[i]; i++) {
+    if (!(prop in this.options)) {
+      throw 'Not support for adding a new option.';
+    }
+  }
+  this.RTL = !!options.RTL;
+  this.horizontalLayout = !!options.horizontalLayout;
+  this.toolboxPosition = options.toolboxPosition;
+};
+
+/**
  * Find the workspace with the specified ID.
  * @param {string} id ID of workspace to find.
  * @return {Blockly.Workspace} The sought after workspace or null if not found.
