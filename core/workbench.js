@@ -125,15 +125,15 @@ Blockly.Workbench.prototype.createEditor_ = function() {
   // a top level svg. Instead of handling scale themselves, mutators
   // inherit scale from the parent workspace.
   // To fix this, scale needs to be applied at a different level in the dom.
-  var flyoutSvg =  this.workspace_.addFlyout_('g',
+  this.flyoutSvg_ =  this.workspace_.addFlyout_('g',
       this.createFlyout_.bind(this));
-  var background = this.workspace_.createDom('blocklyMutatorBackground');
+  this.background_ = this.workspace_.createDom('blocklyMutatorBackground');
 
   // Insert the flyout after the <rect> but before the block canvas so that
   // the flyout is underneath in z-order.  This makes blocks layering during
   // dragging work properly.
-  background.insertBefore(flyoutSvg, this.workspace_.svgBlockCanvas_);
-  this.svgDialog_.appendChild(background);
+  this.background_.insertBefore(this.flyoutSvg_, this.workspace_.svgBlockCanvas_);
+  this.svgDialog_.appendChild(this.background_);
 
   return this.svgDialog_;
 };
