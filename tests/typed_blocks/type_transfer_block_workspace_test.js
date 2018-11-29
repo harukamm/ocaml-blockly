@@ -711,3 +711,64 @@ function test_type_transfer_block_workspace_fixedWorkbenchDeleted() {
     workspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_NestedWorkbenchTransferring() {
+  var workspace = create_typed_workspace();
+  var workbench, nestedWorkbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var letValueX = getVariable(letBlock);
+    setVariableName(letBlock, 'x');
+    workbench = create_mock_workbench(letBlock);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlockX = blocks[0];
+
+    var letBlockWB = workbench.getWorkspace().newBlock('let_typed');
+    var letValueY = getVariable(letBlockWB);
+    setVariableName(letBlockWB, 'y');
+    nestedWorkbench = create_mock_workbench(letBlockWB);
+    var blocks = getFlyoutBlocksFromWorkbench(nestedWorkbench);
+    assertEquals(blocks.length, 2);
+    var referenceBlockY = blocks[0];
+    var referenceY = getVariable(referenceBlockY);
+    // workbench.getFlyoutLanguageTree_() does not guarantee any order. If
+    // they seems to have been swapped, just swap them.
+    if (referenceY.getVariableName() === 'x') {
+      referenceBlockY = blocks[1];
+      referenceY = getVariable(referenceBlockY);
+    }
+
+    var intArith = nestedWorkbench.getWorkspace().newBlock(
+        'int_arithmetic_typed');
+    intArith.getInput('A').connection.connect(
+        referenceBlockY.outputConnection);
+    assertEquals(referenceY.getTypeExpr().deref().label,
+        Blockly.TypeExpr.INT_);
+    assertEquals(letValueY.getTypeExpr().deref().label,
+        Blockly.TypeExpr.INT_);
+
+    var transBlock = virtually_transfer_workspace(letBlockWB, workspace);
+    var transLetValueY = getVariable(transBlock);
+    // TODO(harukam): ReferenceY is bound to transLetValueY, but their type
+    // expressions are not unified. Fix it.
+    assertEquals(referenceY.getBoundValue(), transLetValueY);
+    assertNotEquals(referenceY.getTypeExpr().deref(),
+        transLetValueY.getTypeExpr().deref());
+    intArith.updateTypeInference();
+    assertEquals(referenceY.getTypeExpr().deref(),
+        transLetValueY.getTypeExpr().deref());
+    assertEquals(referenceY.getTypeExpr().deref().label,
+        Blockly.TypeExpr.INT_);
+    assertEquals(transLetValueY.getTypeExpr().deref().label,
+        Blockly.TypeExpr.INT_);
+  } finally {
+    if (nestedWorkbench) {
+      nestedWorkbench.dispose();
+    }
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
