@@ -173,22 +173,23 @@ Blockly.Workbench.prototype.createFlyout_ = function(flyoutWorkspaceOptions) {
 
 /**
  * Initialize the icon and its components.
+ * @param {Element=} opt_childBubbleCavas The SVG element to form nested
+ *     bubbles surface. Provided to use a element that already exists as the
+ *     nested surface of this bubble.
  * @private
  */
-Blockly.Workbench.prototype.init_ = function() {
+Blockly.Workbench.prototype.init_ = function(opt_childBubbleCanvas) {
   if (this.initialized_) {
     return;
   }
   goog.asserts.assert(goog.isFunction(this.block_.getWorkbenchContext));
 
   // Create the bubble.
-  var childBubblCanvas = this.defaultChildBubbleCanvas_ ?
-      this.defaultChildBubbleCanvas_ : null;
   var anchorXY = this.iconXY_ ? this.iconXY_ : new goog.math.Coordinate(0, 0);
   this.bubble_ = new Blockly.Bubble(
       /** @type {!Blockly.WorkspaceSvg} */ (this.block_.workspace),
       this.createEditor_(), this.block_.svgPath_, anchorXY, null, null,
-      childBubblCanvas);
+      opt_childBubbleCanvas);
   // Expose this mutator's block's ID on its top-level SVG group.
   this.bubble_.setSvgId(this.block_.id);
 
@@ -517,9 +518,8 @@ Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
   var bubble = workbench.getBubble();
   var originalChildBubble = bubble.getChildBubbleCanvas();
   bubble.removeChildBubbleCanvas();
-  this.defaultChildBubbleCanvas_ = originalChildBubble;
 
-  this.init_();
+  this.init_(originalChildBubble);
   this.setVisible(false);
 };
 
