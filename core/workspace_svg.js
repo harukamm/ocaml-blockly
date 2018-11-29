@@ -666,6 +666,15 @@ Blockly.WorkspaceSvg.prototype.updateScreenCalculations_ = function() {
 };
 
 /**
+ * Clear cached SVG elements and screen calculations.
+ */
+Blockly.WorkspaceSvg.prototype.clearCached = function() {
+  this.injectionDiv_ = null;
+  this.cachedParentSvg_ = null;
+  this.updateInverseScreenCTM();
+};
+
+/**
  * If enabled, resize the parts of the workspace that change when the workspace
  * contents (e.g. block positions) change.  This will also scroll the
  * workspace contents if needed.

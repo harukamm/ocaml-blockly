@@ -509,6 +509,7 @@ Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
 
   // Recreate the flyout because the old flyout refers to the original mutator.
   this.workspace_.clearFlyout();
+  this.workspace_.clearCached();
 
   this.background_ = originalBackground;
 
