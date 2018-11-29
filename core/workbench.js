@@ -426,7 +426,7 @@ Blockly.Workbench.prototype.dispose = function() {
   this.block_.mutator = null;
   Blockly.Icon.prototype.dispose.call(this);
 
-  this.svgDialog_ = null;
+  this.removeSvgElements();
   this.removeChangeListener();
   if (this.workspace_) {
     this.workspace_.dispose();
