@@ -178,8 +178,8 @@ Blockly.Workbench.prototype.init = function() {
   goog.asserts.assert(goog.isFunction(this.block_.getWorkbenchContext));
 
   // Create the bubble.
-  var childBubblCanvas = this.childBubbleCanvas_ ?
-      this.childBubbleCanvas_ : null;
+  var childBubblCanvas = this.defaultChildBubbleCanvas_ ?
+      this.defaultChildBubbleCanvas_ : null;
   var anchorXY = this.iconXY_ ? this.iconXY_ : new goog.math.Coordinate(0, 0);
   this.bubble_ = new Blockly.Bubble(
       /** @type {!Blockly.WorkspaceSvg} */ (this.block_.workspace),
@@ -521,7 +521,7 @@ Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
   var bubble = workbench.getBubble();
   var originalChildBubble = bubble.getChildBubbleCanvas();
   bubble.removeChildBubbleCanvas();
-  this.childBubbleCanvas_ = originalChildBubble;
+  this.defaultChildBubbleCanvas_ = originalChildBubble;
 };
 
 /**
