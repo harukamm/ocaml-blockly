@@ -173,8 +173,9 @@ Blockly.Workbench.prototype.createFlyout_ = function(flyoutWorkspaceOptions) {
 
 /**
  * Initialize the icon and its components.
+ * @private
  */
-Blockly.Workbench.prototype.init = function() {
+Blockly.Workbench.prototype.init_ = function() {
   if (this.initialized_) {
     return;
   }
@@ -303,7 +304,7 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
     return;
   }
   if (!this.initialized_) {
-    this.init();
+    this.init_();
   }
   if (Blockly.Events.isEnabled()) {
     Blockly.Events.fire(new Blockly.Events.UiWithUndo(this.block_,
@@ -518,7 +519,7 @@ Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
   bubble.removeChildBubbleCanvas();
   this.defaultChildBubbleCanvas_ = originalChildBubble;
 
-  this.init();
+  this.init_();
   this.setVisible(false);
 };
 
