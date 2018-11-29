@@ -111,26 +111,29 @@ Blockly.Workbench.prototype.iconClick_ = function(e) {
  * @private
  */
 Blockly.Workbench.prototype.createEditor_ = function() {
-  if (this.svgDialog_) {
-    return this.svgDialog_;
-  }
   /* Create the editor.  Here's the markup that will be generated:
   <svg>
     [Workspace]
   </svg>
   */
-  this.svgDialog_ = Blockly.utils.createSvgElement('svg',
-      {'x': Blockly.Bubble.BORDER_WIDTH, 'y': Blockly.Bubble.BORDER_WIDTH},
-      null);
+  if (!this.svgDialog_) {
+    this.svgDialog_ = Blockly.utils.createSvgElement('svg',
+        {'x': Blockly.Bubble.BORDER_WIDTH, 'y': Blockly.Bubble.BORDER_WIDTH},
+        null);
+  }
   this.initWorkspace_();
 
   // Mutator flyouts go inside the mutator workspace's <g> rather than in
   // a top level svg. Instead of handling scale themselves, mutators
   // inherit scale from the parent workspace.
   // To fix this, scale needs to be applied at a different level in the dom.
-  this.flyoutSvg_ =  this.workspace_.addFlyout_('g',
-      this.createFlyout_.bind(this));
-  this.background_ = this.workspace_.createDom('blocklyMutatorBackground');
+  if (!this.flyoutSvg_) {
+    this.flyoutSvg_ =  this.workspace_.addFlyout_('g',
+        this.createFlyout_.bind(this));
+  }
+  if (!this.background_) {
+    this.background_ = this.workspace_.createDom('blocklyMutatorBackground');
+  }
 
   // Insert the flyout after the <rect> but before the block canvas so that
   // the flyout is underneath in z-order.  This makes blocks layering during
@@ -499,21 +502,13 @@ Blockly.Workbench.prototype.replaceWorkspace = function(workbench) {
 Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
   this.workspace_.updateOptions(this.createWorkspaceOptions_());
 
-  var originalSvgDialog = workbench.svgDialog_;
   var originalBackground = workbench.background_;
-
   workbench.removeSvgElements();
 
   // Recreate the flyout because the old flyout refers to the original mutator.
   this.workspace_.clearFlyout();
 
-  this.flyoutSvg_ = this.workspace_.addFlyout_('g',
-      this.createFlyout_.bind(this));
-
   this.background_ = originalBackground;
-  this.svgDialog_ = originalSvgDialog;
-
-  this.background_.insertBefore(this.flyoutSvg_, this.workspace_.getCanvas());
 
   this.workspace_.recordDeleteAreas();
   this.workspace_.recordWorkspaceArea();
@@ -522,6 +517,9 @@ Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
   var originalChildBubble = bubble.getChildBubbleCanvas();
   bubble.removeChildBubbleCanvas();
   this.defaultChildBubbleCanvas_ = originalChildBubble;
+
+  this.init();
+  this.setVisible(false);
 };
 
 /**
