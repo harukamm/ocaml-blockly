@@ -686,7 +686,18 @@ Blockly.Connection.prototype.checkBoundVariables = function(otherConnection) {
  * @protected
  */
 Blockly.Connection.prototype.checkType_ = function(otherConnection) {
-  // Sorin
+  return this.checkTypeWithReason_(otherConnection);
+};
+
+/**
+ * Is this connection compatible with another connection with respect to the
+ * value type system? If no compatible, find the reason.
+ * @param {Blockly.Connection} target Connection to check compatibility with.
+ * @return {number} Blockly.Connection.CAN_CONNECT if the connection is legal,
+ *    an error code otherwise.
+ */
+Blockly.Connection.prototype.checkTypeWithReason_ = function(otherConnection) {
+  // TODO(harukam): Return a error code instead of boolean.
   if (this.typeExprEnabled()) {
     if (!this.typeExpr.ableToUnify(otherConnection.typeExpr)) {
       return false;
