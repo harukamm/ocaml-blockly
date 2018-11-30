@@ -806,6 +806,9 @@ function test_type_transfer_block_workspace_workbenchHoldUnResolvedVariables() {
     var transLetBlockY = virtually_transfer_workspace(letBlockY, workspace,
         letBlockY.outputConnection, exp1);
 
+    //           |_  [ <[x]> + <[y]> ]  /
+    //             |/------------------
+    // [let x = <[let y = <> in <>]> in <>]
     assertNull(letBlockY.mutator.getWorkspace());
     assertEquals(transLetBlockY.mutator.getWorkspace(), originalWBWrokspace);
     // TODO: The workspace in mutator has transferred, and blocks in the
