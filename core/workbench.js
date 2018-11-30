@@ -456,6 +456,16 @@ Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
 };
 
 /**
+ * Updates the shown blocks in the mutator flyout.
+ */
+Blockly.Workbench.prototype.updateFlyoutTree = function() {
+  if (this.workspace_ && this.workspace_.flyout_) {
+    var tree = this.getFlyoutLanguageTree_();
+    this.workspace_.flyout_.show(tree.childNodes);
+  }
+};
+
+/**
  * Check if all of reference blocks on the mutator's workspace and its nested
  * mutators are correctly bound to their context.
  * @param {!Object} env The variable environments the block can refer to.

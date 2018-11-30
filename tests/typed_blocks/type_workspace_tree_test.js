@@ -30,6 +30,7 @@ function create_dummy_block(workspace, childBlocks) {
 
 function create_dummy_workbench(block) {
   var workspace = create_dummy_workspace(block.workspace);
+  workspace.isMutator = true;
   var workbench = {
     block_: block,
     workspace_: workspace,

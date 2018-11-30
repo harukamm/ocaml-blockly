@@ -306,6 +306,8 @@ Blockly.WorkspaceTree.getChildrenUnderBlock = function(block) {
     if (mutatorWorkspace) {
       children.push(mutatorWorkspace);
       var nested = Blockly.WorkspaceTree.getChildren(mutatorWorkspace);
+      // Exclude workspaces in a flyout. Get only mutator workspaces.
+      nested = goog.array.filter(nested, function(ws) {return ws.isMutator;});
       Array.prototype.push.apply(children, nested);
     }
   }
