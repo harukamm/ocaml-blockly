@@ -624,12 +624,13 @@ Blockly.Connection.prototype.disconnectInternal_ = function(parentBlock,
   this.targetConnection = null;
   childBlock.setParent(null);
   var parentRootBlock = parentBlock.getRootBlock();
-  parentRootBlock.updateTypeInference(true);
-  childBlock.updateTypeInference(true);
-  var typed = !!otherConnection.typeExpr && !!this.typeExpr;
-  if (!typed || !childBlock.resolveReference(null, true)) {
-    // TODO: If there is a reference that could not be resolved, show message
-    // users.
+  if (this.typeExprEnabled()) {
+    parentRootBlock.updateTypeInference(true);
+    childBlock.updateTypeInference(true);
+    // if (!childBlock.resolveReference(null, true)) {
+    //   // TODO(harukam): If there is a reference that could not be resolved,
+    //   // show message users.
+    // }
   }
   if (event) {
     event.recordNew();

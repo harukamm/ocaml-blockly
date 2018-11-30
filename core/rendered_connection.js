@@ -349,11 +349,10 @@ Blockly.RenderedConnection.prototype.isConnectionAllowed = function(candidate,
  */
 Blockly.RenderedConnection.prototype.disconnectInternal_ = function(parentBlock,
     childBlock) {
-  var hasTypeExpr = !!this.targetConnection.typeExpr;
   Blockly.RenderedConnection.superClass_.disconnectInternal_.call(this,
       parentBlock, childBlock);
 
-  if (hasTypeExpr && parentBlock.rendered && childBlock.rendered) {
+  if (this.typeExprEnabled() && parentBlock.rendered && childBlock.rendered) {
     // Re-render all blocks on the related workspaces if type expression might
     // change.
     // TODO(harukam): Re-render only blocks whose type expressions have changed
