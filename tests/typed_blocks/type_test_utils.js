@@ -106,16 +106,30 @@ function createNestedValueBlock(workspace, size, getNthName) {
 
 /* Begin functions for workbenches. */
 
-function create_mock_workbench(block) {
+function getDefaultContextInputName(block) {
+  switch (block.type) {
+    case 'let_typed':
+      return 'EXP2';
+    case 'lambda_typed':
+      return 'RETURN';
+    default:
+      return null;
+  }
+}
+
+function create_mock_workbench(block, opt_inputName) {
   var workspaceOptions = {
     typedVersion: true,
     parentWorkspace: block.workspace
   };
-  goog.asserts.assert(goog.isFunction(block.getWorkbenchContext));
+  var inputName = opt_inputName ?
+      opt_inputName : getDefaultContextInputName(block);
+  goog.asserts.assert(inputName);
   var workspace = new Blockly.Workspace(workspaceOptions);
   var mutatorMock = {
     block_: block,
     workspace_: workspace,
+    contextInputName_: inputName,
     getWorkspace: function() {
           return this.workspace_;
         },

@@ -189,7 +189,6 @@ Blockly.Workbench.prototype.init_ = function(opt_childBubbleCanvas) {
   if (this.initialized_) {
     return;
   }
-  goog.asserts.assert(goog.isFunction(this.block_.getWorkbenchContext));
 
   // Create the bubble.
   var anchorXY = this.iconXY_ ? this.iconXY_ : new goog.math.Coordinate(0, 0);
@@ -408,7 +407,9 @@ Blockly.Workbench.prototype.getContext = function() {
     // This workbench is in the process of being deleted.
     return {};
   }
-  return this.block_.getWorkbenchContext();
+  var input = this.block_.getInput(this.contextInputName_);
+  return this.block_.allVisibleVariables(input.connection,
+      true/** Includes implicit context. */);
 };
 
 /**

@@ -2637,16 +2637,6 @@ Blockly.Blocks['lambda_typed'] = {
     return map;
   },
 
-  /**
-   * Returns map to a variable value that can be referred to inside this
-   * block's workbench keyed by its name.
-   * @return {!Object}
-   */
-  getWorkbenchContext: function() {
-    var returnInput = this.getInput('RETURN');
-    return this.allVisibleVariables(returnInput.connection, true);
-  },
-
   clearTypes: function() {
     this.outputConnection.typeExpr.arg_type.clear();
     this.outputConnection.typeExpr.return_type.clear();
@@ -2923,16 +2913,6 @@ Blockly.Blocks['let_typed'] = {
     if (Blockly.Names.equals(oldName, this.getField('VAR').getText())) {
       this.setFieldValue(newName, 'VAR');
     }
-  },
-
-  /**
-   * Returns map to a variable value that can be referred to inside this
-   * block's workbench keyed by its name.
-   * @return {!Object}
-   */
-  getWorkbenchContext: function() {
-    var exp2 = this.getInput('EXP2');
-    return this.allVisibleVariables(exp2.connection, true);
   },
 
   /**
