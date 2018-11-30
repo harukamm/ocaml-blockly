@@ -443,6 +443,18 @@ Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
 };
 
 /**
+ * Check if all of reference blocks on the mutator's workspace and its nested
+ * mutators are correctly bound to their context.
+ * @param {!Object} env The variable environments the block can refer to.
+ * @return {boolean} True if reference blocks on the mutator's workspace and
+ *     its nested mutators' workspaces can be resolved.
+ */
+Blockly.Workbench.prototype.checkReference = function(env) {
+  // TODO(harukam): Just implement!
+  return true;
+};
+
+/**
  * Dispose of this mutator.
  */
 Blockly.Workbench.prototype.dispose = function() {

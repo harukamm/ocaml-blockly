@@ -134,12 +134,18 @@ function create_mock_workbench(block, opt_inputName) {
     getWorkspace: function() {
           return this.workspace_;
         },
+    isWorkbench: function() {
+          return true;
+        },
     getContext: function() {
           return Blockly.Workbench.prototype.getContext.call(this);
         },
     getFlyoutLanguageTree_: function() {
           var func = Blockly.Workbench.prototype.getFlyoutLanguageTree_;
           return func.call(this);
+        },
+    checkReference: function(env) {
+          return Blockly.Workbench.prototype.checkReference(this, env);
         },
     removeChangeListener: function() {},
     adaptWorkspace_: function() {},

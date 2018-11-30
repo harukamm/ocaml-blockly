@@ -1809,9 +1809,17 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
     var block = pair[0];
     var envOfParent = pair[1];
 
-    var success = block.resolveReferenceWithEnv_(envOfParent, opt_bind);
-    allSuccess = allSuccess && success;
-    if (!success && opt_bind !== true) {
+    if (!block.resolveReferenceWithEnv_(envOfParent, opt_bind)) {
+      allSuccess = false;
+    }
+
+    var mutator = block.mutator;
+    var workbench = mutator && mutator.isWorkbench() ? mutator : null;
+    if (workbench && !workbench.checkReference(envOfParent)) {
+      allSuccess = false;
+    }
+
+    if (!allSuccess && opt_bind !== true) {
       // Some of references can not be resolved. If no need to bind other
       // references, just quit.
       return false;
