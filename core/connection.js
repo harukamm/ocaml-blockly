@@ -693,12 +693,6 @@ Blockly.Connection.prototype.checkType_ = function(otherConnection) {
     }
     return this.checkBoundVariables(otherConnection);
   }
-  if (!this.typeExpr && otherConnection.typeExpr) {
-    return false;
-  }
-  if (this.typeExpr && !otherConnection.typeExpr) {
-    return false;
-  }
   if (!this.check_ || !otherConnection.check_) {
     // One or both sides are promiscuous enough that anything will fit.
     return true;
