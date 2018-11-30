@@ -767,3 +767,58 @@ function test_type_transfer_block_workspace_NestedWorkbenchTransferring() {
     workspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_workbenchHoldUnResolvedVariables() {
+  var workspace = create_typed_workspace();
+  var workbench1, workbench2;
+  try {
+    var letBlockX = workspace.newBlock('let_typed');
+    var letValueX = getVariable(letBlockX);
+    setVariableName(letBlockX, 'x');
+    workbench1 = create_mock_workbench(letBlockX);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench1);
+    assertEquals(blocks.length, 1);
+    var referenceBlockX = blocks[0];
+
+    var letBlockY = workspace.newBlock('let_typed');
+    var letValueY = getVariable(letBlockY);
+    setVariableName(letBlockY, 'y');
+    workbench2 = create_mock_workbench(letBlockY);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench2,
+        workbench2.getWorkspace());
+    assertEquals(blocks.length, 1);
+    var referenceBlockY = blocks[0];
+
+    letBlockX.getInput('EXP2').connection.connect(letBlockY.outputConnection);
+    var transBlockX = virtually_transfer_workspace(referenceBlockX,
+        workbench2.getWorkspace());
+    assertEquals(transBlockX.outputConnection.typeExpr.deref(),
+        letValueX.getTypeExpr().deref());
+    //                  |_  [ <[x]> + <[y]> ]  /
+    //                    |/------------------
+    // [let x = <> in <[let y = <> in <>]>]
+    var intArith = workbench2.getWorkspace().newBlock('int_arithmetic_typed');
+    intArith.getInput('A').connection.connect(transBlockX.outputConnection);
+    intArith.getInput('B').connection.connect(referenceBlockY.outputConnection);
+
+    var exp1 = letBlockX.getInput('EXP1').connection;
+    var originalWBWrokspace = letBlockY.mutator.getWorkspace();
+    var transLetBlockY = virtually_transfer_workspace(letBlockY, workspace,
+        letBlockY.outputConnection, exp1);
+
+    assertNull(letBlockY.mutator.getWorkspace());
+    assertEquals(transLetBlockY.mutator.getWorkspace(), originalWBWrokspace);
+    // TODO: The workspace in mutator has transferred, and blocks in the
+    // workspace exist in a invalid state. The variable block 'x' is no longer
+    // visible.
+    assertFalse(intArith.resolveReference(null));
+  } finally {
+    if (workbench2) {
+      workbench2.dispose();
+    }
+    if (workbench1) {
+      workbench1.dispose();
+    }
+    workspace.dispose();
+  }
+}
