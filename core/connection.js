@@ -66,6 +66,8 @@ Blockly.Connection.REASON_TARGET_NULL = 3;
 Blockly.Connection.REASON_CHECKS_FAILED = 4;
 Blockly.Connection.REASON_DIFFERENT_WORKSPACES = 5;
 Blockly.Connection.REASON_SHADOW_PARENT = 6;
+Blockly.Connection.REASON_TYPE_UNIFICATION = 7;
+Blockly.Connection.REASON_VARIABLE_REFERENCE = 8;
 
 /**
  * Connection this connection connects to.  Null if not connected.
@@ -335,10 +337,14 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target,
   } else if (blockA && blockB && blockA.workspace !== blockB.workspace &&
       (opt_final === true || !transferable)) {
     return Blockly.Connection.REASON_DIFFERENT_WORKSPACES;
-  } else if (!this.checkType_(target)) {
-    return Blockly.Connection.REASON_CHECKS_FAILED;
-  } else if (blockA.isShadow() && !blockB.isShadow()) {
-    return Blockly.Connection.REASON_SHADOW_PARENT;
+  } else {
+    var reason = this.checkTypeWithReason_(target);
+    if (reason != Blockly.Connection.CAN_CONNECT) {
+      return reason;
+    }
+    if (blockA.isShadow() && !blockB.isShadow()) {
+      return Blockly.Connection.REASON_SHADOW_PARENT;
+    }
   }
   return Blockly.Connection.CAN_CONNECT;
 };
@@ -371,6 +377,10 @@ Blockly.Connection.prototype.checkConnection_ = function(target, opt_final) {
       throw msg;
     case Blockly.Connection.REASON_SHADOW_PARENT:
       throw 'Connecting non-shadow to shadow block.';
+    case Blockly.Connection.REASON_TYPE_UNIFICATION:
+      throw 'Type unification failed.';
+    case Blockly.Connection.REASON_VARIABLE_REFERENCE:
+      throw 'Some variable references are bound to be illegal.';
     default:
       throw 'Unknown connection failure: this should never happen!';
   }
@@ -686,7 +696,8 @@ Blockly.Connection.prototype.checkBoundVariables = function(otherConnection) {
  * @protected
  */
 Blockly.Connection.prototype.checkType_ = function(otherConnection) {
-  return this.checkTypeWithReason_(otherConnection);
+  return this.checkTypeWithReason_(otherConnection) ==
+    Blockly.Connection.CAN_CONNECT;
 };
 
 /**
@@ -697,25 +708,27 @@ Blockly.Connection.prototype.checkType_ = function(otherConnection) {
  *    an error code otherwise.
  */
 Blockly.Connection.prototype.checkTypeWithReason_ = function(otherConnection) {
-  // TODO(harukam): Return a error code instead of boolean.
   if (this.typeExprEnabled()) {
     if (!this.typeExpr.ableToUnify(otherConnection.typeExpr)) {
-      return false;
+      return Blockly.Connection.REASON_TYPE_UNIFICATION;
     }
-    return this.checkBoundVariables(otherConnection);
+    if (!this.checkBoundVariables(otherConnection)) {
+      return Blockly.Connection.REASON_VARIABLE_REFERENCE;
+    }
+    return Blockly.Connection.CAN_CONNECT;
   }
   if (!this.check_ || !otherConnection.check_) {
     // One or both sides are promiscuous enough that anything will fit.
-    return true;
+    return Blockly.Connection.CAN_CONNECT;
   }
   // Find any intersection in the check lists.
   for (var i = 0; i < this.check_.length; i++) {
     if (otherConnection.check_.indexOf(this.check_[i]) != -1) {
-      return true;
+      return Blockly.Connection.CAN_CONNECT;
     }
   }
   // No intersection.
-  return false;
+  return Blockly.Connection.REASON_CHECKS_FAILED;
 };
 
 /**

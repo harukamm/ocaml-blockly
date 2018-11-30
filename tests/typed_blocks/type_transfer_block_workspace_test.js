@@ -815,6 +815,8 @@ function test_type_transfer_block_workspace_workbenchHoldUnResolvedVariables() {
     // workspace exist in a invalid state. The variable block 'x' is no longer
     // visible.
     assertFalse(intArith.resolveReference(null));
+    assertEquals(intArith.outputConnection.checkTypeWithReason_(exp1),
+        Blockly.Connection.REASON_VARIABLE_REFERENCE);
   } finally {
     if (workbench2) {
       workbench2.dispose();
