@@ -226,6 +226,16 @@ Blockly.Input.prototype.setTypeExpr = function(t, opt_overwrite) {
   return this;
 };
 
+/**
+ * Store the workbench to the block.
+ * @param {!Blockly.Workbench} workbench The mutator to store to the block.
+ * @return {!Blockly.Input} The input being modified (to allow chaining).
+ */
+Blockly.Input.prototype.setWorkbench = function(workbench) {
+  this.sourceBlock_.setMutator(workbench);
+  workbench.setContextInput(this);
+  return this;
+};
 
 /**
  * Change the alignment of the connection's field(s).

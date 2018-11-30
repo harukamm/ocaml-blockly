@@ -52,6 +52,13 @@ Blockly.Workbench.MINIMUM_HEIGHT_ = 100;
 Blockly.Workbench.prototype.initialized_ = false;
 
 /**
+ * The name of input whose context this mutator should be bound to.
+ * @type {string|null}
+ * @private
+ */
+Blockly.Workbench.prototype.contextInputName_ = null;
+
+/**
  * Draw the mutator icon.
  * @param {!Element} group The icon group.
  * @private
@@ -247,6 +254,15 @@ Blockly.Workbench.prototype.getBubble = function() {
  */
 Blockly.Workbench.prototype.getWorkspace = function() {
   return this.workspace_;
+};
+
+/**
+ * Set the input whose context this mutator should be bound to.
+ * @param {!Blockly.Input} The input where this mutator's context is bound.
+ */
+Blockly.Workbench.prototype.setContextInput = function(input) {
+  // TODO(harukam): this.block_ must be identical with input's block.
+  this.contextInputName_ = input.name;
 };
 
 /**

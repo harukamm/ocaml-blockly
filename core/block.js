@@ -2599,8 +2599,8 @@ Blockly.Blocks['lambda_typed'] = {
     this.appendValueInput('RETURN')
         .setTypeExpr(B)
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField('->');
-    this.setMutator(new Blockly.Workbench());
+        .appendField('->')
+        .setWorkbench(new Blockly.Workbench());
     this.setInputsInline(true);
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.RenderedTypeExpr.FUN(A, B));
@@ -2874,8 +2874,8 @@ Blockly.Blocks['let_typed'] = {
         .appendField('=');
     this.appendValueInput('EXP2')
         .setTypeExpr(B)
-        .appendField('in');
-    this.setMutator(new Blockly.Workbench());
+        .appendField('in')
+        .setWorkbench(new Blockly.Workbench());
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
