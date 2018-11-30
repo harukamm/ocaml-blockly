@@ -1819,7 +1819,7 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
 
     for (var i = 0, child; child = block.childBlocks_[i]; i++) {
       var outputConn = child.outputConnection;
-      var targetConn = outputConn && outputConn.targetConnection;
+      var targetConn = outputConn.targetConnection;
       var additionalEnv = block.getVisibleVariablesImpl(targetConn);
       var envOfChild = Object.assign({}, envOfParent);
       Object.assign(envOfChild, additionalEnv);
