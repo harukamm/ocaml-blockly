@@ -750,12 +750,7 @@ function test_type_transfer_block_workspace_NestedWorkbenchTransferring() {
 
     var transBlock = virtually_transfer_workspace(letBlockWB, workspace);
     var transLetValueY = getVariable(transBlock);
-    // TODO(harukam): ReferenceY is bound to transLetValueY, but their type
-    // expressions are not unified. Fix it.
     assertEquals(referenceY.getBoundValue(), transLetValueY);
-    assertNotEquals(referenceY.getTypeExpr().deref(),
-        transLetValueY.getTypeExpr().deref());
-    intArith.updateTypeInference();
     assertEquals(referenceY.getTypeExpr().deref(),
         transLetValueY.getTypeExpr().deref());
     assertEquals(referenceY.getTypeExpr().deref().label,
