@@ -1802,6 +1802,19 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
         true  /** Includes the potential context. */));
   }
 
+  return this.resolveReferenceOnDescendants(env, opt_bind);
+};
+
+/**
+ * Check if variables on this block and nested blocks are correctly bound to
+ * the variable context. Also look through variables on blocks mutators.
+ * @param {!Object} env The variable environment this block and nested blocks
+ *     can refer to.
+ * @param {boolean=} opt_bind Bind reference block with the proper variable if
+ *     true.
+ */
+Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
+    opt_bind) {
   var bfsStack = [[this, env]];
   var allSuccess = true;
   while (bfsStack.length) {
