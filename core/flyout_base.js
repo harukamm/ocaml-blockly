@@ -445,9 +445,51 @@ Blockly.Flyout.prototype.show = function(xmlList) {
 
   this.setVisible(true);
   // Create the blocks to be shown in this flyout.
-  var contents = [];
   var gaps = [];
   this.permanentlyDisabled_.length = 0;
+  var contents = this.obtainContentsToShow_(xmlList, gaps);
+
+  this.layout_(contents, gaps);
+
+  // IE 11 is an incompetent browser that fails to fire mouseout events.
+  // When the mouse is over the background, deselect all blocks.
+  var deselectAll = function() {
+    var topBlocks = this.workspace_.getTopBlocks(false);
+    for (var i = 0, block; block = topBlocks[i]; i++) {
+      block.removeSelect();
+    }
+  };
+
+  this.listeners_.push(Blockly.bindEventWithChecks_(this.svgBackground_,
+      'mouseover', this, deselectAll));
+
+  if (this.horizontalLayout_) {
+    this.height_ = 0;
+  } else {
+    this.width_ = 0;
+  }
+  this.workspace_.setResizesEnabled(true);
+  this.reflow();
+
+  this.filterForCapacity_();
+
+  // Correctly position the flyout's scrollbar when it opens.
+  this.position();
+
+  this.reflowWrapper_ = this.reflow.bind(this);
+  this.workspace_.addChangeListener(this.reflowWrapper_);
+};
+
+/**
+ * Obtains blocks to show in the flyout from the given XML nodes.
+ * @param {!Array|string} xmlList List of blocks to show.
+ * @param {!Array} gaps The list of gaps to show between contents, which will
+ *     be modified by this function.
+ * @return {!Array} List of contents (block or buttom etc.) to show.
+ * @private
+ */
+Blockly.Flyout.prototype.obtainContentsToShow_ = function(xmlList, gaps) {
+  var contents = [];
   for (var i = 0, xml; xml = xmlList[i]; i++) {
     if (xml.tagName) {
       var tagName = xml.tagName.toUpperCase();
@@ -486,36 +528,7 @@ Blockly.Flyout.prototype.show = function(xmlList) {
       }
     }
   }
-
-  this.layout_(contents, gaps);
-
-  // IE 11 is an incompetent browser that fails to fire mouseout events.
-  // When the mouse is over the background, deselect all blocks.
-  var deselectAll = function() {
-    var topBlocks = this.workspace_.getTopBlocks(false);
-    for (var i = 0, block; block = topBlocks[i]; i++) {
-      block.removeSelect();
-    }
-  };
-
-  this.listeners_.push(Blockly.bindEventWithChecks_(this.svgBackground_,
-      'mouseover', this, deselectAll));
-
-  if (this.horizontalLayout_) {
-    this.height_ = 0;
-  } else {
-    this.width_ = 0;
-  }
-  this.workspace_.setResizesEnabled(true);
-  this.reflow();
-
-  this.filterForCapacity_();
-
-  // Correctly position the flyout's scrollbar when it opens.
-  this.position();
-
-  this.reflowWrapper_ = this.reflow.bind(this);
-  this.workspace_.addChangeListener(this.reflowWrapper_);
+  return contents;
 };
 
 /**
