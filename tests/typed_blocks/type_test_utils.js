@@ -145,7 +145,7 @@ function create_mock_workbench(block, opt_inputName) {
           return func.call(this);
         },
     checkReference: function(env) {
-          return Blockly.Workbench.prototype.checkReference(this, env);
+          return Blockly.Workbench.prototype.checkReference.call(this, env);
         },
     removeChangeListener: function() {},
     adaptWorkspace_: function() {},
