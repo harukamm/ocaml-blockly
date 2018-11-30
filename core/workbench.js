@@ -52,11 +52,11 @@ Blockly.Workbench.MINIMUM_HEIGHT_ = 100;
 Blockly.Workbench.prototype.initialized_ = false;
 
 /**
- * The name of input whose context this mutator should be bound to.
- * @type {string|null}
+ * The connection this mutator's context is bound to.
+ * @type {Blockly.Connection}
  * @private
  */
-Blockly.Workbench.prototype.contextInputName_ = null;
+Blockly.Workbench.prototype.contextConnection_ = null;
 
 /**
  * Draw the mutator icon.
@@ -256,12 +256,14 @@ Blockly.Workbench.prototype.getWorkspace = function() {
 };
 
 /**
- * Set the input whose context this mutator should be bound to.
- * @param {!Blockly.Input} The input where this mutator's context is bound.
+ * Set the connection whose context this mutator should be bound to.
+ * @param {!Blockly.Connetion} The connection where this mutator's context is bound.
  */
-Blockly.Workbench.prototype.setContextInput = function(input) {
-  // TODO(harukam): this.block_ must be identical with input's block.
-  this.contextInputName_ = input.name;
+Blockly.Workbench.prototype.setContextConnection = function(connection) {
+  if (connection.getSourceBlock() != this.block_) {
+    throw 'The connection and mutator belong to differenct blocks.';
+  }
+  this.contextConnection_ = connection;
 };
 
 /**
@@ -399,14 +401,6 @@ Blockly.Workbench.prototype.getFlyoutMetrics_ = function() {
 };
 
 /**
- * Return the input where this workbench's context is bound.
- * @return {Blockly.Input} The input or null.
- */
-Blockly.Workbench.prototype.getContextInput = function() {
-  return this.block_ ? this.block_.getInput(this.contextInputName_) : null;
-};
-
-/**
  * Finds variable environment which can be referred to inside this workbench.
  * @return {!Object} The map to variable value keyed by its name.
  */
@@ -415,8 +409,7 @@ Blockly.Workbench.prototype.getContext = function() {
     // This workbench is in the process of being deleted.
     return {};
   }
-  var input = this.getContextInput();
-  return this.block_.allVisibleVariables(input.connection,
+  return this.block_.allVisibleVariables(this.contextConnection_,
       true/** Includes implicit context. */);
 };
 

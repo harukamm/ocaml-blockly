@@ -125,14 +125,12 @@ function create_mock_workbench(block, opt_inputName) {
   var inputName = opt_inputName ?
       opt_inputName : getDefaultContextInputName(block);
   goog.asserts.assert(inputName);
+  var connection = block.getInput(inputName).connection;
   var workspace = new Blockly.Workspace(workspaceOptions);
   var mutatorMock = {
     block_: block,
     workspace_: workspace,
-    contextInputName_: inputName,
-    getContextInput: function() {
-          return this.block_.getInput(this.contextInputName_);
-        },
+    contextConnection_: connection,
     getWorkspace: function() {
           return this.workspace_;
         },
@@ -152,6 +150,7 @@ function create_mock_workbench(block, opt_inputName) {
           Blockly.Workbench.prototype.replaceWorkspace.call(this, workbench);
         },
     dispose: function() {
+          this.contextConnection_ = null;
           this.block_.mutator = null;
           this.block_ = null;
           if (this.workspace_) {

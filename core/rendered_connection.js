@@ -487,3 +487,26 @@ Blockly.RenderedConnection.prototype.renderTypeVarHighlights = function() {
         this.sourceBlock_.getSvgRoot()));
   }
 }
+
+/**
+ * Store the given workbench to the connection.
+ * @param {!Blockly.Workbench} workbench The mutator to store.
+ * @return {!Blockly.Connection} The connection being modified
+ *     (to allow chaining).
+ * @override
+ */
+Blockly.RenderedConnection.prototype.setWorkbench = function(workbench) {
+  this.contextMutator = workbench;
+  workbench.setContextConnection(this);
+  return this;
+};
+
+/**
+ * Dispose of the connection.
+ */
+Blockly.RenderedConnection.prototype.dispose = function() {
+  if (this.contextMutator) {
+    this.contextMutator = null;
+  }
+  Blockly.RenderedConnection.superClass_.dispose.call(this);
+};

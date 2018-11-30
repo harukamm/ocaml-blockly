@@ -227,13 +227,16 @@ Blockly.Input.prototype.setTypeExpr = function(t, opt_overwrite) {
 };
 
 /**
- * Store the workbench to the block.
- * @param {!Blockly.Workbench} workbench The mutator to store to the block.
+ * Store the workbench to the connection and the block.
+ * @param {!Blockly.Workbench} workbench The mutator to store.
  * @return {!Blockly.Input} The input being modified (to allow chaining).
  */
 Blockly.Input.prototype.setWorkbench = function(workbench) {
+  if (!this.connection) {
+    throw 'This input does not have a connection.';
+  }
   this.sourceBlock_.setMutator(workbench);
-  workbench.setContextInput(this);
+  this.connection.setWorkbench(workbench);
   return this;
 };
 
