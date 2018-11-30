@@ -803,17 +803,16 @@ function test_type_transfer_block_workspace_workbenchHoldUnResolvedVariables() {
 
     var exp1 = letBlockX.getInput('EXP1').connection;
     var originalWBWrokspace = letBlockY.mutator.getWorkspace();
+    assertFalse(letBlockY.resolveReference(exp1));
     var transLetBlockY = virtually_transfer_workspace(letBlockY, workspace,
         letBlockY.outputConnection, exp1);
+    assertFalse(transLetBlockY.resolveReference(exp1));
 
     //           |_  [ <[x]> + <[y]> ]  /
     //             |/------------------
     // [let x = <[let y = <> in <>]> in <>]
     assertNull(letBlockY.mutator.getWorkspace());
     assertEquals(transLetBlockY.mutator.getWorkspace(), originalWBWrokspace);
-    // TODO: The workspace in mutator has transferred, and blocks in the
-    // workspace exist in a invalid state. The variable block 'x' is no longer
-    // visible.
     assertFalse(intArith.resolveReference(null));
     assertEquals(intArith.outputConnection.checkTypeWithReason_(exp1),
         Blockly.Connection.REASON_VARIABLE_REFERENCE);

@@ -414,6 +414,19 @@ Blockly.Workbench.prototype.getContext = function() {
 };
 
 /**
+ * Finds variables environment bound only to the mutator's block, and able to
+ * be referred to by blocks inside this workbench workspace.
+ * @return {!Object} The map to variable value keyed by its name.
+ */
+Blockly.Workbench.prototype.getBlockContext = function() {
+  if (!this.block_) {
+    // This workbench is in the process of being deleted.
+    return {};
+  }
+  return this.block_.getVisibleVariablesImpl(this.contextConnection_);
+};
+
+/**
  * Return a DOM tree of blocks to show in a flyout.
  * @return {Node} DOM tree of blocks.
  */
@@ -450,7 +463,19 @@ Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
  *     its nested mutators' workspaces can be resolved.
  */
 Blockly.Workbench.prototype.checkReference = function(env) {
-  // TODO(harukam): Just implement!
+  if (!this.workspace_) {
+    return true;
+  }
+  var context = Object.assign({}, env);
+  Object.assign(context, this.getBlockContext());
+
+  var topBlocks = this.workspace_.getTopBlocks();
+  for (var i = 0, topBlock; topBlock = topBlocks[i]; i++) {
+    // This function will be called recursively for each of nested mutators.
+    if (!topBlock.resolveReferenceOnDescendants(context)) {
+      return false;
+    }
+  }
   return true;
 };
 
