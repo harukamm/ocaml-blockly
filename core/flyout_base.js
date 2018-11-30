@@ -422,7 +422,8 @@ Blockly.Flyout.prototype.hide = function() {
 
 /**
  * Show and populate the flyout.
- * @param {!Array|string} xmlList List of blocks to show.
+ * @param {!Array|string|!Function} xmlList List of blocks to show, or function
+ *     to return blocks to show.
  *     Variables and procedures have a custom set of blocks.
  */
 Blockly.Flyout.prototype.show = function(xmlList) {
@@ -482,18 +483,29 @@ Blockly.Flyout.prototype.show = function(xmlList) {
 
 /**
  * Obtains blocks to show in the flyout from the given XML nodes.
- * @param {!Array|string} xmlList List of blocks to show.
+ * @param {!Array|!Function} xmlList List of blocks to show, or function to
+ *     return blocks to show.
  * @param {!Array} gaps The list of gaps to show between contents, which will
  *     be modified by this function.
  * @return {!Array} List of contents (block or buttom etc.) to show.
  * @private
  */
 Blockly.Flyout.prototype.obtainContentsToShow_ = function(xmlList, gaps) {
+  var default_gap = this.horizontalLayout_ ? this.GAP_X : this.GAP_Y;
   var contents = [];
+
+  if (goog.isFunction(xmlList)) {
+    var blocks = xmlList(this.workspace_);
+    for (var i = 0; i < blocks.length; i++) {
+      contents.push({type: 'block', block: blocks[i]});
+      gaps.push(default_gap);
+    }
+    return contents;
+  }
+
   for (var i = 0, xml; xml = xmlList[i]; i++) {
     if (xml.tagName) {
       var tagName = xml.tagName.toUpperCase();
-      var default_gap = this.horizontalLayout_ ? this.GAP_X : this.GAP_Y;
       if (tagName == 'BLOCK') {
         var curBlock = Blockly.Xml.domToBlock(xml, this.workspace_);
         if (curBlock.disabled) {

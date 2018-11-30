@@ -455,12 +455,33 @@ Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
 };
 
 /**
+ * 
+ */
+Blockly.Workbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
+  var env = this.getContext();
+  var names = Object.keys(env);
+  var blocks = [];
+
+  for (var i = 0, name; name = names[i]; i++) {
+    var variable = env[name];
+    // TODO(harukam): Avoid providing prototype name using string literal.
+    var getterBlock = flyoutWorkspace.newBlock('variables_get_typed');
+    getterBlock.initSvg();
+    var field = getterBlock.getField('VAR');
+    field.initModel();
+    field.setVariableName(name);
+    field.setBoundValue(variable);
+    blocks.push(getterBlock);
+  }
+  return blocks;
+};
+
+/**
  * Updates the shown blocks in the mutator flyout.
  */
 Blockly.Workbench.prototype.updateFlyoutTree = function() {
   if (this.workspace_ && this.workspace_.flyout_) {
-    var tree = this.getFlyoutLanguageTree_();
-    this.workspace_.flyout_.show(tree.childNodes);
+    this.workspace_.flyout_.show(this.blocksForFlyout.bind(this));
   }
 };
 
