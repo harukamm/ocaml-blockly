@@ -30,6 +30,7 @@
   <script src="../../generators/typedlang/procedures.js"></script>
 
   <script type="text/javascript" src="../../msg/js/en.js"></script>
+  <script type="text/javascript" src="converter.js"></script>
   <style>
     body {
       background-color: #fff;
@@ -50,8 +51,14 @@
   <p>&rarr; More info on <a href="https://code.google.com/p/blockly/wiki/LanguageGenerators">Language Generators</a>...</p>
 
   <p>
+    <!--
     <button onclick="showCode()">Show TypedLang</button>
     <button onclick="runCode()">Run TypedLang</button>
+    -->
+    <form onsubmit="onClickConvert(event)">
+      <input class="ocamlCode" type="text" value="let x = true && false || false in x"></input>
+      <input type="submit" value="Convert to block"></input>
+    </form>
   </p>
 
   <div id="blocklyDiv" style="height: 700px; width: 700px;"></div>
@@ -124,12 +131,37 @@
       }
     }
 
+    function onClickConvert(event) {
+      event.preventDefault();
+      var input = document.querySelector("input.ocamlCode");
+      var code = input.value;
+      if (code) {
+        codeToBlock(code);
+      }
+    }
+
+    function codeToBlock(code) {
+      var xmlStr = blockOfOCaml(code);
+      try {
+        fromXMLString(xmlStr);
+      } catch (e) {
+        console.log("Conveted: \n" + xmlStr);
+        console.log(e);
+      }
+    }
+
     function fromXMLString(str, opt_workspace) {
       var workspace = opt_workspace ? opt_workspace : Blockly.mainWorkspace;
       var parser = new DOMParser();
       var xml = parser.parseFromString(str, "text/xml");
-      var block = Blockly.Xml.domToBlock(xml.children[0], workspace);
-      return block;
+      var parseError = xml.getElementsByTagName("parsererror").length != 0;
+      if (parseError) {
+        console.log(xml);
+        throw "Parser error";
+      } else {
+        var block = Blockly.Xml.domToBlock(xml.children[0], workspace);
+        return block;
+      }
     }
   </script>
 
