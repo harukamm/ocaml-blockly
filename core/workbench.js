@@ -399,6 +399,14 @@ Blockly.Workbench.prototype.getFlyoutMetrics_ = function() {
 };
 
 /**
+ * Return the input where this workbench's context is bound.
+ * @return {Blockly.Input} The input or null.
+ */
+Blockly.Workbench.prototype.getContextInput = function() {
+  return this.block_ ? this.block_.getInput(this.contextInputName_) : null;
+};
+
+/**
  * Finds variable environment which can be referred to inside this workbench.
  * @return {!Object} The map to variable value keyed by its name.
  */
@@ -407,7 +415,7 @@ Blockly.Workbench.prototype.getContext = function() {
     // This workbench is in the process of being deleted.
     return {};
   }
-  var input = this.block_.getInput(this.contextInputName_);
+  var input = this.getContextInput();
   return this.block_.allVisibleVariables(input.connection,
       true/** Includes implicit context. */);
 };

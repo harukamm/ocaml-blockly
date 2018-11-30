@@ -130,6 +130,9 @@ function create_mock_workbench(block, opt_inputName) {
     block_: block,
     workspace_: workspace,
     contextInputName_: inputName,
+    getContextInput: function() {
+          return this.block_.getInput(this.contextInputName_);
+        },
     getWorkspace: function() {
           return this.workspace_;
         },
