@@ -1084,6 +1084,19 @@ Blockly.BlockSvg.prototype.setMutator = function(mutator) {
 };
 
 /**
+ * Updates variables on workbenches' flyout currently displayed.
+ */
+Blockly.BlockSvg.prototype.updateWorkbenchFlyout = function() {
+  var childWorkspaces = Blockly.WorkspaceTree.getChildrenUnderBlock(this);
+  for (var i = 0, child; child = childWorkspaces[i]; i++) {
+    var mutator = child.ownerMutator_;
+    if (mutator.isWorkbench()) {
+      mutator.updateFlyoutTree();
+    }
+  }
+};
+
+/**
  * Set whether the block is disabled or not.
  * @param {boolean} disabled True if disabled.
  */

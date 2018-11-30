@@ -352,6 +352,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function(parentBlock,
   Blockly.RenderedConnection.superClass_.disconnectInternal_.call(this,
       parentBlock, childBlock);
 
+  childBlock.updateWorkbenchFlyout();
   if (this.typeExprEnabled() && parentBlock.rendered && childBlock.rendered) {
     // Re-render all blocks on the related workspaces if type expression might
     // change.
@@ -424,6 +425,7 @@ Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
   if (childBlock.rendered) {
     childBlock.updateDisabled();
   }
+  childBlock.updateWorkbenchFlyout();
   if (parentBlock.rendered && childBlock.rendered) {
     if (!!parentConnection.typeExpr && !!childConnection.typeExpr) {
       // Re-render all blocks on the related workspaces if type expression

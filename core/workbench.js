@@ -339,8 +339,7 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
 
   if (visible) {
     goog.asserts.assert(this.workspace_, 'The workspace has been removed.');
-    var tree = this.getFlyoutLanguageTree_();
-    this.workspace_.flyout_.show(tree.childNodes);
+    this.updateFlyoutTree();
 
     this.bubble_.setAnchorLocation(this.iconXY_);
     this.resizeBubble_();
