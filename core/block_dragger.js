@@ -94,12 +94,13 @@ Blockly.BlockDragger = function(block, workspace) {
   this.wouldDeleteBlock_ = false;
 
   /**
-   * Whether variables check was successful when the last drag event was fired.
-   * Used to find if the result is changed.
+   * Whether the block's variables would correctly be resolved and allowed to
+   * be dropped immediately. If false and the block is dropped right now,
+   * dragging will be cancelled.
    * @type {boolean}
    * @private
    */
-  this.lastResolvedResult_ = true;
+  this.wouldDropAllowed_ = true;
 
   /**
    * The location of the top left corner of the dragging block just before the
@@ -276,18 +277,33 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
 
   Blockly.BlockAnimations.disconnectUiStop();
 
-  var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
-  var newLoc = goog.math.Coordinate.sum(this.startXY_, delta);
+  if (this.wouldDropAllowed_) {
+    var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
+    var newLoc = goog.math.Coordinate.sum(this.startXY_, delta);
+  } else {
+    var newLoc = this.startXY_;
+  }
   this.draggingBlock_.moveOffDragSurface_(newLoc);
 
   var deleted = this.maybeDeleteBlock_();
   if (!deleted) {
     // These are expensive and don't need to be done if we're deleting.
-    this.draggingBlock_.moveConnections_(delta.x, delta.y);
-    this.draggingBlock_.setDragging(false);
     this.draggingBlock_.setInvalidStyle(false);
-    this.fireMoveEvent_();
-    this.transferAndConnect_();
+
+    if (this.wouldDropAllowed_) {
+      this.draggingBlock_.moveConnections_(delta.x, delta.y);
+      this.draggingBlock_.setDragging(false);
+      this.fireMoveEvent_();
+      this.transferAndConnect_();
+    } else {
+      // TODO(harukam): We should cancel the block dragging. Restore the
+      // connection if the block has been connected to some blocks before
+      // start of a block drag, or dispose the block if it was created from
+      // a flyout.
+      this.draggingBlock_.setDragging(false);
+      this.draggingBlock_.render();
+    }
+  } else {
     this.draggingBlock_.scheduleSnapAndBump();
   }
   this.workspace_.setResizesEnabled(true);
@@ -365,9 +381,9 @@ Blockly.BlockDragger.prototype.maybeDeleteBlock_ = function() {
 Blockly.BlockDragger.prototype.updateReferenceStateDuringBlockDrag_ =
     function(targetWorkspace) {
   var resolved = true;
-  var wouldIsolate = !this.wouldDeleteBlock_ &&
+  var wouldBeOrphan = !this.wouldDeleteBlock_ &&
       !this.draggedConnectionManager_.closestConnection();
-  if (wouldIsolate && targetWorkspace) {
+  if (wouldBeOrphan && targetWorkspace) {
     // If the dragging block has found the closest connection, it means that
     // all of references on the block are bound in their context by connecting
     // with it. Otherwise check if they can be bound in the workspace's context.
@@ -376,8 +392,8 @@ Blockly.BlockDragger.prototype.updateReferenceStateDuringBlockDrag_ =
     }
   }
 
-  if (this.lastResolvedResult_ !== resolved) {
-    this.lastResolvedResult_ = resolved;
+  if (this.wouldDropAllowed_ !== resolved) {
+    this.wouldDropAllowed_ = resolved;
     this.draggingBlock_.setInvalidStyle(!resolved);
   }
 };
