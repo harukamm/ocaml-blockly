@@ -365,7 +365,9 @@ Blockly.BlockDragger.prototype.maybeDeleteBlock_ = function() {
 Blockly.BlockDragger.prototype.updateReferenceStateDuringBlockDrag_ =
     function(targetWorkspace) {
   var resolved = true;
-  if (targetWorkspace && !this.draggedConnectionManager_.closestConnection()) {
+  var wouldIsolate = !this.wouldDeleteBlock_ &&
+      !this.draggedConnectionManager_.closestConnection();
+  if (wouldIsolate && targetWorkspace) {
     // If the dragging block has found the closest connection, it means that
     // all of references on the block are bound in their context by connecting
     // with it. Otherwise check if they can be bound in the workspace's context.
