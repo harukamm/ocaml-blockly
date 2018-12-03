@@ -341,8 +341,7 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
     goog.asserts.assert(this.workspace_, 'The workspace has been removed.');
     this.updateFlyoutTree();
 
-    this.bubble_.setAnchorLocation(this.iconXY_);
-    this.resizeBubble_();
+    this.updateScreen_();
     this.addChangeListener();
     this.updateColour();
   } else {
@@ -481,7 +480,16 @@ Blockly.Workbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
 Blockly.Workbench.prototype.updateFlyoutTree = function() {
   if (this.workspace_ && this.workspace_.flyout_) {
     this.workspace_.flyout_.show(this.blocksForFlyout.bind(this));
+    this.updateScreen_();
   }
+};
+
+/**
+ * Updates the bubble's size and position.
+ */
+Blockly.Workbench.prototype.updateScreen_ = function() {
+  this.bubble_.setAnchorLocation(this.iconXY_);
+  this.resizeBubble_();
 };
 
 /**
