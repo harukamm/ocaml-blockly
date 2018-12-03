@@ -354,8 +354,6 @@ Blockly.BoundVariables.isLegalName = function(variable, newName) {
   if (!newName) {
     return false;
   }
-  // Remove all whitespace.
-  newName = newName.replace(/\s/g, '');
   // Check if a string follows the naming convention.
   if (newName.match(/^[a-z_]\w*$/) == null) {
     return false;
