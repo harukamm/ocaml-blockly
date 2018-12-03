@@ -149,56 +149,56 @@ function create_mock_workbench(block, opt_inputName) {
     flyoutWorkspace_: null,
     contextConnection_: connection,
     getWorkspace: function() {
-          return this.workspace_;
-        },
+      return this.workspace_;
+    },
     isWorkbench: function() {
-          return true;
-        },
+      return true;
+    },
     getBlockContext: function() {
-          return Blockly.Workbench.prototype.getBlockContext.call(this);
-        },
+      return Blockly.Workbench.prototype.getBlockContext.call(this);
+    },
     getContext: function() {
-          return Blockly.Workbench.prototype.getContext.call(this);
-        },
+      return Blockly.Workbench.prototype.getContext.call(this);
+    },
     blocksForFlyout: function(opt_workspace) {
-          if (opt_workspace) {
-            var workspace = opt_workspace;
-          } else {
-            if (!this.flyoutWorkspace_) {
-              this.flyoutWorkspace_ = create_mock_flyoutWorkspace(this.workspace_);
-            }
-            var workspace = this.flyoutWorkspace_;
-          }
-          return Blockly.Workbench.prototype.blocksForFlyout.call(this, workspace);
-        },
+      if (opt_workspace) {
+        var workspace = opt_workspace;
+      } else {
+        if (!this.flyoutWorkspace_) {
+          this.flyoutWorkspace_ = create_mock_flyoutWorkspace(this.workspace_);
+        }
+        var workspace = this.flyoutWorkspace_;
+      }
+      return Blockly.Workbench.prototype.blocksForFlyout.call(this, workspace);
+    },
     getFlyoutLanguageTree_: function() {
-          var func = Blockly.Workbench.prototype.getFlyoutLanguageTree_;
-          return func.call(this);
-        },
+      var func = Blockly.Workbench.prototype.getFlyoutLanguageTree_;
+      return func.call(this);
+    },
     checkReference: function(env) {
-          return Blockly.Workbench.prototype.checkReference.call(this, env);
-        },
+      return Blockly.Workbench.prototype.checkReference.call(this, env);
+    },
     removeChangeListener: function() {},
     adaptWorkspace_: function() {},
     releaseWorkspace: function() {
-          Blockly.Workbench.prototype.releaseWorkspace.call(this);
-        },
+      Blockly.Workbench.prototype.releaseWorkspace.call(this);
+    },
     replaceWorkspace: function(workbench) {
-          Blockly.Workbench.prototype.replaceWorkspace.call(this, workbench);
-        },
+      Blockly.Workbench.prototype.replaceWorkspace.call(this, workbench);
+    },
     dispose: function() {
-          this.contextConnection_ = null;
-          this.block_.mutator = null;
-          this.block_ = null;
-          if (this.workspace_) {
-            this.workspace_.dispose();
-            this.workspace_ = null;
-          }
-          if (this.flyoutWorkspace_) {
-            this.flyoutWorkspace_.dispose();
-            this.flyoutWorkspace_ = null;
-          }
-        }
+      this.contextConnection_ = null;
+      this.block_.mutator = null;
+      this.block_ = null;
+      if (this.workspace_) {
+        this.workspace_.dispose();
+        this.workspace_ = null;
+      }
+      if (this.flyoutWorkspace_) {
+        this.flyoutWorkspace_.dispose();
+        this.flyoutWorkspace_ = null;
+      }
+    }
   };
   block.mutator = mutatorMock;
 
