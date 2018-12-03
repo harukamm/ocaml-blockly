@@ -320,6 +320,7 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
     } else {
       this.draggingBlock_.setDragging(false);
       this.restoreStartTargetConnection_();
+      this.cancelFiredEvents_();
       this.draggingBlock_.render();
     }
   }
@@ -392,7 +393,6 @@ Blockly.BlockDragger.prototype.restoreStartTargetConnection_ = function() {
   if (!this.startTargetConnection_) {
     return;
   }
-  // TODO(harukam): Cancel recorded events fired during block's disconnecting.
   var connection = null;
   if (this.draggingBlock_.outputConnection) {
     connection = this.draggingBlock_.outputConnection;
@@ -411,6 +411,21 @@ Blockly.BlockDragger.prototype.restoreStartTargetConnection_ = function() {
       Blockly.Events.enable();
     }
   }
+};
+
+/**
+ * Cancel all events of the current group at the end of a block drag.
+ */
+Blockly.BlockDragger.prototype.cancelFiredEvents_ = function() {
+  if (this.wouldDropAllowed_) {
+    return;
+  }
+  // One of the following events might have been fired.
+  // 1. Block create event if the block is dragged from a flyout.
+  // 2. Move event if the block is disconnected from some blocks at the start
+  //    start of drag.
+  var group = Blockly.Events.getGroup();
+  this.draggingBlock_.workspace.removeLatestEvents(group);
 };
 
 /**

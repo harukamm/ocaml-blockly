@@ -590,6 +590,22 @@ Blockly.Workspace.prototype.fireChangeListener = function(event) {
 };
 
 /**
+ * Remove events of the given group from top of undo stack.
+ * @param {!string}
+ */
+Blockly.Workspace.prototype.removeLatestEvents = function(group) {
+  var deleteIndex = this.undoStack_.length;
+  for (var i = this.undoStack_.length - 1; 0 <= i; i--) {
+    var event = this.undoStack_[i];
+    if (!event.group || event.group !== group) {
+      break;
+    }
+    deleteIndex--;
+  }
+  this.undoStack_.splice(deleteIndex);
+};
+
+/**
  * Find the block on this workspace with the specified ID.
  * @param {string} id ID of block to find.
  * @return {Blockly.Block} The sought after block or null if not found.
