@@ -453,7 +453,9 @@ Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
 };
 
 /**
- * 
+ * Creates blocks to show in mutator's flyout on the given workspace.
+ * @param {!Blockly.Workspace} flyoutWorkspace The workspace to create blocks.
+ * @return {!Array.<!Blockly.Block>} List of blocks to show in a flyout.
  */
 Blockly.Workbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
   var env = this.getContext();
