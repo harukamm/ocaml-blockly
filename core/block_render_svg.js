@@ -336,6 +336,7 @@ Blockly.BlockSvg.prototype.render = function(opt_bubble) {
   var inputRows = this.renderCompute_(cursorX);
   this.renderDraw_(cursorX, inputRows);
   this.renderMoveConnections_();
+  this.renderExternalTypeVarHeightlights_();
 
   if (opt_bubble !== false) {
     // Render all blocks above this one (propagate a reflow).
@@ -650,6 +651,21 @@ Blockly.BlockSvg.prototype.renderMoveConnections_ = function() {
     this.nextConnection.moveToOffset(blockTL);
     if (this.nextConnection.isConnected()) {
       this.nextConnection.tighten_();
+    }
+  }
+};
+
+/**
+ * Render the highlights for type variables attached to the connection of
+ * external inputs.
+ * Should be called after all of connections on this block has been updated
+ * with the new locations.
+ * @private
+ */
+Blockly.BlockSvg.prototype.renderExternalTypeVarHeightlights_ = function() {
+  for (var i = 0, input; input = this.inputList[i]; i++) {
+    if (input.type == Blockly.INPUT_VALUE) {
+      input.connection.renderTypeVarHighlights();
     }
   }
 };
@@ -1047,7 +1063,6 @@ Blockly.BlockSvg.prototype.renderExternalValueInput_ = function(pathObject, row,
         input.connection.targetBlock().getHeightWidth().width -
         Blockly.BlockSvg.TAB_WIDTH + 1);
   }
-  input.connection.renderTypeVarHighlights();
 };
 
 /**
