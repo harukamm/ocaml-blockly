@@ -103,6 +103,13 @@ Blockly.BlockDragger = function(block, workspace) {
   this.wouldDropAllowed_ = true;
 
   /**
+   * Whether the block is dragged from a flyout.
+   * @type {boolean}
+   * @private
+   */
+  this.isDraggingFromFlyout_ = false;
+
+  /**
    * The target connection of the block before start of dragging. Null if the
    * dragging block is not connected to any block.
    * @type {Blockly.Connection}
@@ -209,15 +216,20 @@ Blockly.BlockDragger.initIconData_ = function(block) {
  * @param {!goog.math.Coordinate} currentDragDeltaXY How far the pointer has
  *     moved from the position at mouse down, in pixel units.
  * @param {boolean} healStack whether or not to heal the stack after disconnecting
+ * @param {boolean} fromFlyout Whether the block is dragged from a flyout. If
+ *     true and the block drag should be canceled, the block will be deleted.
  * @package
  */
-Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY, healStack) {
+Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY,
+    healStack, fromFlyout) {
   if (!Blockly.Events.getGroup()) {
     Blockly.Events.setGroup(true);
   }
 
   this.workspace_.setResizesEnabled(false);
   Blockly.BlockAnimations.disconnectUiStop();
+
+  this.isDraggingFromFlyout_ = fromFlyout === true;
 
   if (this.draggingBlock_.getParent() ||
       (healStack && this.draggingBlock_.nextConnection &&
@@ -306,7 +318,6 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
       this.transferAndConnect_();
       this.draggingBlock_.scheduleSnapAndBump();
     } else {
-      // TODO(harukam): Dispose the block if it was created from a flyout.
       this.draggingBlock_.setDragging(false);
       this.restoreStartTargetConnection_();
       this.draggingBlock_.render();
@@ -456,6 +467,13 @@ Blockly.BlockDragger.prototype.updateReferenceStateDuringBlockDrag_ =
  */
 Blockly.BlockDragger.prototype.updateCursorDuringBlockDrag_ = function() {
   this.wouldDeleteBlock_ = this.draggedConnectionManager_.wouldDeleteBlock();
+
+  if (!this.wouldDropAllowed_ && this.isDraggingFromFlyout_) {
+    // If the block is dragged from a flyout and it is currently in an invalid
+    // state, it would be deleted.
+    this.wouldDeleteBlock_ = true;
+  }
+
   var trashcan = this.workspace_.trashcan;
   if (this.wouldDeleteBlock_) {
     this.draggingBlock_.setDeleteStyle(true);

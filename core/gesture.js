@@ -148,6 +148,14 @@ Blockly.Gesture = function(e, creatorWorkspace) {
   this.isDraggingBlock_ = false;
 
   /**
+   * Whether the block has been dragged from the flyout.
+   * Null if this.isDraggingBlock_ is false.
+   * @type {boolean|null}
+   * @private
+   */
+  this.draggedFromFlyout_ = null;
+
+  /**
    * Whether the bubble is currently being dragged.
    * @type {boolean}
    * @private
@@ -384,8 +392,10 @@ Blockly.Gesture.prototype.updateIsDraggingBlock_ = function() {
 
   if (this.flyout_) {
     this.isDraggingBlock_ = this.updateIsDraggingFromFlyout_();
+    this.draggedFromFlyout_ = true;
   } else if (this.targetBlock_.isMovable()) {
     this.isDraggingBlock_ = true;
+    this.draggedFromFlyout_ = false;
   }
 
   if (this.isDraggingBlock_) {
@@ -452,7 +462,8 @@ Blockly.Gesture.prototype.updateIsDragging_ = function() {
 Blockly.Gesture.prototype.startDraggingBlock_ = function() {
   this.blockDragger_ = new Blockly.BlockDragger(this.targetBlock_,
       this.startWorkspace_);
-  this.blockDragger_.startBlockDrag(this.currentDragDeltaXY_, this.healStack_);
+  this.blockDragger_.startBlockDrag(this.currentDragDeltaXY_, this.healStack_,
+      this.draggedFromFlyout_);
   this.blockDragger_.dragBlock(this.mostRecentEvent_,
       this.currentDragDeltaXY_);
 };
