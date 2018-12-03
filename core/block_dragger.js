@@ -298,7 +298,7 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
 
   Blockly.BlockAnimations.disconnectUiStop();
 
-  if (this.wouldDropAllowed_) {
+  if (this.wouldDropAllowed_ || this.wouldDeleteBlock_) {
     var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
     var newLoc = goog.math.Coordinate.sum(this.startXY_, delta);
   } else {
