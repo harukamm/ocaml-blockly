@@ -334,10 +334,12 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
  * @private
  */
 Blockly.BlockDragger.prototype.fireMoveEvent_ = function() {
-  var event = new Blockly.Events.BlockMove(this.draggingBlock_);
-  event.oldCoordinate = this.startXY_;
-  event.recordNew();
-  Blockly.Events.fire(event);
+  if (Blockly.Events.isEnabled()) {
+    var event = new Blockly.Events.BlockMove(this.draggingBlock_);
+    event.oldCoordinate = this.startXY_;
+    event.recordNew();
+    Blockly.Events.fire(event);
+  }
 };
 
 /**
@@ -424,9 +426,19 @@ Blockly.BlockDragger.prototype.maybeDeleteBlock_ = function() {
     if (trashcan) {
       setTimeout(trashcan.close.bind(trashcan), 100);
     }
-    // Fire a move event, so we know where to go back to for an undo.
-    this.fireMoveEvent_();
-    this.draggingBlock_.dispose(false, true);
+    var toCancelDrag = !this.wouldDropAllowed_;
+    if (toCancelDrag) {
+      Blockly.Events.disable();
+    }
+    try {
+      // Fire a move event, so we know where to go back to for an undo.
+      this.fireMoveEvent_();
+      this.draggingBlock_.dispose(false, true);
+    } finally {
+      if (toCancelDrag) {
+        Blockly.Events.enable();
+      }
+    }
   } else if (trashcan) {
     // Make sure the trash can is closed.
     trashcan.close();
