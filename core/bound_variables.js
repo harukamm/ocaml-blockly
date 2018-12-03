@@ -379,12 +379,21 @@ Blockly.BoundVariables.isLegalName = function(variable, newName) {
  */
 Blockly.BoundVariables.renameVariableImpl_ = function(variable, newName) {
   newName = newName.trim();
-  if (Blockly.BoundVariables.canRenameTo(variable, newName)) {
-    variable.setVariableName(newName);
-    return true;
-  } else {
+  if (!Blockly.BoundVariables.canRenameTo(variable, newName)) {
     return false;
   }
+  variable.setVariableName(newName);
+
+  // Update flyout in related workbench.
+  var workspace = variable.getWorkspace();
+  var wsList = Blockly.WorkspaceTree.getFamilyMutator(workspace);
+  for (var i = 0, ws; ws = wsList[i]; i++) {
+    var mutator = ws.ownerMutator_;
+    if (mutator.isWorkbench()) {
+      mutator.updateFlyoutTree();
+    }
+  }
+  return true;
 };
 
 /**
