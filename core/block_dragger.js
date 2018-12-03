@@ -304,14 +304,13 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
       this.draggingBlock_.setDragging(false);
       this.fireMoveEvent_();
       this.transferAndConnect_();
+      this.draggingBlock_.scheduleSnapAndBump();
     } else {
       // TODO(harukam): Dispose the block if it was created from a flyout.
       this.draggingBlock_.setDragging(false);
       this.restoreStartTargetConnection_();
       this.draggingBlock_.render();
     }
-  } else {
-    this.draggingBlock_.scheduleSnapAndBump();
   }
   this.workspace_.setResizesEnabled(true);
 
