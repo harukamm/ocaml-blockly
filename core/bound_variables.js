@@ -292,6 +292,9 @@ Blockly.BoundVariables.getAllVariablesOnBlocks = function(block, opt_filter) {
  * @return {boolean} True if the renaming is valid.
  */
 Blockly.BoundVariables.canRenameTo = function(variable, newName) {
+  if (!Blockly.BoundVariables.isLegalName(variable, newName)) {
+    return false;
+  }
   var oldName = variable.getVariableName();
   if (oldName === newName) {
     return true;
@@ -342,12 +345,12 @@ Blockly.BoundVariables.getVisibleVariableValues = function(variable) {
 };
 
 /**
- * Helper function for renaming the variable as the given name.
- * @param {Blockly.BoundVariableAbstract} variable The variable to rename.
+ * Returns whether the given name is legal as a variable name.
+ * @param {!Blockly.BoundVariableAbstract} variable The variable to rename.
  * @param {string} newName The new variable name.
- * @return {boolean} True if variable is renamed. Otherwise, false.
+ * @return {boolean} True if the name is legal.
  */
-Blockly.BoundVariables.renameVariableImpl_ = function(variable, newName) {
+Blockly.BoundVariables.isLegalName = function(variable, newName) {
   if (!newName) {
     return false;
   }
@@ -367,6 +370,16 @@ Blockly.BoundVariables.renameVariableImpl_ = function(variable, newName) {
       throw 'Not implemented yet.';
     }
   }
+  return true;
+};
+
+/**
+ * Helper function for renaming the variable as the given name.
+ * @param {Blockly.BoundVariableAbstract} variable The variable to rename.
+ * @param {string} newName The new variable name.
+ * @return {boolean} True if variable is renamed. Otherwise, false.
+ */
+Blockly.BoundVariables.renameVariableImpl_ = function(variable, newName) {
   if (Blockly.BoundVariables.canRenameTo(variable, newName)) {
     variable.setVariableName(newName);
     return true;
