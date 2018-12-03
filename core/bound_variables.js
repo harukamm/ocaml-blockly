@@ -378,6 +378,7 @@ Blockly.BoundVariables.isLegalName = function(variable, newName) {
  * @return {boolean} True if variable is renamed. Otherwise, false.
  */
 Blockly.BoundVariables.renameVariableImpl_ = function(variable, newName) {
+  newName = newName.trim();
   if (Blockly.BoundVariables.canRenameTo(variable, newName)) {
     variable.setVariableName(newName);
     return true;
