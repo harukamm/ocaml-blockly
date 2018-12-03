@@ -432,7 +432,7 @@ Blockly.BlockDragger.prototype.maybeDeleteBlock_ = function() {
 Blockly.BlockDragger.prototype.updateReferenceStateDuringBlockDrag_ =
     function(targetWorkspace) {
   var resolved = true;
-  var wouldBeOrphan = !this.wouldDeleteBlock_ &&
+  var wouldBeOrphan = !this.draggedConnectionManager_.wouldDeleteBlock() &&
       !this.draggedConnectionManager_.closestConnection();
   if (wouldBeOrphan && targetWorkspace) {
     // If the dragging block has found the closest connection, it means that
