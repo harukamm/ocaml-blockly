@@ -431,19 +431,6 @@ Blockly.Flyout.prototype.show = function(xmlList) {
   this.hide();
   this.clearOldBlocks_();
 
-  // Handle dynamic categories, represented by a name instead of a list of XML.
-  // Look up the correct category generation function and call that to get a
-  // valid XML list.
-  if (typeof xmlList == 'string') {
-    var fnToApply = this.workspace_.targetWorkspace.getToolboxCategoryCallback(
-        xmlList);
-    goog.asserts.assert(goog.isFunction(fnToApply),
-        'Couldn\'t find a callback function when opening a toolbox category.');
-    xmlList = fnToApply(this.workspace_.targetWorkspace);
-    goog.asserts.assert(goog.isArray(xmlList),
-        'The result of a toolbox category callback must be an array.');
-  }
-
   this.setVisible(true);
   // Create the blocks to be shown in this flyout.
   var gaps = [];
@@ -483,8 +470,8 @@ Blockly.Flyout.prototype.show = function(xmlList) {
 
 /**
  * Obtains blocks to show in the flyout from the given XML nodes.
- * @param {!Array|!Function} xmlList List of blocks to show, or function to
- *     return blocks to show.
+ * @param {!Array|string|!Function} xmlList List of blocks to show, or function
+ *     to return blocks to show.
  * @param {!Array} gaps The list of gaps to show between contents, which will
  *     be modified by this function.
  * @return {!Array} List of contents (block or buttom etc.) to show.
@@ -494,7 +481,18 @@ Blockly.Flyout.prototype.obtainContentsToShow_ = function(xmlList, gaps) {
   var default_gap = this.horizontalLayout_ ? this.GAP_X : this.GAP_Y;
   var contents = [];
 
-  if (goog.isFunction(xmlList)) {
+  // Handle dynamic categories, represented by a name instead of a list of XML.
+  // Look up the correct category generation function and call that to get a
+  // valid XML list.
+  if (typeof xmlList == 'string') {
+    var fnToApply = this.workspace_.targetWorkspace.getToolboxCategoryCallback(
+        xmlList);
+    goog.asserts.assert(goog.isFunction(fnToApply),
+        'Couldn\'t find a callback function when opening a toolbox category.');
+    xmlList = fnToApply(this.workspace_.targetWorkspace);
+    goog.asserts.assert(goog.isArray(xmlList),
+        'The result of a toolbox category callback must be an array.');
+  } else if (goog.isFunction(xmlList)) {
     var blocks = xmlList(this.workspace_);
     for (var i = 0; i < blocks.length; i++) {
       contents.push({type: 'block', block: blocks[i]});
