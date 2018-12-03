@@ -103,6 +103,14 @@ Blockly.BlockDragger = function(block, workspace) {
   this.wouldDropAllowed_ = true;
 
   /**
+   * The target connection of the block before start of dragging. Null if the
+   * dragging block is not connected to any block.
+   * @type {Blockly.Connection}
+   * @private
+   */
+  this.startTargetConnection_ = null;
+
+  /**
    * The location of the top left corner of the dragging block just before the
    * the drag in workspace coordinates.
    * @type {!goog.math.Coordinate}
@@ -214,6 +222,7 @@ Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY, hea
   if (this.draggingBlock_.getParent() ||
       (healStack && this.draggingBlock_.nextConnection &&
       this.draggingBlock_.nextConnection.targetBlock())) {
+    this.storeStartTargetConnection_();
     this.draggingBlock_.unplug(healStack);
     var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
     var newLoc = goog.math.Coordinate.sum(this.dragStartXY_, delta);
@@ -296,11 +305,9 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
       this.fireMoveEvent_();
       this.transferAndConnect_();
     } else {
-      // TODO(harukam): We should cancel the block dragging. Restore the
-      // connection if the block has been connected to some blocks before
-      // start of a block drag, or dispose the block if it was created from
-      // a flyout.
+      // TODO(harukam): Dispose the block if it was created from a flyout.
       this.draggingBlock_.setDragging(false);
+      this.restoreStartTargetConnection_();
       this.draggingBlock_.render();
     }
   } else {
@@ -346,6 +353,51 @@ Blockly.BlockDragger.prototype.transferAndConnect_ = function() {
     this.draggedConnectionManager_.applyConnections();
   } else {
     this.draggingBlock_.render();
+  }
+};
+
+/**
+ * Store the target connection of the block before start of dragging.
+ */
+Blockly.BlockDragger.prototype.storeStartTargetConnection_ = function() {
+  var connection = null;
+  if (this.draggingBlock_.outputConnection) {
+    connection = this.draggingBlock_.outputConnection;
+  } else if (this.draggingBlock_.previousConnection) {
+    connection = this.draggingBlock_.previousConnection;
+  }
+
+  if (connection && connection.isConnected()) {
+    this.startTargetConnection_ = connection.targetConnection;
+  }
+};
+
+/**
+ * Restore the target connection which the block has been connected to before
+ * start of a block drag.
+ */
+Blockly.BlockDragger.prototype.restoreStartTargetConnection_ = function() {
+  if (!this.startTargetConnection_) {
+    return;
+  }
+  // TODO(harukam): Cancel recorded events fired during block's disconnecting.
+  var connection = null;
+  if (this.draggingBlock_.outputConnection) {
+    connection = this.draggingBlock_.outputConnection;
+    if (connection.isConnected()) {
+      throw 'The ouput connection is already connected.';
+    }
+  } else if (this.draggingBlock_.previousConnection) {
+    connection = this.draggingBlock_.previousConnection;
+  }
+
+  if (connection) {
+    Blockly.Events.disable();
+    try {
+      connection.connect(this.startTargetConnection_);
+    } finally {
+      Blockly.Events.enable();
+    }
   }
 };
 
