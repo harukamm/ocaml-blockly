@@ -464,7 +464,9 @@ Blockly.Workbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
     var variable = env[name];
     // TODO(harukam): Avoid providing prototype name using string literal.
     var getterBlock = flyoutWorkspace.newBlock('variables_get_typed');
-    getterBlock.initSvg();
+    if (goog.isFunction(getterBlock.initSvg)) {
+      getterBlock.initSvg();
+    }
     var field = getterBlock.getField('VAR');
     field.initModel();
     field.setVariableName(name);
