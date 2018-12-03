@@ -773,10 +773,11 @@ Blockly.Connection.prototype.disableTypeCheck = function(disable) {
 /**
  * Store the given workbench to the connection.
  * @param {!Blockly.Workbench} workbench The mutator to store.
+ * @param {!Blockly.Input} input The input the connection belongs to.
  * @return {!Blockly.Connection} The connection being modified
  *     (to allow chaining).
  */
-Blockly.Connection.prototype.setWorkbench = function(workbench) {
+Blockly.Connection.prototype.setWorkbench = function(workbench, input) {
   // NOP.
 };
 

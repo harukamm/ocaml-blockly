@@ -64,6 +64,12 @@ Blockly.Icon.prototype.bubble_ = null;
 Blockly.Icon.prototype.iconXY_ = null;
 
 /**
+ * The name of input which follows the icon. If null, the icon is rendered
+ * in the first row of block.
+ */
+Blockly.Icon.prototype.followingInputName = null;
+
+/**
  * Create the icon on the block.
  */
 Blockly.Icon.prototype.createIcon = function() {

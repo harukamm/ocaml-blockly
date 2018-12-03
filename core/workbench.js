@@ -257,13 +257,17 @@ Blockly.Workbench.prototype.getWorkspace = function() {
 
 /**
  * Set the connection whose context this mutator should be bound to.
- * @param {!Blockly.Connetion} The connection where this mutator's context is bound.
+ * @param {!Blockly.Connetion} connection The connection where this mutator's
+ *     context is bound.
+ * @param {!Blockly.Input} input The input that connection is attached to.
  */
-Blockly.Workbench.prototype.setContextConnection = function(connection) {
+Blockly.Workbench.prototype.setContextConnection = function(connection,
+    input) {
   if (connection.getSourceBlock() != this.block_) {
     throw 'The connection and mutator belong to differenct blocks.';
   }
   this.contextConnection_ = connection;
+  this.followingInputName = input.name;
 };
 
 /**
