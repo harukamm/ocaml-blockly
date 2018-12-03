@@ -343,8 +343,7 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
 
     this.bubble_.setAnchorLocation(this.iconXY_);
     this.resizeBubble_();
-    this.changeListener_ = this.workspaceChanged_.bind(this);
-    this.workspace_.addChangeListener(this.changeListener_);
+    this.addChangeListener();
     this.updateColour();
   } else {
     this.workspaceWidth_ = 0;
@@ -528,6 +527,16 @@ Blockly.Workbench.prototype.dispose = function() {
   }
   this.workspaceWidth_ = 0;
   this.workspaceHeight_ = 0;
+};
+
+/**
+ * Add a change listener for the mutator workspace.
+ */
+Blockly.Workbench.prototype.addChangeListener = function() {
+  if (!this.changeListener_) {
+    this.changeListener_ = this.workspaceChanged_.bind(this);
+    this.workspace_.addChangeListener(this.changeListener_);
+  }
 };
 
 /**
