@@ -307,7 +307,7 @@ Blockly.BoundVariables.canRenameTo = function(variable, newName) {
   variable.setVariableName(newName);
   try {
     failedIndex = goog.array.findIndex(renamedTopBlocks, function(block) {
-        return !block.resolveReference(null)
+        return !block.isInFlyout && !block.resolveReference(null);
       });
   } finally {
     variable.setVariableName(oldName);

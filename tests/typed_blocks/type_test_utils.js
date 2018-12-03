@@ -117,6 +117,22 @@ function getDefaultContextInputName(block) {
   }
 }
 
+function create_mock_flyoutWorkspace(parentWorkspace) {
+  var workspaceOptions = {
+    typedVersion: true,
+    parentWorkspace: parentWorkspace
+  };
+  var workspace = new Blockly.Workspace(workspaceOptions);
+  workspace.isFlyout = true;
+  workspace.newBlockSuper_ = workspace.newBlock;
+  workspace.newBlock = function(name) {
+    var block = this.newBlockSuper_(name);
+    block.isInFlyout = true;
+    return block;
+  };
+  return workspace;
+}
+
 function create_mock_workbench(block, opt_inputName) {
   var workspaceOptions = {
     typedVersion: true,
@@ -130,6 +146,7 @@ function create_mock_workbench(block, opt_inputName) {
   var mutatorMock = {
     block_: block,
     workspace_: workspace,
+    flyoutWorkspace_: null,
     contextConnection_: connection,
     getWorkspace: function() {
           return this.workspace_;
@@ -142,6 +159,17 @@ function create_mock_workbench(block, opt_inputName) {
         },
     getContext: function() {
           return Blockly.Workbench.prototype.getContext.call(this);
+        },
+    blocksForFlyout: function(opt_workspace) {
+          if (opt_workspace) {
+            var workspace = opt_workspace;
+          } else {
+            if (!this.flyoutWorkspace_) {
+              this.flyoutWorkspace_ = create_mock_flyoutWorkspace(this.workspace_);
+            }
+            var workspace = this.flyoutWorkspace_;
+          }
+          return Blockly.Workbench.prototype.blocksForFlyout.call(this, workspace);
         },
     getFlyoutLanguageTree_: function() {
           var func = Blockly.Workbench.prototype.getFlyoutLanguageTree_;
@@ -165,6 +193,10 @@ function create_mock_workbench(block, opt_inputName) {
           if (this.workspace_) {
             this.workspace_.dispose();
             this.workspace_ = null;
+          }
+          if (this.flyoutWorkspace_) {
+            this.flyoutWorkspace_.dispose();
+            this.flyoutWorkspace_ = null;
           }
         }
   };

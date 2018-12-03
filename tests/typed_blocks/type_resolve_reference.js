@@ -251,3 +251,40 @@ function test_resolve_reference_renameVariableCheck() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_renameVariableCheckWithWorkbench() {
+  var workspace = create_typed_workspace();
+  var workbenchList = [];
+  try {
+    var letBlock1 = workspace.newBlock('let_typed');
+    var letBlock2 = workspace.newBlock('let_typed');
+    var letBlock3 = workspace.newBlock('let_typed');
+    setVariableName(letBlock1, 'x');
+    setVariableName(letBlock2, 'y');
+    setVariableName(letBlock3, 'z');
+
+    letBlock1.getInput('EXP2').connection.connect(letBlock2.outputConnection);
+    letBlock2.getInput('EXP2').connection.connect(letBlock3.outputConnection);
+
+    workbenchList.push(create_mock_workbench(letBlock1));
+    workbenchList.push(create_mock_workbench(letBlock2));
+    workbenchList.push(create_mock_workbench(letBlock3));
+
+    var value1 = getVariable(letBlock1);
+    var value2 = getVariable(letBlock2);
+    var value3 = getVariable(letBlock3);
+
+    var refBlocks1 = workbenchList[0].blocksForFlyout();
+    var refBlocks2 = workbenchList[1].blocksForFlyout();
+    var refBlocks3 = workbenchList[2].blocksForFlyout();
+
+    assertTrue(Blockly.BoundVariables.canRenameTo(value1, 'z'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(value2, 'z'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(value3, 'x'));
+  } finally {
+    for (var i = 0, wb; wb = workbenchList[i]; i++) {
+      wb.dispose();
+    }
+    workspace.dispose();
+  }
+}
