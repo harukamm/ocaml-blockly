@@ -323,14 +323,27 @@ Blockly.BlockSvg.prototype.render = function(opt_bubble) {
   if (this.RTL) {
     cursorX = -cursorX;
   }
-  // Move the icons into position.
   var icons = this.getIcons();
+  var mapToIcons = {};
+  // Collect icons followed by the specific input, and render them later.
+  // TODO(harukam): Render them at correct positions.
   for (var i = 0; i < icons.length; i++) {
-    cursorX = icons[i].renderIcon(cursorX);
+    var icon = icons[i];
+    var input = icon.followingInput;
+    if (input) {
+      if (input.name in mapToIcons) {
+        mapToIcons[input.name].push(icon);
+      } else {
+        mapToIcons[input.name] = [icon];
+      }
+    } else {
+      // Move the icons into position.
+      cursorX = icon.renderIcon(cursorX);
+    }
   }
   cursorX += this.RTL ?
       Blockly.BlockSvg.SEP_SPACE_X : -Blockly.BlockSvg.SEP_SPACE_X;
-  // If there are no icons, cursorX will be 0, otherwise it will be the
+  // If there are no icons, cursorX will be 0, otherwise it might be the
   // width that the first label needs to move over by.
 
   var inputRows = this.renderCompute_(cursorX);
