@@ -235,7 +235,7 @@ Blockly.Input.prototype.setWorkbench = function(workbench) {
   if (!this.connection) {
     throw 'This input does not have a connection.';
   }
-  this.sourceBlock_.setMutator(workbench);
+  this.sourceBlock_.setWorkbench(workbench);
   this.connection.setWorkbench(workbench, this);
   return this;
 };

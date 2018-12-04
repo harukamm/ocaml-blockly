@@ -530,7 +530,7 @@ Blockly.Workbench.prototype.checkReference = function(env) {
  * Dispose of this mutator.
  */
 Blockly.Workbench.prototype.dispose = function() {
-  this.block_.mutator = null;
+  this.block_.workbench = null;
   Blockly.Icon.prototype.dispose.call(this);
 
   this.removeSvgElements();
