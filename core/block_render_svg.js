@@ -405,7 +405,7 @@ Blockly.BlockSvg.prototype.renderFields_ = function(fieldList,
 
 /**
  * Computes the height and widths for each row and field.
- * @param {number} iconWidth Offset of first row due to icons.
+ * @param {number} iconWidth Offset of first row due to some of icons.
  * @return {!Array.<!Array.<!Object>>} 2D array of objects, each containing
  *     position information.
  * @private
@@ -735,7 +735,7 @@ Blockly.BlockSvg.prototype.renderDrawTop_ = function(pathObject, rightEdge) {
  *     partially constructed SVG paths, which will be modified by this function.
  * @param {!Array.<!Array.<!Object>>} inputRows 2D array of objects, each
  *     containing position information.
- * @param {number} iconWidth Offset of first row due to icons.
+ * @param {number} iconWidth Offset of first row due to some of icons.
  * @return {number} Height of block.
  * @private
  */
