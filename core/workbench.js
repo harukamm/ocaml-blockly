@@ -331,9 +331,8 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
     this.init_();
   }
   if (Blockly.Events.isEnabled()) {
-    // TODO(harukam): Rename the event to dialogOpen.
     Blockly.Events.fire(new Blockly.Events.UiWithUndo(this.block_,
-      'mutatorOpen', !visible, visible));
+      'workbenchOpen', !visible, visible));
   }
 
   // Show or hide the bubble. It also shows/hides the workbench because the

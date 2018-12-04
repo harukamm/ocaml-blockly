@@ -101,8 +101,8 @@ Blockly.Events.Ui.prototype.fromJson = function(json) {
  * @constructor
  */
 Blockly.Events.UiWithUndo = function(block, element, oldValue, newValue) {
-  goog.asserts.assert(element === 'mutatorOpen',
-      'This class Only supports mutator-open');
+  goog.asserts.assert(element === 'mutatorOpen' || element === 'workbenchOpen',
+      'This class Only supports mutator-open and workbench-open');
   Blockly.Events.UiWithUndo.superClass_.constructor.call(this, block,
       element, oldValue, newValue);
   this.recordUndo = Blockly.Events.recordUndo;
@@ -128,10 +128,12 @@ Blockly.Events.UiWithUndo.prototype.run = function(forward) {
   }
   switch (this.element) {
     case 'mutatorOpen':
-      if (block.mutator) {
-        var value = forward ? this.newValue : this.oldValue;
-        block.mutator.setVisible(value);
-      }
+    case 'workbenchOpen':
+      var openMutator = this.element === 'mutatorOpen';
+      var value = forward ? this.newValue : this.oldValue;
+      var mutator = this.element === 'mutatorOpen' ?
+          block.mutator : block.workbench;
+      mutator.setVisible(value);
       break;
     default:
       return;
