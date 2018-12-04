@@ -1071,11 +1071,8 @@ Blockly.Block.prototype.replaceWorkbenchWorkspaceWith = function(oldBlock) {
     if (oldChild.workbench) {
       var oldWorkbench = oldChild.workbench;
       var workspace = oldWorkbench.getWorkspace();
-      if (oldWorkbench.isWorkbench()) {
-        var newWorkbench = newChild.workbench;
-        goog.asserts.assert(newWorkbench && newWorkbench.isWorkbench());
-        newWorkbench.replaceWorkspace(oldWorkbench);
-      }
+      var newWorkbench = newChild.workbench;
+      newWorkbench.replaceWorkspace(oldWorkbench);
     }
   }
 };
@@ -1835,8 +1832,7 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
       allSuccess = false;
     }
 
-    var mutator = block.mutator;
-    var workbench = mutator && mutator.isWorkbench() ? mutator : null;
+    var workbench = block.workbench;
     if (workbench && !workbench.checkReference(envOfParent)) {
       allSuccess = false;
     }
