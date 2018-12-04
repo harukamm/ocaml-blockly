@@ -422,6 +422,22 @@ Blockly.Css.CONTENT = [
     'fill: #fff;',
   '}',
 
+  'rect.blocklyWorkbenchIconShape {',
+    'fill: #ff0000;',
+  '}',
+
+  '.blocklyWorkbenchIconShape {',
+    'fill: none;',
+    'stroke: #fff;',
+    'stroke-width: 1px;',
+  '}',
+
+  '.blocklyWorkbenchIconSymbol {',
+    'fill: none;',
+    'stroke: #fff;',
+    'stroke-width: 1px;',
+  '}',
+
   '.blocklyMinimalBody {',
     'margin: 0;',
     'padding: 0;',
