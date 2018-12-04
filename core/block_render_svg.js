@@ -494,12 +494,14 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
       input.renderHeight--;
     }
 
-    input.iconWidth = 0;
     var inputIcon = input.getAttachedIcon();
     if (inputIcon) {
-      input.iconWidth = inputIcon.getHeightWidth().width;
+      var bBox = inputIcon.getHeightWidth();
+      input.iconWidth = bBox.width;
+      input.iconHeight = bBox.height;
     } else {
       input.iconWidth = 0;
+      input.iconHeight = 0;
     }
 
     row.height = Math.max(row.height, input.renderHeight);
