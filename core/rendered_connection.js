@@ -491,7 +491,7 @@ Blockly.RenderedConnection.prototype.renderTypeVarHighlights = function() {
 
 /**
  * Store the given workbench to the connection.
- * @param {!Blockly.Workbench} workbench The mutator to store.
+ * @param {!Blockly.Workbench} workbench The workbench to store.
  * @param {!Blockly.Input} input The input the connection belongs to.
  * @return {!Blockly.Connection} The connection being modified
  *     (to allow chaining).
@@ -499,7 +499,7 @@ Blockly.RenderedConnection.prototype.renderTypeVarHighlights = function() {
  */
 Blockly.RenderedConnection.prototype.setWorkbench = function(workbench,
     input) {
-  this.contextMutator = workbench;
+  this.contextWorkbench = workbench;
   workbench.setContextConnection(this, input);
   return this;
 };
@@ -508,8 +508,8 @@ Blockly.RenderedConnection.prototype.setWorkbench = function(workbench,
  * Dispose of the connection.
  */
 Blockly.RenderedConnection.prototype.dispose = function() {
-  if (this.contextMutator) {
-    this.contextMutator = null;
+  if (this.contextWorkbench) {
+    this.contextWorkbench = null;
   }
   Blockly.RenderedConnection.superClass_.dispose.call(this);
 };

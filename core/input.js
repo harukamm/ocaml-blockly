@@ -245,7 +245,7 @@ Blockly.Input.prototype.setWorkbench = function(workbench) {
  * @return {Blockly.Icon} The icon attached to this input, or null.
  */
 Blockly.Input.prototype.getAttachedIcon = function() {
-  var icon = this.connection && this.connection.contextMutator;
+  var icon = this.connection && this.connection.contextWorkbench;
   return icon ? icon : null;
 };
 
