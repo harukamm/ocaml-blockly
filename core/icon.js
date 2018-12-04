@@ -64,10 +64,10 @@ Blockly.Icon.prototype.bubble_ = null;
 Blockly.Icon.prototype.iconXY_ = null;
 
 /**
- * The name of input which follows the icon. If null, the icon is rendered
- * in the first row of block.
+ * The input which follows the icon. If null, the icon is rendered in the first
+ * row of block.
  */
-Blockly.Icon.prototype.followingInputName = null;
+Blockly.Icon.prototype.followingInput = null;
 
 /**
  * Create the icon on the block.
@@ -106,6 +106,7 @@ Blockly.Icon.prototype.dispose = function() {
   // Dispose of and unlink the bubble.
   this.setVisible(false);
   this.block_ = null;
+  this.followingInput = null;
 };
 
 /**

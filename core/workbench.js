@@ -267,7 +267,7 @@ Blockly.Workbench.prototype.setContextConnection = function(connection,
     throw 'The connection and mutator belong to differenct blocks.';
   }
   this.contextConnection_ = connection;
-  this.followingInputName = input.name;
+  this.followingInput = input;
 };
 
 /**
