@@ -400,15 +400,15 @@ Blockly.BlockSvg.prototype.renderFields_ = function(fieldList,
  * an icon.
  * @param {!Blockly.Input} input The input whose icon to be rendered.
  * @param {number} cursorX X-coordinate to start the icon.
- * @param {number} cursorY Y-coordinate to start the icon.
+ * @param {number=} opt_cursorY Y-coordinate to start the icon.
  * @return {number} X-coordinate of the end of the icon (plus a gap).
  * @private
  */
 Blockly.BlockSvg.prototype.renderInputIcon_ = function(input, cursorX,
-    cursorY) {
+    opt_cursorY) {
   var inputIcon = input.getAttachedIcon();
   if (inputIcon) {
-    return inputIcon.renderIcon(cursorX, cursorY);
+    return inputIcon.renderIcon(cursorX, opt_cursorY);
   } else {
     return cursorX;
   }
