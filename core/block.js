@@ -1200,18 +1200,18 @@ Blockly.Block.prototype.isTransferring = function() {
 };
 
 /**
- * Find a list of mutators which belong to this block or its nested blocks.
- * @return {!Array} A list of mutators.
+ * Find a list of workbenches which belong to this block or its nested blocks.
+ * @return {!Array} A list of workbenches.
  */
-Blockly.Block.prototype.getAllMutators = function() {
+Blockly.Block.prototype.getAllWorkbenches = function() {
   var blocks = this.getDescendants();
-  var mutators = [];
+  var workbenches = [];
   for (var i = 0, child; child = blocks[i]; i++) {
-    if (child.mutator) {
-      mutators.push(child.mutator);
+    if (child.workbench) {
+      workbenches.push(child.workbench);
     }
   }
-  return mutators;
+  return workbenches;
 };
 
 /**

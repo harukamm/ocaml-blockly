@@ -298,7 +298,7 @@ Blockly.WorkspaceTree.isUnderBlocks = function(workspace, block) {
   var parentBefore = Blockly.WorkspaceTree.parentBefore(workspace,
       block.workspace);
   if (workspace.isMutator && parentBefore) {
-    var mutators = block.getAllMutators();
+    var mutators = block.getAllWorkbenches();
     for (var i = 0, mutator; mutator = mutators[i]; i++) {
       var mutatorWorkspace = mutator ? mutator.getWorkspace() : null;
       if (mutatorWorkspace && mutatorWorkspace == parentBefore) {
@@ -316,7 +316,7 @@ Blockly.WorkspaceTree.isUnderBlocks = function(workspace, block) {
  * @return {!Array.<!Blockly.Workspace>} A list of mutator workspaces.
  */
 Blockly.WorkspaceTree.getChildrenUnderBlock = function(block) {
-  var mutatorsOnBlock = block.getAllMutators();
+  var mutatorsOnBlock = block.getAllWorkbenches();
   var children = [];
   for (var i = 0, mutator; mutator = mutatorsOnBlock[i]; i++) {
     var mutatorWorkspace = mutator.getWorkspace();

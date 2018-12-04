@@ -22,8 +22,8 @@ function create_dummy_block(workspace, childBlocks) {
     getChildren: function() {
       return childBlocks;
     },
-    getAllMutators: function() {
-      return Blockly.Block.prototype.getAllMutators.call(this);
+    getAllWorkbenches: function() {
+      return Blockly.Block.prototype.getAllWorkbenches.call(this);
     }
   };
 }
