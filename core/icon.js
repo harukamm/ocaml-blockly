@@ -52,7 +52,7 @@ Blockly.Icon.prototype.SIZE = 17;
 /**
  * The top margin for the icon.
  */
-Blockly.Icon.prototype.TOP_MARGIN = 5;
+Blockly.Icon.prototype.TOP_MARGIN = 0;
 
 /**
  * Bubble UI (if visible).
