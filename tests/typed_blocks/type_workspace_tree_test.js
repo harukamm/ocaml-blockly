@@ -46,7 +46,7 @@ function create_dummy_workbench(block) {
       Blockly.Workbench.prototype.replaceWorkspace.call(this, workbench);
     }
   };
-  block.mutator = workbench;
+  block.workbench = workbench;
   return workbench;
 }
 

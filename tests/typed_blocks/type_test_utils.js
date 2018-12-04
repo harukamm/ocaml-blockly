@@ -143,7 +143,7 @@ function create_mock_workbench(block, opt_inputName) {
   goog.asserts.assert(inputName);
   var connection = block.getInput(inputName).connection;
   var workspace = new Blockly.Workspace(workspaceOptions);
-  var mutatorMock = {
+  var workbenchMock = {
     block_: block,
     workspace_: workspace,
     flyoutWorkspace_: null,
@@ -188,7 +188,7 @@ function create_mock_workbench(block, opt_inputName) {
     },
     dispose: function() {
       this.contextConnection_ = null;
-      this.block_.mutator = null;
+      this.block_.workbench = null;
       this.block_ = null;
       if (this.workspace_) {
         this.workspace_.dispose();
@@ -200,12 +200,12 @@ function create_mock_workbench(block, opt_inputName) {
       }
     }
   };
-  block.mutator = mutatorMock;
+  block.workbench = workbenchMock;
 
   workspace.isMutator = true;
-  workspace.ownerMutator_ = mutatorMock;
+  workspace.ownerMutator_ = workbenchMock;
 
-  return mutatorMock;
+  return workbenchMock;
 }
 
 function getFlyoutBlocksFromWorkbench(workbench, opt_workspace) {
