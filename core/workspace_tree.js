@@ -310,20 +310,20 @@ Blockly.WorkspaceTree.isUnderBlocks = function(workspace, block) {
 };
 
 /**
- * Get all of mutator workspaces which belong to the given block directly or
+ * Get all of workbench workspaces which belong to the given block directly or
  * indirectly.
- * @param {!Blockly.Block} block The block whose mutators to search for.
- * @return {!Array.<!Blockly.Workspace>} A list of mutator workspaces.
+ * @param {!Blockly.Block} block The block whose workbenchs to search for.
+ * @return {!Array.<!Blockly.Workspace>} A list of workbench workspaces.
  */
-Blockly.WorkspaceTree.getChildrenUnderBlock = function(block) {
-  var mutatorsOnBlock = block.getAllWorkbenches();
+Blockly.WorkspaceTree.getWorkbenchUnderBlock = function(block) {
+  var workbenchsOnBlock = block.getAllWorkbenches();
   var children = [];
-  for (var i = 0, mutator; mutator = mutatorsOnBlock[i]; i++) {
-    var mutatorWorkspace = mutator.getWorkspace();
-    if (mutatorWorkspace) {
-      children.push(mutatorWorkspace);
-      var nested = Blockly.WorkspaceTree.getChildren(mutatorWorkspace);
-      // Exclude workspaces in a flyout. Get only mutator workspaces.
+  for (var i = 0, workbench; workbench = workbenchsOnBlock[i]; i++) {
+    var workbenchWorkspace = workbench.getWorkspace();
+    if (workbenchWorkspace) {
+      children.push(workbenchWorkspace);
+      var nested = Blockly.WorkspaceTree.getChildren(workbenchWorkspace);
+      // Exclude workspaces in a flyout. Get only workbench workspaces.
       nested = goog.array.filter(nested, function(ws) {return ws.isMutator;});
       Array.prototype.push.apply(children, nested);
     }

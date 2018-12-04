@@ -1111,12 +1111,10 @@ Blockly.BlockSvg.prototype.setWorkbench = function(workbench) {
  * Updates variables on workbenches' flyout currently displayed.
  */
 Blockly.BlockSvg.prototype.updateWorkbenchFlyout = function() {
-  var childWorkspaces = Blockly.WorkspaceTree.getChildrenUnderBlock(this);
+  var childWorkspaces = Blockly.WorkspaceTree.getWorkbenchUnderBlock(this);
   for (var i = 0, child; child = childWorkspaces[i]; i++) {
-    var mutator = child.ownerMutator_;
-    if (mutator.isWorkbench()) {
-      mutator.updateFlyoutTree();
-    }
+    var workbench = child.ownerMutator_;
+    workbench.updateFlyoutTree();
   }
 };
 

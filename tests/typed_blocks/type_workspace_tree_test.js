@@ -189,28 +189,28 @@ function createDummyWorkbenches() {
 function test_type_workspace_tree_getMutatorsUnderBlock() {
   var obj = createDummyWorkbenches();
 
-  var ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b1);
+  var ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b1);
   assertTrue(isSameSetMutator(ms, [obj.wb_b1]));
 
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b2);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b2);
   assertTrue(isSameSetMutator(ms, [obj.wb_b1]));
 
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b3);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b3);
   assertTrue(isSameSetMutator(ms, [obj.wb_b1, obj.wb_b3]));
 
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b4);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b4);
   assertTrue(isSameSetMutator(ms, [obj.wb_b4]));
 
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b5);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b5);
   assertTrue(isSameSetMutator(ms, []));
 
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b6);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b6);
   assertTrue(isSameSetMutator(ms, [obj.wb_b6, obj.wb_b7]));
 
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b7);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b7);
   assertTrue(isSameSetMutator(ms, [obj.wb_b7]));
 
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b8);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b8);
   assertTrue(isSameSetMutator(ms, [obj.wb_b8]));
 }
 
@@ -226,11 +226,11 @@ function test_type_workspace_tree_changeMutatorParent() {
   assertNull(obj.wb_b8.getWorkspace());
   assertEquals(obj.wb_b2.getWorkspace(), ws);
 
-  var ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b8);
+  var ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b8);
   assertTrue(isSameSetMutator(ms, []));
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b2);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b2);
   assertTrue(isSameSetMutator(ms, [obj.wb_b1, obj.wb_b2]));
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b3);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b3);
   assertTrue(isSameSetMutator(ms, [obj.wb_b1, obj.wb_b3, obj.wb_b2]));
 
   ws = obj.wb_b6.getWorkspace();
@@ -242,8 +242,8 @@ function test_type_workspace_tree_changeMutatorParent() {
   assertNull(obj.wb_b6.getWorkspace());
   assertEquals(obj.wb_b5.getWorkspace(), ws);
 
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b6);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b6);
   assertTrue(isSameSetMutator(ms, [obj.wb_b7, obj.wb_b5]));
-  ms = Blockly.WorkspaceTree.getChildrenUnderBlock(obj.b5);
+  ms = Blockly.WorkspaceTree.getWorkbenchUnderBlock(obj.b5);
   assertTrue(isSameSetMutator(ms, [obj.wb_b7, obj.wb_b5]));
 }
