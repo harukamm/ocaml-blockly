@@ -52,7 +52,7 @@ Blockly.Workbench.MINIMUM_HEIGHT_ = 100;
 Blockly.Workbench.prototype.initialized_ = false;
 
 /**
- * The connection this mutator's context is bound to.
+ * The connection this workbench's context is bound to.
  * @type {Blockly.Connection}
  * @private
  */
@@ -66,7 +66,7 @@ Blockly.Workbench.prototype.contextConnection_ = null;
 Blockly.Workbench.prototype.TOP_MARGIN = 0;
 
 /**
- * Draw the mutator icon.
+ * Draw the workbench icon.
  * @param {!Element} group The icon group.
  * @private
  */
@@ -102,7 +102,7 @@ Blockly.Workbench.prototype.drawIcon_ = function(group) {
 };
 
 /**
- * Clicking on the icon toggles if the mutator bubble is visible.
+ * Clicking on the icon toggles if the workbench bubble is visible.
  * Disable if block is uneditable.
  * @param {!Event} e Mouse click event.
  * @private
@@ -115,7 +115,7 @@ Blockly.Workbench.prototype.iconClick_ = function(e) {
 };
 
 /**
- * Create the editor for the mutator's bubble.
+ * Create the editor for the workbench's bubble.
  * @return {!Element} The top-level node of the editor.
  * @private
  */
@@ -132,8 +132,8 @@ Blockly.Workbench.prototype.createEditor_ = function() {
   }
   this.initWorkspace_();
 
-  // Mutator flyouts go inside the mutator workspace's <g> rather than in
-  // a top level svg. Instead of handling scale themselves, mutators
+  // workbench flyouts go inside the workbench workspace's <g> rather than in
+  // a top level svg. Instead of handling scale themselves, workbenchs
   // inherit scale from the parent workspace.
   // To fix this, scale needs to be applied at a different level in the dom.
   if (!this.flyoutSvg_) {
@@ -198,7 +198,7 @@ Blockly.Workbench.prototype.init_ = function(opt_childBubbleCanvas) {
       /** @type {!Blockly.WorkspaceSvg} */ (this.block_.workspace),
       this.createEditor_(), this.block_.svgPath_, anchorXY, null, null,
       opt_childBubbleCanvas);
-  // Expose this mutator's block's ID on its top-level SVG group.
+  // Expose this workbench's block's ID on its top-level SVG group.
   this.bubble_.setSvgId(this.block_.id);
 
   this.workspace_.flyout_.init(this.workspace_);
@@ -228,7 +228,7 @@ Blockly.Workbench.prototype.updateEditable = function() {
             'blocklyIconGroupReadonly');
       }
     } else {
-      // Close any mutator bubble.  Icon is not clickable.
+      // Close any workbench bubble.  Icon is not clickable.
       this.setVisible(false);
       if (this.iconGroup_) {
         Blockly.utils.addClass(
@@ -242,7 +242,7 @@ Blockly.Workbench.prototype.updateEditable = function() {
 };
 
 /**
- * Return the mutator's bubble.
+ * Return the workbench's bubble.
  * @return {Blockly.Bubble} Bubble, or null.
  */
 Blockly.Workbench.prototype.getBubble = function() {
@@ -250,7 +250,7 @@ Blockly.Workbench.prototype.getBubble = function() {
 };
 
 /**
- * Return the mutator workspace.
+ * Return the workbench workspace.
  * @return {Blockly.Workspace} Workspace, or null.
  */
 Blockly.Workbench.prototype.getWorkspace = function() {
@@ -258,15 +258,15 @@ Blockly.Workbench.prototype.getWorkspace = function() {
 };
 
 /**
- * Set the connection whose context this mutator should be bound to.
- * @param {!Blockly.Connetion} connection The connection where this mutator's
+ * Set the connection whose context this workbench should be bound to.
+ * @param {!Blockly.Connetion} connection The connection where this workbench's
  *     context is bound.
  * @param {!Blockly.Input} input The input that connection is attached to.
  */
 Blockly.Workbench.prototype.setContextConnection = function(connection,
     input) {
   if (connection.getSourceBlock() != this.block_) {
-    throw 'The connection and mutator belong to differenct blocks.';
+    throw 'The connection and workbench belong to differenct blocks.';
   }
   this.contextConnection_ = connection;
   this.followingInput = input;
@@ -319,7 +319,7 @@ Blockly.Workbench.prototype.resizeBubble_ = function() {
 };
 
 /**
- * Show or hide the mutator bubble.
+ * Show or hide the workbench bubble.
  * @param {boolean} visible True if the bubble should be visible.
  */
 Blockly.Workbench.prototype.setVisible = function(visible) {
@@ -331,12 +331,13 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
     this.init_();
   }
   if (Blockly.Events.isEnabled()) {
+    // TODO(harukam): Rename the event to dialogOpen.
     Blockly.Events.fire(new Blockly.Events.UiWithUndo(this.block_,
       'mutatorOpen', !visible, visible));
   }
 
-  // Show or hide the bubble. It also shows/hides the mutator because the
-  // bubble contains whole the mutator.
+  // Show or hide the bubble. It also shows/hides the workbench because the
+  // bubble contains whole the workbench.
   this.bubble_.setVisible(visible);
   // Update the visibility of the workspace for its components.
   if (this.workspace_) {
@@ -358,9 +359,9 @@ Blockly.Workbench.prototype.setVisible = function(visible) {
 };
 
 /**
- * Update the source block when the mutator's blocks are changed.
+ * Update the source block when the workbench's blocks are changed.
  * Bump down any block that's too high.
- * Fired whenever a change is made to the mutator's workspace.
+ * Fired whenever a change is made to the workbench's workspace.
  * @private
  */
 Blockly.Workbench.prototype.workspaceChanged_ = function() {
@@ -385,12 +386,12 @@ Blockly.Workbench.prototype.workspaceChanged_ = function() {
 
 /**
  * Return an object with all the metrics required to size scrollbars for the
- * mutator flyout.  The following properties are computed:
+ * workbench flyout.  The following properties are computed:
  * .viewHeight: Height of the visible rectangle,
  * .viewWidth: Width of the visible rectangle,
  * .absoluteTop: Top-edge of view.
  * .absoluteLeft: Left-edge of view.
- * @return {!Object} Contains size and position metrics of mutator dialog's
+ * @return {!Object} Contains size and position metrics of workbench dialog's
  *     workspace.
  * @private
  */
@@ -417,7 +418,7 @@ Blockly.Workbench.prototype.getContext = function() {
 };
 
 /**
- * Finds variables environment bound only to the mutator's block, and able to
+ * Finds variables environment bound only to the workbench's block, and able to
  * be referred to by blocks inside this workbench workspace.
  * @return {!Object} The map to variable value keyed by its name.
  */
@@ -459,7 +460,7 @@ Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
 };
 
 /**
- * Creates blocks to show in mutator's flyout on the given workspace.
+ * Creates blocks to show in workbench's flyout on the given workspace.
  * @param {!Blockly.Workspace} flyoutWorkspace The workspace to create blocks.
  * @return {!Array.<!Blockly.Block>} List of blocks to show in a flyout.
  */
@@ -485,7 +486,7 @@ Blockly.Workbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
 };
 
 /**
- * Updates the shown blocks in the mutator flyout.
+ * Updates the shown blocks in the workbench flyout.
  */
 Blockly.Workbench.prototype.updateFlyoutTree = function() {
   if (this.workspace_ && this.workspace_.flyout_) {
@@ -503,11 +504,11 @@ Blockly.Workbench.prototype.updateScreen_ = function() {
 };
 
 /**
- * Check if all of reference blocks on the mutator's workspace and its nested
- * mutators are correctly bound to their context.
+ * Check if all of reference blocks on the workbench's workspace and its nested
+ * workbenchs are correctly bound to their context.
  * @param {!Object} env The variable environments the block can refer to.
- * @return {boolean} True if reference blocks on the mutator's workspace and
- *     its nested mutators' workspaces can be resolved.
+ * @return {boolean} True if reference blocks on the workbench's workspace and
+ *     its nested workbenchs' workspaces can be resolved.
  */
 Blockly.Workbench.prototype.checkReference = function(env) {
   if (!this.workspace_) {
@@ -518,7 +519,7 @@ Blockly.Workbench.prototype.checkReference = function(env) {
 
   var topBlocks = this.workspace_.getTopBlocks();
   for (var i = 0, topBlock; topBlock = topBlocks[i]; i++) {
-    // This function will be called recursively for each of nested mutators.
+    // This function will be called recursively for each of nested workbenchs.
     if (!topBlock.resolveReferenceOnDescendants(context)) {
       return false;
     }
@@ -527,7 +528,7 @@ Blockly.Workbench.prototype.checkReference = function(env) {
 };
 
 /**
- * Dispose of this mutator.
+ * Dispose of this workbench.
  */
 Blockly.Workbench.prototype.dispose = function() {
   this.block_.workbench = null;
@@ -548,7 +549,7 @@ Blockly.Workbench.prototype.dispose = function() {
 };
 
 /**
- * Add a change listener for the mutator workspace.
+ * Add a change listener for the workbench workspace.
  */
 Blockly.Workbench.prototype.addChangeListener = function() {
   if (!this.changeListener_) {
@@ -558,7 +559,7 @@ Blockly.Workbench.prototype.addChangeListener = function() {
 };
 
 /**
- * Remove a change listener for the mutator workspace.
+ * Remove a change listener for the workbench workspace.
  */
 Blockly.Workbench.prototype.removeChangeListener = function() {
   if (this.changeListener_) {
@@ -568,7 +569,7 @@ Blockly.Workbench.prototype.removeChangeListener = function() {
 };
 
 /**
- * Release ownership of the current workspace in a mutator without destroying
+ * Release ownership of the current workspace in a workbench without destroying
  * it.
  */
 Blockly.Workbench.prototype.releaseWorkspace = function() {
@@ -581,9 +582,9 @@ Blockly.Workbench.prototype.releaseWorkspace = function() {
 };
 
 /**
- * Replace the mutator workspace with the given workspace.
- * @param {!Blockly.Workbench} workbench The mutator whose workspace to be
- *     stored to this mutator.
+ * Replace the workbench workspace with the given workspace.
+ * @param {!Blockly.Workbench} workbench The workbench whose workspace to be
+ *     stored to this workbench.
  */
 Blockly.Workbench.prototype.replaceWorkspace = function(workbench) {
   var workspace = workbench.getWorkspace();
@@ -591,7 +592,7 @@ Blockly.Workbench.prototype.replaceWorkspace = function(workbench) {
     return;
   }
   if (this.initialized_ || this.svgDialog_) {
-    throw 'The mutator\'s DOM is already initialized.';
+    throw 'The workbench\'s DOM is already initialized.';
   }
   if (this.workspace_) {
     this.workspace_.ownerMutator_ = null;
@@ -608,7 +609,7 @@ Blockly.Workbench.prototype.replaceWorkspace = function(workbench) {
 };
 
 /**
- * Adapts the workspace to this mutator condition. Called when the mutator
+ * Adapts the workspace to this workbench condition. Called when the workbench
  * workspace is replaced with another one.
  * @param {!Blockly.Workbench} workbench The workbench the workspace originally
  *     belonged to.
@@ -619,7 +620,7 @@ Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
   var originalBackground = workbench.background_;
   workbench.removeSvgElements();
 
-  // Recreate the flyout because the old flyout refers to the original mutator.
+  // Recreate the flyout because the old flyout refers to the original workbench.
   this.workspace_.clearFlyout();
   this.workspace_.clearCached();
 
@@ -637,7 +638,7 @@ Blockly.Workbench.prototype.adaptWorkspace_ = function(workbench) {
 };
 
 /**
- * Returns workspace options for this mutator's workspace.
+ * Returns workspace options for this workbench's workspace.
  * @return {!Object} Dictionary of options.
  */
 Blockly.Workbench.prototype.createWorkspaceOptions_ = function() {
@@ -655,7 +656,7 @@ Blockly.Workbench.prototype.createWorkspaceOptions_ = function() {
 };
 
 /**
- * Returns if this mutator is a workbench.
+ * Returns if this workbench is a workbench.
  */
 Blockly.Workbench.prototype.isWorkbench = function() {
   return true;
@@ -687,17 +688,17 @@ Blockly.Workbench.reconnect = function(connectionChild, block, inputName) {
 };
 
 /**
- * Get the parent workspace of a workspace that is inside a mutator, taking into
+ * Get the parent workspace of a workspace that is inside a workbench, taking into
  * account whether it is a flyout.
- * @param {?Blockly.Workspace} workspace The workspace that is inside a mutator.
- * @return {?Blockly.Workspace} The mutator's parent workspace or null.
+ * @param {?Blockly.Workspace} workspace The workspace that is inside a workbench.
+ * @return {?Blockly.Workspace} The workbench's parent workspace or null.
  * @public
  */
 Blockly.Workbench.findParentWs = function(workspace) {
   var outerWs = null;
   if (workspace && workspace.options) {
     var parent = workspace.options.parentWorkspace;
-    // If we were in a flyout in a mutator, need to go up two levels to find
+    // If we were in a flyout in a workbench, need to go up two levels to find
     // the actual parent.
     if (workspace.isFlyout) {
       if (parent && parent.options) {
