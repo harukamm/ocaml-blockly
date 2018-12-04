@@ -396,6 +396,23 @@ Blockly.BlockSvg.prototype.renderFields_ = function(fieldList,
 };
 
 /**
+ * Render the icon starting at the specified location if the input contains
+ * an icon.
+ * @param {!Blockly.Input} input The input whose icon to be rendered.
+ * @param {number} cursorX X-coordinate to start the icon.
+ * @return {number} X-coordinate of the end of the icon (plus a gap).
+ * @private
+ */
+Blockly.BlockSvg.prototype.renderInputIcon_ = function(input, cursorX) {
+  var inputIcon = input.getAttachedIcon();
+  if (inputIcon) {
+    return inputIcon.renderIcon(cursorX);
+  } else {
+    return cursorX;
+  }
+};
+
+/**
  * Computes the height and widths for each row and field.
  * @param {number} iconWidth Offset of first row due to some of icons.
  * @return {!Array.<!Array.<!Object>>} 2D array of objects, each containing
@@ -934,11 +951,7 @@ Blockly.BlockSvg.prototype.renderInlineRow_ = function(pathObject, row, cursor,
     }
     // TODO: Align inline field rows (left/right/centre).
     cursor.x = this.renderFields_(input.fieldRow, fieldX, fieldY);
-
-    var inputIcon = input.getAttachedIcon();
-    if (inputIcon) {
-      // TODO(harukam): Render the icon.
-    }
+    cursor.x = this.renderInputIcon_(input, cursor.x);
 
     if (input.type != Blockly.DUMMY_INPUT) {
       cursor.x += input.renderWidth + Blockly.BlockSvg.SEP_SPACE_X;
