@@ -1703,6 +1703,15 @@ Blockly.Block.prototype.setMutator = function(_mutator) {
 };
 
 /**
+ * Give this block a workbench dialog.
+ * @param {Blockly.Workbench} _workbench A workbench dialog instance or null to
+ *     remove.
+ */
+Blockly.Block.prototype.setWorkbench = function(_workbench) {
+  // NOP.
+};
+
+/**
  * Return the coordinates of the top-left corner of this block relative to the
  * drawing surface's origin (0,0), in workspace units.
  * @return {!goog.math.Coordinate} Object with .x and .y properties.
