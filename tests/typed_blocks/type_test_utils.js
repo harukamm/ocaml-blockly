@@ -259,7 +259,7 @@ function virtually_transfer_workspace(oldBlock, targetWorkspace,
     // Create a new block with disabling type checks.
     var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace, true);
     newBlock.replaceTypeExprWith(oldBlock);
-    mock_replaceMutatorWorkspaceWith(newBlock, oldBlock);
+    mock_replaceWorkbenchWorkspaceWith(newBlock, oldBlock);
 
     if (goog.isFunction(opt_testDuringTransferring)) {
       opt_testDuringTransferring(oldBlock, newBlock);
@@ -283,17 +283,17 @@ function setStartTransferring_(block, connection, pendingTargetConnection) {
       block, connection, pendingTargetConnection);
 }
 
-function mock_replaceMutatorWorkspaceWith(newBlock, oldBlock) {
+function mock_replaceWorkbenchWorkspaceWith(newBlock, oldBlock) {
   var newBlockDesc = newBlock.getDescendants(true);
   var oldBlockDesc = oldBlock.getDescendants(true);
   for (var i = 0, oldChild; oldChild = oldBlockDesc[i]; i++) {
     var newChild = newBlockDesc[i];
     goog.asserts.assert(oldChild.type === newChild.type);
-    if (oldChild.mutator) {
-      var oldMutator = oldChild.mutator;
-      var workspace = oldMutator.getWorkspace();
-      var newMutator = create_mock_workbench(newChild);
-      newMutator.replaceWorkspace(oldMutator);
+    if (oldChild.workbench) {
+      var oldWorkbench = oldChild.workbench;
+      var workspace = oldWorkbench.getWorkspace();
+      var newWorkbench = create_mock_workbench(newChild);
+      newWorkbench.replaceWorkspace(oldWorkbench);
     }
   }
 }

@@ -258,7 +258,7 @@ Blockly.WorkspaceTransferManager.prototype.execTransferring_ = function(
   // Create a new block with disabling type checks.
   var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_, true);
   newBlock.replaceTypeExprWith(transferringBlock);
-  newBlock.replaceMutatorWorkspaceWith(transferringBlock);
+  newBlock.replaceWorkbenchWorkspaceWith(transferringBlock);
 
   // Aline this block according to the new surface.
   var localXY = transferringBlock.getRelativeToSurfaceXY();

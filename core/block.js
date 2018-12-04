@@ -1057,24 +1057,24 @@ Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock,
 };
 
 /**
- * Replace each of mutator workspaces this blocks contain with the
+ * Replace each of workbench workspaces this blocks contain with the
  * corresponding one of the given block.
- * @param {!Blockly.Block} oldBlock The block whose mutator workspaces to
+ * @param {!Blockly.Block} oldBlock The block whose workbench workspaces to
  *     replace those of this blocks with.
  */
-Blockly.Block.prototype.replaceMutatorWorkspaceWith = function(oldBlock) {
+Blockly.Block.prototype.replaceWorkbenchWorkspaceWith = function(oldBlock) {
   var newBlockDesc = this.getDescendants(true);
   var oldBlockDesc = oldBlock.getDescendants(true);
   for (var i = 0, oldChild; oldChild = oldBlockDesc[i]; i++) {
     var newChild = newBlockDesc[i];
     goog.asserts.assert(oldChild.type === newChild.type);
-    if (oldChild.mutator) {
-      var oldMutator = oldChild.mutator;
-      var workspace = oldMutator.getWorkspace();
-      if (oldMutator.isWorkbench()) {
-        var newMutator = newChild.mutator;
-        goog.asserts.assert(newMutator && newMutator.isWorkbench());
-        newMutator.replaceWorkspace(oldMutator);
+    if (oldChild.workbench) {
+      var oldWorkbench = oldChild.workbench;
+      var workspace = oldWorkbench.getWorkspace();
+      if (oldWorkbench.isWorkbench()) {
+        var newWorkbench = newChild.workbench;
+        goog.asserts.assert(newWorkbench && newWorkbench.isWorkbench());
+        newWorkbench.replaceWorkspace(oldWorkbench);
       }
     }
   }
