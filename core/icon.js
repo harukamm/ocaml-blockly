@@ -169,21 +169,23 @@ Blockly.Icon.prototype.getHeightWidth = function() {
 /**
  * Render the icon.
  * @param {number} cursorX Horizontal offset at which to position the icon.
+ * @param {number=} opt_cursorY Vertical offset at which to position the icon.
  * @return {number} Horizontal offset for next item to draw.
  */
-Blockly.Icon.prototype.renderIcon = function(cursorX) {
+Blockly.Icon.prototype.renderIcon = function(cursorX, opt_cursorY) {
   if (this.collapseHidden && this.block_.isCollapsed()) {
     this.iconGroup_.setAttribute('display', 'none');
     return cursorX;
   }
   this.iconGroup_.setAttribute('display', 'block');
 
+  var cursorY = opt_cursorY ? opt_cursorY : 0;
   var width = this.SIZE;
   if (this.block_.RTL) {
     cursorX -= width;
   }
   this.iconGroup_.setAttribute('transform',
-      'translate(' + cursorX + ',' + this.TOP_MARGIN + ')');
+      'translate(' + cursorX + ',' + (cursorY + this.TOP_MARGIN) + ')');
   this.computeIconLocation();
   if (this.block_.RTL) {
     cursorX -= Blockly.BlockSvg.SEP_SPACE_X;
