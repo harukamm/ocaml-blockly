@@ -50,6 +50,11 @@ Blockly.Icon.prototype.collapseHidden = true;
 Blockly.Icon.prototype.SIZE = 17;
 
 /**
+ * The top margin for the icon.
+ */
+Blockly.Icon.prototype.TOP_MARGIN = 5;
+
+/**
  * Bubble UI (if visible).
  * @type {Blockly.Bubble}
  * @protected
@@ -148,6 +153,20 @@ Blockly.Icon.prototype.updateColour = function() {
 };
 
 /**
+ * Returns a bounding box describing the dimensions of this icon.
+ * @return {!{height: number, width: number}} Object with height and width
+ *    properties in workspace units.
+ */
+Blockly.Icon.prototype.getHeightWidth = function() {
+  if (this.collapseHidden && this.block_.isCollapsed()) {
+    return {height: 0, width: 0};
+  }
+  var height = this.SIZE + this.TOP_MARGIN;
+  var width = this.SIZE + Blockly.BlockSvg.SEP_SPACE_X;
+  return {height: height, width: width};
+};
+
+/**
  * Render the icon.
  * @param {number} cursorX Horizontal offset at which to position the icon.
  * @return {number} Horizontal offset for next item to draw.
@@ -159,13 +178,12 @@ Blockly.Icon.prototype.renderIcon = function(cursorX) {
   }
   this.iconGroup_.setAttribute('display', 'block');
 
-  var TOP_MARGIN = 5;
   var width = this.SIZE;
   if (this.block_.RTL) {
     cursorX -= width;
   }
   this.iconGroup_.setAttribute('transform',
-      'translate(' + cursorX + ',' + TOP_MARGIN + ')');
+      'translate(' + cursorX + ',' + this.TOP_MARGIN + ')');
   this.computeIconLocation();
   if (this.block_.RTL) {
     cursorX -= Blockly.BlockSvg.SEP_SPACE_X;
