@@ -983,13 +983,17 @@ Blockly.WorkspaceSvg.prototype.setVisible = function(isVisible) {
 
 /**
  * Render all blocks in workspace.
+ * @param {boolean=} opt_rerender If true, render only blocks which have
+ *     already been rendered.
  */
-Blockly.WorkspaceSvg.prototype.render = function() {
+Blockly.WorkspaceSvg.prototype.render = function(opt_rerender) {
   // Generate list of all blocks.
   var blocks = this.getAllBlocks();
   // Render each block.
   for (var i = blocks.length - 1; i >= 0; i--) {
-    blocks[i].render(false);
+    if (blocks[i].rendered || opt_rerender !== true) {
+      blocks[i].render(false);
+    }
   }
 };
 
@@ -999,7 +1003,7 @@ Blockly.WorkspaceSvg.prototype.render = function() {
 Blockly.WorkspaceSvg.prototype.renderRelatedWorkspaces = function() {
   var familyWs = Blockly.WorkspaceTree.getFamily(this);
   for (var i = 0, ws; ws = familyWs[i]; i++) {
-    ws.render();
+    ws.render(true);
   }
 };
 
