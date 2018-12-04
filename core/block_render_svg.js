@@ -1063,15 +1063,16 @@ Blockly.BlockSvg.prototype.renderExternalValueInput_ = function(pathObject, row,
   var fieldX = cursor.x;
   var fieldY = cursor.y;
   if (input.align != Blockly.ALIGN_LEFT) {
-    var fieldRightX = rightEdge - input.fieldWidth -
+    var iconFieldRightX = rightEdge - input.fieldWidth - input.iconWidth -
         Blockly.BlockSvg.TAB_WIDTH - 2 * Blockly.BlockSvg.SEP_SPACE_X;
     if (input.align == Blockly.ALIGN_RIGHT) {
-      fieldX += fieldRightX;
+      fieldX += iconFieldRightX;
     } else if (input.align == Blockly.ALIGN_CENTRE) {
-      fieldX += fieldRightX / 2;
+      fieldX += iconFieldRightX / 2;
     }
   }
-  this.renderFields_(input.fieldRow, fieldX, fieldY);
+  fieldX = this.renderFields_(input.fieldRow, fieldX, fieldY);
+  this.renderInputIcon_(input, fieldX, fieldY);
   var tabHeight = Blockly.BlockSvg.TAB_HEIGHT;
   if (input.connection.typeExpr) {
     steps.push(input.connection.typeExpr.getDownPath());
