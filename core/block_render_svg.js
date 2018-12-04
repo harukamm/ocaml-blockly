@@ -427,8 +427,10 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
     inputRows.rightEdge = Math.max(inputRows.rightEdge,
         Blockly.BlockSvg.NOTCH_WIDTH + Blockly.BlockSvg.SEP_SPACE_X);
   }
-  var fieldValueWidth = 0;  // Width of longest external value field.
-  var fieldStatementWidth = 0;  // Width of longest statement field.
+  // Maximum sum of external value field and icon widths.
+  var fieldValueWidth = 0;
+  // Maximum sum of statement field and icon widths.
+  var fieldStatementWidth = 0;
   var hasValue = false;
   var hasStatement = false;
   var hasDummy = false;
@@ -490,10 +492,18 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
       input.renderHeight--;
     }
 
+    input.iconWidth = 0;
+    var inputIcon = input.getAttachedIcon();
+    if (inputIcon) {
+      input.iconWidth = inputIcon.getHeightWidth().width;
+    } else {
+      input.iconWidth = 0;
+    }
+
     row.height = Math.max(row.height, input.renderHeight);
     input.fieldWidth = 0;
     if (inputRows.length == 1) {
-      // The first row gets shifted to accommodate any icons.
+      // The first row gets shifted to accommodate some of icons.
       input.fieldWidth += this.RTL ? -iconWidth : iconWidth;
     }
     var previousFieldEditable = false;
@@ -511,17 +521,18 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
       previousFieldEditable = field.EDITABLE;
     }
 
+    var fieldIconWidth = input.fieldWidth + input.iconWidth;
     if (row.type != Blockly.BlockSvg.INLINE) {
       if (row.type == Blockly.NEXT_STATEMENT) {
         hasStatement = true;
-        fieldStatementWidth = Math.max(fieldStatementWidth, input.fieldWidth);
+        fieldStatementWidth = Math.max(fieldStatementWidth, fieldIconWidth);
       } else {
         if (row.type == Blockly.INPUT_VALUE) {
           hasValue = true;
         } else if (row.type == Blockly.DUMMY_INPUT) {
           hasDummy = true;
         }
-        fieldValueWidth = Math.max(fieldValueWidth, input.fieldWidth);
+        fieldValueWidth = Math.max(fieldValueWidth, fieldIconWidth);
       }
     }
   }
