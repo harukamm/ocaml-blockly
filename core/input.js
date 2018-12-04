@@ -241,6 +241,15 @@ Blockly.Input.prototype.setWorkbench = function(workbench) {
 };
 
 /**
+ * Returns the icon attached to the input.
+ * @return {Blockly.Icon} The icon attached to this input, or null.
+ */
+Blockly.Input.prototype.getAttachedIcon = function() {
+  var icon = this.connection && this.connection.contextMutator;
+  return icon ? icon : null;
+};
+
+/**
  * Change the alignment of the connection's field(s).
  * @param {number} align One of Blockly.ALIGN_LEFT, ALIGN_CENTRE, ALIGN_RIGHT.
  *   In RTL mode directions are reversed, and ALIGN_RIGHT aligns to the left.

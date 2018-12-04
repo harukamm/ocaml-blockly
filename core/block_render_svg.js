@@ -324,19 +324,11 @@ Blockly.BlockSvg.prototype.render = function(opt_bubble) {
     cursorX = -cursorX;
   }
   var icons = this.getIcons();
-  var mapToIcons = {};
-  // Collect icons followed by the specific input, and render them later.
-  // TODO(harukam): Render them at correct positions.
   for (var i = 0; i < icons.length; i++) {
     var icon = icons[i];
     var input = icon.followingInput;
-    if (input) {
-      if (input.name in mapToIcons) {
-        mapToIcons[input.name].push(icon);
-      } else {
-        mapToIcons[input.name] = [icon];
-      }
-    } else {
+    // If the icon is followed by the specific input, render them later.
+    if (!input) {
       // Move the icons into position.
       cursorX = icon.renderIcon(cursorX);
     }
@@ -942,6 +934,12 @@ Blockly.BlockSvg.prototype.renderInlineRow_ = function(pathObject, row, cursor,
     }
     // TODO: Align inline field rows (left/right/centre).
     cursor.x = this.renderFields_(input.fieldRow, fieldX, fieldY);
+
+    var inputIcon = input.getAttachedIcon();
+    if (inputIcon) {
+      // TODO(harukam): Render the icon.
+    }
+
     if (input.type != Blockly.DUMMY_INPUT) {
       cursor.x += input.renderWidth + Blockly.BlockSvg.SEP_SPACE_X;
     }
