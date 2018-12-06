@@ -188,7 +188,11 @@ function create_mock_workbench(block, opt_inputName) {
     },
     dispose: function() {
       this.contextConnection_ = null;
-      this.block_.workbench = null;
+      var removalIndex = this.block_.workbenches.indexOf(this);
+      if (removalIndex != -1) {
+        this.block_.workbenches.splice(removalIndex, 1);
+      }
+
       this.block_ = null;
       if (this.workspace_) {
         this.workspace_.dispose();
@@ -200,7 +204,11 @@ function create_mock_workbench(block, opt_inputName) {
       }
     }
   };
-  block.workbench = workbenchMock;
+  if (goog.isArray(block.workbenches)) {
+    block.workbenches.push(workbenchMock);
+  } else {
+    block.workbenches = [workbenchMock];
+  }
 
   workspace.isMutator = true;
   workspace.ownerMutator_ = workbenchMock;
@@ -289,11 +297,12 @@ function mock_replaceWorkbenchWorkspaceWith(newBlock, oldBlock) {
   for (var i = 0, oldChild; oldChild = oldBlockDesc[i]; i++) {
     var newChild = newBlockDesc[i];
     goog.asserts.assert(oldChild.type === newChild.type);
-    if (oldChild.workbench) {
-      var oldWorkbench = oldChild.workbench;
-      var workspace = oldWorkbench.getWorkspace();
-      var newWorkbench = create_mock_workbench(newChild);
-      newWorkbench.replaceWorkspace(oldWorkbench);
+    if (goog.isArray(oldChild.workbenches)) {
+      for (var j = 0, workbench; workbench = oldChild.workbenches[j]; j++) {
+        var workspace = workbench.getWorkspace();
+        var newWorkbench = create_mock_workbench(newChild);
+        newWorkbench.replaceWorkspace(workbench);
+      }
     }
   }
 }

@@ -131,8 +131,11 @@ Blockly.Events.UiWithUndo.prototype.run = function(forward) {
     case 'workbenchOpen':
       var openMutator = this.element === 'mutatorOpen';
       var value = forward ? this.newValue : this.oldValue;
-      var mutator = this.element === 'mutatorOpen' ?
-          block.mutator : block.workbench;
+      if (this.element === 'mutatorOpen') {
+        var mutator = block.mutator;
+      } else {
+        throw 'Not implemented';
+      }
       mutator.setVisible(value);
       break;
     default:

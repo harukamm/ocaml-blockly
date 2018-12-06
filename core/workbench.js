@@ -530,7 +530,10 @@ Blockly.Workbench.prototype.checkReference = function(env) {
  * Dispose of this workbench.
  */
 Blockly.Workbench.prototype.dispose = function() {
-  this.block_.workbench = null;
+  var removalIndex = this.block_.workbenches.indexOf(this);
+  if (removalIndex != -1) {
+    this.block_.workbenches.splice(removalIndex, 1);
+  }
   Blockly.Icon.prototype.dispose.call(this);
 
   this.removeSvgElements();

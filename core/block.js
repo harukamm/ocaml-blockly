@@ -1068,11 +1068,12 @@ Blockly.Block.prototype.replaceWorkbenchWorkspaceWith = function(oldBlock) {
   for (var i = 0, oldChild; oldChild = oldBlockDesc[i]; i++) {
     var newChild = newBlockDesc[i];
     goog.asserts.assert(oldChild.type === newChild.type);
-    if (oldChild.workbench) {
-      var oldWorkbench = oldChild.workbench;
-      var workspace = oldWorkbench.getWorkspace();
-      var newWorkbench = newChild.workbench;
-      newWorkbench.replaceWorkspace(oldWorkbench);
+    if (goog.isArray(oldChild.workbenches)) {
+      for (var j = 0, workbench; workbench = oldChild.workbenches[j]; j++) {
+        var workspace = workbench.getWorkspace();
+        var newWorkbench = newChild.workbenches[j];
+        newWorkbench.replaceWorkspace(workbench);
+      }
     }
   }
 };
@@ -1204,8 +1205,8 @@ Blockly.Block.prototype.getAllWorkbenches = function() {
   var blocks = this.getDescendants();
   var workbenches = [];
   for (var i = 0, child; child = blocks[i]; i++) {
-    if (child.workbench) {
-      workbenches.push(child.workbench);
+    if (goog.isArray(child.workbenches)) {
+      Array.prototype.push.apply(workbenches, child.workbenches);
     }
   }
   return workbenches;
@@ -1832,9 +1833,12 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
       allSuccess = false;
     }
 
-    var workbench = block.workbench;
-    if (workbench && !workbench.checkReference(envOfParent)) {
-      allSuccess = false;
+    if (goog.isArray(block.workbenches)) {
+      for (var i = 0, workbench; workbench = block.workbenches[i]; i++) {
+        if (!workbench.checkReference(envOfParent)) {
+          allSuccess = false;
+        }
+      }
     }
 
     if (!allSuccess && opt_bind !== true) {

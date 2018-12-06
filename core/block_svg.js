@@ -226,10 +226,10 @@ Blockly.BlockSvg.prototype.unselect = function() {
 Blockly.BlockSvg.prototype.mutator = null;
 
 /**
- * Block's workbench icon.
- * @type {Blockly.Workbench}
+ * List of block's workbench icon.
+ * @type {!Array.<!Blockly.Workbench>}
  */
-Blockly.BlockSvg.prototype.workbench = null;
+Blockly.BlockSvg.prototype.workbenches = [];
 
 /**
  * Block's comment icon (if any).
@@ -252,9 +252,7 @@ Blockly.BlockSvg.prototype.getIcons = function() {
   if (this.mutator) {
     icons.push(this.mutator);
   }
-  if (this.workbench) {
-    icons.push(this.workbench);
-  }
+  Array.prototype.push.apply(icons, this.workbenches);
   if (this.comment) {
     icons.push(this.comment);
   }
@@ -1094,16 +1092,12 @@ Blockly.BlockSvg.prototype.setMutator = function(mutator) {
 
 /**
  * Give this block a workbench dialog.
- * @param {Blockly.Workbench} workbench A workbench dialog instance or null to
- *     remove.
+ * @param {!Blockly.Workbench} workbench A workbench dialog instance.
  */
 Blockly.BlockSvg.prototype.setWorkbench = function(workbench) {
-  if (this.workbench && this.workbench !== workbench) {
-    this.workbench.dispose();
-  }
   if (workbench) {
     workbench.block_ = this;
-    this.workbench = workbench;
+    this.workbenches.push(workbench);
   }
 };
 
