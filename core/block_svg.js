@@ -227,9 +227,9 @@ Blockly.BlockSvg.prototype.mutator = null;
 
 /**
  * List of block's workbench icon.
- * @type {!Array.<!Blockly.Workbench>}
+ * @type {Array.<!Blockly.Workbench>|null}
  */
-Blockly.BlockSvg.prototype.workbenches = [];
+Blockly.BlockSvg.prototype.workbenches = null;
 
 /**
  * Block's comment icon (if any).
@@ -252,7 +252,9 @@ Blockly.BlockSvg.prototype.getIcons = function() {
   if (this.mutator) {
     icons.push(this.mutator);
   }
-  Array.prototype.push.apply(icons, this.workbenches);
+  if (goog.isArray(this.workbenches)) {
+    Array.prototype.push.apply(icons, this.workbenches);
+  }
   if (this.comment) {
     icons.push(this.comment);
   }
@@ -1096,6 +1098,9 @@ Blockly.BlockSvg.prototype.setMutator = function(mutator) {
  */
 Blockly.BlockSvg.prototype.setWorkbench = function(workbench) {
   if (workbench) {
+    if (!goog.isArray(this.workbenches)) {
+      this.workbenches = [];
+    }
     workbench.block_ = this;
     this.workbenches.push(workbench);
   }
