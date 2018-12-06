@@ -288,3 +288,60 @@ function test_resolve_reference_renameVariableCheckWithWorkbench() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_fixTypeInfOnIntArith() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var letBlock1 = workspace.newBlock('let_typed');
+    workbench = create_mock_workbench(letBlock1);
+    setVariableName(letBlock1, 'x');
+
+    var blocks = getFlyoutBlocksFromWorkbench(workbench,
+        workbench.getWorkspace());
+    assertEquals(blocks.length, 1);
+    var referenceBlockWB1 = blocks[0];
+    var referenceWB1 = getVariable(referenceBlockWB1);
+
+    var blocks = getFlyoutBlocksFromWorkbench(workbench,
+        workbench.getWorkspace());
+    assertEquals(blocks.length, 1);
+    var referenceBlockWB2 = blocks[0];
+    var referenceWB2 = getVariable(referenceBlockWB2);
+
+    function test(prototypeName, disconnectLeft) {
+      var intArith = workbench.getWorkspace().newBlock(prototypeName);
+      var expected = intArith.getInput('A').connection.typeExpr;
+      intArith.getInput('A').connection.connect(
+          referenceBlockWB1.outputConnection);
+      intArith.getInput('B').connection.connect(
+          referenceBlockWB2.outputConnection);
+      var other;
+      if (disconnectLeft) {
+        referenceBlockWB1.outputConnection.disconnect();
+        assertEquals(expected.label,
+            referenceBlockWB2.outputConnection.typeExpr.deref().label);
+        other = referenceBlockWB2.outputConnection;
+      } else {
+        referenceBlockWB2.outputConnection.disconnect();
+        assertEquals(expected.label,
+            referenceBlockWB1.outputConnection.typeExpr.deref().label);
+        other = referenceBlockWB1.outputConnection;
+      }
+      assertEquals(expected.label,
+          letBlock1.getInput('EXP1').connection.typeExpr.deref().label);
+      other.disconnect();
+    }
+    test('int_arithmetic_typed', true);
+    test('int_arithmetic_typed', false);
+    test('float_arithmetic_typed', true);
+    test('float_arithmetic_typed', false);
+    test('logic_compare_typed', true);
+    test('logic_compare_typed', false);
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
