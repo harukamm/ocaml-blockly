@@ -506,10 +506,12 @@ Blockly.Workbench.prototype.updateScreen_ = function() {
  * Check if all of reference blocks on the workbench's workspace and its nested
  * workbenchs are correctly bound to their context.
  * @param {!Object} env The variable environments the block can refer to.
+ * @param {boolean=} opt_bind True to newly bind variable reference with the
+ *     variable found in the context.
  * @return {boolean} True if reference blocks on the workbench's workspace and
  *     its nested workbenchs' workspaces can be resolved.
  */
-Blockly.Workbench.prototype.checkReference = function(env) {
+Blockly.Workbench.prototype.checkReference = function(env, opt_bind) {
   if (!this.workspace_) {
     return true;
   }
@@ -519,7 +521,7 @@ Blockly.Workbench.prototype.checkReference = function(env) {
   var topBlocks = this.workspace_.getTopBlocks();
   for (var i = 0, topBlock; topBlock = topBlocks[i]; i++) {
     // This function will be called recursively for each of nested workbenchs.
-    if (!topBlock.resolveReferenceOnDescendants(context)) {
+    if (!topBlock.resolveReferenceOnDescendants(context, opt_bind)) {
       return false;
     }
   }

@@ -175,8 +175,9 @@ function create_mock_workbench(block, opt_inputName) {
       var func = Blockly.Workbench.prototype.getFlyoutLanguageTree_;
       return func.call(this);
     },
-    checkReference: function(env) {
-      return Blockly.Workbench.prototype.checkReference.call(this, env);
+    checkReference: function(env, opt_bind) {
+      return Blockly.Workbench.prototype.checkReference.call(this, env,
+          opt_bind);
     },
     removeChangeListener: function() {},
     adaptWorkspace_: function() {},
