@@ -285,8 +285,8 @@ Blockly.BoundVariables.getAllVariablesOnBlocks = function(block, opt_filter) {
 };
 
 /**
- * Returns if any variable references will never be changed when the variable
- * is renamed to the given name.
+ * Returns if any existing variable references will never be changed even if
+ * the variable is renamed to the given name.
  * @param {!Blockly.BoundVariableAbstract} variable The variable to be renamed.
  * @param {!string} The variable's new name.
  * @return {boolean} True if the renaming is valid.
