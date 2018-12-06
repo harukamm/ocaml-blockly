@@ -916,7 +916,10 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   }
   field.initModel();
   var variable = field.getVariable();
-  variable.setVariableName(text);
+  var renamed = Blockly.BoundVariables.tryRenamingVariable(variable, text);
+  if (!renamed) {
+    throw 'Failed to rename the variable to \'' + text + '\'';
+  }
   if (isForValue) {
     if (xml.hasAttribute('workspace-id')) {
       var workspace = getWorkspaceFromDom(xml);
