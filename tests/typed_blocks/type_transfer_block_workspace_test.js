@@ -752,6 +752,20 @@ function test_type_transfer_block_workspace_NestedWorkbenchTransferring() {
     assertEquals(letValueY.getTypeExpr().deref().label,
         Blockly.TypeExpr.INT_);
 
+    //           |             |_  [x]  [<[y]> + <>]
+    //           |               |/------------------
+    //           |_  [let y = <> in <>]  /
+    //             |/------------------
+    // [let x = <> in <>]
+
+    // Can not move the let-y block to the out-most workspace because it
+    // contain a reference block to the variable named 'x.' Move the
+    // reference block first.
+    assertFalse(letBlockWB.resolveReference(null, false, workspace));
+    var blockX = blocks[0] == referenceBlockY ? blocks[1] : blocks[0];
+    virtually_transfer_workspace(blockX, workbench.getWorkspace());
+    assertTrue(letBlockWB.resolveReference(null, false, workspace));
+
     var transBlock = virtually_transfer_workspace(letBlockWB, workspace);
     var transLetValueY = getVariable(transBlock);
     assertEquals(referenceY.getBoundValue(), transLetValueY);
