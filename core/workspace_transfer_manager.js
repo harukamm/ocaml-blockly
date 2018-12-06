@@ -274,7 +274,8 @@ Blockly.WorkspaceTransferManager.prototype.execTransferring_ = function(
   // A new block has been built up and completely taken the place of the
   // old one completely. Finally trigger a type inference and variable
   // resolution to make sure that the block follows the connection rule.
-  if (!newBlock.resolveReference(null, true)) {
+  var pending = Blockly.transferring.pendingTargetConnection || null;
+  if (!newBlock.resolveReference(pending, true)) {
     throw 'Invalid variable reference';
   }
   newBlock.updateTypeInference();
