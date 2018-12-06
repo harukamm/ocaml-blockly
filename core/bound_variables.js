@@ -384,13 +384,16 @@ Blockly.BoundVariables.tryRenamingVariable = function(variable, newName) {
   }
   variable.setVariableName(newName);
 
-  // Update flyout in related workbench.
-  var workspace = variable.getWorkspace();
-  var wsList = Blockly.WorkspaceTree.getFamilyMutator(workspace);
-  for (var i = 0, ws; ws = wsList[i]; i++) {
-    var mutator = ws.ownerMutator_;
-    if (mutator.isWorkbench()) {
-      mutator.updateFlyoutTree();
+  // Rerender flyout in related workbench.
+  var block = variable.getSourceBlock();
+  if (block.rendered) {
+    var workspace = variable.getWorkspace();
+    var wsList = Blockly.WorkspaceTree.getFamilyMutator(workspace);
+    for (var i = 0, ws; ws = wsList[i]; i++) {
+      var mutator = ws.ownerMutator_;
+      if (mutator.isWorkbench()) {
+        mutator.updateFlyoutTree();
+      }
     }
   }
   return true;
