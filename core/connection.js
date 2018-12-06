@@ -572,8 +572,7 @@ Blockly.Connection.prototype.disconnectInternal_ = function(parentBlock,
   childBlock.setParent(null);
   var parentRootBlock = parentBlock.getRootBlock();
   if (this.typeExprEnabled()) {
-    parentRootBlock.updateTypeInference(true);
-    childBlock.updateTypeInference(true);
+    Blockly.Block.doTypeInference([childBlock, parentRootBlock], true);
     // if (!childBlock.resolveReference(null, true)) {
     //   // TODO(harukam): If there is a reference that could not be resolved,
     //   // show message users.

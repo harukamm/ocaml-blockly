@@ -1784,6 +1784,39 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
 };
 
 /**
+ * Trigger type inference on the given blocks and their affecting blocks.
+ * @param {!Array.<!Blockly.Block>} blocks List of blocks whose type
+ *     expressions to be updated directly.
+ * @param {boolean=} opt_reset True if clear all of type unification before
+ *     start of type inference.
+ * @static
+ */
+Blockly.Block.doTypeInference = function(blocks, opt_reset) {
+  // TODO(harukam): The function updateTypeInference() could be removed.
+  // Use this function instead.
+  var blocksToUpdate = [];
+  var affectedReferences = [];
+  for (var i = 0, block; block = blocks[i]; i++) {
+    if (!block.outputConnection || !block.outputConnection.typeExpr) {
+      // This block has no type-expr, or it is removed deleted.
+      continue;
+    }
+    blocksToUpdate.push(block);
+    if (block.isInMutator) {
+      var references = Blockly.BoundVariables.getAllVariablesOnBlocks(block,
+          true/** Gets only references. */);
+      Array.prototype.push.apply(affectedReferences, references);
+    }
+  }
+  var affectedValues = Blockly.BoundVariables.getValuesFromReferenceList(
+      affectedReferences);
+  Array.prototype.push.apply(blocksToUpdate,
+      Blockly.BoundVariables.getAllRootBlocks(affectedValues));
+
+  Blockly.Block.inferBlocksType_(blocksToUpdate, true);
+};
+
+/**
  * Whether there would be no getter block which refers to a non-existing
  * variable. Check not only this block but also all the blocks nested inside
  * it.
