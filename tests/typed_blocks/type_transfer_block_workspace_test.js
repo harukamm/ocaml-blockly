@@ -33,12 +33,16 @@ function test_type_transfer_block_workspace_simpleVariableBlocksRestoreName() {
     assertTrue(value1.getVariableName() === value2.getVariableName());
 
     originalBlock = workspace.newBlock('variables_get_typed');
-    setVariableName(originalBlock, 'xx');
+    setVariableName(originalBlock, 'ii');
     var reference1 = originalBlock.getField('VAR').getVariable();
+    Blockly.debug = true;
+    assertFalse(originalBlock.resolveReference(null));
+    var exp2 = transferredBlock.getInput('EXP2').connection;
+    assertTrue(originalBlock.resolveReference(exp2));
     var transferredBlock = virtually_transfer_workspace(originalBlock,
-        otherWorkspace);
+        otherWorkspace, originalBlock.outputConnection, exp2);
     var reference2 =  transferredBlock.getField('VAR').getVariable();
-    assertTrue(reference1.getVariableName() === 'xx');
+    assertTrue(reference1.getVariableName() === 'ii');
     assertTrue(reference1.getVariableName() === reference2.getVariableName());
   } finally {
     workspace.dispose();
@@ -818,22 +822,33 @@ function test_type_transfer_block_workspace_workbenchHoldUnResolvedVariables() {
     var intArith = workbench2.getWorkspace().newBlock('int_arithmetic_typed');
     intArith.getInput('A').connection.connect(transBlockX.outputConnection);
     intArith.getInput('B').connection.connect(referenceBlockY.outputConnection);
+    assertEquals(Blockly.TypeExpr.INT_,
+        getVariable(referenceBlockY).getTypeExpr().deref().label);
 
     var exp1 = letBlockX.getInput('EXP1').connection;
     var originalWBWrokspace = letBlockY.workbenches[0].getWorkspace();
+    assertFalse(letBlockY.resolveReference(null));
     assertFalse(letBlockY.resolveReference(exp1));
+
+    transBlockX.dispose();
+    assertEquals(Blockly.TypeExpr.INT_,
+        getVariable(referenceBlockY).getTypeExpr().deref().label);
+
+    assertTrue(letBlockY.resolveReference(exp1));
     var transLetBlockY = virtually_transfer_workspace(letBlockY, workspace,
         letBlockY.outputConnection, exp1);
-    assertFalse(transLetBlockY.resolveReference(exp1));
+    transLetBlockY.outputConnection.connect(exp1);
 
-    //           |_  [ <[x]> + <[y]> ]  /
+    //           |_  [ <> + <[y]> ]  /
     //             |/------------------
-    // [let x = <[let y = <> in <>]> in <>]
+    // [let x = <[let y = <> in <>]> in <[x]>]
     assertNull(letBlockY.workbenches[0].getWorkspace());
     assertEquals(transLetBlockY.workbenches[0].getWorkspace(), originalWBWrokspace);
-    assertFalse(intArith.resolveReference(null));
-    assertEquals(intArith.outputConnection.checkTypeWithReason_(exp1),
-        Blockly.Connection.REASON_VARIABLE_REFERENCE);
+    assertTrue(intArith.resolveReference(null));
+    assertEquals(Blockly.TypeExpr.INT_,
+        getVariable(referenceBlockY).getTypeExpr().deref().label);
+    assertEquals(Blockly.TypeExpr.INT_,
+        transLetBlockY.getInput('EXP1').connection.typeExpr.deref().label);
   } finally {
     if (workbench2) {
       workbench2.dispose();
