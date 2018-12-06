@@ -1823,28 +1823,21 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
 Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
     opt_bind) {
   var bfsStack = [[this, env]];
-  var allSuccess = true;
   while (bfsStack.length) {
     var pair = bfsStack.shift();
     var block = pair[0];
     var envOfParent = pair[1];
 
     if (!block.resolveReferenceWithEnv_(envOfParent, opt_bind)) {
-      allSuccess = false;
+      return false;
     }
 
     if (goog.isArray(block.workbenches)) {
       for (var i = 0, workbench; workbench = block.workbenches[i]; i++) {
         if (!workbench.checkReference(envOfParent)) {
-          allSuccess = false;
+          return false;
         }
       }
-    }
-
-    if (!allSuccess && opt_bind !== true) {
-      // Some of references can not be resolved. If no need to bind other
-      // references, just quit.
-      return false;
     }
 
     for (var i = 0, child; child = block.childBlocks_[i]; i++) {
@@ -1856,7 +1849,7 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
       bfsStack.push([child, envOfChild]);
     }
   }
-  return allSuccess;
+  return true;
 };
 
 /**
@@ -1871,7 +1864,6 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
  */
 Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
   var referenceList = this.getVariables(true /** Gets only references. */);
-  var allSuccess = true;
   for (var i = 0, variable; variable = referenceList[i]; i++) {
     var name = variable.getVariableName();
     var value = env[name];
@@ -1889,7 +1881,7 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
       variable.setBoundValue(value);
     }
   }
-  return allSuccess;
+  return true;
 };
 
 /**
