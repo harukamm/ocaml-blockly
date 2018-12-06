@@ -372,12 +372,12 @@ Blockly.BoundVariables.isLegalName = function(variable, newName) {
 };
 
 /**
- * Attempts to rename the variable to the given name.
- * @param {!Blockly.BoundVariableAbstract} variable The variable to rename.
+ * Helper function for renaming the variable as the given name.
+ * @param {Blockly.BoundVariableAbstract} variable The variable to rename.
  * @param {string} newName The new variable name.
  * @return {boolean} True if variable is renamed. Otherwise, false.
  */
-Blockly.BoundVariables.tryRenamingVariable = function(variable, newName) {
+Blockly.BoundVariables.renameVariableImpl_ = function(variable, newName) {
   newName = newName.trim();
   if (!Blockly.BoundVariables.canRenameTo(variable, newName)) {
     return false;
@@ -414,7 +414,7 @@ Blockly.BoundVariables.renameVariable = function(variable) {
           if (!newName) {
             // NOP. User canceled prompt.
           } else {
-            var changed = Blockly.BoundVariables.tryRenamingVariable(variable,
+            var changed = Blockly.BoundVariables.renameVariableImpl_(variable,
                 newName);
             if (!changed) {
               // TODO: Define the message in the Blockly.Msg class.
