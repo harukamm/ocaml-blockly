@@ -143,10 +143,11 @@ function test_type_transfer_block_workspace_workbenchBlocksTransferred() {
     letBlockOnMain.getInput('EXP2').connection.connect(
         varBlock1.outputConnection);
     getVariable(varBlock2).setBoundValue(letValue);
-    getVariable(varBlock3).setBoundValue(letWBValue);
+    varBlock3.outputConnection.connect(letBlockOnWB.getInput('EXP2').connection);
     getVariable(varBlock4).setBoundValue(letValue);
     getVariable(varBlockIsolated).setBoundValue(letValue);
     assertTrue(letValue.referenceCount() == 4);
+    assertTrue(letWBValue.referenceCount() == 1);
 
     function testsConditionDuringTransferring() {
       assertTrue(letBlockOnMain.isTransferring());
@@ -158,6 +159,9 @@ function test_type_transfer_block_workspace_workbenchBlocksTransferred() {
       assertTrue(!varBlockIsolated.isTransferring());
     }
 
+    assertFalse(letBlockOnMain.resolveReference(null));
+    letWBValue.setVariableName('j');
+    assertTrue(letBlockOnMain.resolveReference(null));
     var newBlock = virtually_transfer_workspace(letBlockOnMain, otherWorkspace,
         null, null, testsConditionDuringTransferring);
     var newLetValue = getVariable(newBlock);
