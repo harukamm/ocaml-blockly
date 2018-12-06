@@ -1101,8 +1101,10 @@ Blockly.BlockSvg.prototype.setWorkbench = function(workbench) {
     if (!goog.isArray(this.workbenches)) {
       this.workbenches = [];
     }
-    workbench.block_ = this;
-    this.workbenches.push(workbench);
+    if (this.workbenches.indexOf(workbench) == -1) {
+      workbench.block_ = this;
+      this.workbenches.push(workbench);
+    }
   }
 };
 
