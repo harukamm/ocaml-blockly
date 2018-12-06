@@ -1732,6 +1732,30 @@ Blockly.Block.prototype.moveBy = function(dx, dy) {
 };
 
 /**
+ * Update type inference for each block in the given list.
+ * @param {!Array.<!Blockly.Block>} blocks List of blocks whose type
+ *     expressions to be updated.
+ * @param {boolean=} opt_reset True if clear all of type unification before
+ *     start of type inference.
+ * @private
+ * @static
+ */
+Blockly.Block.inferBlocksType_ = function(blocks, opt_reset) {
+  if (opt_reset) {
+    for (var i = 0, block; block = blocks[i]; i++) {
+      if (!block.isTransferring() && goog.isFunction(block.clearTypes)) {
+        block.clearTypes();
+      }
+    }
+  }
+  for (var i = 0, block; block = blocks[i]; i++) {
+    if (!block.isTransferring() && goog.isFunction(block.infer)) {
+      block.infer({});
+    }
+  }
+};
+
+/**
  * Update type inference for this block.
  * @param {boolean=} opt_reset True if types should be reset first.
  */
@@ -1756,18 +1780,7 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
         Blockly.BoundVariables.getAllRootBlocks(values));
   }
 
-  if (opt_reset) {
-    for (var i = 0, block; block = blocksToUpdate[i]; i++) {
-      if (!block.isTransferring() && goog.isFunction(block.clearTypes)) {
-        block.clearTypes();
-      }
-    }
-  }
-  for (var i = 0, block; block = blocksToUpdate[i]; i++) {
-    if (!block.isTransferring() && goog.isFunction(block.infer)) {
-      block.infer({});
-    }
-  }
+  Blockly.Block.inferBlocksType_(blocksToUpdate, opt_reset);
 };
 
 /**
