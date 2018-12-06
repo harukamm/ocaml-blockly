@@ -2885,6 +2885,7 @@ Blockly.Blocks['let_typed'] = {
     this.appendDummyInput('VARIABLE')
         .appendField('let')
         .appendField(variable_field, 'VAR');
+    this.appendDummyInput('ARGS');
     this.appendValueInput('EXP1')
         .setTypeExpr(A)
         .appendField('=');
@@ -2892,9 +2893,12 @@ Blockly.Blocks['let_typed'] = {
         .setTypeExpr(B)
         .appendField('in')
         .setWorkbench(new Blockly.Workbench());
+    this.setMutator(new Blockly.Mutator(['args_create_with_item']));
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
+
+    this.argumentCount_ = 0;
   },
 
   /**
@@ -2958,6 +2962,90 @@ Blockly.Blocks['let_typed'] = {
     options.push(option);
   },
 
+  /**
+   * Create XML to represent argument inputs.
+   * @return {Element} XML storage element.
+   * @this Blockly.Block
+   */
+  mutationToDom: function() {
+    var container = document.createElement('mutation');
+    for (var x = 0; x < this.argumentCount_; x++) {
+      var itemDom = document.createElement('item');
+      var field = this.getField('ARG' + x);
+      var textNode = document.createTextNode(field.getText());
+      itemDom.appendChild(textNode);
+      container.appendChild(itemDom);
+    }
+    return container;
+  },
+  /**
+   * Parse XML to restore the argument inputs.
+   * @param {!Element} xmlElement XML storage element.
+   * @this Blockly.Block
+   */
+  domToMutation: function(xmlElement) {
+    var input = this.getInput('ARGS');
+    while (input.fieldRow.length) {
+      var field = input.fieldRow.pop();
+      field.dispose();
+    }
+    var childNodes = xmlElement.childNodes;
+    this.argumentCound_ = childNodes.length;
+    for (var x = 0; x < this.argumentCount_; x++) {
+      var text = childNodes[x].textContent;
+      var A = Blockly.RenderedTypeExpr.generateTypeVar();
+      var field = Blockly.FieldBoundVariable.newValue(A, 'EXP1');
+
+      input.appendField(field, 'ARG' + x);
+      field.init();
+    }
+  },
+  /**
+   * Populate the mutator's dialog with this block's components.
+   * @param {!Blockly.Workspace} workspace Mutator's workspace.
+   * @return {!Blockly.Block} Root block in mutator.
+   * @this Blockly.Block
+   */
+  decompose: function(workspace) {
+    var containerBlock =
+        workspace.newBlock('args_create_with_container');
+    containerBlock.initSvg();
+    var connection = containerBlock.getInput('STACK').connection;
+    for (var x = 0; x < this.argumentCount_; x++) {
+      var itemBlock = workspace.newBlock('args_create_with_item');
+      itemBlock.initSvg();
+      connection.connect(itemBlock.previousConnection);
+      connection = itemBlock.nextConnection;
+    }
+    return containerBlock;
+  },
+  /**
+   * Reconfigure this block based on the mutator dialog's components.
+   * @param {!Blockly.Block} containerBlock Root block in mutator.
+   * @this Blockly.Block
+   */
+  compose: function(containerBlock) {
+    var input = this.getInput('ARGS');
+    while (input.fieldRow.length) {
+      var field = input.fieldRow.pop();
+      field.dispose();
+    }
+    this.argumentCount_ = 0;
+    // Rebuild the block's inputs.
+    var itemBlock = containerBlock.getInputTargetBlock('STACK');
+    while (itemBlock) {
+      var A = Blockly.RenderedTypeExpr.generateTypeVar();
+      var field = Blockly.FieldBoundVariable.newValue(A, 'EXP1');
+      input.appendField(field, 'ARG' + this.argumentCount_);
+      field.init();
+
+      // Reconnect any child blocks.
+      this.argumentCount_++;
+      itemBlock = itemBlock.nextConnection &&
+          itemBlock.nextConnection.targetBlock();
+    }
+  },
+
   clearTypes: function() {
     this.getInput('EXP1').connection.typeExpr.clear();
     this.getInput('EXP2').connection.typeExpr.clear();
@@ -2983,3 +3071,33 @@ Blockly.Blocks['let_typed'] = {
   }
 };
 
+Blockly.Blocks['args_create_with_item'] = {
+  /**
+   * Mutator block for adding arguments.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(Blockly.Msg['LISTS_HUE']);
+    this.appendDummyInput()
+        .appendField(Blockly.Msg['LISTS_CREATE_WITH_ITEM_TITLE']);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_ITEM_TOOLTIP']);
+    this.contextMenu = false;
+  }
+};
+
+Blockly.Blocks['args_create_with_container'] = {
+  /**
+   * Mutator block for arguments container.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(Blockly.Msg['LISTS_HUE']);
+    this.appendDummyInput()
+        .appendField(Blockly.Msg['LISTS_CREATE_WITH_CONTAINER_TITLE_ADD']);
+    this.appendStatementInput('STACK');
+    this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_CONTAINER_TOOLTIP']);
+    this.contextMenu = false;
+  }
+};
