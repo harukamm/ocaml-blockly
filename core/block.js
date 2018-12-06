@@ -3079,7 +3079,7 @@ Blockly.Blocks['args_create_with_item'] = {
   init: function() {
     this.setColour(Blockly.Msg['LISTS_HUE']);
     this.appendDummyInput()
-        .appendField(Blockly.Msg['LISTS_CREATE_WITH_ITEM_TITLE']);
+        .appendField('x');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_ITEM_TOOLTIP']);
@@ -3095,7 +3095,7 @@ Blockly.Blocks['args_create_with_container'] = {
   init: function() {
     this.setColour(Blockly.Msg['LISTS_HUE']);
     this.appendDummyInput()
-        .appendField(Blockly.Msg['LISTS_CREATE_WITH_CONTAINER_TITLE_ADD']);
+        .appendField('arguments');
     this.appendStatementInput('STACK');
     this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_CONTAINER_TOOLTIP']);
     this.contextMenu = false;
