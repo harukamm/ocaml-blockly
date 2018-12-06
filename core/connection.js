@@ -231,7 +231,7 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
   // Sorin
   if (this.typeExprEnabled()) {
-    if (!childBlock.resolveReference(parentConnection, true)) {
+    if (!childBlock.resolveReference(parentConnection)) {
       throw 'Connecting these blocks will occur invalid variable reference.';
     }
     if (!parentConnection.typeExpr.ableToUnify(childConnection.typeExpr)) {
@@ -574,7 +574,7 @@ Blockly.Connection.prototype.disconnectInternal_ = function(parentBlock,
   if (this.typeExprEnabled()) {
     parentRootBlock.updateTypeInference(true);
     childBlock.updateTypeInference(true);
-    // if (!childBlock.resolveReference(null, true)) {
+    // if (!childBlock.resolveReference(null)) {
     //   // TODO(harukam): If there is a reference that could not be resolved,
     //   // show message users.
     // }
