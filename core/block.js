@@ -2934,7 +2934,8 @@ Blockly.Blocks['let_typed'] = {
     this.appendDummyInput('ARGS');
     this.appendValueInput('EXP1')
         .setTypeExpr(A)
-        .appendField('=');
+        .appendField('=')
+        .setWorkbench(new Blockly.Workbench());
     this.appendValueInput('EXP2')
         .setTypeExpr(B)
         .appendField('in')
