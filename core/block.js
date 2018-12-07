@@ -3157,7 +3157,7 @@ Blockly.Blocks['args_create_with_container'] = {
   init: function() {
     this.setColour(Blockly.Msg['LISTS_HUE']);
     this.appendDummyInput()
-        .appendField('arguments');
+        .appendField('args');
     this.appendStatementInput('STACK');
     this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_CONTAINER_TOOLTIP']);
     this.contextMenu = false;
