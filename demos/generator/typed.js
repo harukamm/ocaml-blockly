@@ -2,8 +2,10 @@
 
 var Typed = {};
 
+Typed.workspace = null;
+
 Typed.init = function() {
-  Blockly.inject(document.getElementById('blocklyDiv'),
+  Typed.workspace = Blockly.inject(document.getElementById('blocklyDiv'),
       {path: '../../', toolbox: document.getElementById('toolbox'),
        grid:
            {spacing: 25,
