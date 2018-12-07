@@ -52,21 +52,30 @@
     }
     #workspaceArea {
       height: 100%;
-      width: 100%;
+      width: calc(100% - 300px);
+      float: left;
+    }
+    #rightArea {
+      height: 100%;
+      width: 300px;
+      float: left;
+    }
+    .clear {
+      clear: both;
     }
   </style>
 </head>
 <body>
-<!--
-  <form onsubmit="Typed.onClickConvert(event)">
-    <input class="ocamlCode" type="text" value="let x = true && false || false in x"></input>
-    <input type="submit" value="Convert to block"></input>
-  </form>
--->
-
   <div id="workspaceArea">
     <div id="blocklyDiv"></div>
   </div>
+  <div id="rightArea">
+    <form onsubmit="Typed.onClickConvert(event)">
+      <input class="ocamlCode" type="text" value="let x = true && false || false in x"></input>
+      <input type="submit" value="Convert to block"></input>
+    </form>
+  </div>
+  <div class="clear"></div>
 
   <xml id="toolbox" style="display: none">
     <block type="logic_boolean_typed"></block>
