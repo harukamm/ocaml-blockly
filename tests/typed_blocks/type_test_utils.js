@@ -35,9 +35,9 @@ function getVariable(block) {
   return field.getVariable();
 }
 
-function getVariableFieldDisplayedText(block) {
+function getVariableName(block) {
   var field = getVariableField(block);
-  return field.getText();
+  return field.getVariable().getVariableName();
 }
 
 function isOfBoundVariable(referenceBlock, valueBlock) {
@@ -47,8 +47,8 @@ function isOfBoundVariable(referenceBlock, valueBlock) {
 }
 
 function isVariableOf(varBlock, block, opt_variableName) {
-  var name1 = getVariableFieldDisplayedText(varBlock);
-  var name2 = getVariableFieldDisplayedText(block);
+  var name1 = getVariableName(varBlock);
+  var name2 = getVariableName(block);
   var checkType;
   switch (block.type) {
     case 'let_typed':

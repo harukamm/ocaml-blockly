@@ -312,8 +312,8 @@ function test_type_unification_lambdaStructure() {
     setVariableName(block, 'x');
     setVariableName(var1, 'x');
     block.getInput('RETURN').connection.connect(var1.outputConnection);
-    assertEquals(getVariableFieldDisplayedText(var1),
-        getVariableFieldDisplayedText(block));
+    assertEquals(getVariableName(var1),
+        getVariableName(block));
     assertTrue(block.outputConnection.typeExpr.return_type.deref() ===
         var1.outputConnection.typeExpr.deref());
     assertTrue(block.outputConnection.typeExpr.arg_type.deref() ==
@@ -335,8 +335,8 @@ function test_type_unification_lambdaAppStructure() {
     // Set the same variable name with the name of lambda's argument.
     var variableName = getVariable(lambdaBlock).getVariableName();
     setVariableName(var1, variableName);
-    assertEquals(getVariableFieldDisplayedText(var1),
-        getVariableFieldDisplayedText(lambdaBlock));
+    assertEquals(getVariableName(var1),
+        getVariableName(lambdaBlock));
     lambdaBlock.getInput('RETURN').connection.connect(var1.outputConnection);
     assertTrue(block.outputConnection.typeExpr.deref() ===
         lambdaBlock.outputConnection.typeExpr.return_type.deref());
@@ -514,10 +514,10 @@ function test_type_unification_changeVariablesNameReferences() {
 
     assertTrue(isOfBoundVariable(varBlock, outerBlock));
     setVariableName(outerBlock, 'i');
-    assertTrue(getVariableFieldDisplayedText(varBlock) === 'i');
+    assertTrue(getVariableName(varBlock) === 'i');
 
     setVariableName(outerBlock, 'x');
-    assertTrue(getVariableFieldDisplayedText(varBlock) === 'x');
+    assertTrue(getVariableName(varBlock) === 'x');
     // [let j = <> in < [let i = <> in < [j] >] >]
 
     // [let x = <> in < [let i = <> in <>] >]   [x]
@@ -526,8 +526,8 @@ function test_type_unification_changeVariablesNameReferences() {
     // Variable binding relation holds even after disconnect().
     assertTrue(isOfBoundVariable(varBlock, outerBlock));
     setVariableName(outerBlock, 'y');
-    assertTrue(getVariableFieldDisplayedText(outerBlock) === 'y');
-    assertTrue(getVariableFieldDisplayedText(varBlock) === 'y');
+    assertTrue(getVariableName(outerBlock) === 'y');
+    assertTrue(getVariableName(varBlock) === 'y');
 
     // [let y = <> in < [let i = <> in < >] >]   [y]
     setVariableName(varBlock, 'i');
@@ -541,9 +541,9 @@ function test_type_unification_changeVariablesNameReferences() {
     setVariableName(varBlock, 'm');
     innerBlock.getInput('EXP2').connection.connect(
         varBlock.outputConnection);
-    assertTrue(getVariableFieldDisplayedText(outerBlock) === 'm');
-    assertTrue(getVariableFieldDisplayedText(innerBlock) === 'i');
-    assertTrue(getVariableFieldDisplayedText(varBlock) == 'm');
+    assertTrue(getVariableName(outerBlock) === 'm');
+    assertTrue(getVariableName(innerBlock) === 'i');
+    assertTrue(getVariableName(varBlock) == 'm');
   } finally {
     workspace.dispose();
   }
@@ -581,13 +581,13 @@ function test_type_unification_changeVariablesNameReferencesNested() {
     function checkName(n, nthName) {
       for (var i = 0; i < valueBlocks.length; i++) {
         var expected = i == n ? nthName : getNthName(i);
-        assertTrue(getVariableFieldDisplayedText(valueBlocks[i]) === expected);
+        assertTrue(getVariableName(valueBlocks[i]) === expected);
       }
     }
     setVariableName(var1, 'hogehoge');
     checkName(x, 'hogehoge');
     setVariableName(valueBlocks[x], 'foo');
-    assertTrue(getVariableFieldDisplayedText(var1) === 'foo');
+    assertTrue(getVariableName(var1) === 'foo');
   } finally {
     workspace.dispose();
   }
