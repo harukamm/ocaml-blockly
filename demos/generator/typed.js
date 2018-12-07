@@ -59,24 +59,17 @@ Typed.getBBox_ = function(element) {
 }
 
 Typed.showCode = function() {
-  // Generate TypedLang code and display it.
-  Blockly.TypedLang.INFINITE_LOOP_TRAP = null;
-  var code = Blockly.TypedLang.workspaceToCode();
-  alert(code);
+  try {
+    Blockly.TypedLang.INFINITE_LOOP_TRAP = null;
+    var code = Blockly.TypedLang.workspaceToCode(Typed.workspace);
+    alert(code);
+  } catch (e) {
+    alert('Some of blocks are not supported for converting.');
+  }
 }
 
 Typed.runCode = function() {
-  // Generate TypedLang code and run it.
-  window.LoopTrap = 1000;
-  Blockly.TypedLang.INFINITE_LOOP_TRAP =
-      'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
-  var code = Blockly.TypedLang.workspaceToCode();
-  Blockly.TypedLang.INFINITE_LOOP_TRAP = null;
-  try {
-    eval(code);
-  } catch (e) {
-    alert(e);
-  }
+  alert('Not implemented yet.');
 }
 
 Typed.onClickConvert = function(event) {
