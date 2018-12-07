@@ -371,15 +371,33 @@ function test_resolve_reference_collectContextForNestedBlocks() {
     var lastOnWB2 = blocksOnWB2[varNamesOnWB2.length - 1];
     workbenchList.push(create_mock_workbench(lastOnWB2));
 
-    var expectedBlocksList = [];
-    expectedBlocksList.push(blocksOnMain);
-    expectedBlocksList.push(blocksOnMain.concat(blocksOnWB));
-    expectedBlocksList.push(blocksOnMain.concat(blocksOnWB.concat(blocksOnWB2)));
+    var expected = [];
+    expected.push({
+      "getContextEx": blocksOnMain, "getContext": blocksOnMain,
+      "getBlockContext": [lastOnMain]
+    });
+    expected.push({
+      "getContextEx": blocksOnWB,
+      "getContext": blocksOnMain.concat(blocksOnWB),
+      "getBlockContext": [lastOnWB]
+    });
+    expected.push({
+      "getContextEx": blocksOnWB2,
+      "getContext": blocksOnMain.concat(blocksOnWB).concat(blocksOnWB2),
+      "getBlockContext": [lastOnWB2]
+    });
 
     for (var i = 0, workbench; workbench = workbenchList[i]; i++) {
-      var refBlocks = getFlyoutBlocksFromWorkbench(workbench);
-      var expectedValueBlocks = expectedBlocksList[i];
-      checkBlocksArePaired(expectedValueBlocks, refBlocks);
+      var expectedMap = expected[i];
+      var context = workbench.getContext(false);
+      var expectedBlocks = expectedMap["getContextEx"];
+      checkValuesPariedWithValueBlocks(Object.values(context), expectedBlocks);
+      var context = workbench.getContext();
+      var expectedBlocks = expectedMap["getContext"];
+      checkValuesPariedWithValueBlocks(Object.values(context), expectedBlocks);
+      var context = workbench.getBlockContext();
+      var expectedBlocks = expectedMap["getBlockContext"];
+      checkValuesPariedWithValueBlocks(Object.values(context), expectedBlocks);
     }
   } finally {
     for (var i = 0, wb; wb = workbenchList[i]; i++) {

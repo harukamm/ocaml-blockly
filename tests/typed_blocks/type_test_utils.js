@@ -102,6 +102,19 @@ function createNestedValueBlock(workspace, size, getNthName) {
   return valueBlocks;
 }
 
+function checkValuesPariedWithValueBlocks(values, valueBlocks) {
+  assertEquals(values.length, valueBlocks.length);
+  var blockValues = goog.array.map(valueBlocks,
+      function(block) {return getVariable(block);});
+  for (var i = 0, value; value = values[i]; i++) {
+    assertNotNull(value);
+    var index = blockValues.indexOf(value);
+    assertNotEquals(index, -1);
+    blockValues.splice(index, 1);
+  }
+  assertEquals(blockValues.length, 0);
+}
+
 function checkBlocksArePaired(valueBlocks, referenceBlocks) {
   assertEquals(valueBlocks.length, referenceBlocks.length);
   var values = goog.array.map(valueBlocks,
@@ -172,8 +185,9 @@ function create_mock_workbench(block, opt_inputName) {
     getBlockContext: function() {
       return Blockly.Workbench.prototype.getBlockContext.call(this);
     },
-    getContext: function() {
-      return Blockly.Workbench.prototype.getContext.call(this);
+    getContext: function(opt_includeImplicit) {
+      return Blockly.Workbench.prototype.getContext.call(this,
+          opt_includeImplicit);
     },
     blocksForFlyout: function(opt_workspace) {
       if (opt_workspace) {

@@ -405,15 +405,19 @@ Blockly.Workbench.prototype.getFlyoutMetrics_ = function() {
 
 /**
  * Finds variable environment which can be referred to inside this workbench.
+ * @param {boolean=} opt_includeImplicit False to exclude implicit context
+ *     existing in the workspace of the block, and collects only context that
+ *     are bound to the block and its ancestors. Defaults to true.
  * @return {!Object} The map to variable value keyed by its name.
  */
-Blockly.Workbench.prototype.getContext = function() {
+Blockly.Workbench.prototype.getContext = function(opt_includeImplicit) {
   if (!this.block_) {
     // This workbench is in the process of being deleted.
     return {};
   }
+  var includeImplicit = opt_includeImplicit !== false;
   return this.block_.allVisibleVariables(this.contextConnection_,
-      true/** Includes implicit context. */);
+      includeImplicit);
 };
 
 /**
