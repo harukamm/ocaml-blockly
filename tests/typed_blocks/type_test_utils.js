@@ -102,6 +102,21 @@ function createNestedValueBlock(workspace, size, getNthName) {
   return valueBlocks;
 }
 
+function checkBlocksArePaired(valueBlocks, referenceBlocks) {
+  assertEquals(valueBlocks.length, referenceBlocks.length);
+  var values = goog.array.map(valueBlocks,
+      function(block) {return getVariable(block);});
+  for (var i = 0, refBlock; refBlock = referenceBlocks[i]; i++) {
+    var ref = getVariable(refBlock);
+    var value = ref.getBoundValue();
+    assertNotNull(value);
+    var index = values.indexOf(value);
+    assertNotEquals(index, -1);
+    values.splice(index, 1);
+  }
+  assertEquals(values.length, 0);
+}
+
 /* End functions for variables. */
 
 /* Begin functions for workbenches. */

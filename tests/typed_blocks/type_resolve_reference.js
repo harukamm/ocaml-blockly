@@ -345,3 +345,46 @@ function test_resolve_reference_fixTypeInfOnIntArith() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_collectContextForNestedBlocks() {
+  var workspace = create_typed_workspace();
+  var workbenchList = [];
+  try {
+    var varNamesOnMain = ["x1", "x2"];
+    var blocksOnMain = createNestedValueBlock(
+        workspace, varNamesOnMain.length,
+        function(n) {return varNamesOnMain[n];});
+    var lastOnMain = blocksOnMain[varNamesOnMain.length - 1];
+    workbenchList.push(create_mock_workbench(lastOnMain));
+
+    var varNamesOnWB = ["y1", "y2"];
+    var blocksOnWB = createNestedValueBlock(
+        workbenchList[0].getWorkspace(), varNamesOnWB.length,
+        function(n) {return varNamesOnWB[n];});
+    var lastOnWB = blocksOnWB[varNamesOnWB.length - 1];
+    workbenchList.push(create_mock_workbench(lastOnWB));
+
+    var varNamesOnWB2 = ["z1", "z2"];
+    var blocksOnWB2 = createNestedValueBlock(
+        workbenchList[1].getWorkspace(), varNamesOnWB2.length,
+        function(n) {return varNamesOnWB2[n];});
+    var lastOnWB2 = blocksOnWB2[varNamesOnWB2.length - 1];
+    workbenchList.push(create_mock_workbench(lastOnWB2));
+
+    var expectedBlocksList = [];
+    expectedBlocksList.push(blocksOnMain);
+    expectedBlocksList.push(blocksOnMain.concat(blocksOnWB));
+    expectedBlocksList.push(blocksOnMain.concat(blocksOnWB.concat(blocksOnWB2)));
+
+    for (var i = 0, workbench; workbench = workbenchList[i]; i++) {
+      var refBlocks = getFlyoutBlocksFromWorkbench(workbench);
+      var expectedValueBlocks = expectedBlocksList[i];
+      checkBlocksArePaired(expectedValueBlocks, refBlocks);
+    }
+  } finally {
+    for (var i = 0, wb; wb = workbenchList[i]; i++) {
+      wb.dispose();
+    }
+    workspace.dispose();
+  }
+}
