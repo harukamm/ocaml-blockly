@@ -41,7 +41,8 @@ Blockly.FieldBoundVariable = function(isValue, typeExpr, varName, scopeName) {
   this.menuGenerator_ = Blockly.FieldBoundVariable.dropdownCreate;
   this.size_ = new goog.math.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
   this.defaultTypeExpr_ = typeExpr;
-  this.defaultVariableName_ = varName || 'hoge';
+
+  this.defaultVariableName_ = this.getDefaultVariableName_(varName);;
 
   /**
    * Whether this field is for a variable value. If true, this field works as
@@ -118,6 +119,24 @@ Blockly.FieldBoundVariable.prototype.setSourceBlock = function(block) {
       'block which contains bound-variable fields.');
 
   Blockly.FieldBoundVariable.superClass_.setSourceBlock.call(this, block);
+};
+
+/**
+ * Returns the default variable name to this variable.
+ * @param {string} varName The default name for the variable.  If null, the
+ *     generated name will be used. If contains white spaces at start or end,
+ *     the trimmed one might be used.
+ * @return {string} The string for the default variable name.
+ */
+Blockly.FieldBoundVariable.prototype.getDefaultVariableName_ = function(name) {
+  if (goog.isString(name)) {
+    var cleaned = name.trim();
+    if (Blockly.BoundVariables.isLegalName(cleaned)) {
+      return cleaned;
+    }
+  }
+  // TODO(harukam): Generate variable name that is not in use on the workspace.
+  return 'i';
 };
 
 /**
