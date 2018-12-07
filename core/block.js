@@ -3081,6 +3081,7 @@ Blockly.Blocks['let_typed'] = {
   compose: function(containerBlock) {
     var itemCount = containerBlock.getItemCount();
     var input = this.getInput('ARGS');
+    var contextChanged = itemCount != this.argumentCount_;
     while (itemCount < this.argumentCount_) {
       var field = input.fieldRow.pop();
       field.dispose();
@@ -3093,6 +3094,9 @@ Blockly.Blocks['let_typed'] = {
       input.appendField(field, 'ARG' + this.argumentCount_);
       field.init();
       this.argumentCount_++;
+    }
+    if (contextChanged) {
+      this.updateWorkbenchFlyout();
     }
   },
 
