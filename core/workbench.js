@@ -493,6 +493,9 @@ Blockly.Workbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
  */
 Blockly.Workbench.prototype.updateFlyoutTree = function() {
   if (this.workspace_ && this.workspace_.flyout_) {
+    // TODO(harukam): Store the last context, and update blocks shown in a
+    // flyout only if the context is changed. Blocks creation and rerendering
+    // blocks are expensive.
     this.workspace_.flyout_.show(this.blocksForFlyout.bind(this));
     this.updateScreen_();
   }
