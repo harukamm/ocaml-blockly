@@ -843,6 +843,9 @@ Blockly.BlockSvg.prototype.dispose = function(healStack, animate) {
   // Save the block's workspace temporarily so we can resize the
   // contents once the block is disposed.
   var blockWorkspace = this.workspace;
+
+  var isTypedBlock = !!this.outputConnection &&
+      this.outputConnection.typeExprEnabled();
   // If this block is being dragged, unlink the mouse events.
   if (Blockly.selected == this) {
     this.unselect();
@@ -884,7 +887,7 @@ Blockly.BlockSvg.prototype.dispose = function(healStack, animate) {
 
   // Rerender remaining blocks on related workspaces because type-exprs could
   // have been changed by disconnecting blocks.
-  if (!blockWorkspace.isFlyout) {
+  if (!blockWorkspace.isFlyout && isTypedBlock) {
     blockWorkspace.renderRelatedWorkspaces();
   }
 
