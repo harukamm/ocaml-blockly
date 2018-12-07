@@ -33,13 +33,26 @@
   <script type="text/javascript" src="converter.js"></script>
   <script type="text/javascript" src="typed.js"></script>
   <style>
+    html, body {
+      height: 100%;
+    }
     body {
       background-color: #fff;
       font-family: sans-serif;
+      margin: 0;
+      overflow: hidden;
+      padding: 0;
     }
     h1 {
       font-weight: normal;
       font-size: 140%;
+    }
+    #blocklyDiv {
+      padding: 0;
+    }
+    #workspaceArea {
+      height: 100%;
+      width: 100%;
     }
   </style>
 </head>
@@ -51,7 +64,9 @@
   </form>
 -->
 
-  <div id="blocklyDiv" style="height: 700px; width: 700px;"></div>
+  <div id="workspaceArea">
+    <div id="blocklyDiv"></div>
+  </div>
 
   <xml id="toolbox" style="display: none">
     <block type="logic_boolean_typed"></block>
