@@ -371,6 +371,26 @@ function test_resolve_reference_collectContextForNestedBlocks() {
     var lastOnWB2 = blocksOnWB2[varNamesOnWB2.length - 1];
     workbenchList.push(create_mock_workbench(lastOnWB2));
 
+    var contextWorkspaceList = [];
+    contextWorkspaceList.push(workspace);
+    contextWorkspaceList.push(workbenchList[0].getWorkspace());
+    contextWorkspaceList.push(workbenchList[1].getWorkspace());
+    contextWorkspaceList.push(workbenchList[2].getWorkspace());
+
+    var expectedBlocksList = [];
+    expectedBlocksList.push([]);
+    expectedBlocksList.push(blocksOnMain);
+    expectedBlocksList.push(blocksOnMain.concat(blocksOnWB));
+    expectedBlocksList.push(blocksOnMain.concat(blocksOnWB).concat(blocksOnWB2));
+
+    for (var i = 0; i < expectedBlocksList.length; i++) {
+      var ws = contextWorkspaceList[i];
+      var valueBlocks = expectedBlocksList[i];
+      var context = ws.getImplicitContext();
+      var contextValues = Object.values(context);
+      checkValuesPariedWithValueBlocks(contextValues, valueBlocks);
+    }
+
     var expected = [];
     expected.push({
       "getContextEx": blocksOnMain, "getContext": blocksOnMain,
