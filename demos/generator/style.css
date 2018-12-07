@@ -1,0 +1,36 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: #fff;
+  font-family: sans-serif;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+h1 {
+  font-weight: normal;
+  font-size: 140%;
+}
+
+#blocklyDiv {
+  padding: 0;
+}
+
+#workspaceArea {
+  height: 100%;
+  width: calc(100% - 300px);
+  float: left;
+}
+
+#rightArea {
+  height: 100%;
+  width: 300px;
+  float: left;
+}
+
+.clear {
+  clear: both;
+}
