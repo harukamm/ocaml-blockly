@@ -346,40 +346,48 @@ Blockly.Mutator.prototype.workspaceChanged_ = function() {
   // When the mutator's workspace changes, update the source block.
   if (this.rootBlock_.workspace == this.workspace_) {
     Blockly.Events.setGroup(true);
-    var block = this.block_;
-    var oldMutationDom = block.mutationToDom();
-    var oldMutation = oldMutationDom && Blockly.Xml.domToText(oldMutationDom);
-    // Switch off rendering while the source block is rebuilt.
-    var savedRendered = block.rendered;
-    block.rendered = false;
-    // Allow the source block to rebuild itself.
-    block.compose(this.rootBlock_);
-    // Restore rendering and show the changes.
-    block.rendered = savedRendered;
-    // Mutation may have added some elements that need initializing.
-    block.initSvg();
-    var newMutationDom = block.mutationToDom();
-    var newMutation = newMutationDom && Blockly.Xml.domToText(newMutationDom);
-    if (oldMutation != newMutation) {
-      Blockly.Events.fire(new Blockly.Events.BlockChange(
-          block, 'mutation', null, oldMutation, newMutation));
-      // Ensure that any bump is part of this mutation's event group.
-      var group = Blockly.Events.getGroup();
-      setTimeout(function() {
-        Blockly.Events.setGroup(group);
-        block.bumpNeighbours_();
-        Blockly.Events.setGroup(false);
-      }, Blockly.BUMP_DELAY);
-    }
-    if (block.rendered) {
-      block.render();
-    }
+    this.updateBlock_();
     // Don't update the bubble until the drag has ended, to avoid moving blocks
     // under the cursor.
     if (!this.workspace_.isDragging()) {
       this.resizeBubble_();
     }
     Blockly.Events.setGroup(false);
+  }
+};
+
+/**
+ * Update the source block based on the mutator's blocks change.
+ * @private
+ */
+Blockly.Mutator.prototype.updateBlock_ = function() {
+  var block = this.block_;
+  var oldMutationDom = block.mutationToDom();
+  var oldMutation = oldMutationDom && Blockly.Xml.domToText(oldMutationDom);
+  // Switch off rendering while the source block is rebuilt.
+  var savedRendered = block.rendered;
+  block.rendered = false;
+  // Allow the source block to rebuild itself.
+  block.compose(this.rootBlock_);
+  // Restore rendering and show the changes.
+  block.rendered = savedRendered;
+  // Mutation may have added some elements that need initializing.
+  block.initSvg();
+  var newMutationDom = block.mutationToDom();
+  var newMutation = newMutationDom && Blockly.Xml.domToText(newMutationDom);
+  if (oldMutation != newMutation) {
+    Blockly.Events.fire(new Blockly.Events.BlockChange(
+        block, 'mutation', null, oldMutation, newMutation));
+    // Ensure that any bump is part of this mutation's event group.
+    var group = Blockly.Events.getGroup();
+    setTimeout(function() {
+      Blockly.Events.setGroup(group);
+      block.bumpNeighbours_();
+      Blockly.Events.setGroup(false);
+    }, Blockly.BUMP_DELAY);
+  }
+  if (block.rendered) {
+    block.render();
   }
 };
 
