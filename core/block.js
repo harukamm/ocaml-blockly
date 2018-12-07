@@ -3079,13 +3079,7 @@ Blockly.Blocks['let_typed'] = {
    * @this Blockly.Block
    */
   compose: function(containerBlock) {
-    var itemBlock = containerBlock.getInputTargetBlock('STACK');
-    var itemCount = 0;
-    while (itemBlock) {
-      itemCount++;
-      itemBlock = itemBlock.nextConnection &&
-          itemBlock.nextConnection.targetBlock();
-    }
+    var itemCount = containerBlock.getItemCount();
     var input = this.getInput('ARGS');
     while (itemCount < this.argumentCount_) {
       var field = input.fieldRow.pop();
@@ -3155,5 +3149,20 @@ Blockly.Blocks['args_create_with_container'] = {
     this.appendStatementInput('STACK');
     this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_CONTAINER_TOOLTIP']);
     this.contextMenu = false;
+  },
+
+  /**
+   * Returns how many argument blocks exist in this container.
+   * @return {number} Number of argument blocks this container holds.
+   */
+  getItemCount: function() {
+    var itemBlock = this.getInputTargetBlock('STACK');
+    var itemCount = 0;
+    while (itemBlock) {
+      itemCount++;
+      itemBlock = itemBlock.nextConnection &&
+          itemBlock.nextConnection.targetBlock();
+    }
+    return itemCount;
   }
 };
