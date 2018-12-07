@@ -2969,9 +2969,16 @@ Blockly.Blocks['let_typed'] = {
    *     representations.
    */
   getVisibleVariables: function(conn) {
-    var exp2 = this.getInput('EXP2');
     var map = {};
-    if (exp2.connection == conn) {
+    if (!conn) {
+      // NOP
+    } else if (this.getInput('EXP1').connection == conn) {
+      for (var x = 0; x < this.argumentCount_; x++) {
+        var variable = this.typedValue['ARG' + x];
+        var name = variable.getVariableName();
+        map[name] = variable;
+      }
+    } else if (this.getInput('EXP2').connection == conn) {
       var variable = this.typedValue['VAR'];
       var name = variable.getVariableName();
       map[name] = variable;
