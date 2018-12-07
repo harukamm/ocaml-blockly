@@ -3079,24 +3079,26 @@ Blockly.Blocks['let_typed'] = {
    * @this Blockly.Block
    */
   compose: function(containerBlock) {
-    var input = this.getInput('ARGS');
-    while (input.fieldRow.length) {
-      var field = input.fieldRow.pop();
-      field.dispose();
-    }
-    this.argumentCount_ = 0;
-    // Rebuild the block's inputs.
     var itemBlock = containerBlock.getInputTargetBlock('STACK');
+    var itemCount = 0;
     while (itemBlock) {
-      var A = Blockly.RenderedTypeExpr.generateTypeVar();
-      var field = Blockly.FieldBoundVariable.newValue(A, 'EXP1');
-      input.appendField(field, 'ARG' + this.argumentCount_);
-      field.init();
-
-      // Reconnect any child blocks.
-      this.argumentCount_++;
+      itemCount++;
       itemBlock = itemBlock.nextConnection &&
           itemBlock.nextConnection.targetBlock();
+    }
+    var input = this.getInput('ARGS');
+    while (itemCount < this.argumentCount_) {
+      var field = input.fieldRow.pop();
+      field.dispose();
+      this.argumentCount_--;
+    }
+    while (this.argumentCount_ < itemCount) {
+      var A = Blockly.RenderedTypeExpr.generateTypeVar();
+      var name = 'arg' + this.argumentCount_;
+      var field = Blockly.FieldBoundVariable.newValue(A, 'EXP1', name);
+      input.appendField(field, 'ARG' + this.argumentCount_);
+      field.init();
+      this.argumentCount_++;
     }
   },
 
