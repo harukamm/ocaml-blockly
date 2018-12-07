@@ -31,6 +31,7 @@
 
   <script type="text/javascript" src="../../msg/js/en.js"></script>
   <script type="text/javascript" src="converter.js"></script>
+  <script type="text/javascript" src="typed.js"></script>
   <style>
     body {
       background-color: #fff;
@@ -80,79 +81,5 @@
     <block type="match_typed"></block>
     <block type="let_typed"></block>
   </xml>
-
-  <script>
-    Blockly.inject(document.getElementById('blocklyDiv'),
-        {path: '../../', toolbox: document.getElementById('toolbox'),
-         grid:
-             {spacing: 25,
-              length: 3,
-              colour: '#ccc',
-              snap: true},
-         trashcan: true,
-         media: '../../media/',
-         rtl: false, /*not support RTL */
-         zoom:
-             {controls: true,
-              wheel: true},
-         collapse: false,
-         typedVersion: true
-        });
-
-    function showCode() {
-      // Generate TypedLang code and display it.
-      Blockly.TypedLang.INFINITE_LOOP_TRAP = null;
-      var code = Blockly.TypedLang.workspaceToCode();
-      alert(code);
-    }
-
-    function runCode() {
-      // Generate TypedLang code and run it.
-      window.LoopTrap = 1000;
-      Blockly.TypedLang.INFINITE_LOOP_TRAP =
-          'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
-      var code = Blockly.TypedLang.workspaceToCode();
-      Blockly.TypedLang.INFINITE_LOOP_TRAP = null;
-      try {
-        eval(code);
-      } catch (e) {
-        alert(e);
-      }
-    }
-
-    function onClickConvert(event) {
-      event.preventDefault();
-      var input = document.querySelector("input.ocamlCode");
-      var code = input.value;
-      if (code) {
-        codeToBlock(code);
-      }
-    }
-
-    function codeToBlock(code) {
-      var xmlStr = blockOfOCaml(code);
-      try {
-        fromXMLString(xmlStr);
-      } catch (e) {
-        console.log("Conveted: \n" + xmlStr);
-        console.log(e);
-      }
-    }
-
-    function fromXMLString(str, opt_workspace) {
-      var workspace = opt_workspace ? opt_workspace : Blockly.mainWorkspace;
-      var parser = new DOMParser();
-      var xml = parser.parseFromString(str, "text/xml");
-      var parseError = xml.getElementsByTagName("parsererror").length != 0;
-      if (parseError) {
-        console.log(xml);
-        throw "Parser error";
-      } else {
-        var block = Blockly.Xml.domToBlock(xml.children[0], workspace);
-        return block;
-      }
-    }
-  </script>
-
 </body>
 </html>
