@@ -27,7 +27,8 @@ h1 {
 
 #rightArea {
   height: 100%;
-  width: 300px;
+  padding-left: 10px;
+  width: 290px;
   float: left;
 }
 
