@@ -362,6 +362,11 @@ Blockly.Mutator.prototype.workspaceChanged_ = function() {
  */
 Blockly.Mutator.prototype.updateBlock_ = function() {
   var block = this.block_;
+  if (goog.isFunction(block.wouldChange)) {
+    if (!block.wouldChange(this.rootBlock_)) {
+      return;
+    }
+  }
   var oldMutationDom = block.mutationToDom();
   var oldMutation = oldMutationDom && Blockly.Xml.domToText(oldMutationDom);
   // Switch off rendering while the source block is rebuilt.
