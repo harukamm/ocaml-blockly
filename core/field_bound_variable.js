@@ -384,13 +384,13 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
   }
 
   var dropdownWidth = this.size_.width + Blockly.BlockSvg.SEP_SPACE_X;
-  var blockShapeWidth = dropdownWidth + Blockly.BlockSvg.SEP_SPACE_X;
+  var blockShapeWidth = dropdownWidth + Blockly.BlockSvg.TAB_WIDTH +
+      Blockly.BlockSvg.SEP_SPACE_X;
 
   var dropdownHeight = this.size_.height - 9;
   var pathObj = this.getBlockShapedPath_(blockShapeWidth);
   var blockShapeHeight = pathObj.height;
   this.blockShapedPath_.setAttribute('d', pathObj.path);
-  blockShapeWidth += Blockly.BlockSvg.TAB_WIDTH;
 
   this.blockShapedPath_.setAttribute('height', blockShapeHeight);
   this.blockShapedPath_.setAttribute('width', blockShapeWidth);
@@ -402,7 +402,7 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
   var top = (blockShapeHeight - dropdownHeight) / 2;
   this.blockShapedPath_.setAttribute('transform', 'translate(0, -' + top + ')');
 
-  this.size_.width = blockShapeWidth;
+  this.size_.width = blockShapeWidth - Blockly.BlockSvg.TAB_WIDTH;
   this.size_.height = blockShapeHeight;
 };
 
@@ -426,9 +426,10 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
     if (height < 23) {
       height = 23;
     }
+    var rectWidth = width - Blockly.BlockSvg.TAB_WIDTH;
     inlineSteps.push('M 0,' + (height - 6));
-    inlineSteps.push('l 0 4 l ' + width + ' 0 l 0 -' +
-        height + ' l -' + width + ' 0');
+    inlineSteps.push('l 0 4 l ' + rectWidth + ' 0 l 0 -' +
+        height + ' l -' + rectWidth + ' 0');
   }
   return {height: height, path: inlineSteps.join(' ')};
 };
