@@ -407,6 +407,20 @@ Blockly.BoundVariables.generateUniqueName = function(workspace) {
 };
 
 /**
+ * Rename variable values that are on the given block and its descendants to
+ * generated names.
+ * @param {!Blockly.Block} block The block whose variable values to be renamed.
+ */
+Blockly.BoundVariables.renameToGeneratedNames = function(block) {
+  var workspace = block.workspace;
+  var values = Blockly.BoundVariables.getAllVariablesOnBlocks(block, false);
+  for (var i = 0, val; val = values[i]; i++) {
+    var generated = Blockly.BoundVariables.generateUniqueName(workspace);
+    val.setVariableName(generated);
+  }
+};
+
+/**
  * Helper function for renaming the variable as the given name.
  * @param {Blockly.BoundVariableAbstract} variable The variable to rename.
  * @param {string} newName The new variable name.

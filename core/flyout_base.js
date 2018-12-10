@@ -661,6 +661,7 @@ Blockly.Flyout.prototype.createBlock = function(originalBlock) {
     this.hide();
   } else {
     this.filterForCapacity_();
+    this.generateVariableNames_(originalBlock);
   }
   return newBlock;
 };
@@ -763,6 +764,16 @@ Blockly.Flyout.prototype.filterForCapacity_ = function() {
       block.setDisabled(allBlocks.length > remainingCapacity);
     }
   }
+};
+
+/**
+ * Rename the bound variable values existing in the given block to generated
+ * names.
+ * Subclasses may override this.
+ * @private
+ */
+Blockly.Flyout.prototype.generateVariableNames_ = function(block) {
+  Blockly.BoundVariables.renameToGeneratedNames(block);
 };
 
 /**
