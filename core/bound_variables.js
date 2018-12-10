@@ -373,8 +373,6 @@ Blockly.BoundVariables.isLegalName = function(newName) {
  */
 Blockly.BoundVariables.generateUniqueName = function(workspace) {
   var workspaceFamily = Blockly.WorkspaceTree.getFamily(workspace);
-  workspaceFamily = goog.array.filter(workspaceFamily,
-      function(ws) {return !ws.isFlyout;});
   var namesMap = {};
   for (var i = 0, ws; ws = workspaceFamily[i]; i++) {
     var valueDB = ws.getValueDB();
