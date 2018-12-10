@@ -330,6 +330,11 @@ Blockly.Css.CONTENT = [
     'pointer-events: none;',
   '}',
 
+  '.blocklyFieldBoundValue {',
+    'fill: #fff;',
+    'fill-opacity: .6;',
+  '}',
+
   '.blocklyNonEditableText>rect,',
   '.blocklyEditableText>rect {',
     'fill: #fff;',

@@ -158,6 +158,15 @@ Blockly.FieldBoundVariable.prototype.init = function() {
   }
   Blockly.FieldBoundVariable.superClass_.init.call(this);
 
+  if (this.forValue_) {
+    this.blockShapedPath_ = Blockly.utils.createSvgElement('path',
+        {
+          'class': 'blocklyFieldBoundValue',
+          'd': '',
+        }, null);
+    this.fieldGroup_.insertBefore(this.blockShapedPath_, this.borderRect_);
+  }
+
   var onMouseEnter = this.highlightVariables_.bind(this, true);
   this.mouseEnterWrapper_ =
       Blockly.bindEventWithChecks_(
@@ -200,6 +209,8 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
  * @public
  */
 Blockly.FieldBoundVariable.prototype.dispose = function() {
+  goog.dom.removeNode(this.blockShapedPath_);
+  this.blockShapedPath_ = null;
   Blockly.FieldBoundVariable.superClass_.dispose.call(this);
   if (this.variable_) {
     this.variable_.dispose();
@@ -351,6 +362,66 @@ Blockly.FieldBoundVariable.prototype.setValue = function(id, opt_workspace) {
   // TODO: Type check.
   this.variable_ = variable;
   this.updateText();
+};
+
+/**
+ * Draws the field with the correct width.
+ * @override
+ * @private
+ */
+Blockly.FieldBoundVariable.prototype.render_ = function() {
+  if (!this.visible_) {
+    this.size_.width = 0;
+    return;
+  }
+  Blockly.FieldBoundVariable.superClass_.render_.call(this);
+
+  if (!this.blockShapedPath_) {
+    return;
+  }
+
+  // TODO(harukam): Set align for the dropdown element.
+  var dropdownWidth = this.size_.width + Blockly.BlockSvg.SEP_SPACE_X;
+  var blockShapeWidth = dropdownWidth + Blockly.BlockSvg.SEP_SPACE_X;
+  this.blockShapedPath_.setAttribute('d',
+      this.getBlockShapedPath_(blockShapeWidth));
+  blockShapeWidth += Blockly.BlockSvg.TAB_WIDTH;
+
+  this.blockShapedPath_.setAttribute('height', this.size_.height - 9);
+  this.blockShapedPath_.setAttribute('width', blockShapeWidth);
+
+  var left = (blockShapeWidth - dropdownWidth) / 2;
+  this.textElement_.setAttribute('x', left);
+  this.borderRect_.setAttribute('x', -Blockly.BlockSvg.SEP_SPACE_X / 2 + left);
+
+  this.size_.width = blockShapeWidth;
+};
+
+/**
+ * Generates SVG paths to draw the shape for the type expression of this
+ * variable.
+ * @param {number} width Width for the generated paths including horizontal
+ *     puzzle tab.
+ * @return {!string} The SVG paths.
+ */
+Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
+  var inlineSteps = [];
+  var typeExpr = this.variable_ && this.variable_.getTypeExpr();
+
+  if (typeExpr) {
+    inlineSteps.push('M 0,-2');
+    typeExpr.renderTypeExpr(inlineSteps, 1 /** Gets the down path. */);
+
+    var height = typeExpr.getTypeExprHeight(typeExpr);
+    this.size_.height = height + 10;
+    if (height < 23) {
+      height = 23;
+    }
+    inlineSteps.push('M 0,' + (height - 6));
+    inlineSteps.push('l 0 4 l ' + width + ' 0 l 0 -' +
+        height + ' l -' + width + ' 0');
+  }
+  return inlineSteps.join(' ');
 };
 
 /**
