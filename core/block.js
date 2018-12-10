@@ -2552,7 +2552,7 @@ Blockly.Blocks['pair_create_typed'] = {
   /**
    */
   init: function() {
-    this.setColour(210);
+    this.setColour(Blockly.Msg['PAIRS_HUE']);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     var B = Blockly.RenderedTypeExpr.generateTypeVar();
     this.appendValueInput('FIRST')
@@ -2591,7 +2591,7 @@ Blockly.Blocks['pair_first_typed'] = {
   /**
    */
   init: function() {
-    this.setColour(210);
+    this.setColour(Blockly.Msg['PAIRS_HUE']);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     var B = Blockly.RenderedTypeExpr.generateTypeVar();
     var pair_t = new Blockly.RenderedTypeExpr.PAIR(A, B);
@@ -2626,7 +2626,7 @@ Blockly.Blocks['pair_second_typed'] = {
   /**
    */
   init: function() {
-    this.setColour(210);
+    this.setColour(Blockly.Msg['PAIRS_HUE']);
     var A = Blockly.RenderedTypeExpr.generateTypeVar();
     var B = Blockly.RenderedTypeExpr.generateTypeVar();
     var pair_t = new Blockly.RenderedTypeExpr.PAIR(A, B);
