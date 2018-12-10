@@ -383,21 +383,24 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
     return;
   }
 
-  // TODO(harukam): Set align for the dropdown element.
   var dropdownWidth = this.size_.width + Blockly.BlockSvg.SEP_SPACE_X;
   var blockShapeWidth = dropdownWidth + Blockly.BlockSvg.SEP_SPACE_X;
 
+  var dropdownHeight = this.size_.height - 9;
   var pathObj = this.getBlockShapedPath_(blockShapeWidth);
   var blockShapeHeight = pathObj.height;
   this.blockShapedPath_.setAttribute('d', pathObj.path);
   blockShapeWidth += Blockly.BlockSvg.TAB_WIDTH;
 
-  this.blockShapedPath_.setAttribute('height', this.size_.height - 9);
+  this.blockShapedPath_.setAttribute('height', blockShapeHeight);
   this.blockShapedPath_.setAttribute('width', blockShapeWidth);
 
   var left = (blockShapeWidth - dropdownWidth) / 2;
   this.textElement_.setAttribute('x', left);
   this.borderRect_.setAttribute('x', -Blockly.BlockSvg.SEP_SPACE_X / 2 + left);
+
+  var top = (blockShapeHeight - dropdownHeight) / 2;
+  this.blockShapedPath_.setAttribute('transform', 'translate(0, -' + top + ')');
 
   this.size_.width = blockShapeWidth;
   this.size_.height = blockShapeHeight;
@@ -420,7 +423,6 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
     typeExpr.renderTypeExpr(inlineSteps, 1 /** Gets the down path. */);
 
     var height = typeExpr.getTypeExprHeight(typeExpr);
-    height += 10;
     if (height < 23) {
       height = 23;
     }
