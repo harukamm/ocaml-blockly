@@ -77,11 +77,16 @@ Blockly.WidgetDiv.createDom = function() {
  * @param {boolean} rtl Right-to-left (true) or left-to-right (false).
  * @param {Function} dispose Optional cleanup function to be run when the widget
  *   is closed.
+ * @param {Function=} opt_showCallback Optional function to be run to show the
+ *   widget.
  */
-Blockly.WidgetDiv.show = function(newOwner, rtl, dispose) {
+Blockly.WidgetDiv.show = function(newOwner, rtl, dispose, opt_showCallback) {
   Blockly.WidgetDiv.hide();
   Blockly.WidgetDiv.owner_ = newOwner;
   Blockly.WidgetDiv.dispose_ = dispose;
+  if (goog.isFunction(opt_showCallback)) {
+    opt_showCallback();
+  }
   // Temporarily move the widget to the top of the screen so that it does not
   // cause a scrollbar jump in Firefox when displayed.
   var xy = goog.style.getViewportPageOffset(document);

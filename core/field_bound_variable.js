@@ -411,9 +411,20 @@ Blockly.FieldBoundVariable.prototype.highlightVariables_ = function(on, e) {
     return;
   }
   var variables = this.variable_.getAllBoundVariables();
-  for (var i = 0, variable; variable = variables[i]; i++) {
-    var field = variable.getContainerField();
-    field.highlight(on);
+
+  if (on) {
+    var callback = function(variables, on) {
+      for (var i = 0, variable; variable = variables[i]; i++) {
+        var field = variable.getContainerField();
+        field.highlight(on);
+      }
+    };
+    var showCallback = callback.bind(null, variables, true);
+    var hideCallback = callback.bind(null, variables, false);
+    Blockly.WidgetDiv.show(this, this.sourceBlock_.RTL, hideCallback,
+        showCallback);
+  } else {
+    Blockly.WidgetDiv.hide();
   }
 };
 
