@@ -663,6 +663,12 @@ Blockly.WorkspaceSvg.prototype.updateScreenCalculations_ = function() {
   this.updateInverseScreenCTM();
   this.recordDeleteAreas();
   this.recordWorkspaceArea();
+
+  if (this.flyout_ && this.flyout_.workspace_) {
+    // Make the flyout workspace update its area rectangle, otherwise it could
+    // be out-of-date.
+    this.flyout_.workspace_.recordWorkspaceArea();
+  }
 };
 
 /**
