@@ -386,8 +386,10 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
   // TODO(harukam): Set align for the dropdown element.
   var dropdownWidth = this.size_.width + Blockly.BlockSvg.SEP_SPACE_X;
   var blockShapeWidth = dropdownWidth + Blockly.BlockSvg.SEP_SPACE_X;
-  this.blockShapedPath_.setAttribute('d',
-      this.getBlockShapedPath_(blockShapeWidth));
+
+  var pathObj = this.getBlockShapedPath_(blockShapeWidth);
+  var blockShapeHeight = pathObj.height;
+  this.blockShapedPath_.setAttribute('d', pathObj.path);
   blockShapeWidth += Blockly.BlockSvg.TAB_WIDTH;
 
   this.blockShapedPath_.setAttribute('height', this.size_.height - 9);
@@ -398,6 +400,7 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
   this.borderRect_.setAttribute('x', -Blockly.BlockSvg.SEP_SPACE_X / 2 + left);
 
   this.size_.width = blockShapeWidth;
+  this.size_.height = blockShapeHeight;
 };
 
 /**
@@ -405,7 +408,8 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
  * variable.
  * @param {number} width Width for the generated paths including horizontal
  *     puzzle tab.
- * @return {!string} The SVG paths.
+ * @return {!{height: number, path: string}} Object with height and string
+ *    for SVG path properties.
  */
 Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
   var inlineSteps = [];
@@ -416,7 +420,7 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
     typeExpr.renderTypeExpr(inlineSteps, 1 /** Gets the down path. */);
 
     var height = typeExpr.getTypeExprHeight(typeExpr);
-    this.size_.height = height + 10;
+    height += 10;
     if (height < 23) {
       height = 23;
     }
@@ -424,7 +428,7 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
     inlineSteps.push('l 0 4 l ' + width + ' 0 l 0 -' +
         height + ' l -' + width + ' 0');
   }
-  return inlineSteps.join(' ');
+  return {height: height, path: inlineSteps.join(' ')};
 };
 
 /**
