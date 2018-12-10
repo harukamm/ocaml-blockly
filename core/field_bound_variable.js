@@ -395,6 +395,7 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
   this.blockShapedPath_.setAttribute('height', blockShapeHeight);
   this.blockShapedPath_.setAttribute('width', blockShapeWidth);
 
+  // TODO(harukam): Support RTL.
   var left = (blockShapeWidth - dropdownWidth) / 2;
   this.textElement_.setAttribute('x', left);
   this.borderRect_.setAttribute('x', -Blockly.BlockSvg.SEP_SPACE_X / 2 + left);
