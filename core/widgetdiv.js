@@ -52,6 +52,14 @@ Blockly.WidgetDiv.DIV = null;
 Blockly.WidgetDiv.owner_ = null;
 
 /**
+ * The name of widget currently using this container.
+ * Could be specified by owners, and be useful for them to recognize which
+ * widget is using this container if they have multiple widgets.
+ * @type {string}
+ */
+Blockly.WidgetDiv.type_ = null;
+
+/**
  * Optional cleanup function set by whichever object uses the widget.
  * @type {Function}
  * @private
@@ -79,11 +87,14 @@ Blockly.WidgetDiv.createDom = function() {
  *   is closed.
  * @param {Function=} opt_showCallback Optional function to be run to show the
  *   widget.
+ * @param {string=} opt_type Optional name for the widget.
  */
-Blockly.WidgetDiv.show = function(newOwner, rtl, dispose, opt_showCallback) {
+Blockly.WidgetDiv.show = function(newOwner, rtl, dispose, opt_showCallback,
+    opt_type) {
   Blockly.WidgetDiv.hide();
   Blockly.WidgetDiv.owner_ = newOwner;
   Blockly.WidgetDiv.dispose_ = dispose;
+  Blockly.WidgetDiv.type_ = opt_type ? opt_type : null;
   if (goog.isFunction(opt_showCallback)) {
     opt_showCallback();
   }
@@ -104,9 +115,27 @@ Blockly.WidgetDiv.hide = function() {
     Blockly.WidgetDiv.DIV.style.display = 'none';
     Blockly.WidgetDiv.DIV.style.left = '';
     Blockly.WidgetDiv.DIV.style.top = '';
+    Blockly.WidgetDiv.type_ = null;
     Blockly.WidgetDiv.dispose_ && Blockly.WidgetDiv.dispose_();
     Blockly.WidgetDiv.dispose_ = null;
     goog.dom.removeChildren(Blockly.WidgetDiv.DIV);
+  }
+};
+
+/**
+ * Returns whether the widget on the given object is currently using this
+ * container.
+ * @param {Object} owner The object.
+ * @param {string=} opt_type Optional type of name to identify the widget.
+ * @return {boolean} True if the object is using this container with the given
+ *     type of widget.
+ */
+Blockly.WidgetDiv.isOwner = function(owner, opt_type) {
+  if (Blockly.WidgetDiv.owner_) {
+    var type = opt_type ? opt_type : null;
+    return Blockly.WidgetDiv.owner_ == owner && Blockly.WidgetDiv.type_ == type;
+  } else {
+    return false;
   }
 };
 

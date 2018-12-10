@@ -83,6 +83,13 @@ Blockly.FieldBoundVariable.fromJson = function(options) {
 };
 
 /**
+ * The name of widget for highlights for binding variables.
+ * @type {!string}
+ * @private
+ */
+Blockly.FieldBoundVariable.WIDGET_TYPE_VARIABLES_ = 'vhighlights';
+
+/**
  * Obtain a newly created bound-variable field of value type.
  * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
  * @param {string} scopeInputName The name of input on which the variable value
@@ -411,8 +418,10 @@ Blockly.FieldBoundVariable.prototype.highlightVariables_ = function(on, e) {
     return;
   }
   var variables = this.variable_.getAllBoundVariables();
+  var isOwner = Blockly.WidgetDiv.isOwner(this,
+      Blockly.FieldBoundVariable.WIDGET_TYPE_VARIABLES_);
 
-  if (on) {
+  if (on && !isOwner) {
     var callback = function(variables, on) {
       for (var i = 0, variable; variable = variables[i]; i++) {
         var field = variable.getContainerField();
@@ -422,8 +431,8 @@ Blockly.FieldBoundVariable.prototype.highlightVariables_ = function(on, e) {
     var showCallback = callback.bind(null, variables, true);
     var hideCallback = callback.bind(null, variables, false);
     Blockly.WidgetDiv.show(this, this.sourceBlock_.RTL, hideCallback,
-        showCallback);
-  } else {
+        showCallback, Blockly.FieldBoundVariable.WIDGET_TYPE_VARIABLES_);
+  } else if (!on && isOwner) {
     Blockly.WidgetDiv.hide();
   }
 };
