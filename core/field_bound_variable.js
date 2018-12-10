@@ -379,6 +379,9 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
   if (!this.blockShapedPath_) {
     return;
   }
+  if (!this.variable_ || !this.variable_.getTypeExpr()) {
+    return;
+  }
 
   // TODO(harukam): Set align for the dropdown element.
   var dropdownWidth = this.size_.width + Blockly.BlockSvg.SEP_SPACE_X;
