@@ -192,6 +192,9 @@ function test_resolve_reference_collectAllBoundVariables() {
     var letBlock = workspace.newBlock('let_typed');
     var varBlock1 = workspace.newBlock('variables_get_typed');
     var varBlock2 = workspace.newBlock('variables_get_typed');
+    setVariableName(letBlock, 'x');
+    setVariableName(varBlock1, 'x');
+    setVariableName(varBlock2, 'x');
 
     var value = getVariable(letBlock);
     var reference1 = getVariable(varBlock1);

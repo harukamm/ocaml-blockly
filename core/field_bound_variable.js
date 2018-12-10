@@ -29,7 +29,7 @@ goog.require('goog.string');
  *     Otherwise, for a variable reference.
  * @param {!typeExpr} typeExpr The type expression of this variable.
  * @param {string} varName The default name for the variable.  If null, the
- *     fixed name will be used.
+ *     generated name will be used.
  * @param {string} scopeName The default name for the input as the value's
  *     scope. Ignored if the field is for a variable reference.
  * @extends {Blockly.FieldDropdown}
@@ -88,7 +88,7 @@ Blockly.FieldBoundVariable.fromJson = function(options) {
  * @param {string} scopeInputName The name of input on which the variable value
  *     is visible.
  * @param {string} opt_varName The default name for the variable.  If null, the
- *     fixed name will be used.
+ *     generated name will be used.
  * @return {!Blockly.FieldBoundVariable} The created field.
  */
 Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
@@ -101,7 +101,7 @@ Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
  * Obtain a newly created bound-variable field of reference type.
  * @param {!Blockly.TypeExpr} referenceTypeExpr The type for the reference.
  * @param {string} opt_varName The default name for the variable.  If null, the
- *     fixed name will be used.
+ *     generated name will be used.
  * @return {!Blockly.FieldBoundVariable} The created field.
  */
 Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
@@ -135,9 +135,8 @@ Blockly.FieldBoundVariable.prototype.initDefaultVariableName_ = function() {
       return;
     }
   }
-  // TODO(harukam): Generate variable name that is not in use on the workspace.
-  var generated = 'i';
-  this.defaultVariableName_ = generated;
+  this.defaultVariableName_ = Blockly.BoundVariables.generateUniqueName(
+      this.sourceBlock_.workspace);
 };
 
 /**

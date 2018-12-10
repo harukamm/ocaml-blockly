@@ -365,6 +365,48 @@ Blockly.BoundVariables.isLegalName = function(newName) {
 };
 
 /**
+ * Return a new variable name that is not yet being used on the related
+ * workspace except for flyout ones.
+ * @param {!Blockly.Workspace} workspace The workspace on which to generate
+ *     a new variable name.
+ * @return {!string} New variable name.
+ */
+Blockly.BoundVariables.generateUniqueName = function(workspace) {
+  var workspaceFamily = Blockly.WorkspaceTree.getFamily(workspace);
+  workspaceFamily = goog.array.filter(workspaceFamily,
+      function(ws) {return !ws.isFlyout;});
+  var namesMap = {};
+  for (var i = 0, ws; ws = workspaceFamily[i]; i++) {
+    var valueDB = ws.getValueDB();
+    var keys = Object.keys(valueDB);
+    for (var j = 0, key; key = keys[j]; j++) {
+      var value = valueDB[key];
+      namesMap[value.getVariableName()] = true;
+    }
+  }
+
+  var name = null;
+  var acode = 'a'.charCodeAt(0);
+  var zcode = 'z';
+  var n = 0;
+  while (!name) {
+    var code = 'a'.charCodeAt(0);
+    var zcode = 'z'.charCodeAt(0);
+    for (; !name && code <= zcode; code++) {
+      name = String.fromCharCode(code);
+      if (0 < n) {
+        name += n;
+      }
+      if (name in namesMap) {
+        name = null;
+      }
+    }
+    n++;
+  }
+  return name;
+};
+
+/**
  * Helper function for renaming the variable as the given name.
  * @param {Blockly.BoundVariableAbstract} variable The variable to rename.
  * @param {string} newName The new variable name.

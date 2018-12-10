@@ -58,6 +58,8 @@ function test_type_transfer_block_workspace_valueBlockWithReferences() {
     var varBlock = workspace.newBlock('variables_get_typed');
     var originalValue = originalBlock.getField('VAR').getVariable();
     var reference = varBlock.getField('VAR').getVariable();
+    setVariableName(originalBlock, 'x');
+    setVariableName(varBlock, 'x');
     reference.setBoundValue(originalValue);
     assertTrue(originalValue.referenceCount() == 1);
     assertTrue(reference.getBoundValue() == originalValue);
@@ -656,6 +658,8 @@ function test_type_transfer_block_workspace_NestedReferenceBlockInExp2() {
     var letBlock = workspace.newBlock('let_typed');
     var intArith = workspace.newBlock('int_arithmetic_typed');
     var varBlock = workspace.newBlock('variables_get_typed');
+    setVariableName(letBlock, 'x');
+    setVariableName(varBlock, 'x');
     letBlock.getInput('EXP2').connection.connect(intArith.outputConnection);
     intArith.getInput('A').connection.connect(varBlock.outputConnection);
     var transBlock = virtually_transfer_workspace(letBlock, otherWorkspace);
