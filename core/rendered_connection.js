@@ -501,7 +501,23 @@ Blockly.RenderedConnection.prototype.renderTypeVarHighlights = function() {
  * type expression has been updated.
  */
 Blockly.RenderedConnection.prototype.setLastRenderedTypeExpr = function() {
-  this.lastRenderedTypeExpr_ = this.typeExpr.deref();
+  this.lastRenderedTypeExpr_ = this.typeExpr.deepDeref();
+};
+
+/**
+ * Find if the type expression has been changed since the type expression
+ * was rendered last time.
+ */
+Blockly.RenderedConnection.prototype.typeExprHasChanged = function() {
+  if (!this.typeExpr) {
+    return false;
+  }
+  if (!this.lastRenderedTypeExpr_) {
+    return true;
+  }
+  var oldTypeExpr = this.lastRenderedTypeExpr_;
+  var newTypeExpr = this.typeExpr.deepDeref();
+  return Blockly.TypeExpr.equals(oldTypeExpr, newTypeExpr);
 };
 
 /**

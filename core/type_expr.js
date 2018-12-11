@@ -603,3 +603,15 @@ Blockly.TypeExpr.prototype.disconnect = function(other) {
   disconnectImpl(this, other);
   disconnectImpl(other, this);
 };
+
+/**
+ * Do the given two type expression represent to the same type without
+ * dereferencing type variable reference?
+ * @param {!Blockly.TypeExpr} typ1 First type expression
+ * @param {!Blockly.TypeExpr} typ2 Second type expression
+ * @return {boolean} True if type expressions are the same.
+ */
+Blockly.TypeExpr.equals = function(typ1, typ2) {
+  // TODO(harukam): Implement.
+  return false;
+};
