@@ -174,7 +174,6 @@ Blockly.FieldBoundVariable.prototype.init = function() {
           'd': '',
         }, null);
     this.fieldGroup_.insertBefore(this.blockShapedPath_, this.borderRect_);
-
     Blockly.utils.addClass(this.fieldGroup_, 'BlocklyFieldBoundValueInside');
   }
 
