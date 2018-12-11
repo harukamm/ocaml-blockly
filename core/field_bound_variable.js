@@ -516,11 +516,35 @@ Blockly.FieldBoundVariable.prototype.createBlock = function() {
   getterBlock.render(false);
 
   var blockPos = this.sourceBlock_.getRelativeToSurfaceXY();
-  getterBlock.moveBy(blockPos.x, blockPos.y);
-  // TODO(harukam): Move the block to line the left corner of the block shaped
-  // path up.
+  var offsetInBlock = this.getRelativeToBlockXY_();
+  var newBlockPos = goog.math.Coordinate.sum(blockPos, offsetInBlock);
+  getterBlock.moveBy(newBlockPos.x, newBlockPos.y);
 
   return getterBlock;
+};
+
+/**
+ * Returns the coordinates of the top-left corner of this field relative to the
+ * block's origin (0,0), in workspace units.
+ * @return {!goog.math.Coordinate} Object with .x and .y properties in
+ *     workspace coordinates.
+ * @private
+ */
+Blockly.FieldBoundVariable.prototype.getRelativeToBlockXY_ = function() {
+  var x = 0;
+  var y = 0;
+  var blockSvg = this.sourceBlock_.getSvgRoot();
+  var element = this.fieldGroup_;
+  if (element && blockSvg) {
+    do {
+      // Loop through the group SVG for this field and every parent.
+      var xy = Blockly.utils.getRelativeXY(element);
+      x += xy.x;
+      y += xy.y;
+      element = element.parentNode;
+    } while (element && element != blockSvg);
+  }
+  return new goog.math.Coordinate(x, y);
 };
 
 /**
