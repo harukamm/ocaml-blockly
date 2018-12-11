@@ -333,6 +333,7 @@ Blockly.Css.CONTENT = [
   '.blocklyFieldBoundValue {',
     'fill: #fff;',
     'fill-opacity: .6;',
+    'stroke: #fff;',
   '}',
 
   '.blocklyNonEditableText>rect,',
@@ -352,6 +353,13 @@ Blockly.Css.CONTENT = [
 
   '.blocklyEditableText:hover>rect {',
     'stroke: #fff;',
+    'stroke-width: 2;',
+  '}',
+
+  '.blocklyEditableText:hover>.blocklyFieldBoundValue,',
+  '.blocklyFieldBoundValue:hover {',
+    'fill-opacity: .6;',
+    'stroke: #ffff00;',
     'stroke-width: 2;',
   '}',
 
