@@ -358,6 +358,36 @@ Blockly.Gesture.prototype.updateIsDraggingFromFlyout_ = function() {
 };
 
 /**
+ * Update this gesture to record whether a block is being dragged from the
+ * potential block on the field.
+ * This function should be called on a mouse/touch move event the first time the
+ * drag radius is exceeded.  It should be called no more than once per gesture.
+ * If a potential block on the field should be dragged from there, this
+ * function creates the new block on the same workspace and update
+ * targetBlock_.
+ * @return {boolean} True if a created block is being dragged from the field.
+ * @private
+ */
+Blockly.Gesture.prototype.updateIsDraggingFromField_ = function() {
+  // The field on disabled blocks should not populate the block.
+  if (this.targetBlock_.disabled) {
+    return false;
+  }
+  // Ignore if the field is not able to create a block.
+  if (!goog.isFunction(this.startField_.createBlock)) {
+    return false;
+  }
+  // TODO(harukam): Maybe we should check if the distance of
+  // this.currentDragDeltaXY_ is enough long.
+
+  // The start block is no longer relevant, because this is a drag.
+  this.startBlock_ = null;
+  this.targetBlock_ = this.startField_.createBlock();
+  this.targetBlock_.select();
+  return true;
+};
+
+/**
  * Update this gesture to record whether a bubble is being dragged.
  * This function should be called on a mouse/touch move event the first time the
  * drag radius is exceeded.  It should be called no more than once per gesture.
@@ -394,8 +424,10 @@ Blockly.Gesture.prototype.updateIsDraggingBlock_ = function() {
     this.isDraggingBlock_ = this.updateIsDraggingFromFlyout_();
     this.draggedFromFlyout_ = true;
   } else if (this.startField_ && this.startField_.hasPotentialBlock) {
-    // TODO(harukam): The field has a potential flyout block. Make the field
-    // create the block and drag it from there.
+    // The field has a potential flyout block. Make the field create the block
+    // and drag it from there.
+    this.isDraggingBlock_ = this.updateIsDraggingFromField_();
+    this.draggedFromFlyout_= true;
   } else if (this.targetBlock_.isMovable()) {
     this.isDraggingBlock_ = true;
     this.draggedFromFlyout_ = false;

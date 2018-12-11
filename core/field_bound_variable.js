@@ -498,6 +498,17 @@ Blockly.FieldBoundVariable.prototype.onItemSelected = function(menu, menuItem) {
 };
 
 /**
+ * Creates a block refers to this variable value.
+ */
+Blockly.FieldBoundVariable.prototype.createBlock = function() {
+  if (!this.hasPotentialBlock || !this.forValue_ || !this.variable_) {
+    throw 'The field is not allowed to create a block.';
+  }
+  // TODO(harukam): Implement.
+  throw 'Not implemented yet.';
+};
+
+/**
  * Highlights/unhighlights all the fields whose variables refer to this
  * variable, or are referred to by this variable. They includes this field at
  * least.
