@@ -497,6 +497,14 @@ Blockly.RenderedConnection.prototype.renderTypeVarHighlights = function() {
 }
 
 /**
+ * Set the last rendered type expression. It would be used to detect if the
+ * type expression has been updated.
+ */
+Blockly.RenderedConnection.prototype.setLastRenderedTypeExpr = function() {
+  this.lastRenderedTypeExpr_ = this.typeExpr.deref();
+};
+
+/**
  * Store the given workbench to the connection.
  * @param {!Blockly.Workbench} workbench The workbench to store.
  * @param {!Blockly.Input} input The input the connection belongs to.
@@ -518,5 +526,6 @@ Blockly.RenderedConnection.prototype.dispose = function() {
   if (this.contextWorkbench) {
     this.contextWorkbench = null;
   }
+  this.lastRenderedTypeExpr_ = null;
   Blockly.RenderedConnection.superClass_.dispose.call(this);
 };
