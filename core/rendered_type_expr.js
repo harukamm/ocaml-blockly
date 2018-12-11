@@ -74,7 +74,7 @@ Blockly.RenderedTypeExpr.prototype.shape = {
     return Blockly.BlockSvg.TAB_HEIGHT;
   },
 
-  offsetY: function() {
+  offsetsY: function() {
     return [];
   }
 };
