@@ -420,16 +420,16 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
   var typeExpr = this.variable_ && this.variable_.getTypeExpr();
 
   if (typeExpr) {
-    inlineSteps.push('M 0,-2');
+    var height = typeExpr.getTypeExprHeight(typeExpr);
+    inlineSteps.push('M 0,0');
     typeExpr.renderTypeExpr(inlineSteps, 1 /** Gets the down path. */);
 
-    var height = typeExpr.getTypeExprHeight(typeExpr);
     if (height < 23) {
       height = 23;
     }
     var rectWidth = width - Blockly.BlockSvg.TAB_WIDTH;
-    inlineSteps.push('M 0,' + (height - 6));
-    inlineSteps.push('l 0 4 l ' + rectWidth + ' 0 l 0 -' +
+    inlineSteps.push('M 0,0');
+    inlineSteps.push('l 0 ' + height + ' l ' + rectWidth + ' 0 l 0 -' +
         height + ' l -' + rectWidth + ' 0');
   }
   return {height: height, path: inlineSteps.join(' ')};
