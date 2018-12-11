@@ -45,6 +45,13 @@ Blockly.RenderedConnection = function(source, type) {
    * @private
    */
   this.offsetInBlock_ = new goog.math.Coordinate(0, 0);
+
+  /**
+   * The last rendered type expression.
+   * @type {Blockly.RenderedTypeExpr}
+   * @private
+   */
+  this.lastRenderedTypeExpr_ = null;
 };
 goog.inherits(Blockly.RenderedConnection, Blockly.Connection);
 
