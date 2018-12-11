@@ -341,7 +341,7 @@ Blockly.BlockSvg.prototype.render = function(opt_bubble) {
   var inputRows = this.renderCompute_(cursorX);
   this.renderDraw_(cursorX, inputRows);
   this.renderMoveConnections_();
-  this.renderExternalTypeVarHeightlights_();
+  this.renderExternalTypeVarHeightlights_(inputRows);
 
   if (opt_bubble !== false) {
     // Render all blocks above this one (propagate a reflow).
@@ -698,12 +698,21 @@ Blockly.BlockSvg.prototype.renderMoveConnections_ = function() {
  * external inputs.
  * Should be called after all of connections on this block has been updated
  * with the new locations.
+ * @param {!Array.<!Array.<!Object>>} inputRows 2D array of objects, each
+ *     containing position information.
  * @private
  */
-Blockly.BlockSvg.prototype.renderExternalTypeVarHeightlights_ = function() {
-  for (var i = 0, input; input = this.inputList[i]; i++) {
-    if (input.type == Blockly.INPUT_VALUE) {
-      input.connection.renderTypeVarHighlights();
+Blockly.BlockSvg.prototype.renderExternalTypeVarHeightlights_ = function(
+    inputRows) {
+  for (var y = 0, row; row = inputRows[y]; y++) {
+    if (this.isCollapsed() || row.type != Blockly.INPUT_VALUE) {
+      continue;
+    }
+
+    for (var i = 0, input; input = this.inputList[i]; i++) {
+      if (input.connection) {
+        input.connection.renderTypeVarHighlights();
+      }
     }
   }
 };
