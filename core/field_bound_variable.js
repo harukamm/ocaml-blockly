@@ -450,13 +450,14 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
     inlineSteps.push('M 0,0');
     typeExpr.renderTypeExpr(inlineSteps, 1 /** Gets the down path. */);
 
+    var downHeight = 0;
     if (height < 23) {
+      downHeight = 23 - height;
       height = 23;
     }
     var rectWidth = width - Blockly.BlockSvg.TAB_WIDTH;
-    inlineSteps.push('M 0,' + height);
-    inlineSteps.push('l ' + rectWidth + ' 0 l 0 -' + height + ' l -' +
-        rectWidth + ' 0');
+    inlineSteps.push('l 0 ' + downHeight + ' ' + rectWidth + ' 0 l 0 -' + height + ' l -' +
+        rectWidth + ' 0 z');
   }
   return {height: height, path: inlineSteps.join(' ')};
 };
