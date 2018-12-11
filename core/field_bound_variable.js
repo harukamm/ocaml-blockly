@@ -206,7 +206,7 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
     this.initDefaultVariableName_();
 
     if (this.forValue_) {
-      this.hasPotentialBlock = true;
+      this.hasPotentialBlock = this.sourceBlock_.isMovable();
       goog.asserts.assert(this.defaultScopeInputName_,
           'The name of input representing the value\'s scope is not ' +
           'initialized.');
