@@ -504,8 +504,23 @@ Blockly.FieldBoundVariable.prototype.createBlock = function() {
   if (!this.hasPotentialBlock || !this.forValue_ || !this.variable_) {
     throw 'The field is not allowed to create a block.';
   }
-  // TODO(harukam): Implement.
-  throw 'Not implemented yet.';
+  var workspace = this.sourceBlock_.workspace;
+  // TODO(harukam): Avoid providing prototype name using string literal.
+  var getterBlock = workspace.newBlock('variables_get_typed');
+  if (goog.isFunction(getterBlock.initSvg)) {
+    getterBlock.initSvg();
+  }
+  var field = getterBlock.getField('VAR');
+  field.setVariableName(this.variable_.getVariableName());
+  field.setBoundValue(this.variable_);
+  getterBlock.render(false);
+
+  var blockPos = this.sourceBlock_.getRelativeToSurfaceXY();
+  getterBlock.moveBy(blockPos.x, blockPos.y);
+  // TODO(harukam): Move the block to line the left corner of the block shaped
+  // path up.
+
+  return getterBlock;
 };
 
 /**
