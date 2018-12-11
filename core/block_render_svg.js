@@ -1115,6 +1115,10 @@ Blockly.BlockSvg.prototype.renderExternalValueInput_ = function(pathObject, row,
         input.connection.targetBlock().getHeightWidth().width -
         Blockly.BlockSvg.TAB_WIDTH + 1);
   }
+  // Does not call the function renderTypeVarHighlights on the input's
+  // connection. The connection's location has not been updated yet.
+  // The type variable will be rendered later in the function
+  // this.renderExternalTypeVarHeightlights_.
 };
 
 /**
