@@ -888,7 +888,7 @@ Blockly.BlockSvg.prototype.dispose = function(healStack, animate) {
   // Rerender remaining blocks on related workspaces because type-exprs could
   // have been changed by disconnecting blocks.
   if (!blockWorkspace.isFlyout && isTypedBlock) {
-    blockWorkspace.renderRelatedWorkspaces();
+    blockWorkspace.renderTypeChangedWorkspaces();
   }
 
   // Sever JavaScript to DOM connections.
@@ -1120,6 +1120,24 @@ Blockly.BlockSvg.prototype.updateWorkbenchFlyout = function() {
     var workbench = child.ownerMutator_;
     workbench.updateFlyoutTree();
   }
+};
+
+/**
+ * Return whether the block contains a type expression which has been updated
+ * since the last block rendering.
+ * @return {boolean} True if the block contains an updated type expression.
+ */
+Blockly.BlockSvg.prototype.typeExprHasChanged = function() {
+  if (this.outputConnection &&
+      this.outputConnection.typeExprHasChanged()) {
+    return true;
+  }
+  for (var j = 0, input; input = this.inputList[j]; j++) {
+    if (input.connection && input.connection.typeExprHasChanged()) {
+      return true;
+    }
+  }
+  return false;
 };
 
 /**

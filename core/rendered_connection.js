@@ -360,21 +360,19 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function(parentBlock,
       parentBlock, childBlock);
 
   childBlock.updateWorkbenchFlyout();
-  if (this.typeExprEnabled() && parentBlock.rendered && childBlock.rendered) {
-    // Re-render all blocks on the related workspaces if type expression might
-    // change.
-    // TODO(harukam): Re-render only blocks whose type expressions have changed
-    // by adding listener to them.
-    parentBlock.workspace.renderRelatedWorkspaces();
-  } else {
-    // Rerender the parent so that it may reflow.
-    if (parentBlock.rendered) {
-      parentBlock.render();
-    }
-    if (childBlock.rendered) {
-      childBlock.updateDisabled();
-      childBlock.render();
-    }
+  // Rerender the parent so that it may reflow.
+  if (parentBlock.rendered) {
+    parentBlock.render();
+  }
+  if (childBlock.rendered) {
+    childBlock.updateDisabled();
+    childBlock.render();
+  }
+
+  if (parentBlock.rendered && childBlock.rendered) {
+    // Re-render all blocks which contain changed type expression on related
+    // workspaces.
+    parentBlock.workspace.renderTypeChangedWorkspaces();
   }
 };
 
@@ -434,13 +432,7 @@ Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
   }
   childBlock.updateWorkbenchFlyout();
   if (parentBlock.rendered && childBlock.rendered) {
-    if (!!parentConnection.typeExpr && !!childConnection.typeExpr) {
-      // Re-render all blocks on the related workspaces if type expression
-      // might change.
-      // TODO(harukam): Re-render only blocks whose type expressions have
-      // changed by adding listener to them.
-      parentBlock.workspace.renderRelatedWorkspaces();
-    } else if (parentConnection.type == Blockly.NEXT_STATEMENT ||
+    if (parentConnection.type == Blockly.NEXT_STATEMENT ||
         parentConnection.type == Blockly.PREVIOUS_STATEMENT) {
       // Child block may need to square off its corners if it is in a stack.
       // Rendering a child will render its parent.
@@ -450,6 +442,10 @@ Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
       // move its connected children into position.
       parentBlock.render();
     }
+
+    // Re-render all blocks which contain changed type expression on related
+    // workspaces.
+    parentBlock.workspace.renderTypeChangedWorkspaces();
   }
 };
 

@@ -1014,6 +1014,31 @@ Blockly.WorkspaceSvg.prototype.renderRelatedWorkspaces = function() {
 };
 
 /**
+ * Render all blocks which contain the changed type expression on the related
+ * workspaces.
+ */
+Blockly.WorkspaceSvg.prototype.renderTypeChangedWorkspaces = function() {
+  var familyWs = Blockly.WorkspaceTree.getFamily(this);
+  for (var i = 0, ws; ws = familyWs[i]; i++) {
+    if (!ws.isFlyout || ws.isInMutator()) {
+      ws.renderTypeChangedBlocks();
+    }
+  }
+};
+
+/**
+ * Render all blocks which contain the changed type expression.
+ */
+Blockly.WorkspaceSvg.prototype.renderTypeChangedBlocks = function() {
+  var blocks = this.getAllBlocks();
+  for (var i = 0, block; block = blocks[i]; i++) {
+    if (block.rendered && block.typeExprHasChanged()) {
+      block.render();
+    }
+  }
+};
+
+/**
  * Was used back when block highlighting (for execution) and block selection
  * (for editing) were the same thing.
  * Any calls of this function can be deleted.
