@@ -90,6 +90,13 @@ Blockly.FieldBoundVariable.fromJson = function(options) {
 Blockly.FieldBoundVariable.WIDGET_TYPE_VARIABLES_ = 'vhighlights';
 
 /**
+ * Whether the field has a potential block, and it can be created then dragged
+ * from the field.
+ * @type {!boolean}
+ */
+Blockly.FieldBoundVariable.prototype.hasPotentialBlock = false;
+
+/**
  * Obtain a newly created bound-variable field of value type.
  * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
  * @param {string} scopeInputName The name of input on which the variable value
@@ -159,6 +166,8 @@ Blockly.FieldBoundVariable.prototype.init = function() {
   Blockly.FieldBoundVariable.superClass_.init.call(this);
 
   if (this.forValue_) {
+    this.hasPotentialBlock = this.sourceBlock_.isMovable();
+
     this.blockShapedPath_ = Blockly.utils.createSvgElement('path',
         {
           'class': 'blocklyFieldBoundValue',

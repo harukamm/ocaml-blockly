@@ -393,6 +393,9 @@ Blockly.Gesture.prototype.updateIsDraggingBlock_ = function() {
   if (this.flyout_) {
     this.isDraggingBlock_ = this.updateIsDraggingFromFlyout_();
     this.draggedFromFlyout_ = true;
+  } else if (this.startField_ && this.startField_.hasPotentialBlock) {
+    // TODO(harukam): The field has a potential flyout block. Make the field
+    // create the block and drag it from there.
   } else if (this.targetBlock_.isMovable()) {
     this.isDraggingBlock_ = true;
     this.draggedFromFlyout_ = false;
