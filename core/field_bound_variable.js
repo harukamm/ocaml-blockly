@@ -428,9 +428,9 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
       height = 23;
     }
     var rectWidth = width - Blockly.BlockSvg.TAB_WIDTH;
-    inlineSteps.push('M 0,0');
-    inlineSteps.push('l 0 ' + height + ' l ' + rectWidth + ' 0 l 0 -' +
-        height + ' l -' + rectWidth + ' 0');
+    inlineSteps.push('M 0,' + height);
+    inlineSteps.push('l ' + rectWidth + ' 0 l 0 -' + height + ' l -' +
+        rectWidth + ' 0');
   }
   return {height: height, path: inlineSteps.join(' ')};
 };
