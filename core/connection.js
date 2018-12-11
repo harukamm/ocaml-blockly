@@ -246,13 +246,14 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
   // Establish the connections.
   Blockly.Connection.connectReciprocally_(parentConnection, childConnection);
 
+  // Demote the inferior block so that one is a child of the superior one.
+  childBlock.setParent(parentBlock);
+
   if (this.typeExprEnabled()) {
     var rootBlock = parentBlock.getRootBlock();
     rootBlock.updateTypeInference();
   }
 
-  // Demote the inferior block so that one is a child of the superior one.
-  childBlock.setParent(parentBlock);
   if (event) {
     event.recordNew();
     Blockly.Events.fire(event);
