@@ -168,7 +168,6 @@ Blockly.FieldBoundVariable.prototype.init = function() {
   // If the variable is for a value, and the block is movable, this field can
   // have a potential block. Draw a block shape around the group SVG.
   if (this.forValue_ && this.sourceBlock_.isMovable()) {
-    this.hasPotentialBlock = true;
     this.blockShapedPath_ = Blockly.utils.createSvgElement('path',
         {
           'class': 'blocklyFieldBoundValue',
@@ -202,6 +201,7 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
     this.initDefaultVariableName_();
 
     if (this.forValue_) {
+      this.hasPotentialBlock = true;
       goog.asserts.assert(this.defaultScopeInputName_,
           'The name of input representing the value\'s scope is not ' +
           'initialized.');
