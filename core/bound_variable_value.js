@@ -135,9 +135,20 @@ Blockly.BoundVariableValue.prototype.getAllBoundVariables = function() {
 
 /**
  * Dispose of this value.
+ * @param {boolean=} opt_removeReference True if force to remove reference
+ *     blocks which refer to this variable.
  * @override
  */
-Blockly.BoundVariableValue.prototype.dispose = function() {
+Blockly.BoundVariableValue.prototype.dispose = function(opt_removeReference) {
+  if (opt_removeReference === true) {
+    var referenceList = [].concat(this.referenceList_);
+    for (var i = 0, ref; ref = referenceList[i]; i++) {
+      var refBlock = ref.getSourceBlock();
+      refBlock.dispose();
+    }
+    goog.asserts.assert(this.referenceList_.length == 0);
+  }
+
   if (this.referenceList_.length == 0) {
     Blockly.BoundVariables.removeValue(this.workspace_, this);
     delete this.sourceBlock_.typedValue[this.fieldName_];

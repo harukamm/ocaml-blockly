@@ -3041,7 +3041,7 @@ Blockly.Blocks['let_typed'] = {
     var input = this.getInput('ARGS');
     while (input.fieldRow.length) {
       var field = input.fieldRow.pop();
-      field.dispose();
+      field.dispose(true);
     }
     var childNodes = xmlElement.childNodes;
     this.argumentCound_ = childNodes.length;
@@ -3084,7 +3084,7 @@ Blockly.Blocks['let_typed'] = {
     var contextChanged = itemCount != this.argumentCount_;
     while (itemCount < this.argumentCount_) {
       var field = input.fieldRow.pop();
-      field.dispose();
+      field.dispose(true);
       this.argumentCount_--;
     }
     while (this.argumentCount_ < itemCount) {

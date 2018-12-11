@@ -223,14 +223,21 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
 
 /**
  * Dispose of this field.
+ * @param {boolean=} opt_removeReference True if force to remove reference
+ *     blocks which refer to this field variable.
  * @public
  */
-Blockly.FieldBoundVariable.prototype.dispose = function() {
+Blockly.FieldBoundVariable.prototype.dispose = function(
+    opt_removeReference) {
   goog.dom.removeNode(this.blockShapedPath_);
   this.blockShapedPath_ = null;
   Blockly.FieldBoundVariable.superClass_.dispose.call(this);
   if (this.variable_) {
-    this.variable_.dispose();
+    if (this.forValue_ && opt_removeReference === true) {
+      this.variable_.dispose(true);
+    } else {
+      this.variable_.dispose();
+    }
   }
   if (this.mouseEnterWrapper_) {
     Blockly.unbindEvent_(this.mouseEnterWrapper_);
