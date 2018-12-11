@@ -152,3 +152,46 @@ function test_type_expr_replaceTypeExprWith() {
     workspace.dispose();
   }
 }
+
+function test_type_expr_isEquals() {
+  var int1 = new Blockly.TypeExpr.INT();
+  var int2 = new Blockly.TypeExpr.INT();
+  var bool1 = new Blockly.TypeExpr.BOOL();
+  var bool2 = new Blockly.TypeExpr.BOOL();
+  var float1 = new Blockly.TypeExpr.FLOAT();
+  var float2 = new Blockly.TypeExpr.FLOAT();
+  assertTrue(Blockly.TypeExpr.equals(int1, int2));
+  assertTrue(Blockly.TypeExpr.equals(bool1, bool2));
+  assertTrue(Blockly.TypeExpr.equals(float1, float2));
+  assertFalse(Blockly.TypeExpr.equals(bool1, int2));
+  assertFalse(Blockly.TypeExpr.equals(int1, float1));
+
+  var p1 = new Blockly.TypeExpr.TVAR('p1', null);
+  var q1 = new Blockly.TypeExpr.TVAR('q1', null);
+  var pair1 = new Blockly.TypeExpr.PAIR(p1, q1);
+  var p2 = new Blockly.TypeExpr.TVAR('p2', null);
+  var q2 = new Blockly.TypeExpr.TVAR('q2', null);
+  var pair2 = new Blockly.TypeExpr.PAIR(p2, q2);
+  assertFalse(Blockly.TypeExpr.equals(pair1, pair2));
+  assertTrue(Blockly.TypeExpr.equals(pair1, pair1));
+  assertTrue(Blockly.TypeExpr.equals(pair2, pair2));
+
+  p1.name = 'p2';
+  q1.name = 'q2';
+  assertTrue(Blockly.TypeExpr.equals(pair1, pair2));
+
+  var o = new Blockly.TypeExpr.TVAR('O', pair2);
+  assertFalse(Blockly.TypeExpr.equals(o, pair2));
+  var n = new Blockly.TypeExpr.TVAR('N', pair2);
+  var m = new Blockly.TypeExpr.TVAR('M', n);
+  assertFalse(Blockly.TypeExpr.equals(o, m));
+
+  var list1 = new Blockly.TypeExpr.LIST(float1);
+  var list2 = new Blockly.TypeExpr.LIST(float2);
+  assertTrue(Blockly.TypeExpr.equals(list1, list2));
+
+  var fun1 = new Blockly.TypeExpr.FUN(list1, list2);
+  var t = new Blockly.TypeExpr.TVAR('T', list1);
+  var fun2 = new Blockly.TypeExpr.FUN(t, list2);
+  assertFalse(Blockly.TypeExpr.equals(fun1, fun2));
+}

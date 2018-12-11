@@ -612,6 +612,27 @@ Blockly.TypeExpr.prototype.disconnect = function(other) {
  * @return {boolean} True if type expressions are the same.
  */
 Blockly.TypeExpr.equals = function(typ1, typ2) {
-  // TODO(harukam): Implement.
-  return false;
+  if (typ1.label != typ2.label) {
+    return false;
+  }
+  var label = typ1.label;
+  // Check if the types are primitive ones.
+  if (label == Blockly.TypeExpr.INT_ ||
+      label == Blockly.TypeExpr.FLOAT_ ||
+      label == Blockly.TypeExpr.BOOL_) {
+    return true;
+  }
+  if (label == Blockly.TypeExpr.TVAR_) {
+    return typ1.name == typ2.name;
+  }
+  var children1 = typ1.getChildren();
+  var children2 = typ2.getChildren();
+  for (var i = 0; i < children1.length; i++) {
+    var t1 = children1[i];
+    var t2 = children2[i];
+    if (!Blockly.TypeExpr.equals(t1, t2)) {
+      return false;
+    }
+  }
+  return true;
 };

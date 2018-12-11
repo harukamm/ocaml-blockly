@@ -517,7 +517,7 @@ Blockly.RenderedConnection.prototype.typeExprHasChanged = function() {
   }
   var oldTypeExpr = this.lastRenderedTypeExpr_;
   var newTypeExpr = this.typeExpr.deepDeref();
-  return Blockly.TypeExpr.equals(oldTypeExpr, newTypeExpr);
+  return !Blockly.TypeExpr.equals(oldTypeExpr, newTypeExpr);
 };
 
 /**
