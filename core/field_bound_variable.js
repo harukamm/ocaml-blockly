@@ -97,6 +97,12 @@ Blockly.FieldBoundVariable.WIDGET_TYPE_VARIABLES_ = 'vhighlights';
 Blockly.FieldBoundVariable.prototype.hasPotentialBlock = false;
 
 /**
+ * The last rendered type expression on the potential block.
+ * @type {Blockly.TypeExpr}
+ */
+Blockly.FieldBoundVariable.prototype.lastRenderedTypeExpr_ = null;
+
+/**
  * Obtain a newly created bound-variable field of value type.
  * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
  * @param {string} scopeInputName The name of input on which the variable value
@@ -416,6 +422,8 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
 
   this.size_.width = blockShapeWidth - Blockly.BlockSvg.TAB_WIDTH;
   this.size_.height = blockShapeHeight;
+
+  this.lastRenderedTypeExpr_ = this.variable_.getTypeExpr().deepDeref();
 };
 
 /**
@@ -444,6 +452,21 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
         rectWidth + ' 0');
   }
   return {height: height, path: inlineSteps.join(' ')};
+};
+
+/**
+ * Returns if the field needs to be re-rendered.
+ * @return {boolean} True if the field has to be re-rendered.
+ * @override
+ * @private
+ */
+Blockly.FieldBoundVariable.prototype.needRendered_ = function() {
+  if (!this.lastRenderedTypeExpr_) {
+    return false;
+  }
+  var currentType = this.variable_.getTypeExpr().deepDeref();
+  return !Blockly.TypeExpr.equals(this.lastRenderedTypeExpr_,
+      currentType);
 };
 
 /**

@@ -444,10 +444,20 @@ Blockly.Field.stopCache = function() {
  * @return {!goog.math.Size} Height and width.
  */
 Blockly.Field.prototype.getSize = function() {
-  if (!this.size_.width) {
+  if (!this.size_.width || this.needRendered_()) {
     this.render_();
   }
   return this.size_;
+};
+
+/**
+ * Returns if the field needs to be re-rendered.  Subclasses may override this
+ * function.
+ * @return {boolean} True if the field has to be re-rendered.
+ * @private
+ */
+Blockly.Field.prototype.needRendered_ = function() {
+  return false;
 };
 
 /**
