@@ -260,6 +260,11 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
         originalBoolBlock.outputConnection);
     setVariableName(originalLetBlock, 'flag');
 
+    var orphanVarBlock = workspace.newBlock('variables_get_typed');
+    var orphanReference = getVariable(orphanVarBlock);
+    orphanReference.setVariableName('flag');
+    orphanReference.setBoundValue(originalLetValue);
+
     var newLetBlock = virtually_transfer_workspace(originalLetBlock,
         otherWorkspace);
 
@@ -279,6 +284,20 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
         getVariable(newLetBlock).getTypeExpr());
     assertTrue(originalExp1Type.deref().label ==
         getVariable(newLetBlock).getTypeExpr().deref().label);
+
+    // See orphan reference block.
+    var newLetValue = getVariable(newLetBlock);
+    assertEquals(orphanReference.getBoundValue(), newLetValue);
+    assertEquals(orphanReference.getTypeExpr().deref().label,
+        Blockly.TypeExpr.BOOL_);
+
+    // Disconnect the bool block from the let block.
+    var exp1 = newLetBlock.getInput('EXP1').connection;
+    exp1.disconnect();
+    assertEquals(newLetValue.getTypeExpr().val, exp1.typeExpr);
+    assertNull(exp1.typeExpr.val);
+    // TODO(harukam): The following assertion fails. Fix it.
+    assertEquals(orphanReference.getTypeExpr().val, newLetValue.getTypeExpr());
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();
