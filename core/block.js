@@ -2925,27 +2925,29 @@ Blockly.Blocks['let_typed'] = {
   init: function() {
     this.setHelpUrl(Blockly.Msg.VARIABLES_SET_HELPURL);
     this.setColour(330);
-    var A = Blockly.RenderedTypeExpr.generateTypeVar();
-    var B = Blockly.RenderedTypeExpr.generateTypeVar();
-    var variable_field = Blockly.FieldBoundVariable.newValue(A, 'EXP2');
+    var varType = Blockly.RenderedTypeExpr.generateTypeVar();
+    var exp1Type = Blockly.RenderedTypeExpr.generateTypeVar();
+    var exp2Type = Blockly.RenderedTypeExpr.generateTypeVar();
+    var variable_field = Blockly.FieldBoundVariable.newValue(varType, 'EXP2');
     this.appendDummyInput('VARIABLE')
         .appendField('let')
         .appendField(variable_field, 'VAR');
     this.appendDummyInput('ARGS');
     this.appendValueInput('EXP1')
-        .setTypeExpr(A)
+        .setTypeExpr(exp1Type)
         .appendField('=')
         .setWorkbench(new Blockly.Workbench());
     this.appendValueInput('EXP2')
-        .setTypeExpr(B)
+        .setTypeExpr(exp2Type)
         .appendField('in')
         .setWorkbench(new Blockly.Workbench());
     this.setMutator(new Blockly.Mutator(['args_create_with_item']));
     this.setOutput(true);
-    this.setOutputTypeExpr(B);
+    this.setOutputTypeExpr(exp2Type);
     this.setInputsInline(true);
 
     this.argumentCount_ = 0;
+    exp1Type.unify(varType);
   },
 
   /**
@@ -2955,10 +2957,17 @@ Blockly.Blocks['let_typed'] = {
    * up-to-date.
    */
   typeExprReplaced: function() {
-    var A = this.getInput('EXP1').connection.typeExpr;
-    var field = this.getField('VAR');
-    var variable = field.getVariable();
-    variable.setTypeExpr(A);
+    if (this.argumentCount_ != 0) {
+      throw 'Not implemented';
+    }
+    var variable = this.typedValue['VAR'];
+    var exp1Type = this.getInput('EXP1').connection.typeExpr;
+
+    if (exp1Type) {
+      exp1Type.unify(variable.getTypeExpr());
+    } else {
+      variable.setTypeExpr(null);
+    }
   },
 
   /**
@@ -3109,19 +3118,28 @@ Blockly.Blocks['let_typed'] = {
   },
 
   clearTypes: function() {
-    this.getInput('EXP1').connection.typeExpr.clear();
+    var varType = this.typedValue['VAR'].getTypeExpr();
+    varType.clear();
+    var exp1Type = this.getInput('EXP1').connection.typeExpr;
+    exp1Type.clear();
     this.getInput('EXP2').connection.typeExpr.clear();
     this.callClearTypes_('EXP1');
     this.callClearTypes_('EXP2');
+    if (this.argumentCount_ == 0) {
+      exp1Type.unify(varType);
+    } else {
+      throw 'Not implemented';
+    }
   },
 
   infer: function(env) {
-    var var_name = this.getField('VAR').getText();
+    var variable = this.typedValue['VAR'];
+    var var_name = variable.getVariableName();
     var expected_exp1 = this.getInput('EXP1').connection.typeExpr;
     var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
     var exp1 = this.callInfer_('EXP1', env);
     var env2 = Object.assign({}, env);
-    env2[var_name] = expected_exp1;
+    env2[var_name] = variable.getTypeExpr();
     var exp2 = this.callInfer_('EXP2', env2);
 
     if (exp1)
