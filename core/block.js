@@ -1758,7 +1758,7 @@ Blockly.Block.inferBlocksType_ = function(blocks, opt_reset) {
  * @param {boolean=} opt_reset True if types should be reset first.
  */
 Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
-  Blockly.Block.inferBlocksType_([this], opt_reset);
+  Blockly.Block.doTypeInference([this], opt_reset);
 };
 
 /**
@@ -1792,7 +1792,7 @@ Blockly.Block.doTypeInference = function(blocks, opt_reset) {
   Array.prototype.push.apply(blocksToUpdate,
       Blockly.BoundVariables.getAllRootBlocks(affectedValues));
 
-  Blockly.Block.inferBlocksType_(blocksToUpdate, true);
+  Blockly.Block.inferBlocksType_(blocksToUpdate, opt_reset);
 };
 
 /**
