@@ -1773,7 +1773,7 @@ Blockly.Block.doTypeInference = function(blocks, opt_reset) {
   // TODO(harukam): The function updateTypeInference() could be removed.
   // Use this function instead.
   var blocksToUpdate = [];
-  var affectedReferences = [];
+  var affectedVariables = [];
   for (var i = 0, block; block = blocks[i]; i++) {
     if (!block.outputConnection || !block.outputConnection.typeExpr) {
       // This block has no type-expr, or it is removed deleted.
@@ -1781,16 +1781,15 @@ Blockly.Block.doTypeInference = function(blocks, opt_reset) {
     }
     goog.asserts.assert(!block.getParent());
     blocksToUpdate.push(block);
-    if (block.isInMutator) {
-      var references = Blockly.BoundVariables.getAllVariablesOnBlocks(block,
-          true/** Gets only references. */);
-      Array.prototype.push.apply(affectedReferences, references);
-    }
+
+    var variables = Blockly.BoundVariables.getAllVariablesOnBlocks(block);
+    Array.prototype.push.apply(affectedVariables, variables);
   }
-  var affectedValues = Blockly.BoundVariables.getValuesFromReferenceList(
-      affectedReferences);
   Array.prototype.push.apply(blocksToUpdate,
-      Blockly.BoundVariables.getAllRootBlocks(affectedValues));
+      Blockly.BoundVariables.getAllRootBlocks(affectedVariables, true));
+
+  blocksToUpdate = goog.array.filter(blocksToUpdate,
+    x => x.outputConnection && !!x.outputConnection.typeExpr && !!x.workspace);
 
   Blockly.Block.inferBlocksType_(blocksToUpdate, opt_reset);
 };

@@ -295,8 +295,7 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
     exp1.disconnect();
     assertEquals(newLetValue.getTypeExpr().val, exp1.typeExpr);
     assertNull(exp1.typeExpr.val);
-    // TODO(harukam): The following assertion fails. Fix it.
-    assertEquals(orphanReference.getTypeExpr().val, newLetValue.getTypeExpr());
+    assertEquals(orphanReference.getTypeExpr().val, exp1.typeExpr);
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();
