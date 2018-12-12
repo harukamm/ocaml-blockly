@@ -920,3 +920,18 @@ function test_type_transfer_block_workspace_fieldTypeExprReplaced() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_lambdaBlockTransferManyTimes() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    var originalLetBlock = workspace.newBlock('lambda_typed');
+    var originalValueType = getVariable(originalLetBlock).getTypeExpr();
+
+    var transBlock = repeat_transfer_workspace(originalLetBlock,
+        otherWorkspace, 10);
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}

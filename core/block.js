@@ -2663,9 +2663,10 @@ Blockly.Blocks['lambda_typed'] = {
    * up-to-date.
    */
   typeExprReplaced: function() {
-    var A = this.outputConnection.typeExpr.arg_type;
+    var outputType = this.outputConnection.typeExpr;
+    var argType = outputType ? outputType.arg_type : null;
     var variable = this.typedValue['VAR'];
-    variable.setTypeExpr(A);
+    variable.setTypeExpr(argType);
   },
 
   /**
