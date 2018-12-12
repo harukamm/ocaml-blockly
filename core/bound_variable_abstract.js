@@ -111,6 +111,14 @@ Blockly.BoundVariableAbstract.prototype.setTypeExpr = function(typeExpr) {
 };
 
 /**
+ * Clear binding on the type expression.  Subclasses may override this function
+ * to restore the bindings on references' type expression.
+ */
+Blockly.BoundVariableAbstract.prototype.clearTypeExpr = function() {
+  this.typeExpr_.clear();
+};
+
+/**
  * @return {!string} The ID for the variable.
  */
 Blockly.BoundVariableAbstract.prototype.getId = function() {

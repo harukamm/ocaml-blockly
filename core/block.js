@@ -2710,7 +2710,12 @@ Blockly.Blocks['lambda_typed'] = {
   },
 
   clearTypes: function() {
-    this.outputConnection.typeExpr.arg_type.clear();
+    var variable = this.typedValue['VAR'];
+    goog.asserts.assert(this.outputConnection.typeExpr.arg_type ==
+        variable.getTypeExpr());
+    // Call the clearTypeExpr function on the variable instead of running
+    // type.clear() function directly.
+    variable.clearTypeExpr();
     this.outputConnection.typeExpr.return_type.clear();
     this.callClearTypes_('RETURN');
   },
@@ -2895,7 +2900,13 @@ Blockly.Blocks['variables_get_typed'] = {
   },
 
   clearTypes: function() {
-    this.outputConnection.typeExpr.clear();
+    var variable = this.getField('VAR').getVariable();
+    goog.asserts.assert(this.outputConnection.typeExpr ==
+        variable.getTypeExpr());
+
+    // Call the clearTypeExpr function on the variable instead of running
+    // type.clear() function directly.
+    variable.clearTypeExpr();
   },
 
   infer: function(env) {
@@ -2964,8 +2975,11 @@ Blockly.Blocks['let_typed'] = {
     var exp1Type = this.getInput('EXP1').connection.typeExpr;
 
     if (exp1Type) {
+      // Do not call the function clear() directly on the variable's type
+      // expression by running like `variable.getTypeExpr().clear()`. Call the
+      // function clearTypeExpr() instead.
+      variable.clearTypeExpr();
       var varType = variable.getTypeExpr();
-      varType.clear();
       exp1Type.unify(varType);
     } else {
       variable.setTypeExpr(null);
@@ -3120,14 +3134,14 @@ Blockly.Blocks['let_typed'] = {
   },
 
   clearTypes: function() {
-    var varType = this.typedValue['VAR'].getTypeExpr();
-    varType.clear();
+    this.typedValue['VAR'].clearTypeExpr();
     var exp1Type = this.getInput('EXP1').connection.typeExpr;
     exp1Type.clear();
     this.getInput('EXP2').connection.typeExpr.clear();
     this.callClearTypes_('EXP1');
     this.callClearTypes_('EXP2');
     if (this.argumentCount_ == 0) {
+      var varType = this.typedValue['VAR'].getTypeExpr();
       exp1Type.unify(varType);
     } else {
       throw 'Not implemented';
