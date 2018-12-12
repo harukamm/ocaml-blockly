@@ -847,18 +847,14 @@ Blockly.Block.prototype.getVarModels = function() {
 Blockly.Block.prototype.getVariables = function(opt_filter) {
   var vars = [];
   var filtered = opt_filter === true || opt_filter === false;
-  for (var i = 0, input; input = this.inputList[i]; i++) {
-    for (var j = 0, field; field = input.fieldRow[j]; j++) {
-      if (field.referencesVariables() == Blockly.FIELD_VARIABLE_BINDING) {
-        var variable = field.getVariable();
-        if (variable) {
-          var isReference = variable.isReference();
-          if (!filtered || opt_filter === true && isReference ||
-              opt_filter === false && !isReference) {
-            vars.push(variable);
-          }
-        }
-      }
+  if (!filtered || opt_filter === true) {
+    for (name in this.typedReference) {
+      vars.push(this.typedReference[name]);
+    }
+  }
+  if (!filtered || opt_filter === false) {
+    for (name in this.typedValue) {
+      vars.push(this.typedValue[name]);
     }
   }
   return vars;
