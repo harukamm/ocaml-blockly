@@ -746,19 +746,24 @@ function test_type_unification_workbenchVariableContext() {
     var reference = getVariable(referenceBlock);
     assertEquals(reference.getBoundValue(), letValue);
 
-    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+    var exp1Type = letBlock.getInput('EXP1').connection.typeExpr;
+    assertEquals(reference.getTypeExpr().deref(), exp1Type);
+    assertNotEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr().deref());
 
     var arithBlock = workbench.getWorkspace().newBlock('int_arithmetic_typed');
     arithBlock.getInput('A').connection.connect(referenceBlock.outputConnection);
 
+    assertEquals(exp1Type.deref().label, Blockly.TypeExpr.INT_);
     assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.INT_);
     assertEquals(reference.getTypeExpr().deref().label, Blockly.TypeExpr.INT_);
     assertEquals(reference.getBoundValue(), letValue);
 
     arithBlock.getInput('A').connection.disconnect(referenceBlock.outputConnection);
 
-    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
-    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+    assertEquals(reference.getTypeExpr().deref(), exp1Type);
+    assertNotEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr().deref());
 
     var letBlock2 = workbench.getWorkspace().newBlock('let_typed');
     var letValue2 = getVariable(letBlock2);
@@ -789,8 +794,11 @@ function test_type_unification_workbenchReferencesTypeExprCleared() {
     assertEquals(blocks.length, 1);
     var referenceBlock = blocks[0];
     var reference = getVariable(referenceBlock);
+    var exp1Type = letBlock.getInput('EXP1').connection.typeExpr;
     assertEquals(reference.getBoundValue(), letValue);
-    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+    assertNotEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr().deref());
+    assertEquals(reference.getTypeExpr().deref(), exp1Type)
 
     // [ <[if then <[j]> else <>]> .+ <> ]
     var ifBlock = workbench.getWorkspace().newBlock('logic_ternary_typed');
@@ -798,13 +806,16 @@ function test_type_unification_workbenchReferencesTypeExprCleared() {
     var floatArith = workbench.getWorkspace().newBlock('float_arithmetic_typed');
     floatArith.getInput('A').connection.connect(ifBlock.outputConnection);
 
+    assertEquals(exp1Type.deref().label, Blockly.TypeExpr.FLOAT_);
     assertEquals(reference.getTypeExpr().deref().label, Blockly.TypeExpr.FLOAT_);
     assertEquals(letValue.getTypeExpr().deref().label, Blockly.TypeExpr.FLOAT_);
 
     // [ <> .+ <> ]  [if then <[j]> else <>]
     floatArith.getInput('A').connection.disconnect();
 
-    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+    assertNotEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr());
+    assertEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr().deref());
+    assertEquals(reference.getTypeExpr().deref(), exp1Type)
   } finally {
     if (workbench) {
       workbench.dispose();
@@ -902,7 +913,10 @@ function test_type_unification_howReferenceBlockDiffers() {
     // Conditions hold in "created by workbench" case.
     assertTrue(isVariableOf(referenceBlockWB, letBlockWB, 'j'));
     assertEquals(referenceWB.getBoundValue(), letValueWB);
-    assertEquals(referenceWB.getTypeExpr().deref(), letValueWB.getTypeExpr());
+    var exp1Type = letBlockWB.getInput('EXP1').connection.typeExpr;
+    assertNotEquals(referenceWB.getTypeExpr().deref(), letValueWB.getTypeExpr());
+    assertEquals(referenceWB.getTypeExpr().deref(), letValueWB.getTypeExpr().deref());
+    assertEquals(referenceWB.getTypeExpr().deref(), exp1Type);
     var intArithWB = workspace.newBlock('int_arithmetic_typed');
     var left = intArithWB.getInput('A').connection;
     assertFalse(referenceBlockWB.resolveReference(left));
@@ -914,8 +928,10 @@ function test_type_unification_howReferenceBlockDiffers() {
     // Conditions hold in "created manually" case.
     assertTrue(isVariableOf(referenceBlockMN, letBlockMN, 'k'));
     assertEquals(referenceMN.getBoundValue(), letValueMN);
+    var exp1Type = letBlockMN.getInput('EXP1').connection.typeExpr;
     assertNotEquals(referenceMN.getTypeExpr(), letValueMN.getTypeExpr());
-    assertEquals(referenceMN.getTypeExpr().deref(), letValueMN.getTypeExpr());
+    assertNotEquals(referenceMN.getTypeExpr().deref(), letValueMN.getTypeExpr());
+    assertEquals(referenceMN.getTypeExpr().deref(), exp1Type);
     var intArithMN = workspace.newBlock('int_arithmetic_typed');
     var left = intArithMN.getInput('A').connection;
     assertFalse(referenceBlockMN.resolveReference(left));

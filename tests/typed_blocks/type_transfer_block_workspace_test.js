@@ -211,8 +211,10 @@ function test_type_transfer_block_workspace_newBlockShareTypeExpression() {
     setVariableName(originalVarBlock, 'x');
     originalLetBlock.getInput('EXP2').connection.connect(
         originalVarBlock.outputConnection);
-    assertTrue(originalExp1Type ==
+    assertNotEquals(originalExp1Type,
         getVariable(originalLetBlock).getTypeExpr());
+    assertEquals(originalExp1Type,
+        getVariable(originalLetBlock).getTypeExpr().deref());
 
     var newLetBlock = virtually_transfer_workspace(originalLetBlock,
         otherWorkspace);
@@ -230,8 +232,10 @@ function test_type_transfer_block_workspace_newBlockShareTypeExpression() {
 
     // See variables' type expressions.
     assertTrue(getVariable(newLetBlock).getVariableName() === 'x');
-    assertTrue(originalExp1Type ==
+    assertFalse(originalExp1Type ==
         getVariable(newLetBlock).getTypeExpr());
+    assertTrue(originalExp1Type.deref() ==
+        getVariable(newLetBlock).getTypeExpr().deref());
     assertTrue(originalVarType ==
         getVariable(newVarBlock).getTypeExpr());
   } finally {
@@ -271,8 +275,10 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
 
     // See variables' type expressions.
     assertTrue(getVariable(newLetBlock).getVariableName() === 'flag');
-    assertTrue(originalExp1Type ==
+    assertFalse(originalExp1Type ==
         getVariable(newLetBlock).getTypeExpr());
+    assertTrue(originalExp1Type.deref().label ==
+        getVariable(newLetBlock).getTypeExpr().deref().label);
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();
@@ -376,8 +382,10 @@ function test_type_transfer_block_workspace_copyVariablesBlock() {
         originalLetBlock.outputConnection.typeExpr.deref());
     assertNotEquals(copiedLetBlock.getInput('EXP1').connection.typeExpr.deref(),
         originalLetBlock.getInput('EXP2').connection.typeExpr.deref());
-    assertEquals(copiedLetBlock.getInput('EXP1').connection.typeExpr,
+    assertNotEquals(copiedLetBlock.getInput('EXP1').connection.typeExpr,
         copiedValue.getTypeExpr());
+    assertEquals(copiedLetBlock.getInput('EXP1').connection.typeExpr,
+        copiedValue.getTypeExpr().deref());
     assertEquals(copiedVarBlock.outputConnection.typeExpr,
         copiedReference.getTypeExpr());
   } finally {
@@ -421,7 +429,8 @@ function test_type_transfer_block_workspace_transferringBlockManyTimes() {
     var newReference = getVariable(transVarBlock);
 
     assertEquals(newValue.referenceCount(), 2);
-    assertEquals(originalValueTypeExpr, newValue.getTypeExpr());
+    assertNotEquals(originalValueTypeExpr, newValue.getTypeExpr());
+    assertEquals(newValue.getTypeExpr().deref().label, Blockly.TypeExpr.BOOL_);
     assertEquals(originalReferenceTypeExpr, newReference.getTypeExpr());
     assertEquals(otherReference.getBoundValue(), newValue);
     assertEquals(otherReference.getTypeExpr().deref().label,
@@ -430,7 +439,8 @@ function test_type_transfer_block_workspace_transferringBlockManyTimes() {
     transBlock.getInput('EXP1').connection.disconnect(
         transBlock.getInputTargetBlock('EXP1').outputConnection);
 
-    assertEquals(newReference.getTypeExpr().deref(), newValue.getTypeExpr());
+    assertNotEquals(newReference.getTypeExpr().deref(), newValue.getTypeExpr());
+    assertEquals(newReference.getTypeExpr().deref(), newValue.getTypeExpr().deref());
 
     // Type-expr of otherVarBlock is out of date because otherVarBlock is not
     // connected to transBlock. To update it, call
@@ -438,7 +448,8 @@ function test_type_transfer_block_workspace_transferringBlockManyTimes() {
     assertNotEquals(otherReference.getTypeExpr().deref(),
         newValue.getTypeExpr());
     otherVarBlock.updateTypeInference(true);
-    assertEquals(otherReference.getTypeExpr().deref(), newValue.getTypeExpr());
+    assertNotEquals(otherReference.getTypeExpr().deref(), newValue.getTypeExpr());
+    assertEquals(otherReference.getTypeExpr().deref(), newValue.getTypeExpr().deref());
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();
@@ -541,7 +552,8 @@ function test_type_transfer_block_workspace_clearTypeInferenceByDisposeOfBlock()
 
     intArith1.dispose();
 
-    assertEquals(referenceTypExpr.deref(), letValue.getTypeExpr());
+    assertNotEquals(referenceTypExpr.deref(), letValue.getTypeExpr());
+    assertEquals(referenceTypExpr.deref(), letValue.getTypeExpr().deref());
   } finally {
     if (workbench) {
       workbench.dispose();
@@ -623,7 +635,8 @@ function test_type_transfer_block_workspace_nestedReferenceBlocksTransfer() {
     referenceBlockWB = transBlock.getInputTargetBlock('A');
     referenceBlockWB.outputConnection.disconnect();
     referenceTypExpr = getVariable(referenceBlockWB).getTypeExpr();
-    assertEquals(referenceTypExpr.deref(), letValue.getTypeExpr());
+    assertNotEquals(referenceTypExpr.deref(), letValue.getTypeExpr());
+    assertEquals(referenceTypExpr.deref(), letValue.getTypeExpr().deref());
 
     var list = workbench.getWorkspace().newBlock('lists_create_with_typed');
     var add0 = list.getInput('ADD0').connection;
