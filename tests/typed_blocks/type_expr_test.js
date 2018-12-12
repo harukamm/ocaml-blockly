@@ -195,3 +195,31 @@ function test_type_expr_isEquals() {
   var fun2 = new Blockly.TypeExpr.FUN(t, list2);
   assertFalse(Blockly.TypeExpr.equals(fun1, fun2));
 }
+
+function test_type_expr_unifyAndClear() {
+  // n -> BOOL
+  var n = new Blockly.TypeExpr.TVAR('N', null);
+  var bool1 = new Blockly.TypeExpr.BOOL();
+  n.unify(bool1);
+  assertEquals(n.val, bool1);
+
+  // n -> BOOL
+  //      ^
+  // m ---|
+  var m = new Blockly.TypeExpr.TVAR('M', null);
+  n.unify(m);
+  assertEquals(m.val, bool1);
+  assertFalse(m.occur(n.name));
+  // Note that the type variable 'm' is not bound to 'n.' It is bound to
+  // boolean type that 'n' refers to, instead.
+
+  n.clear();
+  assertEquals(m.val, bool1);
+  // 'm' is not bound to 'n', so 'm' is bound to boolean type even if type 'n'
+  // is cleared.
+
+  m.clear();
+  n.unify(m);
+  assertEquals(m.val, n);
+  assertTrue(m.occur(n.name));
+}
