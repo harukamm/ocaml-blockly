@@ -3046,7 +3046,7 @@ Blockly.Blocks['let_typed'] = {
       field.dispose(true);
     }
     var childNodes = xmlElement.childNodes;
-    this.argumentCound_ = childNodes.length;
+    this.argumentCount_ = childNodes.length;
     for (var x = 0; x < this.argumentCount_; x++) {
       var text = childNodes[x].textContent;
       var A = Blockly.RenderedTypeExpr.generateTypeVar();
