@@ -2964,7 +2964,9 @@ Blockly.Blocks['let_typed'] = {
     var exp1Type = this.getInput('EXP1').connection.typeExpr;
 
     if (exp1Type) {
-      exp1Type.unify(variable.getTypeExpr());
+      var varType = variable.getTypeExpr();
+      varType.clear();
+      exp1Type.unify(varType);
     } else {
       variable.setTypeExpr(null);
     }

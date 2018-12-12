@@ -876,3 +876,30 @@ function test_type_transfer_block_workspace_workbenchHoldUnResolvedVariables() {
     workspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_fieldTypeExprReplaced() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    var originalLetBlock = workspace.newBlock('let_typed');
+    var originalValueType = getVariable(originalLetBlock).getTypeExpr();
+    var originalExp1Type = originalLetBlock.getInput('EXP1').connection.typeExpr;
+    var originalExp2Type = originalLetBlock.getInput('EXP2').connection.typeExpr;
+
+    var transBlock = repeat_transfer_workspace(originalLetBlock,
+        otherWorkspace, 10);
+    var newValueType = getVariable(transBlock).getTypeExpr();
+    var newExp1Type = transBlock.getInput('EXP1').connection.typeExpr;
+    var newExp2Type = transBlock.getInput('EXP2').connection.typeExpr;
+
+    assertEquals(originalExp1Type, newExp1Type);
+    assertEquals(originalExp2Type, newExp2Type);
+    assertNull(newExp1Type.val);
+    assertNull(newExp2Type.val);
+    assertTrue(newValueType.occur(newExp1Type.name));
+    assertEquals(newValueType.val, newExp1Type);
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}
