@@ -53,12 +53,6 @@ Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
    */
   this.deleteLater_ = false;
 
-  /**
-   * Whether the variable has been added to the variable map of any block.
-   * @type {boolean}
-   */
-  this.inBlockDB = false;
-
   Blockly.BoundVariableValue.superClass_.constructor.call(this, block,
       fieldName, typeExpr);
 

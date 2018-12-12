@@ -80,6 +80,8 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
   this.inputList = [];
   /** @type {!Object<string, !Blockly.BoundVariableValue>} */
   this.typedValue = {};
+  /** @type {!Object<string, !Blockly.BoundVariableValueReference>} */
+  this.typedReference = {};
   /** @type {boolean|undefined} */
   this.inputsInline = undefined;
   /** @type {boolean} */
@@ -2667,8 +2669,7 @@ Blockly.Blocks['lambda_typed'] = {
    */
   typeExprReplaced: function() {
     var A = this.outputConnection.typeExpr.arg_type;
-    var field = this.getField('VAR');
-    var variable = field.getVariable();
+    var variable = this.typedValue['VAR'];
     variable.setTypeExpr(A);
   },
 
@@ -2845,8 +2846,7 @@ Blockly.Blocks['variables_get_typed'] = {
    */
   typeExprReplaced: function() {
     var A = this.outputConnection.typeExpr;
-    var field = this.getField('VAR');
-    var variable = field.getVariable();
+    var variable = this.typedReference['VAR'];
     variable.setTypeExpr(A);
   },
 
@@ -2881,7 +2881,7 @@ Blockly.Blocks['variables_get_typed'] = {
   },
 
   clearTypes: function() {
-    var variable = this.getField('VAR').getVariable();
+    var variable = this.typedReference['VAR'];
     goog.asserts.assert(this.outputConnection.typeExpr ==
         variable.getTypeExpr());
 
@@ -2891,7 +2891,7 @@ Blockly.Blocks['variables_get_typed'] = {
   },
 
   infer: function(env) {
-    var variable = this.getField('VAR').getVariable();
+    var variable = this.typedReference['VAR'];
     var expected = this.outputConnection.typeExpr;
     var varName = variable.getVariableName();
     var value = variable.getBoundValue();

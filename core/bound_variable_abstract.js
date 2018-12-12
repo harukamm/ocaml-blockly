@@ -58,6 +58,12 @@ Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr) {
    * @type {boolean}
    */
   this.inWorkspaceDB = false;
+
+  /**
+   * Whether the variable has been added to the variable map of any block.
+   * @type {boolean}
+   */
+  this.inBlockDB = false;
 };
 
 /**
