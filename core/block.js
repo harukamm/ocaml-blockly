@@ -1801,6 +1801,7 @@ Blockly.Block.doTypeInference = function(blocks, opt_reset) {
       // This block has no type-expr, or it is removed deleted.
       continue;
     }
+    goog.asserts.assert(!block.getParent());
     blocksToUpdate.push(block);
     if (block.isInMutator) {
       var references = Blockly.BoundVariables.getAllVariablesOnBlocks(block,
