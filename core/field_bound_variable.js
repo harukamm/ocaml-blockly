@@ -426,7 +426,7 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
 
   // Vertically center the block shape only if the current field size is
   // capable of containing it.
-  if (blockShapeHeight < this.size_.height) {
+  if (blockShapeHeight <= this.size_.height) {
     var top = (blockShapeHeight - dropdownHeight) / 2;
     this.blockShapedPath_.setAttribute('transform',
         'translate(0, -' + top + ')');
