@@ -429,3 +429,37 @@ function test_resolve_reference_collectContextForNestedBlocks() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_removeReferenceBlocks() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    setVariableName(letBlock, 'x');
+    var varBlock1 = workspace.newBlock('variables_get_typed');
+    var varBlock2 = workspace.newBlock('variables_get_typed');
+    var varBlock3 = workspace.newBlock('variables_get_typed');
+    setVariableName(varBlock1, 'x');
+    setVariableName(varBlock2, 'x');
+    setVariableName(varBlock3, 'x');
+    var field = getVariableField(letBlock);
+    var value = field.getVariable();
+    var ref1 = getVariable(varBlock1);
+    var ref2 = getVariable(varBlock2);
+    var ref3 = getVariable(varBlock3);
+    ref1.setBoundValue(value);
+    ref2.setBoundValue(value);
+    ref3.setBoundValue(value);
+
+    field.dispose(true);
+    var parentInput = goog.array.find(letBlock.inputList,
+        function(inp) {return inp.fieldRow.indexOf(field) != -1});
+    assertNotNull(parentInput);
+    var index = parentInput.fieldRow.indexOf(field);
+    assertNotEquals(index, -1);
+    parentInput.fieldRow.splice(index, 1);
+  } catch (e) {
+    console.log(e);
+  } finally {
+    workspace.dispose();
+  }
+}
