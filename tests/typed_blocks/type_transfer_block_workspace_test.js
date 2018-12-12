@@ -35,7 +35,6 @@ function test_type_transfer_block_workspace_simpleVariableBlocksRestoreName() {
     originalBlock = workspace.newBlock('variables_get_typed');
     setVariableName(originalBlock, 'ii');
     var reference1 = originalBlock.getField('VAR').getVariable();
-    Blockly.debug = true;
     assertFalse(originalBlock.resolveReference(null));
     var exp2 = transferredBlock.getInput('EXP2').connection;
     assertTrue(originalBlock.resolveReference(exp2));
