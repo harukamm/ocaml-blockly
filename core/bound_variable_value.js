@@ -84,17 +84,12 @@ Blockly.BoundVariableValue.prototype.setTypeExpr = function(typeExpr) {
 };
 
 /**
- * Clear binding on the type expression, and bind references' type expression
- * with it.
+ * Bind references' type expression with this value's type expression.
  * @override
  */
-Blockly.BoundVariableValue.prototype.clearTypeExpr = function() {
-  Blockly.BoundVariableValue.superClass_.clearTypeExpr.call(this);
-
+Blockly.BoundVariableValue.prototype.unifyTypeExpr = function() {
   for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
-    // Make a reference clear its type expression and bind the type expression
-    // with this value's type expression.
-    reference.clearTypeExpr();
+    reference.unifyTypeExpr();
   }
 };
 

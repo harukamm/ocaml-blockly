@@ -183,13 +183,10 @@ Blockly.BoundVariableValueReference.prototype.valueTypeExprChanged = function(
 };
 
 /**
- * Clear binding on the type expression, and restore the binding only to the
- * value's type expression.
+ * Bind the type expression with the value's type expression.
  * @override
  */
-Blockly.BoundVariableValueReference.prototype.clearTypeExpr = function() {
-  Blockly.BoundVariableValueReference.superClass_.clearTypeExpr.call(this);
-
+Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
   var valueType = this.value_ && this.value_.getTypeExpr();
   if (valueType) {
     valueType.unify(this.typeExpr_);

@@ -2695,14 +2695,14 @@ Blockly.Blocks['lambda_typed'] = {
     var variable = this.typedValue['VAR'];
     goog.asserts.assert(this.outputConnection.typeExpr.arg_type ==
         variable.getTypeExpr());
-    // Call the clearTypeExpr function on the variable instead of running
-    // type.clear() function directly.
-    variable.clearTypeExpr();
+    variable.getTypeExpr().clear();
     this.outputConnection.typeExpr.return_type.clear();
     this.callClearTypes_('RETURN');
   },
 
   infer: function(env) {
+    var variable = this.typedValue['VAR'];
+    variable.unifyTypeExpr();
     var var_name = this.getField('VAR').getText();
     var expected = this.outputConnection.typeExpr;
     var env2 = Object.assign({}, env);
@@ -2887,11 +2887,12 @@ Blockly.Blocks['variables_get_typed'] = {
 
     // Call the clearTypeExpr function on the variable instead of running
     // type.clear() function directly.
-    variable.clearTypeExpr();
+    variable.getTypeExpr().clear();
   },
 
   infer: function(env) {
     var variable = this.typedReference['VAR'];
+    variable.unifyTypeExpr();
     var expected = this.outputConnection.typeExpr;
     var varName = variable.getVariableName();
     var value = variable.getBoundValue();
@@ -3109,22 +3110,17 @@ Blockly.Blocks['let_typed'] = {
   },
 
   clearTypes: function() {
-    this.typedValue['VAR'].clearTypeExpr();
+    this.typedValue['VAR'].getTypeExpr().clear();
     var exp1Type = this.getInput('EXP1').connection.typeExpr;
     exp1Type.clear();
     this.getInput('EXP2').connection.typeExpr.clear();
     this.callClearTypes_('EXP1');
     this.callClearTypes_('EXP2');
-    if (this.argumentCount_ == 0) {
-      var varType = this.typedValue['VAR'].getTypeExpr();
-      exp1Type.unify(varType);
-    } else {
-      throw 'Not implemented';
-    }
   },
 
   infer: function(env) {
     var variable = this.typedValue['VAR'];
+    variable.unifyTypeExpr();
     var var_name = variable.getVariableName();
     var expected_exp1 = this.getInput('EXP1').connection.typeExpr;
     var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
@@ -3137,6 +3133,14 @@ Blockly.Blocks['let_typed'] = {
       exp1.unify(expected_exp1);
     if (exp2)
       exp2.unify(expected_exp2);
+
+    if (this.argumentCount_ == 0) {
+      var exp1Type = this.getInput('EXP1').connection.typeExpr;
+      var varType = this.typedValue['VAR'].getTypeExpr();
+      exp1Type.unify(varType);
+    } else {
+      throw 'Not implemented';
+    }
 
     return expected_exp2;
   }

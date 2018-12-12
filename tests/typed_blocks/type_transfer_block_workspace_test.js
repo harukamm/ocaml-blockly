@@ -295,7 +295,9 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
     exp1.disconnect();
     assertEquals(newLetValue.getTypeExpr().val, exp1.typeExpr);
     assertNull(exp1.typeExpr.val);
-    assertEquals(orphanReference.getTypeExpr().val, exp1.typeExpr);
+    assertEquals(orphanReference.getTypeExpr().deref(), exp1.typeExpr);
+    var type = orphanReference.getTypeExpr();
+    assertTrue(type.val == exp1.typeExpr || type.val == newLetValue.getTypeExpr());
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();
