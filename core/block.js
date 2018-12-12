@@ -1760,27 +1760,7 @@ Blockly.Block.inferBlocksType_ = function(blocks, opt_reset) {
  * @param {boolean=} opt_reset True if types should be reset first.
  */
 Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
-  if (!this.outputConnection || !this.outputConnection.typeExpr) {
-    // This block has no type-expr, or it is removed deleted.
-    return;
-  }
-  var blocksToUpdate = [this];
-
-  if (this.isInMutator) {
-    // Value blocks basically contain their reference blocks inside, but it
-    // could not be true if reference blocks exist in workbench because
-    // workbench could have implicit value context.
-    // If we update type inference for isolated reference blocks on workbench,
-    // its value block's type-expr should also be updated even if they are not
-    // connected.
-    var references = Blockly.BoundVariables.getAllVariablesOnBlocks(this,
-        true /** Gets only references. */);
-    var values = Blockly.BoundVariables.getValuesFromReferenceList(references);
-    Array.prototype.push.apply(blocksToUpdate,
-        Blockly.BoundVariables.getAllRootBlocks(values));
-  }
-
-  Blockly.Block.inferBlocksType_(blocksToUpdate, opt_reset);
+  Blockly.Block.inferBlocksType_([this], opt_reset);
 };
 
 /**
