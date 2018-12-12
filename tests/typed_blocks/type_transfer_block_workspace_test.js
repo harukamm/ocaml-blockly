@@ -446,7 +446,7 @@ function test_type_transfer_block_workspace_transferringBlockManyTimes() {
     var newReference = getVariable(transVarBlock);
 
     assertEquals(newValue.referenceCount(), 2);
-    assertNotEquals(originalValueTypeExpr, newValue.getTypeExpr());
+    assertEquals(originalValueTypeExpr, newValue.getTypeExpr());
     assertEquals(newValue.getTypeExpr().deref().label, Blockly.TypeExpr.BOOL_);
     assertEquals(originalReferenceTypeExpr, newReference.getTypeExpr());
     assertEquals(otherReference.getBoundValue(), newValue);

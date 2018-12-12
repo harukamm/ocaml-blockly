@@ -1034,6 +1034,10 @@ Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock,
     if (thisBlock.type !== oldBlock.type) {
       continue;
     }
+    if (thisBlock.otherTypes && oldBlock.otherTypes) {
+      thisBlock.otherTypes = oldBlock.otherTypes;
+      oldBlock.otherTypes = [];
+    }
     if (thisBlock.outputConnection) {
       thisBlock.outputConnection.replaceTypeExprWith(
           oldBlock.outputConnection, opt_removeTypeExpr);
@@ -2936,6 +2940,7 @@ Blockly.Blocks['let_typed'] = {
 
     this.argumentCount_ = 0;
     exp1Type.unify(varType);
+    this.otherTypes = [varType];
   },
 
   /**
@@ -2945,19 +2950,12 @@ Blockly.Blocks['let_typed'] = {
    * up-to-date.
    */
   typeExprReplaced: function() {
-    if (this.argumentCount_ != 0) {
-      throw 'Not implemented';
-    }
     var variable = this.typedValue['VAR'];
     var exp1Type = this.getInput('EXP1').connection.typeExpr;
 
     if (exp1Type) {
-      // Do not call the function clear() directly on the variable's type
-      // expression by running like `variable.getTypeExpr().clear()`. Call the
-      // function clearTypeExpr() instead.
-      variable.clearTypeExpr();
-      var varType = variable.getTypeExpr();
-      exp1Type.unify(varType);
+      var type = this.otherTypes.length == 1 ? this.otherTypes[0] : null;
+      variable.setTypeExpr(type);
     } else {
       variable.setTypeExpr(null);
     }
