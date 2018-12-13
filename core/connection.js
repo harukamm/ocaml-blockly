@@ -732,9 +732,6 @@ Blockly.Connection.prototype.setTypeExpr = function(t, opt_overwrite) {
         'in the connection.');
   } else {
     this.typeExpr = t;
-    if (isOverwrite && goog.isFunction(this.sourceBlock_.typeExprReplaced)) {
-      this.sourceBlock_.typeExprReplaced();
-    }
   }
   return this;
 }

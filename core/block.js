@@ -1034,10 +1034,6 @@ Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock,
     if (thisBlock.type !== oldBlock.type) {
       continue;
     }
-    if (thisBlock.otherTypes && oldBlock.otherTypes) {
-      thisBlock.otherTypes = oldBlock.otherTypes;
-      oldBlock.otherTypes = [];
-    }
     if (thisBlock.outputConnection) {
       thisBlock.outputConnection.replaceTypeExprWith(
           oldBlock.outputConnection, opt_removeTypeExpr);
@@ -1053,6 +1049,13 @@ Blockly.Block.prototype.replaceTypeExprWith = function(oldBlock,
         if (targetBlock && oldTargetBlock) {
           pairsToUnify.push([targetBlock, oldTargetBlock]);
         }
+      }
+    }
+    if (goog.isFunction(thisBlock.typeExprReplaced)) {
+      goog.asserts.assert(goog.isFunction(oldBlock.typeExprReplaced));
+      thisBlock.typeExprReplaced(oldBlock);
+      if (opt_removeTypeExpr !== false) {
+        oldBlock.typeExprReplaced(null);
       }
     }
   }
@@ -2665,8 +2668,10 @@ Blockly.Blocks['lambda_typed'] = {
    * Would be called if the block's type expressions are replaced with other
    * ones, and a type expression this field's variable refers to is no longer
    * up-to-date.
+   * @param {Blockly.Block} block The source block to replace this block with.
+   *     Could be used to additionally replace the type expression of fields.
    */
-  typeExprReplaced: function() {
+  typeExprReplaced: function(block) {
     var outputType = this.outputConnection.typeExpr;
     var argType = outputType ? outputType.arg_type : null;
     var variable = this.typedValue['VAR'];
@@ -2843,8 +2848,10 @@ Blockly.Blocks['variables_get_typed'] = {
    * Would be called if the block's type expressions are replaced with other
    * ones, and a type expression this field's variable refers to is no longer
    * up-to-date.
+   * @param {Blockly.Block} block The source block to replace this block with.
+   *     Could be used to additionally replace the type expression of fields.
    */
-  typeExprReplaced: function() {
+  typeExprReplaced: function(block) {
     var A = this.outputConnection.typeExpr;
     var variable = this.typedReference['VAR'];
     variable.setTypeExpr(A);
@@ -2941,7 +2948,6 @@ Blockly.Blocks['let_typed'] = {
 
     this.argumentCount_ = 0;
     exp1Type.unify(varType);
-    this.otherTypes = [varType];
   },
 
   /**
@@ -2949,14 +2955,15 @@ Blockly.Blocks['let_typed'] = {
    * Would be called if the block's type expressions are replaced with other
    * ones, and a type expression this field's variable refers to is no longer
    * up-to-date.
+   * @param {Blockly.Block} block The source block to replace this block with.
+   *     Could be used to additionally replace the type expression of fields.
    */
-  typeExprReplaced: function() {
+  typeExprReplaced: function(block) {
     var variable = this.typedValue['VAR'];
-    var exp1Type = this.getInput('EXP1').connection.typeExpr;
+    var typeOwner = block ? block.typedValue['VAR'] : null;
 
-    if (exp1Type) {
-      var type = this.otherTypes.length == 1 ? this.otherTypes[0] : null;
-      variable.setTypeExpr(type);
+    if (typeOwner) {
+      variable.setTypeExpr(typeOwner.getTypeExpr());
     } else {
       variable.setTypeExpr(null);
     }
