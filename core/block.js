@@ -2892,8 +2892,6 @@ Blockly.Blocks['variables_get_typed'] = {
     goog.asserts.assert(this.outputConnection.typeExpr ==
         variable.getTypeExpr());
 
-    // Call the clearTypeExpr function on the variable instead of running
-    // type.clear() function directly.
     variable.getTypeExpr().clear();
   },
 
