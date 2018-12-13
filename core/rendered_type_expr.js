@@ -187,33 +187,6 @@ Blockly.RenderedTypeExpr.shape['typeVar'] = {
 };
 
 /**
- * @static
- * @return {Blockly.RenderedTypeExpr}
- */
-Blockly.RenderedTypeExpr.generateTypeVar = function() {
-  var name = Blockly.TypeExpr.generateTypeVarName_();
-  return new Blockly.RenderedTypeExpr.TVAR(name, null);
-}
-
-/**
- * Creates type instances representing function.
- * @param {!Array.<!Blockly.RenderedTypeExpr>} types List of types in order to
- *     be nested inside the function type.
- * @return {!Blockly.RenderedTypeExpr.FUN} The created function type.
- */
-Blockly.RenderedTypeExpr.createFunType = function(types) {
-  goog.asserts.assert(2 <= types.length);
-  var returnType = types[types.length - 1];
-  var second = types[types.length - 2];
-  var result = new Blockly.RenderedTypeExpr.FUN(second, returnType);
-  for (var i = types.length - 3; 0 <= i; i--) {
-    var type = types[i];
-    result = new Blockly.RenderedTypeExpr.FUN(type, result);
-  }
-  return result;
-};
-
-/**
  * Create a list of record to present highlights for the type expression.
  * @return {Array<{color: string, path: string}>}
  */
