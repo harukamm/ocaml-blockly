@@ -3104,7 +3104,9 @@ Blockly.Blocks['let_typed'] = {
       this.argumentCount_++;
     }
     if (contextChanged) {
+      this.updateTypeInference(true);
       this.updateWorkbenchFlyout();
+      this.workspace.renderTypeChangedWorkspaces();
     }
   },
 
