@@ -6,12 +6,12 @@
 'use strict';
 
 goog.provide('Blockly.TypeInfer');
-goog.provide('Blockly.TypeInfer.Exp');
+goog.provide('Blockly.TypeInfer.Ast');
 
 goog.require('goog.asserts');
 
 /**
  * @constructor
  */
-Blockly.TypeInfer.Exp = function() {
+Blockly.TypeInfer.Ast = function() {
 };
