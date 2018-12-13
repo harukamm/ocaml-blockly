@@ -3146,7 +3146,15 @@ Blockly.Blocks['let_typed'] = {
       var varType = this.typedValue['VAR'].getTypeExpr();
       exp1Type.unify(varType);
     } else {
-      throw 'Not implemented';
+      var funTypes = [];
+      for (var x = 0; x < this.argumentCount_; x++) {
+        var argVar = this.typedValue['ARG' + x];
+        argVar.unifyTypeExpr();
+        funTypes.push(argVar.getTypeExpr());
+      }
+      funTypes.push(expected_exp1);
+      var funType = Blockly.RenderedTypeExpr.createFunType(funTypes);
+      variable.getTypeExpr().unify(funType);
     }
 
     return expected_exp2;
