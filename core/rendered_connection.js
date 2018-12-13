@@ -223,7 +223,8 @@ Blockly.RenderedConnection.prototype.highlight = function() {
   var steps;
   if (this.type == Blockly.INPUT_VALUE || this.type == Blockly.OUTPUT_VALUE) {
     if (this.typeExpr) {
-      steps = 'm 0,0 ' + this.typeExpr.getHighlightedPath();
+      var path = Blockly.RenderedTypeExpr.getHighlightedPath(this.typeExpr);
+      steps = 'm 0,0 ' + path;
     } else {
       steps = 'm 0,0 ' + Blockly.BlockSvg.TAB_PATH_DOWN + ' v 5';
     }
@@ -477,7 +478,8 @@ Blockly.RenderedConnection.prototype.renderTypeVarHighlights = function() {
   var x = this.x_ - xy.x;
   var y = this.y_ - xy.y;
   /** @type {Array<{color: string, path: string}>} */
-  var typeVarHighlights = this.typeExpr.typeVarHighlights();
+  var typeVarHighlights =
+      Blockly.RenderedTypeExpr.typeVarHighlights(this.typeExpr);
   for (var i = 0; i < typeVarHighlights.length; i++) {
     var highlight = typeVarHighlights[i];
     this.typeVarPaths_.push(

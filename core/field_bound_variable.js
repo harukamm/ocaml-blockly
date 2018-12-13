@@ -451,9 +451,10 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
   var typeExpr = this.variable_ && this.variable_.getTypeExpr();
 
   if (typeExpr) {
-    var height = typeExpr.getTypeExprHeight(typeExpr);
+    var height = Blockly.RenderedTypeExpr.getTypeExprHeight(typeExpr);
     inlineSteps.push('M 0,0');
-    typeExpr.renderTypeExpr(inlineSteps, 1 /** Gets the down path. */);
+    Blockly.RenderedTypeExpr.renderTypeExpr(typeExpr,
+        inlineSteps, 1 /** Gets the down path. */);
 
     var downHeight = 0;
     if (height < 23) {

@@ -480,8 +480,9 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
 
     // Sorin: expand based on connection height
     if (input.connection && input.connection.typeExpr) {
-      input.renderHeight = Math.max(input.renderHeight,
-          input.connection.typeExpr.getTypeExprHeight());
+      var typeHeight =
+          Blockly.RenderedTypeExpr.getTypeExprHeight(input.connection.typeExpr);
+      input.renderHeight = Math.max(input.renderHeight, typeHeight);
     }
 
     // Blocks have a one pixel shadow that should sometimes overhang.
@@ -815,7 +816,8 @@ Blockly.BlockSvg.prototype.renderDrawRight_ = function(pathObject, inputRows,
   }
   // Sorin: adjust height to display output
   if (this.outputConnection && this.outputConnection.typeExpr) {
-    var out_height = this.outputConnection.typeExpr.getTypeExprHeight();
+    var out_height = Blockly.RenderedTypeExpr.getTypeExprHeight(
+        this.outputConnection.typeExpr);
     var padding = out_height - cursor.y;
     if (padding > 0) {
       cursor.y += padding
@@ -886,9 +888,11 @@ Blockly.BlockSvg.prototype.renderDrawLeft_ = function(pathObject) {
     this.outputConnection.setOffsetInBlock(0, 0);
     var tabHeight = Blockly.BlockSvg.TAB_HEIGHT;
     if (this.outputConnection.typeExpr) {
-      tabHeight = this.outputConnection.typeExpr.getTypeExprHeight();
+      tabHeight = Blockly.RenderedTypeExpr.getTypeExprHeight(
+          this.outputConnection.typeExpr);
       steps.push('V', tabHeight);
-      steps.push(this.outputConnection.typeExpr.getUpPath());
+      steps.push(Blockly.RenderedTypeExpr.getUpPath(
+          this.outputConnection.typeExpr));
       this.outputConnection.setLastRenderedTypeExpr();
     } else {
       steps.push('V', Blockly.BlockSvg.TAB_HEIGHT);
@@ -984,8 +988,10 @@ Blockly.BlockSvg.prototype.renderInlineRow_ = function(pathObject, row, cursor,
       var tabHeight = Blockly.BlockSvg.TAB_HEIGHT;
       if (input.connection.typeExpr) {
         input.connection.setLastRenderedTypeExpr();
-        inlineSteps.push(input.connection.typeExpr.getDownPath());
-        tabHeight = input.connection.typeExpr.getTypeExprHeight();
+        inlineSteps.push(
+            Blockly.RenderedTypeExpr.getDownPath(input.connection.typeExpr));
+        tabHeight = Blockly.RenderedTypeExpr.getTypeExprHeight(
+            input.connection.typeExpr);
       } else {
         inlineSteps.push(Blockly.BlockSvg.TAB_PATH_DOWN);
       }
@@ -1083,8 +1089,10 @@ Blockly.BlockSvg.prototype.renderExternalValueInput_ = function(pathObject, row,
   var tabHeight = Blockly.BlockSvg.TAB_HEIGHT;
   if (input.connection.typeExpr) {
     input.connection.setLastRenderedTypeExpr();
-    steps.push(input.connection.typeExpr.getDownPath());
-    tabHeight = input.connection.typeExpr.getTypeExprHeight();
+    steps.push(
+        Blockly.RenderedTypeExpr.getDownPath(input.connection.typeExpr));
+    tabHeight = Blockly.RenderedTypeExpr.getTypeExprHeight(
+        input.connection.typeExpr);
   } else {
     steps.push(Blockly.BlockSvg.TAB_PATH_DOWN);
   }

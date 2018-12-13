@@ -188,57 +188,73 @@ Blockly.RenderedTypeExpr.shape['typeVar'] = {
 
 /**
  * Create a list of record to present highlights for the type expression.
+ * @param {!Blockly.TypeExpr} type
  * @return {Array<{color: string, path: string}>}
+ * @static
  */
-Blockly.RenderedTypeExpr.prototype.typeVarHighlights = function() {
+Blockly.RenderedTypeExpr.typeVarHighlights = function(type) {
   var typeVarHighlights = [];
-  this.typeVarHighlights_(0, typeVarHighlights);
+  Blockly.RenderedTypeExpr.typeVarHighlights_(type, 0, typeVarHighlights);
   return typeVarHighlights;
 }
 
 /**
  * Helper function to create a highlight for type variable
+ * @param {!Blockly.TypeExpr} type
  * @param {number} y
  * @param {Array<{color: string, path: string}>} typeVarHighlights
+ * @private
+ * @static
  */
-Blockly.RenderedTypeExpr.prototype.typeVarHighlights_ = function(y, typeVarHighlights) {
-  var type = this.deref();
+Blockly.RenderedTypeExpr.typeVarHighlights_ = function(type, y, typeVarHighlights) {
+  var type = type.deref();
+  var typeName = type.getTypeName();
+  var shape = Blockly.RenderedTypeExpr.shape[typeName];
   var children = type.getChildren();
   if (type.isTypeVar()) {
     typeVarHighlights.push({
       color: type.color,
-      path: "m 0," + y + " " + type.shape.tvarHighlight.call(type)
+      path: "m 0," + y + " " + shape.tvarHighlight.call(type)
     });
   } else if (children.length != 0) {
     var name = type.getTypeName();
-    var offsetsY = type.shape.offsetsY.call(type);
+    var offsetsY = shape.offsetsY.call(type);
     for (var i = 0; i < children.length; i++) {
-      children[i].typeVarHighlights_(y + offsetsY[i], typeVarHighlights);
+      Blockly.RenderedTypeExpr.typeVarHighlights_(children[i],
+          y + offsetsY[i], typeVarHighlights);
     }
   }
 }
 
-Blockly.RenderedTypeExpr.prototype.getTypeExprHeight = function() {
-  var type = this.deref();
-  return type.shape.height.call(type);
+/*
+ * @param {!Blockly.TypeExpr} type
+ */
+Blockly.RenderedTypeExpr.getTypeExprHeight = function(type) {
+  var type = type.deref();
+  var typeName = type.getTypeName();
+  var shape = Blockly.RenderedTypeExpr.shape[typeName];
+  return shape.height.call(type);
 }
 
 /**
+ * @param {!Blockly.TypeExpr} type
  * @param {!Array.<string>} steps Path of block outline.
  * @param {number} n Specify down, up or highlight (1, 2, or 3).
  */
-Blockly.RenderedTypeExpr.prototype.renderTypeExpr = function(steps, n) {
-  var type = this.deref();
+Blockly.RenderedTypeExpr.renderTypeExpr = function(type, steps, n) {
+  var type = type.deref();
+  var typeName = type.getTypeName();
+  var shape = Blockly.RenderedTypeExpr.shape[typeName]
   switch (n) {
     case 1:
-      type.shape.down.call(type, steps);
+      shape.down.call(type, steps);
       break;
     case 2:
-      type.shape.up.call(type, steps);
+      shape.up.call(type, steps);
       break;
     case 3:
-      type.shape.down.call(type, steps);
-      var height = type.shape.height.call(type, steps);
+      shape.down.call(type, steps);
+      var height = shape.height.call(type, steps);
       var diff = Blockly.BlockSvg.MIN_BLOCK_Y - height;
       if (0 < diff) {
         steps.push('v ' + diff);
@@ -250,23 +266,33 @@ Blockly.RenderedTypeExpr.prototype.renderTypeExpr = function(steps, n) {
 }
 
 /**
+ * @param {!Blockly.TypeExpr} type
  * @param {number} n Specify down, up, or highlight (1, 2, or 3).
  * @return {string}
  */
-Blockly.RenderedTypeExpr.prototype.getPath = function(n) {
+Blockly.RenderedTypeExpr.getPath = function(type, n) {
   var steps = [];
-  this.renderTypeExpr(steps, n);
+  Blockly.RenderedTypeExpr.renderTypeExpr(type, steps, n);
   return steps.join(' ');
 }
 
-Blockly.RenderedTypeExpr.prototype.getDownPath = function() {
-  return this.getPath(1);
+/*
+ * @param {!Blockly.TypeExpr} type
+ */
+Blockly.RenderedTypeExpr.getDownPath = function(type) {
+  return Blockly.RenderedTypeExpr.getPath(type, 1);
 }
 
-Blockly.RenderedTypeExpr.prototype.getUpPath = function() {
-  return this.getPath(2);
+/*
+ * @param {!Blockly.TypeExpr} type
+ */
+Blockly.RenderedTypeExpr.getUpPath = function(type) {
+  return Blockly.RenderedTypeExpr.getPath(type, 2);
 }
 
-Blockly.RenderedTypeExpr.prototype.getHighlightedPath = function() {
-  return this.getPath(3);
+/*
+ * @param {!Blockly.TypeExpr} type
+ */
+Blockly.RenderedTypeExpr.getHighlightedPath = function(type) {
+  return Blockly.RenderedTypeExpr.getPath(type, 3);
 }
