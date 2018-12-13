@@ -2005,8 +2005,8 @@ Blockly.Block.prototype.makeConnection_ = function(type) {
 /**
  * Call the Infer function indirectly if it exists.
  * @param {string} name The name of the input
- * @param {Object<string, Blockly.RenderedTypeExpr>} env
- * @return {Blockly.RenderedTypeExpr} type expression of the input
+ * @param {Object<string, Blockly.TypeExpr>} env
+ * @return {Blockly.TypeExpr} type expression of the input
  */
 Blockly.Block.prototype.callInfer_ = function(name, env) {
   var input = this.getInput(name);

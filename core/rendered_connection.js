@@ -48,7 +48,7 @@ Blockly.RenderedConnection = function(source, type) {
 
   /**
    * The last rendered type expression.
-   * @type {Blockly.RenderedTypeExpr}
+   * @type {Blockly.TypeExpr}
    * @private
    */
   this.lastRenderedTypeExpr_ = null;
