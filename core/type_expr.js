@@ -506,6 +506,11 @@ Blockly.TypeExpr.generateTypeVarName_ = function() {
   return name;
 }
 
+Blockly.TypeExpr.generateTypeVar = function() {
+  var name = Blockly.TypeExpr.generateTypeVarName_();
+  return new Blockly.TypeExpr.TVAR(name, null);
+};
+
 /**
  * @param {Blockly.TypeExpr} other
  */
@@ -635,4 +640,22 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
     }
   }
   return true;
+};
+
+/**
+ * Creates type instances representing function.
+ * @param {!Array.<!Blockly.TypeExpr>} types List of types in order to
+ *     be nested inside the function type.
+ * @return {!Blockly.TypeExpr.FUN} The created function type.
+ */
+Blockly.TypeExpr.createFunType = function(types) {
+  goog.asserts.assert(2 <= types.length);
+  var returnType = types[types.length - 1];
+  var second = types[types.length - 2];
+  var result = new Blockly.TypeExpr.FUN(second, returnType);
+  for (var i = types.length - 3; 0 <= i; i--) {
+    var type = types[i];
+    result = new Blockly.TypeExpr.FUN(type, result);
+  }
+  return result;
 };
