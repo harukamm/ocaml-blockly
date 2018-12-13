@@ -512,6 +512,31 @@ Blockly.TypeExpr.generateTypeVar = function() {
 };
 
 /**
+ * Collects a list of type variables existing inside this type expression.
+ * @param {!Array.<!Blockly.TypeExpr>} The list of type variables.
+ */
+Blockly.TypeExpr.prototype.getTvarList = function() {
+  var type = this.deepDeref();
+  var tvars = [];
+  var staq = [type];
+  while (staq.length) {
+    var t = staq.pop();
+
+    if (t.label == Blockly.TypeExpr.TVAR_) {
+      tvars.push(t);
+      continue;
+    }
+
+    var children = t.getChildren();
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+      staq.push(child);
+    }
+  }
+  return tvars;
+};
+
+/**
  * @param {Blockly.TypeExpr} other
  */
 Blockly.TypeExpr.prototype.unify = function(other) {

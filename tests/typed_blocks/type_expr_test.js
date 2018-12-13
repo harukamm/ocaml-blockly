@@ -223,3 +223,43 @@ function test_type_expr_unifyAndClear() {
   assertEquals(m.val, n);
   assertTrue(m.occur(n.name));
 }
+
+function test_type_expr_getTvarListFunc() {
+  var m = new Blockly.TypeExpr.TVAR('M', null);
+  var n = new Blockly.TypeExpr.TVAR('N', m);
+  var l = new Blockly.TypeExpr.TVAR('L', n);
+  assertTrue(isSameSet(m.getTvarList(), [m]));
+  assertTrue(isSameSet(n.getTvarList(), [m]));
+  assertTrue(isSameSet(l.getTvarList(), [m]));
+
+  var list1 = new Blockly.TypeExpr.LIST(l);
+  assertTrue(isSameSet(list1.getTvarList(), [m]));
+
+  var x = new Blockly.TypeExpr.TVAR('X', list1);
+  var y = new Blockly.TypeExpr.TVAR('Y', x);
+  var z = new Blockly.TypeExpr.TVAR('Z', y);
+  assertTrue(isSameSet(z.getTvarList(), [m]));
+
+  var p = new Blockly.TypeExpr.TVAR('P', z)
+  var pair1 = new Blockly.TypeExpr.PAIR(z, p);
+  assertTrue(isSameSet(pair1.getTvarList(), [m, m]));
+
+  var q = new Blockly.TypeExpr.TVAR('Q', null)
+  var pair2 = new Blockly.TypeExpr.PAIR(z, q);
+  assertTrue(isSameSet(pair2.getTvarList(), [q, m]));
+
+  var bool1 = new Blockly.TypeExpr.BOOL();
+  m.unify(bool1);
+  assertTrue(isSameSet(m.getTvarList(), []));
+  assertTrue(isSameSet(n.getTvarList(), []));
+  assertTrue(isSameSet(l.getTvarList(), []));
+  assertTrue(isSameSet(list1.getTvarList(), []));
+  assertTrue(isSameSet(z.getTvarList(), []));
+  assertTrue(isSameSet(pair1.getTvarList(), []));
+  assertTrue(isSameSet(pair2.getTvarList(), [q]));
+
+  var a = new Blockly.TypeExpr.TVAR('A', null);
+  var b = new Blockly.TypeExpr.TVAR('B', null);
+  var fun = Blockly.TypeExpr.createFunType([pair1, pair2, a, b, m, bool1]);
+  assertTrue(isSameSet(fun.getTvarList(), [q, a, b]));
+}
