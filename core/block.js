@@ -3033,8 +3033,8 @@ Blockly.Blocks['let_typed'] = {
     var container = document.createElement('mutation');
     for (var x = 0; x < this.argumentCount_; x++) {
       var itemDom = document.createElement('item');
-      var field = this.getField('ARG' + x);
-      var textNode = document.createTextNode(field.getText());
+      var variable = this.typedValue['ARG' + x];
+      var textNode = document.createTextNode(variable.getVariableName());
       itemDom.appendChild(textNode);
       container.appendChild(itemDom);
     }
