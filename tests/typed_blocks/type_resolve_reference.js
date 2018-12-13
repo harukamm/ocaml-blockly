@@ -178,17 +178,6 @@ function test_resolve_reference_clearCyclicReference() {
 function test_resolve_reference_collectAllBoundVariables() {
   var workspace = create_typed_workspace();
   try {
-    function isSameSet(varList1, varList2) {
-      if (varList1.length != varList2.length) {
-        return false;
-      }
-      for (var i = 0, variable; variable = varList1[i]; i++) {
-        if (varList2.indexOf(variable) == -1) {
-          return false;
-        }
-      }
-      return true;
-    }
     var letBlock = workspace.newBlock('let_typed');
     var varBlock1 = workspace.newBlock('variables_get_typed');
     var varBlock2 = workspace.newBlock('variables_get_typed');

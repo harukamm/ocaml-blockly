@@ -130,6 +130,23 @@ function checkBlocksArePaired(valueBlocks, referenceBlocks) {
   assertEquals(values.length, 0);
 }
 
+function isSameSet(arr1, arr2) {
+  if (arr1.length != arr2.length) {
+    return false;
+  }
+  var checked = [].concat(arr2);
+  for (var i = 0, x; x = arr1[i]; i++) {
+    var index = checked.indexOf(x);
+    if (index == -1) {
+      return false;
+    } else {
+      checked.splice(index, 1);
+    }
+  }
+  assertEquals(checked.length, 0);
+  return true;
+}
+
 /* End functions for variables. */
 
 /* Begin functions for mutators. */

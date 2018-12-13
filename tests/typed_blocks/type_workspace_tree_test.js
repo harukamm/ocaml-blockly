@@ -50,23 +50,6 @@ function create_dummy_workbench(block) {
   return workbench;
 }
 
-function isSameSet(arr1, arr2) {
-  if (arr1.length != arr2.length) {
-    return false;
-  }
-  var checked = [];
-  for (var i = 0, x; x = arr1[i]; i++) {
-    var index = arr2.indexOf(x);
-    if (index == -1) {
-      return false;
-    } else if (checked[index]) {
-      return false;
-    }
-    checked[index] = true;
-  }
-  return true;
-}
-
 function isSameSetMutator(arr1, arr2) {
   var arr2 = goog.array.map(arr2, function(m) {return m.getWorkspace();});
   return isSameSet(arr1, arr2);
