@@ -3071,11 +3071,15 @@ Blockly.Blocks['let_typed'] = {
   decompose: function(workspace) {
     var containerBlock =
         workspace.newBlock('args_create_with_container');
-    containerBlock.initSvg();
+    if (containerBlock.initSvg) {
+      containerBlock.initSvg();
+    }
     var connection = containerBlock.getInput('STACK').connection;
     for (var x = 0; x < this.argumentCount_; x++) {
       var itemBlock = workspace.newBlock('args_create_with_item');
-      itemBlock.initSvg();
+      if (itemBlock.initSvg) {
+        itemBlock.initSvg();
+      }
       connection.connect(itemBlock.previousConnection);
       connection = itemBlock.nextConnection;
     }
@@ -3100,13 +3104,19 @@ Blockly.Blocks['let_typed'] = {
       var name = 'arg' + this.argumentCount_;
       var field = Blockly.FieldBoundVariable.newValue(A, 'EXP1', name);
       input.appendField(field, 'ARG' + this.argumentCount_);
-      field.init();
+      if (this.rendered) {
+        field.init();
+      } else {
+        field.initModel();
+      }
       this.argumentCount_++;
     }
     if (contextChanged) {
       this.updateTypeInference(true);
-      this.updateWorkbenchFlyout();
-      this.workspace.renderTypeChangedWorkspaces();
+      if (this.rendered) {
+        this.updateWorkbenchFlyout();
+        this.workspace.renderTypeChangedWorkspaces();
+      }
     }
   },
 
@@ -3210,5 +3220,14 @@ Blockly.Blocks['args_create_with_container'] = {
           itemBlock.nextConnection.targetBlock();
     }
     return itemCount;
+  },
+
+  /**
+   * Append the block at the tail of statement connection.
+   * @param {!Blockly.Block} block The block to be connected to this block.
+   */
+  append: function(block) {
+    var connection = this.getInput('STACK').connection;
+    connection.connect(block.previousConnection);
   }
 };

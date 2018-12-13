@@ -1072,3 +1072,22 @@ function test_type_unification_fixBugReferenceBlockTypeInference() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_mockMutator() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var mutator = create_mock_mutator(letBlock, 'args_create_with_item');
+    assertEquals(letBlock.argumentCount_, 0);
+    mutator._append();
+    mutator._append();
+    mutator._append();
+    mutator._update();
+    assertEquals(letBlock.argumentCount_, 3);
+    assertNotNull(letBlock.typedValue['ARG0']);
+    assertNotNull(letBlock.typedValue['ARG1']);
+    assertNotNull(letBlock.typedValue['ARG2']);
+  } finally {
+    workspace.dispose();
+  }
+}

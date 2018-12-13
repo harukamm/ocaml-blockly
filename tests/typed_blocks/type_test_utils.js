@@ -132,6 +132,63 @@ function checkBlocksArePaired(valueBlocks, referenceBlocks) {
 
 /* End functions for variables. */
 
+/* Begin functions for mutators. */
+
+function create_mock_mutator(block, itemProto) {
+  assertTrue(!block.mutator);
+  var workspaceOptions = {
+    typedVersion: false,
+    parentWorkspace: block.workspace
+  };
+  assertTrue(goog.isFunction(block.decompose));
+  assertTrue(goog.isFunction(block.compose));
+  assertTrue(goog.isFunction(block.domToMutation));
+  var workspace = new Blockly.Workspace(workspaceOptions);
+  var mutatorMock = {
+    block_: block,
+    rootBlock_: block.decompose(workspace),
+    workspace_: workspace,
+    itemProtoName: itemProto,
+    getWorkspace: function() {
+      return this.workspace_;
+    },
+    isWorkbench: function() {
+      return false;
+    },
+    _append: function() {
+      var newBlock = this.workspace_.newBlock(itemProto);
+      assertNotNull(this.rootBlock_);
+      this.rootBlock_.append(newBlock);
+    },
+    _update: function() {
+      if (goog.isFunction(this.block_.wouldChange)) {
+        if (this.block_.wouldChange(this.rootBlock_)) {
+          this.block_.compose(this.rootBlock_);
+        }
+      }
+    },
+    dispose: function() {
+      this.block_.mutator = null;
+      this.block_ = null;
+      if (this.workspace_) {
+        this.workspace_.dispose();
+        this.workspace_ = null;
+      }
+      if (this.flyoutWorkspace_) {
+        this.flyoutWorkspace_.dispose();
+        this.flyoutWorkspace_ = null;
+      }
+    }
+  };
+
+  workspace.isMutator = true;
+  workspace.ownerMutator_ = mutatorMock;
+
+  return mutatorMock;
+}
+
+/* End functions for mutators. */
+
 /* Begin functions for workbenches. */
 
 function getDefaultContextInputName(block) {
