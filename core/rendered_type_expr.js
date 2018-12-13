@@ -5,58 +5,13 @@ goog.provide('Blockly.RenderedTypeExpr');
 goog.require('Blockly.TypeExpr');
 
 /**
- * Class for a type expression of blocks that may be rendered on screen.
+ * Utility methods to render a type expression on screen.
  * @constructor
  */
-Blockly.RenderedTypeExpr = function(prototypeName, args) {
-  goog.asserts.assertString(prototypeName, 'type-expr type must be given');
-  var ctor = Blockly.TypeExpr[prototypeName];
-  goog.asserts.assertObject(ctor,
-      'Error: Unknown type-expr type "%s".', prototypeName);
-  goog.mixin(this, ctor.prototype);
-  ctor.apply(this, args);
-};
 
-Blockly.RenderedTypeExpr.INT = function() {
-  Blockly.RenderedTypeExpr.INT.superClass_.constructor.call(this, 'INT');
-};
-goog.inherits(Blockly.RenderedTypeExpr.INT, Blockly.RenderedTypeExpr);
+Blockly.RenderedTypeExpr.shape = {};
 
-Blockly.RenderedTypeExpr.FLOAT = function() {
-  Blockly.RenderedTypeExpr.FLOAT.superClass_.constructor.call(this, 'FLOAT');
-};
-goog.inherits(Blockly.RenderedTypeExpr.FLOAT, Blockly.RenderedTypeExpr);
-
-Blockly.RenderedTypeExpr.BOOL = function() {
-  Blockly.RenderedTypeExpr.BOOL.superClass_.constructor.call(this, 'BOOL');
-};
-goog.inherits(Blockly.RenderedTypeExpr.BOOL, Blockly.RenderedTypeExpr);
-
-Blockly.RenderedTypeExpr.LIST = function() {
-  Blockly.RenderedTypeExpr.LIST.superClass_.constructor.call(this, 'LIST',
-      arguments);
-};
-goog.inherits(Blockly.RenderedTypeExpr.LIST, Blockly.RenderedTypeExpr);
-
-Blockly.RenderedTypeExpr.PAIR = function() {
-  Blockly.RenderedTypeExpr.PAIR.superClass_.constructor.call(this, 'PAIR',
-      arguments);
-};
-goog.inherits(Blockly.RenderedTypeExpr.PAIR, Blockly.RenderedTypeExpr);
-
-Blockly.RenderedTypeExpr.FUN = function() {
-  Blockly.RenderedTypeExpr.FUN.superClass_.constructor.call(this, 'FUN',
-      arguments);
-};
-goog.inherits(Blockly.RenderedTypeExpr.FUN, Blockly.RenderedTypeExpr);
-
-Blockly.RenderedTypeExpr.TVAR = function() {
-  Blockly.RenderedTypeExpr.TVAR.superClass_.constructor.call(this, 'TVAR',
-      arguments);
-};
-goog.inherits(Blockly.RenderedTypeExpr.TVAR, Blockly.RenderedTypeExpr);
-
-Blockly.RenderedTypeExpr.prototype.shape = {
+Blockly.RenderedTypeExpr.shape['original'] = {
   down: function(steps) {
     steps.push('v 5 c 0,10 -' + Blockly.BlockSvg.TAB_WIDTH +
       ',-8 -' + Blockly.BlockSvg.TAB_WIDTH + ',7.5 s ' +
@@ -79,7 +34,7 @@ Blockly.RenderedTypeExpr.prototype.shape = {
   }
 };
 
-Blockly.RenderedTypeExpr.INT.prototype.shape = {
+Blockly.RenderedTypeExpr.shape['int'] = {
   down: function(steps) {
     steps.push('l 0,5 a 6,6,0,0,0,0,12 l 0,3');
   },
@@ -97,7 +52,7 @@ Blockly.RenderedTypeExpr.INT.prototype.shape = {
   },
 };
 
-Blockly.RenderedTypeExpr.FLOAT.prototype.shape = {
+Blockly.RenderedTypeExpr.shape['float'] = {
   down: function(steps) {
     steps.push('l 0,5 -6,0 3,6 -3,6 6,0 0,3');
   },
@@ -115,7 +70,7 @@ Blockly.RenderedTypeExpr.FLOAT.prototype.shape = {
   },
 };
 
-Blockly.RenderedTypeExpr.BOOL.prototype.shape = {
+Blockly.RenderedTypeExpr.shape['bool'] = {
   down: function(steps) {
     steps.push('l 0,5 -8,7.5 8,7.5');
   },
@@ -133,19 +88,19 @@ Blockly.RenderedTypeExpr.BOOL.prototype.shape = {
   },
 };
 
-Blockly.RenderedTypeExpr.LIST.prototype.shape = {
+Blockly.RenderedTypeExpr.shape['list'] = {
   down: function(steps) {
-    this.element_type.renderTypeExpr(steps, 1);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.element_type, steps, 1);
     steps.push('l 0,3 -8,0 0,4, 8,0 0,3');
   },
 
   up: function(steps) {
     steps.push('l 0,-3 -8,0 0,-4, 8,0 0,-3');
-    this.element_type.renderTypeExpr(steps, 2);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.element_type, steps, 2);
   },
 
   height: function() {
-    return this.element_type.getTypeExprHeight() + 10;
+    return Blockly.RenderedTypeExpr.getTypeExprHeight(this.element_type) + 10;
   },
 
   offsetsY: function() {
@@ -153,61 +108,63 @@ Blockly.RenderedTypeExpr.LIST.prototype.shape = {
   }
 };
 
-Blockly.RenderedTypeExpr.PAIR.prototype.shape = {
+Blockly.RenderedTypeExpr.shape['pair'] = {
   down: function(steps) {
     steps.push('l 0,3 -12,0 0,3 12,0');
-    this.first_type.renderTypeExpr(steps, 1);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.first_type, steps, 1);
     steps.push('l -5,3 5,3');
-    this.second_type.renderTypeExpr(steps, 1);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.second_type, steps, 1);
     steps.push('l -12,0 0,3 12,0 0,3');
   },
 
   up: function(steps) {
     steps.push('l 0,-3 -12,0 0,-3 12,0');
-    this.second_type.renderTypeExpr(steps, 2);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.second_type, steps, 2);
     steps.push('l -5,-3 5,-3');
-    this.first_type.renderTypeExpr(steps, 2);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.first_type, steps, 2);
     steps.push('l -12,0 0,-3 12,0 0,-3');
   },
 
   height: function() {
-    return this.first_type.getTypeExprHeight() +
-        this.second_type.getTypeExprHeight() + 18;
+    return Blockly.RenderedTypeExpr.getTypeExprHeight(this.first_type) +
+        Blockly.RenderedTypeExpr.getTypeExprHeight(this.second_type) + 18;
   },
 
   offsetsY: function() {
-    return [6, this.first_type.getTypeExprHeight() + 12];
+    var height = Blockly.RenderedTypeExpr.getTypeExprHeight(this.first_type);
+    return [6, height + 12];
   }
 };
 
-Blockly.RenderedTypeExpr.FUN.prototype.shape = {
+Blockly.RenderedTypeExpr.shape['fun'] = {
   down: function(steps) {
     steps.push('l 0,3 -12,0 0,3 12,0');
-    this.arg_type.renderTypeExpr(steps, 1);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.arg_type, steps, 1);
     steps.push('l 5,3 -5,3');
-    this.return_type.renderTypeExpr(steps, 1);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.return_type, steps, 1);
     steps.push('l -12,0 0,3 12,0 0,3');
   },
 
   up: function(steps) {
     steps.push('l 0,-3 -12,0 0,-3 12,0');
-    this.return_type.renderTypeExpr(steps, 2);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.return_type, steps, 2);
     steps.push('l 5,-3 -5,-3');
-    this.arg_type.renderTypeExpr(steps, 2);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.arg_type, steps, 2);
     steps.push('l -12,0 0,-3 12,0 0,-3');
   },
 
   height: function() {
-    return this.arg_type.getTypeExprHeight() +
-        this.return_type.getTypeExprHeight() + 18;
+    return Blockly.RenderedTypeExpr.getTypeExprHeight(this.arg_type) +
+        Blockly.RenderedTypeExpr.getTypeExprHeight(this.return_type) + 18;
   },
 
   offsetsY: function() {
-    return [6, this.arg_type.getTypeExprHeight() + 12];
+    var height = Blockly.RenderedTypeExpr.getTypeExprHeight(this.arg_type);
+    return [6, height + 12];
   }
 };
 
-Blockly.RenderedTypeExpr.TVAR.prototype.shape = {
+Blockly.RenderedTypeExpr.shape['typeVar'] = {
   down: function(steps) {
     steps.push('l 0,5 -8,0 0,15 8,0 0,5');
   },
