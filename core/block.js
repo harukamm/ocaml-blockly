@@ -3125,6 +3125,10 @@ Blockly.Blocks['let_typed'] = {
     this.getInput('EXP2').connection.typeExpr.clear();
     this.callClearTypes_('EXP1');
     this.callClearTypes_('EXP2');
+    for (var x = 0; x < this.argumentCount_; x++) {
+      var variable = this.typedValue['ARG' + x];
+      variable.getTypeExpr().clear();
+    }
   },
 
   infer: function(env) {
