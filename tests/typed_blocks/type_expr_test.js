@@ -263,3 +263,50 @@ function test_type_expr_getTvarListFunc() {
   var fun = Blockly.TypeExpr.createFunType([pair1, pair2, a, b, m, bool1]);
   assertTrue(isSameSet(fun.getTvarList(), [q, a, b]));
 }
+
+function test_type_expr_typeSchemes() {
+  var env = {};
+
+  var t1 = new Blockly.TypeExpr.TVAR('T1', null);
+  env["var0"] = Blockly.Scheme.monoType(t1);
+
+  var t2 = new Blockly.TypeExpr.TVAR('T2', null);
+  var pair = new Blockly.TypeExpr.PAIR(t1, t2);
+  // t1 * t2
+  env["var1"] = Blockly.Scheme.monoType(t2);
+
+  var m = new Blockly.TypeExpr.TVAR('M', null);
+  var n = new Blockly.TypeExpr.TVAR('N', m);
+  var l = new Blockly.TypeExpr.TVAR('L', n);
+  var int1 = new Blockly.TypeExpr.INT();
+  var fun = Blockly.TypeExpr.createFunType([int1, l, t1, t2]);
+  // ∀m. int -> m -> t1 -> t2
+  env["var2"] = Blockly.Scheme.create(env, fun);
+
+  var x =  new Blockly.TypeExpr.TVAR('X', null);
+  var y = new Blockly.TypeExpr.TVAR('Y', x);
+  var a = new Blockly.TypeExpr.TVAR('A', null);
+  var pair = new Blockly.TypeExpr.PAIR(x, a);
+  var pair2 = new Blockly.TypeExpr.PAIR(pair, n);
+  var list1 = new Blockly.TypeExpr.LIST(pair2);
+  // ∀m.x.a. ((x * a) * m) list
+  env["var3"] = Blockly.Scheme.create(env, list1);
+
+  var o = new Blockly.TypeExpr.TVAR('O', null);
+  var p = new Blockly.TypeExpr.TVAR('P', null);
+  var float1 = new Blockly.TypeExpr.FLOAT();
+  var fun2 = Blockly.TypeExpr.createFunType([o, p, float1, l, y, t1, t2]);
+  // ∀o.p.m.x. o -> p -> float -> m -> x -> t1 -> t2
+  env["var4"] = Blockly.Scheme.create(env, fun2);
+
+  // float
+  var h = new Blockly.TypeExpr.TVAR('H', float1);
+  env["var5"] = Blockly.Scheme.create(env, h);
+
+  assertTrue(isSameSet(env.var0.names, []));
+  assertTrue(isSameSet(env.var1.names, []));
+  assertTrue(isSameSet(env.var2.names, ["M"]));
+  assertTrue(isSameSet(env.var3.names, ["X", "A", "M"]));
+  assertTrue(isSameSet(env.var4.names, ["O", "P", "M", "X"]));
+  assertTrue(isSameSet(env.var5.names, []));
+}

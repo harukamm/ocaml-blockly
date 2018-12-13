@@ -1,17 +1,56 @@
 /**
- * @fileoverview Object representing AST for typed blocks, and utility
- * methods for type inference.
+ * @fileoverview Object representing type scheme for typed blocks.
  * @author harukam0416@gmail.com (Haruka Matsumoto)
  */
 'use strict';
 
-goog.provide('Blockly.TypeInfer');
-goog.provide('Blockly.TypeInfer.Ast');
+goog.provide('Blockly.Scheme');
 
 goog.require('goog.asserts');
 
 /**
+ * Object for type scheme.
+ * @param {!Array.<!string>} names List of type variable names to be bound by
+ *     the quantifier.
+ * @param {!Blockly.TypeExpr} type
  * @constructor
  */
-Blockly.TypeInfer.Ast = function() {
+Blockly.Scheme = function(names, type) {
+  this.names = names;
+  this.type = type;
+};
+
+Blockly.Scheme.monoType = function(type) {
+  return new Blockly.Scheme([], type);
+};
+
+Blockly.Scheme.create = function(env, type) {
+  var ftvInEnv = [];
+  for (var key in env) {
+    var scheme = env[key];
+    ftvInEnv = ftvInEnv.concat(scheme.freeTvars());
+  }
+  var boundVarNames = [];
+  var ftvInType = type.getTvarList();
+  for (var i = 0, tvar; tvar = ftvInType[i]; i++) {
+    goog.asserts.assert(!tvar.val,
+        'Includes a type which is not a type variable');
+    if (ftvInEnv.indexOf(tvar) == -1) {
+      boundVarNames.push(tvar.name);
+    }
+  }
+  return new Blockly.Scheme(boundVarNames, type);
+};
+
+Blockly.Scheme.prototype.freeTvars = function() {
+  var tvars = this.type.getTvarList();
+  var result = [];
+  for (var i = 0, tvar; tvar = tvars[i]; i++) {
+    if (this.names.indexOf(tvar.name) == -1) {
+      goog.asserts.assert(!tvar.val,
+          'Includes a type which is not a type variable');
+      result.push(tvar);
+    }
+  }
+  return result;
 };
