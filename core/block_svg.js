@@ -1136,6 +1136,13 @@ Blockly.BlockSvg.prototype.typeExprHasChanged = function() {
     if (input.connection && input.connection.typeExprHasChanged()) {
       return true;
     }
+    for (var i = 0, field; field = input.fieldRow[i]; i++) {
+      if (field.referencesVariables() == Blockly.FIELD_VARIABLE_BINDING) {
+        if (field.needRendered_()) {
+          return true;
+        }
+      }
+    }
   }
   return false;
 };
