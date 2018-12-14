@@ -54,3 +54,19 @@ Blockly.Scheme.prototype.freeTvars = function() {
   }
   return result;
 };
+
+Blockly.Scheme.prototype.toString = function() {
+  // ∀a1....an. t
+  var result = '';
+  var typeStr = this.type.toString();
+  if (this.names.length != 0) {
+    var result = '∀';
+    for (var i = 0; i < this.names.length; i++) {
+      result += ' ';
+      result += this.names[i];
+    }
+    result += '. ';
+  }
+  result += typeStr;
+  return result;
+};
