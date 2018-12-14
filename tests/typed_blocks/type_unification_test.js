@@ -1088,8 +1088,10 @@ function test_type_unification_mockMutator() {
     assertNotNull(letBlock.typedValue['ARG2']);
 
     var scheme = letBlock.getTypeScheme('VAR');
-    // Not yet implemented.
-    assertNull(scheme);
+    assertNotNull(scheme);
+    assertEquals(scheme.names.length, 0);
+    // poly types are not yet implemented.
+    // ∀txyz. t -> x -> y -> z
   } finally {
     workspace.dispose();
   }
