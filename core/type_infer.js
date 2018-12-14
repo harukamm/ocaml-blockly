@@ -79,6 +79,11 @@ Blockly.Scheme.prototype.instantiate = function() {
   return inst.instance;
 };
 
+Blockly.Scheme.prototype.unify = function(other) {
+  var inst = this.instantiate();
+  inst.unify(other);
+};
+
 Blockly.Scheme.prototype.toString = function() {
   // ∀a1....an. t
   var result = '';

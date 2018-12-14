@@ -146,7 +146,7 @@ Blockly.BoundVariableValueReference.prototype.setBoundValue = function(value) {
   if (!valueTypeExpr) {
     throw 'The type expression of a new value to refer to must be provided.';
   }
-  valueTypeExpr.unify(this.typeExpr_);
+  this.unifyTypeExpr();
 
   this.referenceChange_();
 };
@@ -174,11 +174,9 @@ Blockly.BoundVariableValueReference.prototype.valueTypeExprChanged = function(
   if (!this.value_) {
     throw 'The reference has not been resolved yet.';
   }
-  if (oldTypeExpr) {
-    oldTypeExpr.disconnect(this.typeExpr_);
-  }
   if (newTypeExpr) {
-    newTypeExpr.unify(this.typeExpr_);
+    this.typeExpr_.clear();
+    this.unifyTypeExpr();
   }
 };
 
@@ -189,7 +187,12 @@ Blockly.BoundVariableValueReference.prototype.valueTypeExprChanged = function(
 Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
   var valueType = this.value_ && this.value_.getTypeExpr();
   if (valueType) {
-    valueType.unify(this.typeExpr_);
+    var scheme = this.value_.getTypeScheme();
+    if (scheme) {
+      scheme.unify(this.typeExpr_);
+    } else {
+      valueType.unify(this.typeExpr_);
+    }
   }
 };
 
