@@ -602,37 +602,46 @@ Blockly.TypeExpr.prototype.getTvarList = function() {
  *     variables.
  */
 Blockly.TypeExpr.prototype.instantiate = function(targetNames) {
-  // Cloned type expreesions are already dereferenced.
-  var cloned = this.clone();
+  var type = this.deepDeref();
+  var cloned = type.clone();
   var map = {};
-  var staq = [[cloned, null]];
-  while (staq.length && targetNames.length) {
+  var staq = [[type, cloned, null]];
+  while (staq.length) {
     var pair = staq.pop();
     var t = pair[0];
-    var parentTyp = pair[1];
+    var u = pair[1];
+    var parentTyp = pair[2];
 
     if (t.label != Blockly.TypeExpr.TVAR_) {
-      var children = t.getChildren();
-      for (var i = 0; i < children.length; i++) {
-        var child = children[i];
-        staq.push([child, t]);
+      var children1 = t.getChildren();
+      var children2 = u.getChildren();
+      for (var i = 0; i < children1.length; i++) {
+        var child1 = children1[i];
+        var child2 = children2[i];
+        staq.push([child1, child2, u]);
       }
     } else {
-      goog.asserts.assert(!t.val, 'Expects types are already dereferenced.');
+      goog.asserts.assert(!t.val && !u.val,
+          'Expects types are already dereferenced.');
+      goog.asserts.assert(t.name === u.name);
 
       var index = targetNames.indexOf(t.name);
-      if (index != -1) {
+      if (index == -1) {
+        // free type variable.
+        var typeToInsert = t;
+      } else {
+        // Bound type variable.
         if (t.name in map) {
-          var generated = map[t.name];
+          var typeToInsert = map[t.name];
         } else {
-          var generated = Blockly.TypeExpr.generateTypeVar();
-          map[t.name] = generated;
+          var typeToInsert = Blockly.TypeExpr.generateTypeVar();
+          map[t.name] = typeToInsert;
         }
-        if (parentTyp) {
-          parentTyp.replaceChild(t, generated);
-        } else {
-          return generated;
-        }
+      }
+      if (parentTyp) {
+        parentTyp.replaceChild(u, typeToInsert);
+      } else {
+        return typeToInsert;
       }
     }
   }

@@ -447,4 +447,13 @@ function test_type_expr_schemeInstantiate() {
   assertTrue(freeNames.indexOf(xReplaced.name) == -1);
   assertTrue(freeNames.indexOf(yReplaced.name) == -1);
   assertTrue(freeNames.indexOf(zReplaced.name) == -1);
+  for (var i = 0, tvar; tvar = tvars[i]; i++) {
+    if (tvar.name === 'A') {
+      assertEquals(tvar, a);
+    } else if (tvar.name === 'B') {
+      assertEquals(tvar, b);
+    } else if (tvar.name === 'C') {
+      assertEquals(tvar, c);
+    }
+  }
 }
