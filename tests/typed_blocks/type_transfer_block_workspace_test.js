@@ -935,6 +935,11 @@ function test_type_transfer_block_workspace_lambdaBlockTransferManyTimes() {
       assertEquals(scheme.names.length, 0);
       assertEquals(scheme.type.label, Blockly.TypeExpr.TVAR_);
       assertEquals(scheme.type.name, originalValueType.name);
+
+      var inst = scheme.instantiate();
+      assertEquals(inst.label, Blockly.TypeExpr.TVAR_);
+      assertEquals(inst.val, null);
+      assertEquals(inst, originalValueType);
     }
     var scheme = originalLambdaBlock.getTypeScheme('VAR');
     checkScheme(scheme);
