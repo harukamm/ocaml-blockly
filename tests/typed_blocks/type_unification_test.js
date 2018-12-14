@@ -1060,7 +1060,6 @@ function test_type_unification_fixBugReferenceBlockTypeInference() {
 
     var int1 = workspace.newBlock('int_typed');
     letBlock.getInput('EXP1').connection.connect(int1.outputConnection);
-    Blockly.debug = true;
     int1.outputConnection.disconnect();
 
     assertEquals(reference.getTypeExpr().deref().label, Blockly.TypeExpr.INT_);
