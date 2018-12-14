@@ -475,24 +475,11 @@ Blockly.RenderedConnection.prototype.renderTypeVarHighlights = function() {
   }
   this.typeVarPaths_ = [];
   var xy = this.sourceBlock_.getRelativeToSurfaceXY();
-  var x = this.x_ - xy.x;
-  var y = this.y_ - xy.y;
-  /** @type {Array<{color: string, path: string}>} */
-  var typeVarHighlights =
-      Blockly.RenderedTypeExpr.typeVarHighlights(this.typeExpr);
-  for (var i = 0; i < typeVarHighlights.length; i++) {
-    var highlight = typeVarHighlights[i];
-    this.typeVarPaths_.push(
-      Blockly.utils.createSvgElement(
-        'path', {
-          'class': 'blocklyTypeVarPath',
-          stroke: highlight.color,
-          d: highlight.path,
-          transform: 'translate(' + x + ', ' + y + ')'
-        },
-        this.sourceBlock_.getSvgRoot()));
-  }
-}
+  var pos = new goog.math.Coordinate(this.x_ - xy.x, this.y_ - xy.y);
+
+  this.typeVarPaths_ = Blockly.RenderedTypeExpr.createHighlightedSvg(
+      this.typeExpr, pos, this.sourceBlock_.getSvgRoot());
+};
 
 /**
  * Set the last rendered type expression. It would be used to detect if the
