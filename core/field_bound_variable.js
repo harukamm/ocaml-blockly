@@ -111,6 +111,13 @@ Blockly.FieldBoundVariable.prototype.hasPotentialBlock = false;
 Blockly.FieldBoundVariable.prototype.lastRenderedTypeExpr_ = null;
 
 /**
+ * The list of SVG elements drawing type variable highlights.
+ * @type {!Array.<!Element>}
+ * @private
+ */
+Blockly.FieldBoundVariable.prototype.typeVarHighlights_ = [];
+
+/**
  * Obtain a newly created bound-variable field of value type.
  * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
  * @param {string} scopeInputName The name of input on which the variable value
@@ -447,6 +454,8 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
   this.size_.width = blockShapeWidth - Blockly.BlockSvg.TAB_WIDTH;
   this.size_.height = Math.max(Blockly.BlockSvg.MIN_BLOCK_Y, blockShapeHeight);
 
+  this.renderTypeVarHighlights_(xy);
+
   this.lastRenderedTypeExpr_ = this.variable_.getTypeExpr().deepDeref();
 };
 
@@ -479,6 +488,25 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
         rectWidth + ' 0 z');
   }
   return {height: height, path: inlineSteps.join(' ')};
+};
+
+/**
+ * Render type variable highlights for the block shape.
+ * @param {!goog.math.Coordinate} xy The location of the top left corner of
+ *     the block shape SVG.
+ * @private
+ */
+Blockly.FieldBoundVariable.prototype.renderTypeVarHighlights_ = function(xy) {
+  while (this.typeVarHighlights_.length) {
+    var element = this.typeVarHighlights_.pop();
+    goog.dom.removeNode(element);
+  }
+
+  var typeExpr = this.variable_ && this.variable_.getTypeExpr();
+  if (typeExpr) {
+    this.typeVarHighlights_ = Blockly.RenderedTypeExpr.createHighlightedSvg(
+        typeExpr, xy, this.fieldGroup_);
+  }
 };
 
 /**
