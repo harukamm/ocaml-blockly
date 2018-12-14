@@ -1146,3 +1146,16 @@ function test_type_unification_polyTypeForIdFunc() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_fixFstSndInference() {
+  var workspace = create_typed_workspace();
+  try {
+    var fstBlock = workspace.newBlock('pair_first_typed');
+    var sndBlock = workspace.newBlock('pair_second_typed');
+    var ifBlock = workspace.newBlock('logic_ternary_typed');
+    fstBlock.getInput('FIRST').connection.connect(ifBlock.outputConnection);
+    sndBlock.getInput('SECOND').connection.connect(ifBlock.outputConnection);
+  } finally {
+    workspace.dispose();
+  }
+}

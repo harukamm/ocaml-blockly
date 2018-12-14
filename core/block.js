@@ -2600,8 +2600,7 @@ Blockly.Blocks['pair_first_typed'] = {
     var expected_arg = this.getInput('FIRST').connection.typeExpr;
     var arg = this.callInfer_('FIRST', env);
     if (arg) {
-      arg.first_type.unify(expected_arg.first_type);
-      arg.second_type.unify(expected_arg.second_type);
+      arg.unify(expected_arg);
     }
     return expected;
   }
@@ -2635,8 +2634,7 @@ Blockly.Blocks['pair_second_typed'] = {
     var expected_arg = this.getInput('SECOND').connection.typeExpr;
     var arg = this.callInfer_('SECOND', env);
     if (arg) {
-      arg.first_type.unify(expected_arg.first_type);
-      arg.second_type.unify(expected_arg.second_type);
+      arg.unify(expected_arg);
     }
     return expected;
   }
