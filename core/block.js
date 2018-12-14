@@ -2910,9 +2910,6 @@ Blockly.Blocks['variables_get_typed'] = {
     var variable = this.typedReference['VAR'];
     var expected = this.outputConnection.typeExpr;
     var varName = variable.getVariableName();
-    var value = variable.getBoundValue();
-    goog.asserts.assert(value, 'The bound variable reference should be ' +
-        'bound to a value.');
 
     var schemeInEnv = (varName in env) && env[varName];
     var scheme;
