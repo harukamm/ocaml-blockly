@@ -3196,16 +3196,15 @@ Blockly.Blocks['let_typed'] = {
       variable.getTypeExpr().unify(funType);
     }
 
+    // TODO(harukam): Support poly type scheme.
+    this.lastTypeScheme_['VAR'] =
+        Blockly.Scheme.monoType(variable.getTypeExpr());
     var env2 = Object.assign({}, env);
     env2[var_name] = Blockly.Scheme.monoType(variable.getTypeExpr());
     var exp2 = this.callInfer_('EXP2', env2);
 
     if (exp2)
       exp2.unify(expected_exp2);
-
-    // TODO(harukam): Store the type scheme.
-    //this.lastTypeScheme_['VAR'] =
-    //    Blockly.Scheme.create(env, variable.getTypeExpr());
 
     return expected_exp2;
   }
