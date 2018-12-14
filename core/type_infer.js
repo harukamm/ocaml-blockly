@@ -17,7 +17,9 @@ goog.require('goog.asserts');
  */
 Blockly.Scheme = function(names, type) {
   this.names = names;
-  this.type = type;
+  // Holds a cloned type expression so that it would not be changed
+  // accidentally.
+  this.type = type.clone();
 };
 
 Blockly.Scheme.monoType = function(type) {
@@ -58,16 +60,6 @@ Blockly.Scheme.prototype.freeTvars = function() {
 };
 
 Blockly.Scheme.prototype.instantiate = function() {
-  var tvars = this.type.getTvarList();
-  var unvisited = [].concat(this.names);
-  for (var i = 0, tvar; tvar = tvars[i]; i++) {
-    var index = unvisited.indexOf(tvar.name);
-    if (index != -1) {
-      unvisited.splice(index, 1);
-    }
-  }
-  goog.asserts.assert(unvisited.length == 0);
-
   return this.type.instantiate(this.names);
 };
 

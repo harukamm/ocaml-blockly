@@ -412,6 +412,11 @@ function test_type_expr_schemeInstantiate() {
   env["b"] = Blockly.Scheme.monoType(b);
   env["c"] = Blockly.Scheme.monoType(c);
 
+  // Type scheme holds a cloned type expression.
+  assertNotEquals(env["a"].type, a);
+  assertNotEquals(env["b"].type, b);
+  assertNotEquals(env["c"].type, c);
+
   // ∀xyz. a -> (x * x) -> b -> ((x * z) list) -> b -> c -> y -> y list
   var pair1 = new Blockly.TypeExpr.PAIR(x, x);
   var pair2 = new Blockly.TypeExpr.PAIR(x, z);
