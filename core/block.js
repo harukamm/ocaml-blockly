@@ -3011,7 +3011,11 @@ Blockly.Blocks['let_typed'] = {
   },
 
   getTypeScheme: function(fieldName) {
-    return fieldName in this.lastTypeScheme_ ? this.lastTypeScheme_ : null;
+    if (fieldName in this.lastTypeScheme_) {
+      return this.lastTypeScheme_[fieldName];
+    } else {
+      return null;
+    }
   },
 
   /**
