@@ -932,6 +932,8 @@ function test_type_transfer_block_workspace_lambdaBlockTransferManyTimes() {
 
     var transBlock = repeat_transfer_workspace(originalLetBlock,
         otherWorkspace, 10);
+    var newValueType = getVariable(transBlock).getTypeExpr();
+    assertEquals(originalValueType, newValueType);
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();
