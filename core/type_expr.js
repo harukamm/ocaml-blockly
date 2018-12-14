@@ -595,6 +595,51 @@ Blockly.TypeExpr.prototype.getTvarList = function() {
 };
 
 /**
+ * Clone type expression and replace some of type variables with flesh ones.
+ * @param {!Array.<!string>} targetNames List of type variable names to be
+ *     replaced.
+ * @return {!Blockly.TypeExpr} The cloned type expression with some flesh type
+ *     variables.
+ */
+Blockly.TypeExpr.prototype.instantiate = function(targetNames) {
+  // Cloned type expreesions are already dereferenced.
+  var cloned = this.clone();
+  var map = {};
+  var staq = [[cloned, null]];
+  while (staq.length && targetNames.length) {
+    var pair = staq.pop();
+    var t = pair[0];
+    var parentTyp = pair[1];
+
+    if (t.label != Blockly.TypeExpr.TVAR_) {
+      var children = t.getChildren();
+      for (var i = 0; i < children.length; i++) {
+        var child = children[i];
+        staq.push([child, t]);
+      }
+    } else {
+      goog.asserts.assert(!t.val, 'Expects types are already dereferenced.');
+
+      var index = targetNames.indexOf(t.name);
+      if (index != -1) {
+        if (t.name in map) {
+          var generated = map[t.name];
+        } else {
+          var generated = Blockly.TypeExpr.generateTypeVar();
+          map[t.name] = generated;
+        }
+        if (parentTyp) {
+          parentTyp.replaceChild(t, generated);
+        } else {
+          return generated;
+        }
+      }
+    }
+  }
+  return cloned;
+};
+
+/**
  * @param {Blockly.TypeExpr} other
  */
 Blockly.TypeExpr.prototype.unify = function(other) {

@@ -344,6 +344,15 @@ function test_type_expr_typeSchemesWithExpr() {
   assertTrue(isSameSet(env0.f.names, ["X"]));
   assertTrue(isSameSet(env1.x.names, []));
   assertTrue(isSameSet(env2.y.names, []));
+
+  // ∀x. x -> a
+  var scheme = env0.f;
+  var inst = scheme.instantiate();
+  var tvars = inst.getTvarList();
+  assertEquals(tvars.length, 2);
+  assertNotNull(goog.array.find(tvars, x => x.name === "A"));
+  var another = goog.array.find(tvars, x => x.name !== "A");
+  assertNotEquals(another.name, "X");
 }
 
 function test_type_expr_replaceChild() {
@@ -389,4 +398,53 @@ function test_type_expr_replaceChild() {
   fun.replaceChild(p, x);
   assertEquals(fun.arg_type, x);
   assertEquals(fun.return_type, p);
+}
+
+function test_type_expr_schemeInstantiate() {
+  var a = new Blockly.TypeExpr.TVAR('A', null);
+  var b = new Blockly.TypeExpr.TVAR('B', null);
+  var c = new Blockly.TypeExpr.TVAR('C', null);
+  var x = new Blockly.TypeExpr.TVAR('X', null);
+  var y = new Blockly.TypeExpr.TVAR('Y', null);
+  var z = new Blockly.TypeExpr.TVAR('Z', null);
+  var env = {};
+  env["a"] = Blockly.Scheme.monoType(a);
+  env["b"] = Blockly.Scheme.monoType(b);
+  env["c"] = Blockly.Scheme.monoType(c);
+
+  // ∀xyz. a -> (x * x) -> b -> ((x * z) list) -> b -> c -> y -> y list
+  var pair1 = new Blockly.TypeExpr.PAIR(x, x);
+  var pair2 = new Blockly.TypeExpr.PAIR(x, z);
+  var list1 = new Blockly.TypeExpr.LIST(pair2);
+  var list2 = new Blockly.TypeExpr.LIST(y);
+  var fun =
+      Blockly.TypeExpr.createFunType([a, pair1, b, list1, b, c, y, list2]);
+  var scheme = Blockly.Scheme.create(env, fun);
+
+  assertTrue(isSameSet(scheme.names, ['X', 'Y', 'Z']));
+
+  var inst = scheme.instantiate();
+  var tvars = inst.getTvarList();
+  var names = tvars.map(x => x.name);
+  assertNotNull(goog.array.find(names, x => x === 'A'));
+  assertNotNull(goog.array.find(names, x => x === 'B'));
+  assertNotNull(goog.array.find(names, x => x === 'C'));
+  assertNull(goog.array.find(names, x => x === 'X'));
+  assertNull(goog.array.find(names, x => x === 'Y'));
+  assertNull(goog.array.find(names, x => x === 'Z'));
+
+  var flatten = inst.flatten();
+  var xReplaced = flatten[1];
+  assertEquals(goog.array.filter(names, x => x === xReplaced.name).length, 3);
+  var yReplaced = flatten[8];
+  assertEquals(goog.array.filter(names, x => x === yReplaced.name).length, 2);
+  var zReplaced = flatten[5];
+  assertEquals(goog.array.filter(names, x => x === zReplaced.name).length, 1);
+  assertTrue(xReplaced.name !== yReplaced.name &&
+      yReplaced.name !== zReplaced.name && xReplaced.name !== zReplaced.name);
+
+  var freeNames = ['A', 'B', 'C'];
+  assertTrue(freeNames.indexOf(xReplaced.name) == -1);
+  assertTrue(freeNames.indexOf(yReplaced.name) == -1);
+  assertTrue(freeNames.indexOf(zReplaced.name) == -1);
 }

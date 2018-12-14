@@ -56,6 +56,20 @@ Blockly.Scheme.prototype.freeTvars = function() {
   return result;
 };
 
+Blockly.Scheme.prototype.instantiate = function() {
+  var tvars = this.type.getTvarList();
+  var unvisited = [].concat(this.names);
+  for (var i = 0, tvar; tvar = tvars[i]; i++) {
+    var index = unvisited.indexOf(tvar.name);
+    if (index != -1) {
+      unvisited.splice(index, 1);
+    }
+  }
+  goog.asserts.assert(unvisited.length == 0);
+
+  return this.type.instantiate(this.names);
+};
+
 Blockly.Scheme.prototype.toString = function() {
   // ∀a1....an. t
   var result = '';
