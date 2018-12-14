@@ -352,7 +352,10 @@ function test_type_expr_typeSchemesWithExpr() {
   assertEquals(tvars.length, 2);
   assertNotNull(goog.array.find(tvars, x => x.name === "A"));
   var another = goog.array.find(tvars, x => x.name !== "A");
-  assertNotEquals(another.name, "X");
+
+  assertEquals(scheme.names.length, 1);
+  assertNotEquals(scheme.names[0], "A");
+  assertNotEquals(another.name, "A");
 }
 
 function test_type_expr_replaceChild() {
@@ -402,8 +405,11 @@ function test_type_expr_replaceChild() {
 
 function test_type_expr_schemeInstantiate() {
   var a = new Blockly.TypeExpr.TVAR('A', null);
+  var a1 = new Blockly.TypeExpr.TVAR('A1', a);
+  var a2 = new Blockly.TypeExpr.TVAR('A2', a1);
   var b = new Blockly.TypeExpr.TVAR('B', null);
   var c = new Blockly.TypeExpr.TVAR('C', null);
+  var c1 = new Blockly.TypeExpr.TVAR('C1', c);
   var x = new Blockly.TypeExpr.TVAR('X', null);
   var y = new Blockly.TypeExpr.TVAR('Y', null);
   var z = new Blockly.TypeExpr.TVAR('Z', null);
@@ -411,6 +417,9 @@ function test_type_expr_schemeInstantiate() {
   env["a"] = Blockly.Scheme.monoType(a);
   env["b"] = Blockly.Scheme.monoType(b);
   env["c"] = Blockly.Scheme.monoType(c);
+  assertEquals(env["a"].type, a);
+  assertEquals(env["b"].type, b);
+  assertEquals(env["c"].type, c);
 
   // ∀xyz. a -> (x * x) -> b -> ((x * z) list) -> b -> c -> y -> y list
   var pair1 = new Blockly.TypeExpr.PAIR(x, x);
