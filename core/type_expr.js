@@ -692,6 +692,23 @@ Blockly.TypeExpr.prototype.disconnect = function(other) {
   disconnectImpl(other, this);
 };
 
+Blockly.TypeExpr.prototype.flatten = function() {
+  var t = this.deepDeref();
+  if (t.label == Blockly.TypeExpr.INT_ ||
+      t.label == Blockly.TypeExpr.FLOAT_ ||
+      t.label == Blockly.TypeExpr.BOOL_ ||
+      t.label == Blockly.TypeExpr.TVAR_) {
+    return [t];
+  }
+  var children = t.getChildren();
+  var desc = [];
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+    desc = desc.concat(child.flatten());
+  }
+  return desc;
+};
+
 /**
  * Do the given two type expression represent to the same type without
  * dereferencing type variable reference?
