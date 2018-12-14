@@ -2005,7 +2005,7 @@ Blockly.Block.prototype.makeConnection_ = function(type) {
 /**
  * Call the Infer function indirectly if it exists.
  * @param {string} name The name of the input
- * @param {Object<string, Blockly.TypeExpr>} env
+ * @param {Object<string, Blockly.Scheme>} env
  * @return {Blockly.TypeExpr} type expression of the input
  */
 Blockly.Block.prototype.callInfer_ = function(name, env) {
@@ -2722,7 +2722,7 @@ Blockly.Blocks['lambda_typed'] = {
     var var_name = this.getField('VAR').getText();
     var expected = this.outputConnection.typeExpr;
     var env2 = Object.assign({}, env);
-    env2[var_name] = expected.arg_type;
+    env2[var_name] = Blockly.Scheme.monoType(expected.arg_type);
     var return_type = this.callInfer_('RETURN', env2);
     if (return_type)
       return_type.unify(expected.return_type);
@@ -2908,22 +2908,24 @@ Blockly.Blocks['variables_get_typed'] = {
 
   infer: function(env) {
     var variable = this.typedReference['VAR'];
-    variable.unifyTypeExpr();
     var expected = this.outputConnection.typeExpr;
     var varName = variable.getVariableName();
     var value = variable.getBoundValue();
-    var typeInEnv = varName in env && env[varName];
-    if (value && typeInEnv) {
-      goog.asserts.assert(value.getTypeExpr() == typeInEnv);
+    goog.asserts.assert(value, 'The bound variable reference should be ' +
+        'bound to a value.');
+
+    var schemeInEnv = (varName in env) && env[varName];
+    var scheme;
+    if (schemeInEnv) {
+      variable.unifyTypeExpr();
+      // TODO(harukam): Check the equality between a type scheme in existing
+      // in the env and that of the binding value.
+    } else {
+      variable.unifyTypeExpr();
     }
-    if (value) {
-      value.getTypeExpr().unify(expected);
-    } else if (typeInEnv) {
-      typeInEnv.unify(expected);
-    }
+    goog.asserts.assert(expected == variable.getTypeExpr());
     return expected;
   }
-
 };
 
 Blockly.Blocks['let_typed'] = {
@@ -2963,7 +2965,9 @@ Blockly.Blocks['let_typed'] = {
      * created while the latest type inference were triggered on this block.
      * @type {!Object}
      */
-    this.lastTypeScheme_ = {};
+    this.lastTypeScheme_ = {'VAR': Blockly.Scheme.monoType({}, varType)};
+    // TODO(harukam): Support poly type scheme by calling
+    // Blockly.Scheme.create().
   },
 
   /**
@@ -3173,7 +3177,8 @@ Blockly.Blocks['let_typed'] = {
     var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
     var exp1 = this.callInfer_('EXP1', env);
     var env2 = Object.assign({}, env);
-    env2[var_name] = variable.getTypeExpr();
+    //    env2[var_name] = Blockly.Scheme.create(env, type);
+    env2[var_name] = Blockly.Scheme.monoType(env, type);
     var exp2 = this.callInfer_('EXP2', env2);
 
     if (exp1)
@@ -3196,8 +3201,7 @@ Blockly.Blocks['let_typed'] = {
       var funType = Blockly.TypeExpr.createFunType(funTypes);
       variable.getTypeExpr().unify(funType);
     }
-    // TODO(harukam): Store the type scheme. Firstly must change type of env's
-    // property values from Blockly.TypeExpr to Blockly.Scheme.
+    // TODO(harukam): Store the type scheme.
     //this.lastTypeScheme_['VAR'] =
     //    Blockly.Scheme.create(env, variable.getTypeExpr());
 
