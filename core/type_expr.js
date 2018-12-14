@@ -90,6 +90,14 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
 }
 
 /**
+ * Does this object represents a type variable?
+ * @return {boolean}
+ */
+Blockly.TypeExpr.prototype.isTypeVar = function() {
+  return this.label == Blockly.TypeExpr.TVAR_;
+};
+
+/**
  * Return a collection of the object's child types.
  * @return {Array<Type>}
  */
@@ -158,15 +166,6 @@ Blockly.TypeExpr.generateColor = function() {
   var b = getRandomInt(1 << 8);
   return '#' + to2digitshexString(r) + to2digitshexString(g) +
       to2digitshexString(b);
-}
-
-/**
- * Returns whether the object is a type variable.
- * @return {boolean} True if the object is a type variable.
- */
-Blockly.TypeExpr.prototype.isTypeVar = function() {
-  var t = this.deref();
-  return t.label == Blockly.TypeExpr.TVAR_;
 }
 
 /**
