@@ -90,9 +90,32 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
 }
 
 /**
- * Does this object represents a type variable?
+ * Functions to return if the object represents a specific type.
  * @return {boolean}
  */
+Blockly.TypeExpr.prototype.isInt = function() {
+  return this.label == Blockly.TypeExpr.INT_;
+};
+Blockly.TypeExpr.prototype.isFloat = function() {
+  return this.label == Blockly.TypeExpr.FLOAT_;
+};
+Blockly.TypeExpr.prototype.isBool = function() {
+  return this.label == Blockly.TypeExpr.BOOL_;
+};
+Blockly.TypeExpr.prototype.isPrimitive = function() {
+  return this.label == Blockly.TypeExpr.INT_ ||
+      this.label == Blockly.TypeExpr.FLOAT_ ||
+      this.label == Blockly.TypeExpr.BOOL_;
+};
+Blockly.TypeExpr.prototype.isList = function() {
+  return this.label == Blockly.TypeExpr.LIST_;
+};
+Blockly.TypeExpr.prototype.isPair = function() {
+  return this.label == Blockly.TypeExpr.PAIR_;
+};
+Blockly.TypeExpr.prototype.isFunction = function() {
+  return this.label == Blockly.TypeExpr.FUN_;
+};
 Blockly.TypeExpr.prototype.isTypeVar = function() {
   return this.label == Blockly.TypeExpr.TVAR_;
 };
