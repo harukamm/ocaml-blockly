@@ -424,13 +424,14 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
   this.textElement_.setAttribute('x', left);
   this.borderRect_.setAttribute('x', -Blockly.BlockSvg.SEP_SPACE_X / 2 + left);
 
-  // Vertically center the block shape only if the current field size is
-  // capable of containing it.
+  var xy = new goog.math.Coordinate(0, 0);
   if (blockShapeHeight <= this.size_.height) {
-    var top = (blockShapeHeight - dropdownHeight) / 2;
-    this.blockShapedPath_.setAttribute('transform',
-        'translate(0, -' + top + ')');
+    // Vertically center the block shape only if the current field size is
+    // capable of containing it.
+    xy.y -= (blockShapeHeight - dropdownHeight) / 2;
   }
+  this.blockShapedPath_.setAttribute('transform',
+      'translate(' + xy.x + ',' + xy.y + ')');
 
   this.size_.width = blockShapeWidth - Blockly.BlockSvg.TAB_WIDTH;
   this.size_.height = blockShapeHeight;
