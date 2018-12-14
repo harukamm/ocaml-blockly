@@ -159,7 +159,7 @@ Blockly.TypeExpr.prototype.clone = function() {
  */
 Blockly.TypeExpr.prototype.deref = function() {
   var t = this;
-  while (t.label == Blockly.TypeExpr.TVAR_ && t.val != null)
+  while (t.isTypeVar() && t.val != null)
     t = t.val;
   return t;
 }
@@ -504,7 +504,7 @@ goog.inherits(Blockly.TypeExpr.TVAR, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
   var inst = opt_deref ? this.deref() : this;
-  if (inst.label == Blockly.TypeExpr.TVAR_) {
+  if (inst.isTypeVar()) {
     var val_str = inst.val ? inst.val.toString(opt_deref) : "null";
     return "<" + inst.name + "=" + val_str + ">";
   } else {
@@ -537,7 +537,7 @@ Blockly.TypeExpr.TVAR.prototype.clone = function() {
  */
 Blockly.TypeExpr.TVAR.prototype.deepDeref = function() {
   var t = this;
-  while (t.val != null && Blockly.TypeExpr.TVAR_ == t.val.label)
+  while (t.val != null && t.val.isTypeVar())
     t = t.val;
   return t.val != null ? t.val.deepDeref() : t;
 }
@@ -602,7 +602,7 @@ Blockly.TypeExpr.prototype.getTvarList = function() {
   while (staq.length) {
     var t = staq.pop();
 
-    if (t.label == Blockly.TypeExpr.TVAR_) {
+    if (t.isTypeVar()) {
       tvars.push(t);
       continue;
     }
@@ -636,7 +636,7 @@ Blockly.TypeExpr.prototype.instantiate = function(targetNames) {
     var u = pair[1];
     var parentTyp = pair[2];
 
-    if (t.label != Blockly.TypeExpr.TVAR_) {
+    if (!t.isTypeVar()) {
       var children1 = t.getChildren();
       var children2 = u.getChildren();
       for (var i = 0; i < children1.length; i++) {
@@ -682,16 +682,14 @@ Blockly.TypeExpr.prototype.unify = function(other) {
     var pair = staq.pop();
     var t1 = pair[0];
     var t2 = pair[1];
-    if (t1.label == Blockly.TypeExpr.TVAR_ ||
-        t2.label == Blockly.TypeExpr.TVAR_) {
-      var t1_is_tvar = t1.label == Blockly.TypeExpr.TVAR_;
-      if (t1_is_tvar && t2.label == Blockly.TypeExpr.TVAR_)
+    if (t1.isTypeVar() || t2.isTypeVar()) {
+      var t1_is_tvar = t1.isTypeVar();
+      if (t1_is_tvar && t2.isTypeVar())
         t1_is_tvar = t1.val != null;
 
       var tvar = t1_is_tvar ? t1 : t2;
       var othr = t1_is_tvar ? t2 : t1;
-      if (othr.label == Blockly.TypeExpr.TVAR_ &&
-          tvar.name == othr.name)
+      if (othr.isTypeVar() && tvar.name == othr.name)
         continue;
       if (tvar.val != null) {
         staq.push([tvar.val, othr]);
@@ -723,7 +721,7 @@ Blockly.TypeExpr.prototype.occur = function(name) {
   var staq = [this];
   while (staq.length != 0) {
     var t = staq.pop();
-    if (t.label == Blockly.TypeExpr.TVAR_ && t.name == name)
+    if (t.isTypeVar() && t.name == name)
       return true;
     var children = t.getChildren();
     for (var i = 0; i < children.length; i++)
@@ -755,12 +753,12 @@ Blockly.TypeExpr.prototype.ableToUnify = function(other) {
  */
 Blockly.TypeExpr.prototype.disconnect = function(other) {
   function disconnectImpl(upstream, child) {
-    if (child.label != Blockly.TypeExpr.TVAR_) {
+    if (!child.isTypeVar()) {
       return;
     }
     var t = upstream;
     while (t) {
-      if (t.label != Blockly.TypeExpr.TVAR_ || !t.val) {
+      if (!t.isTypeVar() || !t.val) {
         break;
       }
       t.val = t.val == child ? null : t.val;
@@ -773,10 +771,7 @@ Blockly.TypeExpr.prototype.disconnect = function(other) {
 
 Blockly.TypeExpr.prototype.flatten = function() {
   var t = this.deepDeref();
-  if (t.label == Blockly.TypeExpr.INT_ ||
-      t.label == Blockly.TypeExpr.FLOAT_ ||
-      t.label == Blockly.TypeExpr.BOOL_ ||
-      t.label == Blockly.TypeExpr.TVAR_) {
+  if (t.isTypeVar() || t.isPrimitive()) {
     return [t];
   }
   var children = t.getChildren();
@@ -799,14 +794,11 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
   if (typ1.label != typ2.label) {
     return false;
   }
-  var label = typ1.label;
   // Check if the types are primitive ones.
-  if (label == Blockly.TypeExpr.INT_ ||
-      label == Blockly.TypeExpr.FLOAT_ ||
-      label == Blockly.TypeExpr.BOOL_) {
+  if (typ1.isPrimitive()) {
     return true;
   }
-  if (label == Blockly.TypeExpr.TVAR_) {
+  if (typ1.isTypeVar()) {
     return typ1.name == typ2.name;
   }
   var children1 = typ1.getChildren();
