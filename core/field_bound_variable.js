@@ -90,6 +90,14 @@ Blockly.FieldBoundVariable.fromJson = function(options) {
 Blockly.FieldBoundVariable.WIDGET_TYPE_VARIABLES_ = 'vhighlights';
 
 /**
+ * The minimum height of block shaped path.
+ * Must be less than the value of Blockly.BlockSvg.MIN_BLOCK_Y.
+ * @type {number}
+ * @constant
+ */
+Blockly.FieldBoundVariable.BLOCK_MIN_HEIGHT = 23;
+
+/**
  * Whether the field has a potential block, and it can be created then dragged
  * from the field.
  * @type {!boolean}
@@ -429,6 +437,9 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
     // Vertically center the block shape only if the current field size is
     // capable of containing it.
     xy.y -= (blockShapeHeight - dropdownHeight) / 2;
+  } else {
+    // Otherwise, add padding on the top of block.
+    xy.y -= (Blockly.FieldBoundVariable.BLOCK_MIN_HEIGHT - dropdownHeight) / 2;
   }
   this.blockShapedPath_.setAttribute('transform',
       'translate(' + xy.x + ',' + xy.y + ')');
@@ -458,9 +469,10 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
         inlineSteps, 1 /** Gets the down path. */);
 
     var downHeight = 0;
-    if (height < 23) {
-      downHeight = 23 - height;
-      height = 23;
+    var minHeight = Blockly.FieldBoundVariable.BLOCK_MIN_HEIGHT;
+    if (height < minHeight) {
+      downHeight = minHeight - height;
+      height = minHeight;
     }
     var rectWidth = width - Blockly.BlockSvg.TAB_WIDTH;
     inlineSteps.push('l 0 ' + downHeight + ' ' + rectWidth + ' 0 l 0 -' + height + ' l -' +
