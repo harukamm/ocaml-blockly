@@ -31,12 +31,13 @@ Blockly.Scheme.create = function(env, type) {
     ftvInEnv = ftvInEnv.concat(scheme.freeTvars());
   }
   var boundVarNames = [];
+  var ftvNamesInEnv = goog.array.map(ftvInEnv, function(x) {return x.name;});
   var ftvInType = type.getTvarList();
   for (var i = 0, tvar; tvar = ftvInType[i]; i++) {
     goog.asserts.assert(!tvar.val,
         'Includes a type which is not a type variable');
     var name = tvar.name;
-    if (ftvInEnv.indexOf(tvar) == -1 && boundVarNames.indexOf(name) == -1) {
+    if (ftvNamesInEnv.indexOf(name) == -1 && boundVarNames.indexOf(name) == -1) {
       boundVarNames.push(name);
     }
   }
