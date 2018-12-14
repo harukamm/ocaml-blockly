@@ -2965,7 +2965,7 @@ Blockly.Blocks['let_typed'] = {
      * created while the latest type inference were triggered on this block.
      * @type {!Object}
      */
-    this.lastTypeScheme_ = {'VAR': Blockly.Scheme.monoType({}, varType)};
+    this.lastTypeScheme_ = {'VAR': Blockly.Scheme.monoType(varType)};
     // TODO(harukam): Support poly type scheme by calling
     // Blockly.Scheme.create().
   },
@@ -3177,8 +3177,7 @@ Blockly.Blocks['let_typed'] = {
     var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
     var exp1 = this.callInfer_('EXP1', env);
     var env2 = Object.assign({}, env);
-    //    env2[var_name] = Blockly.Scheme.create(env, type);
-    env2[var_name] = Blockly.Scheme.monoType(env, type);
+    env2[var_name] = Blockly.Scheme.monoType(variable.getTypeExpr());
     var exp2 = this.callInfer_('EXP2', env2);
 
     if (exp1)
