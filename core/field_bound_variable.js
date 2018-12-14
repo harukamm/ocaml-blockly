@@ -434,7 +434,7 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
       'translate(' + xy.x + ',' + xy.y + ')');
 
   this.size_.width = blockShapeWidth - Blockly.BlockSvg.TAB_WIDTH;
-  this.size_.height = blockShapeHeight;
+  this.size_.height = Math.max(Blockly.BlockSvg.MIN_BLOCK_Y, blockShapeHeight);
 
   this.lastRenderedTypeExpr_ = this.variable_.getTypeExpr().deepDeref();
 };
