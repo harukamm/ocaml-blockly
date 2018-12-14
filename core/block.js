@@ -3176,14 +3176,9 @@ Blockly.Blocks['let_typed'] = {
     var expected_exp1 = this.getInput('EXP1').connection.typeExpr;
     var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
     var exp1 = this.callInfer_('EXP1', env);
-    var env2 = Object.assign({}, env);
-    env2[var_name] = Blockly.Scheme.monoType(variable.getTypeExpr());
-    var exp2 = this.callInfer_('EXP2', env2);
 
     if (exp1)
       exp1.unify(expected_exp1);
-    if (exp2)
-      exp2.unify(expected_exp2);
 
     if (this.argumentCount_ == 0) {
       var exp1Type = this.getInput('EXP1').connection.typeExpr;
@@ -3200,6 +3195,14 @@ Blockly.Blocks['let_typed'] = {
       var funType = Blockly.TypeExpr.createFunType(funTypes);
       variable.getTypeExpr().unify(funType);
     }
+
+    var env2 = Object.assign({}, env);
+    env2[var_name] = Blockly.Scheme.monoType(variable.getTypeExpr());
+    var exp2 = this.callInfer_('EXP2', env2);
+
+    if (exp2)
+      exp2.unify(expected_exp2);
+
     // TODO(harukam): Store the type scheme.
     //this.lastTypeScheme_['VAR'] =
     //    Blockly.Scheme.create(env, variable.getTypeExpr());
