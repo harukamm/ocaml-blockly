@@ -175,7 +175,6 @@ Blockly.BoundVariableValueReference.prototype.valueTypeExprChanged = function(
     throw 'The reference has not been resolved yet.';
   }
   if (newTypeExpr) {
-    this.typeExpr_.clear();
     this.unifyTypeExpr();
   }
 };
