@@ -345,3 +345,48 @@ function test_type_expr_typeSchemesWithExpr() {
   assertTrue(isSameSet(env1.x.names, []));
   assertTrue(isSameSet(env2.y.names, []));
 }
+
+function test_type_expr_replaceChild() {
+  var x =  new Blockly.TypeExpr.TVAR('X', null);
+  var y = new Blockly.TypeExpr.TVAR('Y', x);
+  var a = new Blockly.TypeExpr.TVAR('A', null);
+  var pair = new Blockly.TypeExpr.PAIR(x, a);
+
+  pair.replaceChild(x, y);
+  pair.replaceChild(a, x);
+  assertEquals(pair.first_type, y);
+  assertEquals(pair.second_type, x);
+
+  var n = new Blockly.TypeExpr.TVAR('N', null);
+  var list1 = new Blockly.TypeExpr.LIST(pair);
+
+  list1.replaceChild(pair, n);
+  list1.replaceChild(n, x);
+  list1.replaceChild(x, a);
+  assertEquals(list1.element_type, a);
+
+  var o = new Blockly.TypeExpr.TVAR('O', null);
+  var p = new Blockly.TypeExpr.TVAR('P', null);
+  var float1 = new Blockly.TypeExpr.FLOAT();
+  // o -> float
+  var fun = new Blockly.TypeExpr.FUN(o, float1);
+
+  var float2 = new Blockly.TypeExpr.FLOAT();
+  var failed = false;
+  try {
+    fun.replaceChild(float2, x);
+  } catch (e) {
+    failed = true;
+  }
+  assertTrue(failed);
+  // o -> o
+  fun.replaceChild(float1, o);
+  // p -> o
+  fun.replaceChild(o, p);
+  // p -> p
+  fun.replaceChild(o, p);
+  // x -> p
+  fun.replaceChild(p, x);
+  assertEquals(fun.arg_type, x);
+  assertEquals(fun.return_type, p);
+}

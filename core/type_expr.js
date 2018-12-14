@@ -98,6 +98,17 @@ Blockly.TypeExpr.prototype.getChildren = function() {
 }
 
 /**
+ * Replace one of children type which this type directly has with another
+ * type.
+ * @param {!Blockly.Block} oldChild The child type to be replaced.
+ * @param {!Blockly.Block} newChild The child type to be inserted instead of
+ *     oldChild.
+ */
+Blockly.TypeExpr.prototype.replaceChild = function(oldChild, newChild) {
+  goog.asserts.assert(false, 'Has no child.');
+};
+
+/**
  * Clear a type resolution.
  */
 Blockly.TypeExpr.prototype.clear = function() {
@@ -273,6 +284,19 @@ Blockly.TypeExpr.LIST.prototype.getChildren = function() {
 }
 
 /**
+ * Replace one of children type which this type directly has with another
+ * type.
+ * @param {!Blockly.Block} oldChild The child type to be replaced.
+ * @param {!Blockly.Block} newChild The child type to be inserted instead of
+ *     oldChild.
+ */
+Blockly.TypeExpr.LIST.prototype.replaceChild = function(oldChild, newChild) {
+  goog.asserts.assert(this.element_type == oldChild,
+      'The specidied child is not found.');
+  this.element_type = newChild;
+};
+
+/**
  * Deeply clone the object
  * @override
  * @return {Blockly.TypeExpr}
@@ -323,6 +347,23 @@ Blockly.TypeExpr.PAIR.prototype.toString = function(opt_deref) {
 Blockly.TypeExpr.PAIR.prototype.getChildren = function() {
   return [this.first_type, this.second_type];
 }
+
+/**
+ * Replace one of children type which this type directly has with another
+ * type.
+ * @param {!Blockly.Block} oldChild The child type to be replaced.
+ * @param {!Blockly.Block} newChild The child type to be inserted instead of
+ *     oldChild.
+ */
+Blockly.TypeExpr.PAIR.prototype.replaceChild = function(oldChild, newChild) {
+  if (oldChild == this.first_type) {
+    this.first_type = newChild;
+  } else if (oldChild == this.second_type) {
+    this.second_type = newChild;
+  } else {
+    goog.asserts.assert(false, 'The specidied child is not found.');
+  }
+};
 
 /**
  * Deeply clone the object
@@ -387,6 +428,23 @@ Blockly.TypeExpr.FUN.prototype.clone = function() {
 Blockly.TypeExpr.FUN.prototype.getChildren = function() {
   return [this.arg_type, this.return_type];
 }
+
+/**
+ * Replace one of children type which this type directly has with another
+ * type.
+ * @param {!Blockly.Block} oldChild The child type to be replaced.
+ * @param {!Blockly.Block} newChild The child type to be inserted instead of
+ *     oldChild.
+ */
+Blockly.TypeExpr.FUN.prototype.replaceChild = function(oldChild, newChild) {
+  if (oldChild == this.arg_type) {
+    this.arg_type = newChild;
+  } else if (oldChild == this.return_type) {
+    this.return_type = newChild;
+  } else {
+    goog.asserts.assert(false, 'The specidied child is not found.');
+  }
+};
 
 /**
  * Returns the object which is dereferenced recursively.
