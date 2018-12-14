@@ -2963,8 +2963,6 @@ Blockly.Blocks['let_typed'] = {
      * @type {!Object}
      */
     this.lastTypeScheme_ = {'VAR': Blockly.Scheme.monoType(varType)};
-    // TODO(harukam): Support poly type scheme by calling
-    // Blockly.Scheme.create().
   },
 
   /**
@@ -3195,8 +3193,11 @@ Blockly.Blocks['let_typed'] = {
       variable.getTypeExpr().unify(funType);
     }
 
-    // TODO(harukam): Support poly type scheme.
-    var scheme = Blockly.Scheme.monoType(variable.getTypeExpr());
+    if (variable.getTypeExpr().deref().isFunction()) {
+      var scheme = Blockly.Scheme.create({}, variable.getTypeExpr());
+    } else {
+      var scheme = Blockly.Scheme.monoType(variable.getTypeExpr());
+    }
     this.lastTypeScheme_['VAR'] = scheme;
 
     var env2 = Object.assign({}, env);

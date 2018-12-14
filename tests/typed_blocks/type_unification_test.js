@@ -1089,10 +1089,60 @@ function test_type_unification_mockMutator() {
 
     var scheme = letBlock.getTypeScheme('VAR');
     assertNotNull(scheme);
-    assertEquals(scheme.names.length, 0);
+    assertEquals(scheme.names.length, 4);
     // poly types are not yet implemented.
     // ∀txyz. t -> x -> y -> z
   } finally {
+    workspace.dispose();
+  }
+}
+
+function test_type_unification_polyTypeForIdFunc() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  var workbench2;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var mutator = create_mock_mutator(letBlock, 'args_create_with_item');
+    assertEquals(letBlock.argumentCount_, 0);
+    mutator._append();
+    mutator._update();
+    assertEquals(letBlock.argumentCount_, 1);
+    assertNotNull(letBlock.typedValue['ARG0']);
+    setVariableName(letBlock, 'id');
+
+    workbench = create_mock_workbench(letBlock, 'EXP1');
+    var blocks = getFlyoutBlocksFromWorkbench(workbench, workspace);
+    assertEquals(blocks.length, 1);
+    var referenceBlock = blocks[0];
+    var reference = getVariable(referenceBlock);
+    var argValue = letBlock.typedValue['ARG0'];
+    assertEquals(reference.getBoundValue(), argValue);
+    assertEquals(reference.getTypeExpr().val, argValue.getTypeExpr());
+
+    letBlock.getInput('EXP1').connection.connect(referenceBlock.outputConnection);
+
+    var letValue = getVariable(letBlock);
+    assertEquals(letValue.getTypeExpr().val.label,
+        Blockly.TypeExpr.FUN_);
+    assertEquals(letValue.getTypeExpr().val.arg_type, argValue.getTypeExpr());
+    assertEquals(letValue.getTypeExpr().val.return_type,
+        letBlock.getInput('EXP1').connection.typeExpr);
+
+    var workbench2 = create_mock_workbench(letBlock, 'EXP2');
+    var blocks = getFlyoutBlocksFromWorkbench(workbench2, workspace);
+    assertEquals(blocks.length, 1);
+    var referenceBlock = blocks[0];
+    var reference = getVariable(referenceBlock);
+    assertEquals(reference.getBoundValue(), letValue);
+    assertNotEquals(reference.getTypeExpr().deref(), letValue.getTypeExpr().deref());
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    if (workbench2) {
+      workbench2.dispose();
+    }
     workspace.dispose();
   }
 }
