@@ -310,3 +310,38 @@ function test_type_expr_typeSchemes() {
   assertTrue(isSameSet(env.var4.names, ["O", "P", "M", "X"]));
   assertTrue(isSameSet(env.var5.names, []));
 }
+
+function test_type_expr_typeSchemesWithExpr() {
+  // fun a -> let f = fun x -> a in fun y -> f
+  var env = {};
+
+  var a = new Blockly.TypeExpr.TVAR('A', null);
+  var x = new Blockly.TypeExpr.TVAR('X', null);
+  var f = new Blockly.TypeExpr.TVAR('F', null);
+  var y = new Blockly.TypeExpr.TVAR('Y', null);
+
+  // [fun a -> let f = fun x -> a in fun y -> f]
+  env["a"] = Blockly.Scheme.monoType(a);
+
+  // fun a -> [let f = fun x -> a in fun y -> f]
+  var env0 = Object.assign({}, env);
+  var fun = Blockly.TypeExpr.createFunType([x, a]);
+  env0["f"] = Blockly.Scheme.create(env0, fun);
+
+  // fun a -> let f = [fun x -> a] in fun y -> f
+  var env1 = Object.assign({}, env);
+  env1["x"] = Blockly.Scheme.monoType(x);
+
+  // fun a -> let f = fun x -> [a] in fun y -> f
+
+  // fun a -> let f = fun x -> a in [fun y -> f]
+  var env2 = Object.assign({}, env0);
+  env2["y"] = Blockly.Scheme.monoType(y);
+
+  // fun a -> let f = fun x -> a in fun y -> [f]
+
+  assertTrue(isSameSet(env.a.names, []));
+  assertTrue(isSameSet(env0.f.names, ["X"]));
+  assertTrue(isSameSet(env1.x.names, []));
+  assertTrue(isSameSet(env2.y.names, []));
+}
