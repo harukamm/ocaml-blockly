@@ -930,10 +930,21 @@ function test_type_transfer_block_workspace_lambdaBlockTransferManyTimes() {
     var originalLambdaBlock = workspace.newBlock('lambda_typed');
     var originalValueType = getVariable(originalLambdaBlock).getTypeExpr();
 
+    function checkScheme(scheme) {
+      assertNotNull(scheme);
+      assertEquals(scheme.names.length, 0);
+      assertEquals(scheme.type.label, Blockly.TypeExpr.TVAR_);
+      assertEquals(scheme.type.name, originalValueType.name);
+    }
+    var scheme = originalLambdaBlock.getTypeScheme('VAR');
+    checkScheme(scheme);
+
     var transBlock = repeat_transfer_workspace(originalLambdaBlock,
         otherWorkspace, 10);
     var newValueType = getVariable(transBlock).getTypeExpr();
     assertEquals(originalValueType, newValueType);
+    var scheme = transBlock.getTypeScheme('VAR');
+    checkScheme(scheme);
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();

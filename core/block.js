@@ -2696,6 +2696,17 @@ Blockly.Blocks['lambda_typed'] = {
     return map;
   },
 
+  getTypeScheme: function(fieldName) {
+    var scheme = null;
+    if (fieldName === 'VAR') {
+      var variable = this.typedValue['VAR'];
+      var outType = this.outputConnection.typeExpr;
+      goog.asserts.assert(outType.arg_type == variable.getTypeExpr());
+      scheme = Blockly.Scheme.monoType(outType.arg_type);
+    }
+    return scheme;
+  },
+
   clearTypes: function() {
     var variable = this.typedValue['VAR'];
     goog.asserts.assert(this.outputConnection.typeExpr.arg_type ==
@@ -2946,6 +2957,13 @@ Blockly.Blocks['let_typed'] = {
 
     this.argumentCount_ = 0;
     exp1Type.unify(varType);
+
+    /**
+     * The object mapping name of variable field to the type scheme which was
+     * created while the latest type inference were triggered on this block.
+     * @type {!Object}
+     */
+    this.lastTypeScheme_ = {};
   },
 
   /**
@@ -2990,6 +3008,10 @@ Blockly.Blocks['let_typed'] = {
       map[name] = variable;
     }
     return map;
+  },
+
+  getTypeScheme: function(fieldName) {
+    return fieldName in this.lastTypeScheme_ ? this.lastTypeScheme_ : null;
   },
 
   /**
@@ -3170,6 +3192,10 @@ Blockly.Blocks['let_typed'] = {
       var funType = Blockly.TypeExpr.createFunType(funTypes);
       variable.getTypeExpr().unify(funType);
     }
+    // TODO(harukam): Store the type scheme. Firstly must change type of env's
+    // property values from Blockly.TypeExpr to Blockly.Scheme.
+    //this.lastTypeScheme_['VAR'] =
+    //    Blockly.Scheme.create(env, variable.getTypeExpr());
 
     return expected_exp2;
   }

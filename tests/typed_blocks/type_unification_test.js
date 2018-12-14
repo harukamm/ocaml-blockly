@@ -1087,6 +1087,10 @@ function test_type_unification_mockMutator() {
     assertNotNull(letBlock.typedValue['ARG0']);
     assertNotNull(letBlock.typedValue['ARG1']);
     assertNotNull(letBlock.typedValue['ARG2']);
+
+    var scheme = letBlock.getTypeScheme('VAR');
+    // Not yet implemented.
+    assertNull(scheme);
   } finally {
     workspace.dispose();
   }
