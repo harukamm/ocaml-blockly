@@ -927,10 +927,10 @@ function test_type_transfer_block_workspace_lambdaBlockTransferManyTimes() {
   var workspace = create_typed_workspace();
   var otherWorkspace = create_typed_workspace();
   try {
-    var originalLetBlock = workspace.newBlock('lambda_typed');
-    var originalValueType = getVariable(originalLetBlock).getTypeExpr();
+    var originalLambdaBlock = workspace.newBlock('lambda_typed');
+    var originalValueType = getVariable(originalLambdaBlock).getTypeExpr();
 
-    var transBlock = repeat_transfer_workspace(originalLetBlock,
+    var transBlock = repeat_transfer_workspace(originalLambdaBlock,
         otherWorkspace, 10);
     var newValueType = getVariable(transBlock).getTypeExpr();
     assertEquals(originalValueType, newValueType);
