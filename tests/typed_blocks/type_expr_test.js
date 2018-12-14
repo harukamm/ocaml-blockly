@@ -305,9 +305,9 @@ function test_type_expr_typeSchemes() {
 
   assertTrue(isSameSet(env.var0.names, []));
   assertTrue(isSameSet(env.var1.names, []));
-  assertTrue(isSameSet(env.var2.names, ["M"]));
-  assertTrue(isSameSet(env.var3.names, ["X", "A", "M"]));
-  assertTrue(isSameSet(env.var4.names, ["O", "P", "M", "X"]));
+  assertTrue(isSameSet(env.var2.names, ['M']));
+  assertTrue(isSameSet(env.var3.names, ['X', 'A', 'M']));
+  assertTrue(isSameSet(env.var4.names, ['O', 'P', 'M', 'X']));
   assertTrue(isSameSet(env.var5.names, []));
 }
 
