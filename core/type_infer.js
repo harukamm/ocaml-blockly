@@ -16,8 +16,15 @@ goog.require('goog.asserts');
  * @constructor
  */
 Blockly.Scheme = function(names, type) {
-  this.names = names;
-  this.type = type;
+  var inst = type.instantiate(names);
+
+  // Clone the type expression except free type variables, so that bound
+  // variables would be changed.
+  this.type = inst.instance;
+
+  var newBoundVariables = inst.bounds;
+  this.names = goog.array.map(newBoundVariables,
+      function(x) { return x.name;});
 };
 
 Blockly.Scheme.monoType = function(type) {
@@ -68,7 +75,8 @@ Blockly.Scheme.prototype.instantiate = function() {
   }
   goog.asserts.assert(unvisited.length == 0);
 
-  return this.type.instantiate(this.names);
+  var inst = this.type.instantiate(this.names);
+  return inst.instance;
 };
 
 Blockly.Scheme.prototype.toString = function() {

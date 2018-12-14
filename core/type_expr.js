@@ -598,8 +598,10 @@ Blockly.TypeExpr.prototype.getTvarList = function() {
  * Clone type expression and replace some of type variables with flesh ones.
  * @param {!Array.<!string>} targetNames List of type variable names to be
  *     replaced.
- * @return {!Blockly.TypeExpr} The cloned type expression with some flesh type
- *     variables.
+ * @return {!{instance: !Blockly.TypeExpr, bounds: !Array.<!Blockly.TypeExpr>}}
+ *     The cloned type expression with some flesh type variables, and list of
+ *     flesh type variable generated newly.
+ * @private
  */
 Blockly.TypeExpr.prototype.instantiate = function(targetNames) {
   var type = this.deepDeref();
@@ -641,11 +643,12 @@ Blockly.TypeExpr.prototype.instantiate = function(targetNames) {
       if (parentTyp) {
         parentTyp.replaceChild(u, typeToInsert);
       } else {
-        return typeToInsert;
+        cloned = typeToInsert;
+        break;
       }
     }
   }
-  return cloned;
+  return {instance: cloned, bounds: Object.values(map)};
 };
 
 /**
