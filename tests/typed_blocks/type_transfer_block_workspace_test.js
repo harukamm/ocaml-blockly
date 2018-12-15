@@ -809,8 +809,8 @@ function test_type_transfer_block_workspace_NestedWorkbenchTransferring() {
     var transBlock = virtually_transfer_workspace(letBlockWB, workspace);
     var transLetValueY = getVariable(transBlock);
     assertEquals(referenceY.getBoundValue(), transLetValueY);
-    assertEquals(referenceY.getTypeExpr().deref(),
-        transLetValueY.getTypeExpr().deref());
+    assertTrue(referenceY.getTypeExpr().deref().isInt());
+    assertTrue(transLetValueY.getTypeExpr().deref().isInt());
     assertEquals(referenceY.getTypeExpr().deref().label,
         Blockly.TypeExpr.INT_);
     assertEquals(transLetValueY.getTypeExpr().deref().label,
