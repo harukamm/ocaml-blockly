@@ -303,6 +303,26 @@ Blockly.BoundVariables.getAllVariablesOnBlocks = function(block, opt_filter) {
 };
 
 /**
+ * Collect a list of blocks which are need to infer types in order.
+ * @param {!Array<!Blockly.Block>} blocks List of root blocks whose types are
+ *     need to be updated at least.
+ */
+Blockly.BoundVariables.getAffectedBlocksForTypeInfer = function(blocks) {
+  var blocksToUpdate = [];
+  var affectedVariables = [];
+  for (var i = 0, block; block = blocks[i]; i++) {
+    goog.asserts.assert(!block.getParent());
+    blocksToUpdate.push(block);
+
+    var variables = Blockly.BoundVariables.getAllVariablesOnBlocks(block);
+    Array.prototype.push.apply(affectedVariables, variables);
+  }
+  Array.prototype.push.apply(blocksToUpdate,
+      Blockly.BoundVariables.getAllRootBlocks(affectedVariables, true));
+  return blocksToUpdate;
+};
+
+/**
  * Returns if any existing variable references will never be changed even if
  * the variable is renamed to the given name.
  * @param {!Blockly.BoundVariableAbstract} variable The variable to be renamed.

@@ -1779,24 +1779,17 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
 Blockly.Block.doTypeInference = function(blocks, opt_reset) {
   // TODO(harukam): The function updateTypeInference() could be removed.
   // Use this function instead.
-  var blocksToUpdate = [];
-  var affectedVariables = [];
-  for (var i = 0, block; block = blocks[i]; i++) {
-    if (!block.outputConnection || !block.outputConnection.typeExpr) {
-      // This block has no type-expr, or it is removed deleted.
-      continue;
-    }
-    goog.asserts.assert(!block.getParent());
-    blocksToUpdate.push(block);
 
-    var variables = Blockly.BoundVariables.getAllVariablesOnBlocks(block);
-    Array.prototype.push.apply(affectedVariables, variables);
+  function isTyped(block) {
+    return !!block.workspace &&
+      !!block.outputConnection && !!block.outputConnection.typeExpr;
   }
-  Array.prototype.push.apply(blocksToUpdate,
-      Blockly.BoundVariables.getAllRootBlocks(affectedVariables, true));
+  // Filter out blocks without type expression and blocks being deleted.
+  var filtered = goog.array.filter(blocks, isTyped);
 
-  blocksToUpdate = goog.array.filter(blocksToUpdate,
-    x => x.outputConnection && !!x.outputConnection.typeExpr && !!x.workspace);
+  var affectedBlocks =
+      Blockly.BoundVariables.getAffectedBlocksForTypeInfer(blocks);
+  var blocksToUpdate = goog.array.filter(affectedBlocks, isTyped);
 
   Blockly.Block.inferBlocksType_(blocksToUpdate, opt_reset);
 };
