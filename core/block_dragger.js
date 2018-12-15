@@ -237,6 +237,11 @@ Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY,
     this.storeStartTargetConnection_();
     this.draggingBlock_.unplug(healStack);
     var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
+    if (this.draggingBlock_.isInMutator) {
+      // If the block exists in a mutator, the mutator position may change by
+      // disconnecting blocks. Update the start position.
+      this.dragStartXY_ = this.getDragStartXY();
+    }
     var newLoc = goog.math.Coordinate.sum(this.dragStartXY_, delta);
 
     this.draggingBlock_.translate(newLoc.x, newLoc.y);
