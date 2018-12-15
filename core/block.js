@@ -2582,7 +2582,7 @@ Blockly.Blocks['pair_first_typed'] = {
     var pair_t = new Blockly.TypeExpr.PAIR(A, B);
     this.appendValueInput('FIRST')
         .setTypeExpr(pair_t)
-        .appendField('first (');
+        .appendField('fst (');
     this.appendDummyInput()
         .appendField(')');
     this.setOutput(true);
@@ -2616,7 +2616,7 @@ Blockly.Blocks['pair_second_typed'] = {
     var pair_t = new Blockly.TypeExpr.PAIR(A, B);
     this.appendValueInput('SECOND')
         .setTypeExpr(pair_t)
-        .appendField('second (');
+        .appendField('snd (');
     this.appendDummyInput()
         .appendField(')');
     this.setOutput(true);
