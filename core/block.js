@@ -1787,11 +1787,15 @@ Blockly.Block.doTypeInference = function(blocks, opt_reset) {
   // Filter out blocks without type expression and blocks being deleted.
   var filtered = goog.array.filter(blocks, isTyped);
 
-  var affectedBlocks =
+  var affected =
       Blockly.BoundVariables.getAffectedBlocksForTypeInfer(blocks);
-  var blocksToUpdate = goog.array.filter(affectedBlocks, isTyped);
+  var blocksToUpdate = goog.array.filter(affected.blocks, isTyped);
+  var orphanRefs = goog.array.filter(affected.orphanRefBlocks, isTyped);
 
-  Blockly.Block.inferBlocksType_(blocksToUpdate, opt_reset);
+  // TODO(harukam): Do type inference on reference blocks separately.
+  // Always clear type-expr on them. Otherwise, they unified with mono type
+  // even if let variable is updated to be poly type.
+  Blockly.Block.inferBlocksType_(blocksToUpdate.concat(orphanRefs), opt_reset);
 };
 
 /**

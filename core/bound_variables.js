@@ -306,20 +306,72 @@ Blockly.BoundVariables.getAllVariablesOnBlocks = function(block, opt_filter) {
  * Collect a list of blocks which are need to infer types in order.
  * @param {!Array<!Blockly.Block>} blocks List of root blocks whose types are
  *     need to be updated at least.
+ * @return {orphanRefBlocks:!Array.<!Blockly.Block>,
+ *     !{blocks:!Array.<!Blockly.Block>}
+ *     orphanRefBlocks:!Array.<!Blockly.Block>} Object containing root blocks
+ *     whose types should be updated with the following two properties.
+ *     - orphanRefBlocks: A list of blocks which contains some variable
+ *       references, but their referring values do not exist inside.
+ *     - blocks: Other blocks to be updated.
  */
 Blockly.BoundVariables.getAffectedBlocksForTypeInfer = function(blocks) {
-  var blocksToUpdate = [];
-  var affectedVariables = [];
+  var visitedValue = {};
+  var visitedRef = {};
+  // Collect references and values whose types might be changed.
   for (var i = 0, block; block = blocks[i]; i++) {
     goog.asserts.assert(!block.getParent());
-    blocksToUpdate.push(block);
 
-    var variables = Blockly.BoundVariables.getAllVariablesOnBlocks(block);
-    Array.prototype.push.apply(affectedVariables, variables);
+    var references =
+        Blockly.BoundVariables.getAllVariablesOnBlocks(block, true);
+    for (var j = 0, ref; ref = references[j]; j++) {
+      visitedRef[ref.getId()] = ref;
+      var value = ref.getBoundValue();
+      if (value) {
+        visitedValue[value.getId()] = value;
+      }
+    }
+    var values =
+        Blockly.BoundVariables.getAllVariablesOnBlocks(block, false);
+    for (var j = 0, val; val = values[j]; j++) {
+      visitedValue[val.getId()] = val;
+      for (var k = 0, ref; ref = val.referenceList_[k]; k++) {
+        visitedRef[ref.getId()] = ref;
+      }
+    }
   }
-  Array.prototype.push.apply(blocksToUpdate,
-      Blockly.BoundVariables.getAllRootBlocks(affectedVariables, true));
-  return blocksToUpdate;
+  var rootBlock = {};
+  var orphanRefRootBlock = {};
+  // Store the value's root block first. The type inference for the value is
+  // needed to be done before the reference.
+  for (var id in visitedValue) {
+    var val = visitedValue[id];
+    var block = val.getSourceBlock();
+    if (block) {
+      var root = block.getRootBlock();
+      rootBlock[root.id] = root;
+    }
+  }
+  for (var id in visitedRef) {
+    var ref = visitedRef[id];
+    var block = ref.getSourceBlock();
+    if (block && ref.getBoundValue()) {
+      var root = block.getRootBlock();
+      if (!(root.id in rootBlock)) {
+        // The reference is bound to a value, but they do not share the root
+        // block.
+        orphanRefRootBlock[root.id] = root;
+      }
+    }
+  }
+  for (var i = 0, block; block = blocks[i]; i++) {
+    if (!(block.id in rootBlock) &&
+        !(block.id in orphanRefRootBlock)) {
+      rootBlock[block.id] = block;
+    }
+  }
+  var blocksToUpdate = Object.values(rootBlock);
+  var orphanRefRoot = Object.values(orphanRefRootBlock);
+  return {blocks: blocksToUpdate, orphanRefBlocks: orphanRefRoot};
 };
 
 /**
