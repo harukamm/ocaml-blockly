@@ -3010,9 +3010,16 @@ Blockly.Blocks['let_typed'] = {
   getTypeScheme: function(fieldName) {
     if (fieldName in this.lastTypeScheme_) {
       return this.lastTypeScheme_[fieldName];
-    } else {
-      return null;
+    } else if (fieldName.startsWith('ARG')) {
+      var numstr = fieldName.substring(3);
+      var x = parseInt(numstr);
+      if (!isNaN(x) && x < this.argumentCount_) {
+        var argname = 'ARG' + x;
+        var argv = this.typedValue[argname];
+        return Blockly.Scheme.monoType(argv.getTypeExpr());
+      }
     }
+    return null;
   },
 
   /**
