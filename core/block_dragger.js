@@ -143,6 +143,13 @@ Blockly.BlockDragger = function(block, workspace) {
   this.dragStartXY_ = this.getDragStartXY();
 
   /**
+   * The block's offset coordinate relative to the original location.
+   * @type {!goog.math.Coordinate}
+   * @private
+   */
+  this.blockOffsetXY_ = new goog.math.Coordinate(0, 0);
+
+  /**
    * A list of all of the icons (comment, warning, and mutator) that are
    * on this block and its descendants.  Moving an icon moves the bubble that
    * extends from it if that bubble is open.
@@ -241,13 +248,25 @@ Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY,
       (healStack && this.draggingBlock_.nextConnection &&
       this.draggingBlock_.nextConnection.targetBlock())) {
     this.storeStartTargetConnection_();
+
+    var oldHeight = this.draggingBlock_.height;
     this.draggingBlock_.unplug(healStack);
-    var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
+    this.setBlockOffsetXY_(oldHeight, this.draggingBlock_.height);
+
     if (this.draggingBlock_.isInMutator) {
       // If the block exists in a mutator, the mutator position may change by
       // disconnecting blocks. Update the start position.
-      this.dragStartXY_ = this.getDragStartXY();
+      var oldXY = this.dragStartXY_;
+      var newXY = this.getDragStartXY();
+
+      // Move the block based on updates of the mutator workspace's position.
+      this.blockOffsetXY_.x += oldXY.x - newXY.x;
+      this.blockOffsetXY_.y += oldXY.y - newXY.y;
+
+      this.dragStartXY_ = newXY;
     }
+    var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
+    delta = goog.math.Coordinate.sum(delta, this.blockOffsetXY_);
     var newLoc = goog.math.Coordinate.sum(this.dragStartXY_, delta);
 
     this.draggingBlock_.translate(newLoc.x, newLoc.y);
@@ -272,6 +291,7 @@ Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY,
  */
 Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
   var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
+  delta = goog.math.Coordinate.sum(delta, this.blockOffsetXY_);
   var newLoc = goog.math.Coordinate.sum(this.dragStartXY_, delta);
 
   this.draggingBlock_.moveDuringDrag(newLoc);
@@ -311,6 +331,7 @@ Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
 
   if (this.wouldDropAllowed_ || this.wouldDeleteBlock_) {
     var delta = this.pixelsToWorkspaceUnits_(currentDragDeltaXY);
+    delta = goog.math.Coordinate.sum(delta, this.blockOffsetXY_);
     var newLoc = goog.math.Coordinate.sum(this.startXY_, delta);
   } else {
     var newLoc = this.startXY_;
@@ -552,6 +573,31 @@ Blockly.BlockDragger.prototype.setToolboxCursorStyle_ = function(enable) {
       } else {
         toolbox.removeStyle(style);
       }
+    }
+  }
+};
+
+/**
+ * Calculate the block's offset coordinate relative to its original location
+ * in order to move the block to under the mouse pointer.
+ * When a block is unplugged, it may become shorter in height and the mouse
+ * pointer can be outside the block. For such cases, this function moves the
+ * block to under the mouse pointer.
+ * @param {number} oldHeight The previous block's height before it's unplugged.
+ * @param {number} newHeight The current block's height.
+ */
+Blockly.BlockDragger.prototype.setBlockOffsetXY_ = function(oldHeight,
+    newHeight) {
+  var relativeY = this.draggingBlock_.getCursorYRelativeToBlock();
+  if (!isNaN(relativeY)) {
+    var mainScale = this.mainWorkspace_.scale;
+    oldHeight *= mainScale;
+    newHeight *= mainScale;
+    this.heightDiff_ = oldHeight - newHeight;
+    if (newHeight < relativeY && relativeY < oldHeight) {
+      var newRelativeY = newHeight * 2 / 3;
+      var diffXY = new goog.math.Coordinate(0, relativeY - newRelativeY);
+      this.blockOffsetXY_ = this.pixelsToWorkspaceUnits_(diffXY);
     }
   }
 };
