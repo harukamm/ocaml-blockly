@@ -1208,7 +1208,6 @@ function test_type_unification_fixLambdaIdInLet() {
     // let x = fun c -> .. in ..
     var1.outputConnection.disconnect();
 
-    // TODO(harukam): The following assertion fails. Fix it.
     polyCheck();
   } finally {
     if (workbench) {

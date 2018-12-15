@@ -3167,8 +3167,7 @@ Blockly.Blocks['let_typed'] = {
       var variable = this.typedValue['ARG' + x];
       variable.getTypeExpr().clear();
     }
-    var scheme = Blockly.Scheme.monoType(this.typedValue['VAR'].getTypeExpr());
-    this.lastTypeScheme_['VAR'] = scheme;
+    delete this.lastTypeScheme_['VAR'];
   },
 
   infer: function(env) {
