@@ -620,6 +620,39 @@ Blockly.BlockSvg.prototype.onMouseDown_ = function(e) {
   var gesture = this.workspace && this.workspace.getGesture(e);
   if (gesture) {
     gesture.handleBlockStart(e, this);
+    this.storeCursorYRelativeToBlock_(e);
+  }
+};
+
+/**
+ * Store a cursor position relative to the block based on the most recent
+ * mouse-down event.
+ * @param {!Event} e Mouse down event or touch start event.
+ * @private
+ */
+Blockly.BlockSvg.prototype.storeCursorYRelativeToBlock_ = function(e) {
+  var mainScale = this.workspace.getMainWorkspace().scale;
+  var rect = this.svgGroup_.getBoundingClientRect();
+  var top = rect.y;
+  var bottom = top + this.height * mainScale;
+  var y = e.clientY;
+  if (y < top || bottom < y) {
+    console.warn('The position and size caluculation might be wrong.');
+  }
+  /** @type {number} */
+  this.cursorYRelativeToBlock_ = e.clientY - rect.y;
+};
+
+/**
+ * Returns a vertical cursor position relative to the block when the latest
+ * mouse-down event was fired on it.
+ * @return {number|null} The vertical offset relative to the block, or null.
+ */
+Blockly.BlockSvg.prototype.getCursorYRelativeToBlock = function() {
+  if (isNaN(this.cursorYRelativeToBlock_)) {
+    return null;
+  } else {
+    return this.cursorYRelativeToBlock_;
   }
 };
 
