@@ -1159,3 +1159,61 @@ function test_type_unification_fixFstSndInference() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_fixLambdaIdInLet() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var letBlock = workspace.newBlock('let_typed');
+    var lambdaBlock = workspace.newBlock('lambda_typed');
+    var var1 = workspace.newBlock('variables_get_typed');
+    letBlock.getInput('EXP1').connection.connect(lambdaBlock.outputConnection);
+
+    workbench = create_mock_workbench(letBlock);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var referenceBlock = blocks[0];
+    var reference = getVariable(referenceBlock);
+    var refType = reference.getTypeExpr();
+
+    setVariableName(lambdaBlock, 'c');
+    setVariableName(var1, 'c');
+    getVariable(var1).setBoundValue(getVariable(lambdaBlock));
+
+    var lambdaType = lambdaBlock.outputConnection.typeExpr;
+
+    // Assertion for let-poly
+    function polyCheck() {
+      var argType = lambdaType.arg_type;
+      var returnType = lambdaType.return_type;
+      assertFalse(refType.occur(argType.name));
+      assertFalse(refType.occur(returnType.name));
+
+      var derefLam = lambdaType.deepDeref();
+      var derefRef = refType.deepDeref();
+      assertTrue(derefLam.isFunction());
+      assertTrue(derefRef.isFunction());
+      assertNotEquals(derefLam, derefRef);
+      assertNotEquals(derefLam.toString(), derefRef.toString());
+      assertNotEquals(lambdaType.toString(), refType.toString());
+    }
+
+    polyCheck();
+
+    // let x = fun c -> c in ..
+    lambdaBlock.getInput('RETURN').connection.connect(var1.outputConnection);
+
+    polyCheck();
+
+    // let x = fun c -> .. in ..
+    var1.outputConnection.disconnect();
+
+    // TODO(harukam): The following assertion fails. Fix it.
+    polyCheck();
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
