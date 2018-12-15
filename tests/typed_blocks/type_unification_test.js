@@ -1167,7 +1167,6 @@ function test_type_unification_fixLambdaIdInLet() {
     var letBlock = workspace.newBlock('let_typed');
     var lambdaBlock = workspace.newBlock('lambda_typed');
     var var1 = workspace.newBlock('variables_get_typed');
-    letBlock.getInput('EXP1').connection.connect(lambdaBlock.outputConnection);
 
     workbench = create_mock_workbench(letBlock);
     var blocks = getFlyoutBlocksFromWorkbench(workbench);
@@ -1176,6 +1175,7 @@ function test_type_unification_fixLambdaIdInLet() {
     var reference = getVariable(referenceBlock);
     var refType = reference.getTypeExpr();
 
+    letBlock.getInput('EXP1').connection.connect(lambdaBlock.outputConnection);
     setVariableName(lambdaBlock, 'c');
     setVariableName(var1, 'c');
     getVariable(var1).setBoundValue(getVariable(lambdaBlock));
