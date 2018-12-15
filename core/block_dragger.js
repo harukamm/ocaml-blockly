@@ -58,6 +58,13 @@ Blockly.BlockDragger = function(block, workspace) {
   this.workspace_ = workspace;
 
   /**
+   * The main workspace of the dragging block's workspace.
+   * @type {!Blockly.WorkspaceSvg}
+   * @private
+   */
+  this.mainWorkspace_ = this.draggingBlock_.workspace.getMainWorkspace();
+
+  /**
    * Object that keeps track of which workspace the dragged block would
    * transfer to.
    * @type {Blockly.WorkspaceTransferManager}
@@ -158,9 +165,8 @@ Blockly.BlockDragger.prototype.getDragStartXY = function() {
   // The dragging block will use the main workspace's surface.
   // Include the translation of the dragging block's workspace to the main
   // workspace.
-  var mainWorkspace = this.draggingBlock_.workspace.getMainWorkspace();
   var xy = this.draggingBlock_.workspace.getRelativeToWorkspaceXY(
-      mainWorkspace);
+      this.mainWorkspace_);
   return goog.math.Coordinate.sum(this.startXY_, xy);
 };
 
@@ -569,7 +575,9 @@ Blockly.BlockDragger.prototype.pixelsToWorkspaceUnits_ = function(pixelCoord) {
     // oddities in our rendering optimizations.  The actual scale is the same as
     // the scale on the parent workspace.
     // Fix that for dragging.
-    var mainScale = this.workspace_.options.parentWorkspace.scale;
+    var mainScale = this.mainWorkspace_.scale;
+    // Note: Some mutators could be nested inside. Use the scale on the main
+    // workspace instead of the parent.
     result = result.scale(1 / mainScale);
   }
   return result;
