@@ -301,9 +301,7 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
 
     // Disconnect the bool block from the let block.
     var exp1 = newLetBlock.getInput('EXP1').connection;
-    Blockly.debug = true;
     exp1.disconnect();
-    Blockly.debug = false;
     assertEquals(newLetValue.getTypeExpr().val, exp1.typeExpr);
     assertNull(exp1.typeExpr.val);
     assertEquals(orphanReference.getTypeExpr().deref(), exp1.typeExpr);
