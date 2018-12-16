@@ -109,7 +109,7 @@ Blockly.TypedLang['pair_create_typed'] = function(block) {
       Blockly.TypedLang.ORDER_ATOMIC);
   var snd = Blockly.TypedLang.valueToCode(block, 'SECOND',
       Blockly.TypedLang.ORDER_ATOMIC);
-  var code = '(' + fst + snd + ')';
+  var code = '(' + fst + ', ' + snd + ')';
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
