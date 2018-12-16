@@ -74,7 +74,7 @@ Typed.runCode = function() {
 
 Typed.onClickConvert = function(event) {
   event.preventDefault();
-  var input = document.querySelector("input.ocamlCode");
+  var input = document.querySelector(".ocamlCode");
   var code = input.value;
   if (code) {
     Typed.codeToBlock(code);

@@ -10,11 +10,6 @@ body {
   padding: 0;
 }
 
-h1 {
-  font-weight: normal;
-  font-size: 140%;
-}
-
 #blocklyDiv {
   padding: 0;
 }
@@ -27,9 +22,52 @@ h1 {
 
 #rightArea {
   height: 100%;
-  padding-left: 10px;
   width: 290px;
   float: left;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#rightArea > * {
+  padding-left: 10px;
+}
+
+.titleHeader {
+  border-bottom: 1px dotted #000;
+  font-weight: normal;
+  font-size: 140%;
+  height: 40px;
+  margin: 0;
+  padding-top: 10px;
+  width: 100%;
+}
+
+.content {
+  height: calc(100% - 48px);
+}
+
+.codeToBlock .contentTitle {
+  border-left: 10px solid #ed2553;
+}
+
+.blockToCode .contentTitle {
+  border-left: 10px solid #18aa8d;
+}
+
+textarea.ocamlCode, textarea.generatedCode {
+  resize: none;
+}
+
+.btn {
+  color: black;
+  cursor: pointer;
+  background-color: #d3d3d3;
+  outline: none;
+  width: 110px;
+}
+
+.btn:hover {
+  background-color: #c0c0c0;
 }
 
 .clear {

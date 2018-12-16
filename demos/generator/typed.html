@@ -28,17 +28,27 @@
     <div id="blocklyDiv"></div>
   </div>
   <div id="rightArea">
-    <h1>Demos</h1>
-    <form onsubmit="Typed.onClickConvert(event)">
-      <input class="ocamlCode" type="text" value="let x = true && false || false in x"></input>
-      <input type="submit" value="Convert to block"></input>
-    </form>
-    <p>
-      <button onclick="Typed.showCode()">Show TypedLang</button>
-    </p>
-    <p>
-      <button onclick="Typed.runCode()">Run TypedLang</button>
-    </p>
+    <h1 class="titleHeader">でも</h1>
+    <div class="content">
+      <div class="codeToBlock">
+        <form onsubmit="Typed.onClickConvert(event)">
+          <div>
+            <h2 class="contentTitle">OCaml => block</h2>
+            <textarea class="ocamlCode" type="text" rows="10" cols="40">let x = 1 in 2</textarea>
+          </div>
+          <input class="btn" type="submit" value="Convert to block"></input>
+        </form>
+      </div>
+      <div class="blockToCode">
+        <h2 class="contentTitle">block => OCaml</h2>
+        <p>
+          <textarea class="generatedCode" type="text" rows="10" cols="40"
+              readonly></textarea>
+          <button class="btn" onclick="Typed.showCode()">Update</button>
+          <button class="btn" onclick="Typed.runCode()">Run</button>
+        </p>
+      </div>
+    </div>
   </div>
   <div class="clear"></div>
 
