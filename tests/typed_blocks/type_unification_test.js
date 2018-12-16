@@ -1240,7 +1240,6 @@ function fixLambdaIdInLetPoly(firstConnectLambda, setRefInExp2) {
 function test_type_unification_fixLambdaIdInLetPoly() {
   fixLambdaIdInLetPoly(true, true);
   fixLambdaIdInLetPoly(true, false);
-  // TODO(harukam): The following test fails.
-  //  fixLambdaIdInLetPoly(false, true);
+  fixLambdaIdInLetPoly(false, true);
   fixLambdaIdInLetPoly(false, false);
 }

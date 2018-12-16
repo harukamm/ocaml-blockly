@@ -1781,8 +1781,7 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
  * @static
  */
 Blockly.Block.doTypeInference = function(blocks, opt_reset) {
-  // TODO(harukam): The function updateTypeInference() could be removed.
-  // Use this function instead.
+  // TODO(harukam): Remove parameter opt_reset. It's not in use.
 
   function isTyped(block) {
     return !!block.workspace &&
@@ -1796,11 +1795,12 @@ Blockly.Block.doTypeInference = function(blocks, opt_reset) {
   var blocksToUpdate = goog.array.filter(affected.blocks, isTyped);
   var orphanRefs = goog.array.filter(affected.orphanRefBlocks, isTyped);
 
-  Blockly.Block.inferBlocksType_(blocksToUpdate, opt_reset);
+  // Always clear type-exprs on blocks. Let variable's type can change to
+  // poly type from mono type and vice versa.
+  // See tests fixLambdaIdInLetPoly(false, true) in unification-test.
+  Blockly.Block.inferBlocksType_(blocksToUpdate, true);
 
-  // Do type inference on orphan reference blocks separately, and always clear
-  // type-exprs on them. Otherwise, their types can be unified with mono type
-  // even if let variable is updated to be poly type.
+  // Do type inference on orphan reference blocks separately.
   Blockly.Block.inferBlocksType_(orphanRefs, true, true);
 };
 
