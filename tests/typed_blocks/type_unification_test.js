@@ -1160,7 +1160,7 @@ function test_type_unification_fixFstSndInference() {
   }
 }
 
-function test_type_unification_fixLambdaIdInLet() {
+function fixLambdaIdInLetPoly(firstConnectLambda, setRefInExp2) {
   var workspace = create_typed_workspace();
   var workbench;
   try {
@@ -1168,14 +1168,34 @@ function test_type_unification_fixLambdaIdInLet() {
     var lambdaBlock = workspace.newBlock('lambda_typed');
     var var1 = workspace.newBlock('variables_get_typed');
 
+    if (firstConnectLambda) {
+      letBlock.getInput('EXP1').connection.connect(
+          lambdaBlock.outputConnection);
+    }
+
     workbench = create_mock_workbench(letBlock);
-    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    var ws = setRefInExp2 ? workspace : workbench.getWorkspace();
+    var blocks = getFlyoutBlocksFromWorkbench(workbench, ws);
     assertEquals(blocks.length, 1);
     var referenceBlock = blocks[0];
     var reference = getVariable(referenceBlock);
     var refType = reference.getTypeExpr();
 
-    letBlock.getInput('EXP1').connection.connect(lambdaBlock.outputConnection);
+    if (setRefInExp2) {
+      // let x = fun c -> c in x
+      letBlock.getInput('EXP2').connection.connect(
+          referenceBlock.outputConnection);
+    }  else {
+      //                  |___  x ___|
+      //                      |/
+      // let x = fun c -> c in ..
+    }
+    if (!firstConnectLambda) {
+      var exp1 = letBlock.getInput('EXP1').connection;
+      assertEquals(reference.getTypeExpr().deref(), exp1.typeExpr);
+      exp1.connect(lambdaBlock.outputConnection);
+    }
+
     setVariableName(lambdaBlock, 'c');
     setVariableName(var1, 'c');
     getVariable(var1).setBoundValue(getVariable(lambdaBlock));
@@ -1215,4 +1235,12 @@ function test_type_unification_fixLambdaIdInLet() {
     }
     workspace.dispose();
   }
+}
+
+function test_type_unification_fixLambdaIdInLetPoly() {
+  fixLambdaIdInLetPoly(true, true);
+  fixLambdaIdInLetPoly(true, false);
+  // TODO(harukam): The following test fails.
+  //  fixLambdaIdInLetPoly(false, true);
+  fixLambdaIdInLetPoly(false, false);
 }
