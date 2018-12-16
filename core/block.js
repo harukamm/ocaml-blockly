@@ -3182,7 +3182,14 @@ Blockly.Blocks['let_typed'] = {
     var var_name = variable.getVariableName();
     var expected_exp1 = this.getInput('EXP1').connection.typeExpr;
     var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
-    var exp1 = this.callInfer_('EXP1', ctx);
+    var env1 = Object.assign({}, ctx.env);
+    for (var x = 0; x < this.argumentCount_; x++) {
+      var argVar = this.typedValue['ARG' + x];
+      var varName = argVar.getVariableName();
+      env1[varName] = Blockly.Scheme.monoType(argVar.getTypeExpr());
+    }
+    var ctx1 = {unifyOrphan: ctx.unifyOrphan, env: env1};
+    var exp1 = this.callInfer_('EXP1', ctx1);
 
     if (exp1)
       exp1.unify(expected_exp1);
