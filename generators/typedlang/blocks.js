@@ -17,40 +17,39 @@ Blockly.TypedLang['logic_boolean_typed'] = function(block) {
 Blockly.TypedLang['logic_compare_typed'] = function(block) {
   // Comparison operator.
   var OPERATORS = {
-    'EQ': '==',
-    'NEQ': '!=',
+    'EQ': '=',
+    'NEQ': '<>',
     'LT': '<',
     'LTE': '<=',
     'GT': '>',
     'GTE': '>='
   };
   var operator = OPERATORS[block.getFieldValue('OP')];
-  var order = (operator == '==' || operator == '!=') ?
-      Blockly.TypedLang.ORDER_EQUALITY : Blockly.TypedLang.ORDER_RELATIONAL;
-  var argument0 = Blockly.TypedLang.valueToCode(block, 'A', order) || '0';
-  var argument1 = Blockly.TypedLang.valueToCode(block, 'B', order) || '0';
+  var argument0 = Blockly.TypedLang.valueToCode(block, 'A',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  var argument1 = Blockly.TypedLang.valueToCode(block, 'B',
+      Blockly.TypedLang.ORDER_ATOMIC);
   var code = argument0 + ' ' + operator + ' ' + argument1;
-  return [code, order];
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['logic_ternary_typed'] = function(block) {
   // Ternary operator.
   var value_if = Blockly.TypedLang.valueToCode(block, 'IF',
-      Blockly.TypedLang.ORDER_CONDITIONAL) || 'false';
+      Blockly.TypedLang.ORDER_ATOMIC);
   var value_then = Blockly.TypedLang.valueToCode(block, 'THEN',
-      Blockly.TypedLang.ORDER_CONDITIONAL) || 'null';
+      Blockly.TypedLang.ORDER_ATOMIC);
   var value_else = Blockly.TypedLang.valueToCode(block, 'ELSE',
-      Blockly.TypedLang.ORDER_CONDITIONAL) || 'null';
-  var code = value_if + ' ? ' + value_then + ' : ' + value_else;
-  return [code, Blockly.TypedLang.ORDER_CONDITIONAL];
+      Blockly.TypedLang.ORDER_ATOMIC);
+  var code = 'if ' + value_if + ' then ' + value_then + ' else ' +
+      value_else;
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['int_typed'] = function(block) {
   // int value.
   var code = parseInt(block.getFieldValue('INT'));
-  var order = code >= 0 ? Blockly.TypedLang.ORDER_ATOMIC :
-              Blockly.TypedLang.ORDER_UNARY_NEGATION;
-  return [code, order];
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['int_arithmetic_typed'] = function(block) {
@@ -63,20 +62,17 @@ Blockly.TypedLang['int_arithmetic_typed'] = function(block) {
   };
   var tuple = OPERATORS[block.getFieldValue('OP_INT')];
   var operator = tuple[0];
-  var order = tuple[1];
-  var argument0 = Blockly.TypedLang.valueToCode(block, 'A', order) || '0';
-  var argument1 = Blockly.TypedLang.valueToCode(block, 'B', order) || '0';
-  var code;
-  code = argument0 + operator + argument1;
+  var order = Blockly.TypedLang.ORDER_ATOMIC;
+  var argument0 = Blockly.TypedLang.valueToCode(block, 'A', order);
+  var argument1 = Blockly.TypedLang.valueToCode(block, 'B', order);
+  var code = argument0 + operator + argument1;
   return [code, order];
 };
 
 Blockly.TypedLang['float_typed'] = function(block) {
   // float value.
   var code = block.getFieldValue('FLOAT');
-  var order = code >= 0 ? Blockly.TypedLang.ORDER_ATOMIC :
-              Blockly.TypedLang.ORDER_UNARY_NEGATION;
-  return [code, order];
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['float_arithmetic_typed'] = function(block) {
@@ -90,8 +86,8 @@ Blockly.TypedLang['float_arithmetic_typed'] = function(block) {
   var tuple = OPERATORS[block.getFieldValue('OP_FLOAT')];
   var operator = tuple[0];
   var order = tuple[1];
-  var argument0 = Blockly.TypedLang.valueToCode(block, 'A', order) || '0.';
-  var argument1 = Blockly.TypedLang.valueToCode(block, 'B', order) || '0.';
+  var argument0 = Blockly.TypedLang.valueToCode(block, 'A', order);
+  var argument1 = Blockly.TypedLang.valueToCode(block, 'B', order);
   var code;
   code = argument0 + operator + argument1;
   return [code, order];
@@ -102,7 +98,7 @@ Blockly.TypedLang['lists_create_with_typed'] = function(block) {
   var elements = new Array(block.itemCount_);
   for (var i = 0; i < block.itemCount_; i++) {
     elements[i] = Blockly.TypedLang.valueToCode(block, 'ADD' + i,
-        Blockly.TypedLang.ORDER_COMMA) || 'null';
+        Blockly.TypedLang.ORDER_ATOMIC);
   }
   var code = '[' + elements.join(', ') + ']';
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
