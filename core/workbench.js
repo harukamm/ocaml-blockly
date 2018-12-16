@@ -59,13 +59,6 @@ Blockly.Workbench.prototype.initialized_ = false;
 Blockly.Workbench.prototype.contextConnection_ = null;
 
 /**
- * The top margin for the icon.
- * @type {number}
- * @override
- */
-Blockly.Workbench.prototype.TOP_MARGIN = 0;
-
-/**
  * Draw the workbench icon.
  * @param {!Element} group The icon group.
  * @private

@@ -974,8 +974,7 @@ Blockly.BlockSvg.prototype.renderInlineRow_ = function(pathObject, row, cursor,
     // TODO: Align inline field rows (left/right/centre).
     cursor.x = this.renderFields_(input.fieldRow, fieldX, fieldY);
 
-    var iconY = (row.height - input.iconHeight) / 2;
-    cursor.x = this.renderInputIcon_(input, cursor.x, iconY);
+    cursor.x = this.renderInputIcon_(input, cursor.x, fieldY);
 
     if (input.type != Blockly.DUMMY_INPUT) {
       cursor.x += input.renderWidth + Blockly.BlockSvg.SEP_SPACE_X;
