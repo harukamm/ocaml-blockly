@@ -2723,7 +2723,7 @@ Blockly.Blocks['lambda_typed'] = {
 
   infer: function(ctx) {
     var variable = this.typedValue['VAR'];
-    var var_name = this.getField('VAR').getText();
+    var var_name = variable.getVariableName();
     var expected = this.outputConnection.typeExpr;
     var env2 = Object.assign({}, ctx.env);
     env2[var_name] = Blockly.Scheme.monoType(expected.arg_type);
