@@ -204,7 +204,7 @@ Blockly.TypedLang.finish = function(code) {
  * @return {string} Legal line of code.
  */
 Blockly.TypedLang.scrubNakedValue = function(line) {
-  return line + ';\n';
+  return line + '\n';
 };
 
 /**
