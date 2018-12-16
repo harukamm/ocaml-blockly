@@ -60,16 +60,16 @@ Typed.getBBox_ = function(element) {
 
 Typed.showCode = function() {
   try {
-    Blockly.TypedLang.INFINITE_LOOP_TRAP = null;
     var code = Blockly.TypedLang.workspaceToCode(Typed.workspace);
-    alert(code);
+    var input = document.querySelector(".generatedCode");
+    input.value = code;
   } catch (e) {
-    alert('Some of blocks are not supported for converting.');
+    // alert('Some of blocks are not supported for converting.');
   }
 }
 
 Typed.runCode = function() {
-  alert('Not implemented yet.');
+  //  alert('Not implemented yet.');
 }
 
 Typed.onClickConvert = function(event) {
