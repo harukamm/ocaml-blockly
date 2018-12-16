@@ -166,8 +166,8 @@ Blockly.TypedLang['match_typed'] = function(block) {
 };
 
 Blockly.TypedLang['variables_get_typed'] = function(block) {
-  var varname = block.typedValue['VAR'].getVariableName();
-  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+  var varname = block.typedReference['VAR'].getVariableName();
+  return [varname, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['let_typed'] = function(block) {
