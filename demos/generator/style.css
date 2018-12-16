@@ -66,10 +66,6 @@ textarea.ocamlCode, textarea.generatedCode {
   width: 110px;
 }
 
-.btn:hover {
-  background-color: #c0c0c0;
-}
-
 .clear {
   clear: both;
 }
