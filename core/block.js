@@ -2846,6 +2846,25 @@ Blockly.Blocks['match_typed'] = {
   }
 }
 
+Blockly.Blocks['defined_datatype_typed'] = {
+  init: function() {
+    this.setColour(160);
+    var A = Blockly.TypeExpr.generateTypeVar();
+    var variableField = Blockly.FieldBoundVariable.newValue(A, 'NONE');
+    this.appendDummyInput()
+        .appendField('type ')
+        .appendField(new Blockly.FieldTextInput('data'), 'NAME')
+        .appendField('=');
+    this.appendValueInput('VARIANT_INP0')
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField('|')
+        .appendField(variableField, 'VARIANT0')
+        .appendField('of');
+    this.setOutput(false);
+    this.itemCount_ = 2;
+  }
+};
+
 /**
  * Typed variables
  */
