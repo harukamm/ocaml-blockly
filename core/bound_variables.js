@@ -369,8 +369,12 @@ Blockly.BoundVariables.getAffectedBlocksForTypeInfer = function(blocks) {
       rootBlock[block.id] = block;
     }
   }
-  var blocksToUpdate = Object.values(rootBlock);
-  var orphanRefRoot = Object.values(orphanRefRootBlock);
+  function objectValues(obj) {
+    var keys = Object.keys(obj);
+    return goog.array.map(keys, key => obj[key]);
+  }
+  var blocksToUpdate = objectValues(rootBlock);
+  var orphanRefRoot = objectValues(orphanRefRootBlock);
   return {blocks: blocksToUpdate, orphanRefBlocks: orphanRefRoot};
 };
 

@@ -670,7 +670,9 @@ Blockly.TypeExpr.prototype.instantiate = function(targetNames) {
       }
     }
   }
-  return {instance: cloned, bounds: Object.values(map)};
+  var keys = Object.keys(map);
+  var boundList = goog.array.map(keys, key => map[key]);
+  return {instance: cloned, bounds: boundList};
 };
 
 /**
