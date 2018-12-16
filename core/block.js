@@ -1769,39 +1769,48 @@ Blockly.Block.inferBlocksType_ = function(blocks, opt_reset, opt_unifyOrphan) {
  * @param {boolean=} opt_reset True if types should be reset first.
  */
 Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
-  Blockly.Block.doTypeInference([this], opt_reset);
+  // TODO(harukam): opt_reset parameter is no longer used. Types are always
+  // cleared.
+  if (this.workspace) {
+    Blockly.Block.doTypeInference(this.workspace);
+  }
 };
 
 /**
- * Trigger type inference on the given blocks and their affecting blocks.
- * @param {!Array.<!Blockly.Block>} blocks List of blocks whose type
- *     expressions to be updated directly.
- * @param {boolean=} opt_reset True if clear all of type unification before
- *     start of type inference.
+ * Trigger type inference on the given workspace and its descendant
+ * workbenches's workspace.
  * @static
  */
-Blockly.Block.doTypeInference = function(blocks, opt_reset) {
-  // TODO(harukam): Remove parameter opt_reset. It's not in use.
-
+Blockly.Block.doTypeInference = function(workspace) {
   function isTyped(block) {
     return !!block.workspace &&
       !!block.outputConnection && !!block.outputConnection.typeExpr;
   }
-  // Filter out blocks without type expression and blocks being deleted.
-  var filtered = goog.array.filter(blocks, isTyped);
 
-  var affected =
-      Blockly.BoundVariables.getAffectedBlocksForTypeInfer(blocks);
-  var blocksToUpdate = goog.array.filter(affected.blocks, isTyped);
-  var orphanRefs = goog.array.filter(affected.orphanRefBlocks, isTyped);
+  var staq = [workspace];
+  // Collect root blocks whose types should be updated. These blocks are sorted
+  // in order by parent workspace then child one because The type inference for
+  // the value is needed to be done before the reference.
+  var blocksToUpdate = [];
+  while (staq.length) {
+    var ws = staq.pop();
+    var topBlocks = ws.getTopBlocks();
+    topBlocks = goog.array.filter(topBlocks, isTyped);
+    Array.prototype.push.apply(blocksToUpdate, topBlocks);
 
-  // Always clear type-exprs on blocks. Let variable's type can change to
-  // poly type from mono type and vice versa.
-  // See tests fixLambdaIdInLetPoly(false, true) in unification-test.
-  Blockly.Block.inferBlocksType_(blocksToUpdate, true);
+    for (var j = 0, topBlock; topBlock = topBlocks[j]; j++) {
+      var workbenches = topBlock.getAllWorkbenches();
+      for (var i = 0, workbench; workbench = workbenches[i]; i++) {
+        var ws = workbench.getWorkspace();
+        // TODO(harukam): Search for blocks in workbench flyout.
+        if (ws) {
+          staq.push(ws);
+        }
+      }
+    }
+  }
 
-  // Do type inference on orphan reference blocks separately.
-  Blockly.Block.inferBlocksType_(orphanRefs, true, true);
+  Blockly.Block.inferBlocksType_(blocksToUpdate, true, true);
 };
 
 /**

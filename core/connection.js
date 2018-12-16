@@ -567,13 +567,20 @@ Blockly.Connection.prototype.disconnectInternal_ = function(parentBlock,
   if (Blockly.Events.isEnabled()) {
     event = new Blockly.Events.BlockMove(childBlock);
   }
+  if (parentBlock.workspace && childBlock.workspace) {
+    goog.asserts.assert(parentBlock.workspace == childBlock.workspace);
+    var workspace = parentBlock.workspace;
+  } else {
+    var workspace = parentBlock.workspace || childBlock.workspace;
+  }
+
   var otherConnection = this.targetConnection;
   otherConnection.targetConnection = null;
   this.targetConnection = null;
   childBlock.setParent(null);
-  var parentRootBlock = parentBlock.getRootBlock();
   if (this.typeExprEnabled()) {
-    Blockly.Block.doTypeInference([childBlock, parentRootBlock], true);
+    var mainWorkspace = workspace ? workspace.getMainWorkspace() : null;
+    Blockly.Block.doTypeInference(mainWorkspace);
     // if (!childBlock.resolveReference(null, true)) {
     //   // TODO(harukam): If there is a reference that could not be resolved,
     //   // show message users.

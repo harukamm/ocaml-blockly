@@ -245,7 +245,8 @@ function test_type_transfer_block_workspace_newBlockShareTypeExpression() {
 
 function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
   var workspace = create_typed_workspace();
-  var otherWorkspace = create_typed_workspace()
+  var otherWorkspace = create_typed_workspace();
+  var workbench, newWorkbench;
   try {
     var originalLetBlock = workspace.newBlock('let_typed');
     var originalBoolBlock = workspace.newBlock('logic_boolean_typed')
@@ -259,11 +260,15 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
         originalBoolBlock.outputConnection);
     setVariableName(originalLetBlock, 'flag');
 
-    var orphanVarBlock = workspace.newBlock('variables_get_typed');
+    workbench = create_mock_workbench(originalLetBlock);
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 1);
+    var orphanVarBlock = blocks[0];
     var orphanReference = getVariable(orphanVarBlock);
     orphanReference.setVariableName('flag');
     orphanReference.setBoundValue(originalLetValue);
 
+    var workspaceWB = workbench.getWorkspace();
     var newLetBlock = virtually_transfer_workspace(originalLetBlock,
         otherWorkspace);
 
@@ -276,6 +281,10 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
         newLetBlock.getInput('EXP2').connection.typeExpr);
     assertTrue(originalExp2Type ==
         newLetBlock.outputConnection.typeExpr);
+    assertEquals(newLetBlock.workbenches.length, 1);
+    assertNotEquals(newLetBlock.workbenches[0], workbench);
+    assertEquals(newLetBlock.workbenches[0].getWorkspace(), workspaceWB);
+    newWorkbench = newLetBlock.workbenches[0];
 
     // See variables' type expressions.
     assertTrue(getVariable(newLetBlock).getVariableName() === 'flag');
@@ -292,13 +301,21 @@ function test_type_transfer_block_workspace_shareTypeExprWithPrimitive() {
 
     // Disconnect the bool block from the let block.
     var exp1 = newLetBlock.getInput('EXP1').connection;
+    Blockly.debug = true;
     exp1.disconnect();
+    Blockly.debug = false;
     assertEquals(newLetValue.getTypeExpr().val, exp1.typeExpr);
     assertNull(exp1.typeExpr.val);
     assertEquals(orphanReference.getTypeExpr().deref(), exp1.typeExpr);
     var type = orphanReference.getTypeExpr();
     assertTrue(type.val == exp1.typeExpr || type.val == newLetValue.getTypeExpr());
   } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    if (newWorkbench) {
+      newWorkbench.dispose();
+    }
     workspace.dispose();
     otherWorkspace.dispose();
   }
