@@ -227,6 +227,9 @@ Blockly.BoundVariableValue.prototype.copyTo = function(variable) {
 
   variable.setVariableName(this.variableName_);
 
+  if (this.isConstructor() && this.referenceCount() != 0) {
+    throw 'Not implemented';
+  }
   if (!this.sourceBlock_.isTransferring()) {
     return;
   }
