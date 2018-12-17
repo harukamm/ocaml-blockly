@@ -347,7 +347,7 @@ Blockly.Css.CONTENT = [
   '}',
 
   '.highlight.blocklyEditableText>rect {',
-    'fill: orange;',
+    'fill: #f3981d;',
   '}',
 
   '.blocklyNonEditableText>text,',
