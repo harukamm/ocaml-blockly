@@ -50,7 +50,7 @@ Blockly.WorkbenchVerticalFlyout.prototype.init = function(targetWorkspace) {
 Blockly.WorkbenchVerticalFlyout.prototype.placeNewBlock_ = function(oldBlock) {
   var block = Blockly.WorkbenchVerticalFlyout.superClass_.placeNewBlock_.call(
       this, oldBlock);
-  block.replaceTypeExprWith(oldBlock, false);
-  block.render(false);
+  // block.replaceTypeExprWith(oldBlock, false);
+  // block.render(false);
   return block;
 };
