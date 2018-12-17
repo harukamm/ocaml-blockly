@@ -2887,9 +2887,9 @@ Blockly.Blocks['variables_get_typed'] = {
    * @this Blockly.Block
    */
   init: function() {
+    this.setColour('#c97586');
     var A = Blockly.TypeExpr.generateTypeVar();
     this.setHelpUrl(Blockly.Msg.VARIABLES_GET_HELPURL);
-    this.setColour(330);
     this.appendDummyInput()
         .appendField(Blockly.Msg.VARIABLES_GET_TITLE)
         .appendField(Blockly.FieldBoundVariable.newReference(A), 'VAR')
