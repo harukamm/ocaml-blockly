@@ -2973,17 +2973,18 @@ Blockly.Blocks['variables_get_typed'] = {
 Blockly.Blocks['let_typed'] = {
   /**
    * Block for let expression.
+   * @param {boolean} opt_recur True if declare recursive function.
    * @this Blockly.Block
    */
-  init: function() {
+  init: function(opt_recur) {
     this.setHelpUrl(Blockly.Msg.VARIABLES_SET_HELPURL);
     this.setColour(330);
     var varType = Blockly.TypeExpr.generateTypeVar();
     var exp1Type = Blockly.TypeExpr.generateTypeVar();
     var exp2Type = Blockly.TypeExpr.generateTypeVar();
     var variable_field = Blockly.FieldBoundVariable.newValue(varType, 'EXP2');
-    this.appendDummyInput('VARIABLE')
-        .appendField('let')
+    var dumm = this.appendDummyInput('VARIABLE')
+        .appendField('let', 'LET_LABEL')
         .appendField(variable_field, 'VAR');
     this.appendDummyInput('ARGS');
     this.appendValueInput('EXP1')
@@ -2999,6 +3000,9 @@ Blockly.Blocks['let_typed'] = {
     this.setOutputTypeExpr(exp2Type);
     this.setInputsInline(true);
 
+    var defaultRecFlag = opt_recur === true;
+    this.isRecursive_ = false;
+    this.setRecursiveFlag(defaultRecFlag);
     this.argumentCount_ = 0;
     exp1Type.unify(varType);
 
@@ -3067,6 +3071,26 @@ Blockly.Blocks['let_typed'] = {
       }
     }
     return null;
+  },
+
+  isRecursive: function() {
+    return this.isRecursive_;
+  },
+
+  setRecursiveFlag: function(flag) {
+    if (this.isRecursive_ != flag) {
+      var input = this.getInput('VARIABLE');
+      if (flag) {
+        var recLabel = new Blockly.FieldLabel('rec');
+        input.insertFieldAt(1, recLabel, 'REC_LABEL');
+      } else {
+        input.removeField('REC_LABEL');
+      }
+      if (this.rendered) {
+        this.render();
+      }
+      this.isRecursive_ = flag;
+    }
   },
 
   /**
@@ -3266,4 +3290,10 @@ Blockly.Blocks['let_typed'] = {
 
     return expected_exp2;
   }
+};
+
+Blockly.Blocks['letrec_typed'] =
+  Object.assign({}, Blockly.Blocks['let_typed']);
+Blockly.Blocks['letrec_typed'].init = function() {
+  Blockly.Blocks['let_typed'].init.call(this, true);
 };
