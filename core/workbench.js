@@ -251,6 +251,17 @@ Blockly.Workbench.prototype.getWorkspace = function() {
 };
 
 /**
+ * Return the flyout workspace in workbench.
+ * @return {Blockly.WorkspaceSvg} The workspace in a flyout, or null.
+ */
+Blockly.Workbench.prototype.getFlyoutWorkspace = function() {
+  if (this.workspace_ && this.workspace_.flyout_) {
+    return this.workspace_.flyout_.getWorkspace();
+  }
+  return null;
+};
+
+/**
  * Set the connection whose context this workbench should be bound to.
  * @param {!Blockly.Connetion} connection The connection where this workbench's
  *     context is bound.

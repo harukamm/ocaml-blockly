@@ -1787,6 +1787,10 @@ Blockly.Block.doTypeInference = function(workspace) {
       !!block.outputConnection && !!block.outputConnection.typeExpr;
   }
 
+  if (workspace.isFlyout) {
+    return;
+  }
+
   var staq = [workspace];
   // Collect root blocks whose types should be updated. These blocks are sorted
   // in order by parent workspace then child one because The type inference for
@@ -1798,13 +1802,21 @@ Blockly.Block.doTypeInference = function(workspace) {
     topBlocks = goog.array.filter(topBlocks, isTyped);
     Array.prototype.push.apply(blocksToUpdate, topBlocks);
 
+    if (ws.isFlyout) {
+      // The flyout workspace in a workbench.
+      continue;
+    }
+
     for (var j = 0, topBlock; topBlock = topBlocks[j]; j++) {
       var workbenches = topBlock.getAllWorkbenches();
       for (var i = 0, workbench; workbench = workbenches[i]; i++) {
         var ws = workbench.getWorkspace();
-        // TODO(harukam): Search for blocks in workbench flyout.
         if (ws) {
           staq.push(ws);
+          var flyoutWs = workbench.getFlyoutWorkspace();
+          if (flyoutWs) {
+            staq.push(flyoutWs);
+          }
         }
       }
     }

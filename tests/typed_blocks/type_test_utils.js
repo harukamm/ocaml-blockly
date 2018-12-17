@@ -253,6 +253,9 @@ function create_mock_workbench(block, opt_inputName) {
     getWorkspace: function() {
       return this.workspace_;
     },
+    getFlyoutWorkspace: function() {
+      return this.flyoutWorkspace_ ? this.flyoutWorkspace_ : null;
+    },
     isWorkbench: function() {
       return true;
     },
