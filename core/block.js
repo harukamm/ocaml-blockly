@@ -3084,6 +3084,7 @@ Blockly.Blocks['let_typed'] = {
         var recLabel = new Blockly.FieldLabel('rec');
         input.insertFieldAt(1, recLabel, 'REC_LABEL');
       } else {
+        // TODO(harukam): Remove recursive references in EXP1 input.
         input.removeField('REC_LABEL');
       }
       if (this.rendered) {
@@ -3091,6 +3092,18 @@ Blockly.Blocks['let_typed'] = {
       }
       this.isRecursive_ = flag;
     }
+  },
+
+  customContextMenu: function(options) {
+    var canToggle = true;
+    var option = {enabled: canToggle};
+    if (this.isRecursive_) {
+      option.text = 'Set rec.';
+    } else {
+      option.text = 'Remove rec.';
+    }
+    option.callback = this.setRecursiveFlag.bind(this, !this.isRecursive_);
+    options.push(option);
   },
 
   /**
