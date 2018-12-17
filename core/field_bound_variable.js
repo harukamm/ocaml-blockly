@@ -220,17 +220,17 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
   if (!this.variable_) {
     this.initDefaultVariableName_();
 
-    goog.asserts.assert(this.isNormalVariable_, 'not implemented');
-
     if (this.forValue_) {
       this.hasPotentialBlock = this.sourceBlock_.isMovable();
       this.variable_ = Blockly.BoundVariables.createValue(
           this.sourceBlock_, this.name, this.defaultTypeExpr_,
-          this.defaultVariableName_);
+          this.defaultVariableName_,
+          Blockly.BoundVariableAbstract.VALUE_VARIABLE);
     } else {
       this.variable_ = Blockly.BoundVariables.createReference(
           this.sourceBlock_, this.name, this.defaultTypeExpr_,
-          this.defaultVariableName_);
+          this.defaultVariableName_,
+          Blockly.BoundVariableAbstract.REFERENCE_VARIABLE);
     }
   }
 };

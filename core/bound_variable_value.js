@@ -17,10 +17,13 @@ goog.require('goog.string');
  *     variable.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
  * @param {!string} variableName The default name of this variable value.
+ * @param {!number} label Enum representing which type of value,
+ *     Blockly.BoundVariableAbstract.VALUE_VARIABLE or
+ *     Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR.
  * @constructor
  */
 Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
-     variableName) {
+     variableName, label) {
   /**
    * The variable name for this value.
    * @type {string}
@@ -43,7 +46,7 @@ Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
   this.deleteLater_ = false;
 
   Blockly.BoundVariableValue.superClass_.constructor.call(this, block,
-      fieldName, typeExpr, Blockly.BoundVariableAbstract.VALUE_VARIABLE);
+      fieldName, typeExpr, label);
 
   Blockly.BoundVariables.addValue(this.workspace_, this);
 

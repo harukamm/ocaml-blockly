@@ -24,9 +24,12 @@ goog.require('goog.string');
  * @param {!string} variableName The default name of this variable value.
  */
 Blockly.BoundVariables.createValue = function(block, fieldName, valueTypeExpr,
-      variableName) {
+      variableName, label) {
+  var isVal = label == Blockly.BoundVariableAbstract.VALUE_VARIABLE ||
+      label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+  goog.asserts.assert(isVal, 'Invalid variable label.');
   return new Blockly.BoundVariableValue(block, fieldName, valueTypeExpr,
-      variableName);
+      variableName, label);
 };
 
 /**
@@ -97,11 +100,15 @@ Blockly.BoundVariables.getValueById = function(workspace, id) {
  * @param {string} fieldName The name of the variable field.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
  * @param {!string} name The default variable name.
+ * @param {!number} label The enum presenting type of reference.
  */
 Blockly.BoundVariables.createReference = function(block, fieldName, typeExpr,
-    name) {
+    name, label) {
+  var isRef = label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE ||
+      label == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR;
+  goog.asserts.assert(isRef, 'Invalid variable label.');
   return new Blockly.BoundVariableValueReference(block, fieldName, typeExpr,
-    name);
+    name, label);
 };
 
 /**
