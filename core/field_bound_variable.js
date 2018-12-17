@@ -145,6 +145,32 @@ Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
 };
 
 /**
+ * Obtain a newly created bound-variable field of constructor value type.
+ * @param {!Blockly.TypeExpr} typeExpr The type expression for the constructor.
+ * @param {string} opt_varName The default name for the constructor.  If null,
+ *     the generated name will be used.
+ * @return {!Blockly.FieldBoundVariable} The created field.
+ */
+Blockly.FieldBoundVariable.newValueConstructor = function(typeExpr,
+    opt_varName) {
+  return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
+      Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR);
+};
+
+/**
+ * Obtain a newly created bound-variable field of constructor reference type.
+ * @param {!Blockly.TypeExpr} typeExpr The type expression for the constructor.
+ * @param {string} opt_varName The default name for the constructor.  If null,
+ *     the generated name will be used.
+ * @return {!Blockly.FieldBoundVariable} The created field.
+ */
+Blockly.FieldBoundVariable.newValueConstructor = function(typeExpr,
+    opt_varName) {
+  return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
+      Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR);
+};
+
+/**
  * Attach this field to a block.
  * @param {!Blockly.Block} block The block containing this field.
  */
