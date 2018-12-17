@@ -144,12 +144,14 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field, rootBlock) {
   }
   var container = goog.dom.createDom('field', null, field.getVariableName());
   container.setAttribute('name', field.name);
-  if (field.isForValue()) {
+  var isVariableType = !field.isForConstructor();
+  var isValue = field.isForValue();
+  if (isVariableType && isValue) {
     // The variable is a variable value.
     container.setAttribute('id', id);
     container.setAttribute('isvalue', 'true');
     container.setAttribute('workspace-id', field.sourceBlock_.workspace.id);
-  } else {
+  } else if (isVariableType && !isValue) {
     // The variable is a variable reference.
     container.setAttribute('isvalue', 'false');
     var reference = field.getVariable();
@@ -161,6 +163,23 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field, rootBlock) {
     if (value && !reference.isCyclicReference(rootBlock)) {
       // Also encode the value this variable reference refers to as XML, and
       // append it.
+      var valueDom = goog.dom.createDom('refer-to');
+      valueDom.setAttribute('id', value.getId());
+      valueDom.setAttribute('workspace-id', value.getWorkspace().id);
+      container.append(valueDom);
+    }
+  } else if (isValue) {
+    // The variable is a value variable for constructor.
+    container.setAttribute('id', id);
+    container.setAttribute('isvalue', 'true');
+    container.setAttribute('isconstructor', 'true');
+    container.setAttribute('workspace-id', field.sourceBlock_.workspace.id);
+  } else {
+    // The variable is a reference variable for constructor.
+    container.setAttribute('isconstructor', 'true');
+    var reference = field.getVariable();
+    var value = reference.getBoundValue();
+    if (value) {
       var valueDom = goog.dom.createDom('refer-to');
       valueDom.setAttribute('id', value.getId());
       valueDom.setAttribute('workspace-id', value.getWorkspace().id);
@@ -903,8 +922,12 @@ Blockly.Xml.domToFieldVariable_ = function(workspace, xml, text, field) {
  */
 Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   var isForValue = xml.getAttribute('isvalue') == 'true';
+  var isForVariable = xml.getAttribute('isconstructor') !== 'true';
   if (isForValue != field.isForValue()) {
     throw 'Inconsistant variable type (value or reference).';
+  }
+  if (isForVariable == field.isForConstructor()) {
+    throw 'Inconsistant variable type (variable or constructor).';
   }
   function getWorkspaceFromDom(xml) {
     var workspaceId = xml.getAttribute('workspace-id');
@@ -920,19 +943,31 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   if (isForValue) {
     if (xml.hasAttribute('workspace-id')) {
       var workspace = getWorkspaceFromDom(xml);
-      var variableInDB = Blockly.BoundVariables.getValueById(workspace, xml.id);
+      if (isForVariable) {
+        var variableInDB =
+            Blockly.BoundVariables.getValueById(workspace, xml.id);
+      } else {
+        var variableInDB =
+            Blockly.BoundVariables.getValueConstructorById(workspace, xml.id);
+      }
       if (!workspace.isFlyout && variableInDB) {
         // Copy the existing variable to this field's variable because a single
         // bound-variable can not be shared by multiple blocks.
         variableInDB.copyTo(variable);
       }
     }
-  } else {
+  } else if (isForVariable) {
     var childDom = xml.children.length && xml.children[0];
     // Build the variable binding if <refer-to> DOM is specified.
     if (childDom && childDom.nodeName.toLowerCase() == 'refer-to') {
       var valuesWorkspace = getWorkspaceFromDom(childDom);
-      var value = Blockly.BoundVariables.getValueById(valuesWorkspace, childDom.id);
+      if (isForVariable) {
+        var value = Blockly.BoundVariables.getValueById(valuesWorkspace,
+            childDom.id);
+      } else {
+        var value =
+            Blockly.BoundVariables.getValueConstructorById(workspace, xml.id);
+      }
       if (!valuesWorkspace.isFlyout) {
         if (!value) {
           throw 'The variable value is not found.';

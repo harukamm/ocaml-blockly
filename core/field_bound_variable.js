@@ -306,8 +306,15 @@ Blockly.FieldBoundVariable.prototype.setSourceBlock = function(block) {
  *     Otherwise, a variable reference.
  */
 Blockly.FieldBoundVariable.prototype.isForValue = function() {
-  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
   return this.forValue_;
+};
+
+/**
+ * Returns whether this field's variable is for constructor.
+ * @return {boolean} True if this field's variable is for a constructor.
+ */
+Blockly.FieldBoundVariable.prototype.isForConstructor = function() {
+  return !this.isNormalVariable_;
 };
 
 /**
