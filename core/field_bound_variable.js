@@ -164,7 +164,7 @@ Blockly.FieldBoundVariable.newValueConstructor = function(typeExpr,
  *     the generated name will be used.
  * @return {!Blockly.FieldBoundVariable} The created field.
  */
-Blockly.FieldBoundVariable.newValueConstructor = function(typeExpr,
+Blockly.FieldBoundVariable.newReferenceConstructor = function(typeExpr,
     opt_varName) {
   return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
       Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR);
