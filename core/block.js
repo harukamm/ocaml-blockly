@@ -2616,6 +2616,7 @@ Blockly.Blocks['pair_first_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(A);
     this.setInputsInline(true);
+    this.setTooltip('Get the first and second elements of a pair.');
   },
 
   clearTypes: function() {
@@ -2650,6 +2651,7 @@ Blockly.Blocks['pair_second_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
+    this.setTooltip('Get the second and second elements of a pair.');
   },
 
   clearTypes: function() {
