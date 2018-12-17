@@ -63,6 +63,11 @@ Blockly.FieldBoundVariable = function(typeExpr, varName, label) {
       label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
 
   /**
+   * @type {number}
+   */
+  this.label_ = label;
+
+  /**
    * The value of this field's variable if this.forValue_ is true, otherwise
    * the reference of that.
    * Would be initialized in init() or setValue().
@@ -250,13 +255,11 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
       this.hasPotentialBlock = this.sourceBlock_.isMovable();
       this.variable_ = Blockly.BoundVariables.createValue(
           this.sourceBlock_, this.name, this.defaultTypeExpr_,
-          this.defaultVariableName_,
-          Blockly.BoundVariableAbstract.VALUE_VARIABLE);
+          this.defaultVariableName_, this.label_);
     } else {
       this.variable_ = Blockly.BoundVariables.createReference(
           this.sourceBlock_, this.name, this.defaultTypeExpr_,
-          this.defaultVariableName_,
-          Blockly.BoundVariableAbstract.REFERENCE_VARIABLE);
+          this.defaultVariableName_, this.label_);
     }
   }
 };
