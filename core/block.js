@@ -2926,23 +2926,6 @@ Blockly.Blocks['variables_get_typed'] = {
     }
   },
 
-  /**
-   * Add menu option to create getter/setter block for this setter/getter.
-   * @param {!Array} options List of menu options to add to.
-   * @this Blockly.Block
-   */
-  customContextMenu: function(options) {
-    var option = {enabled: true};
-    var name = this.getField('VAR').getText();
-    option.text = Blockly.Msg.VARIABLES_SET_CREATE_GET.replace('%1', name);
-    var xmlField = goog.dom.createDom('field', null, name);
-    xmlField.setAttribute('name', 'VAR');
-    var xmlBlock = goog.dom.createDom('block', null, xmlField);
-    xmlBlock.setAttribute('type', 'variables_get_typed');
-    option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
-    options.push(option);
-  },
-
   clearTypes: function() {
     var variable = this.typedReference['VAR'];
     goog.asserts.assert(this.outputConnection.typeExpr ==
@@ -3095,8 +3078,10 @@ Blockly.Blocks['let_typed'] = {
   },
 
   customContextMenu: function(options) {
-    var canToggle = true;
-    var option = {enabled: canToggle};
+    if (this.isFlyout) {
+      return;
+    }
+    var option = {enabled: true};
     if (this.isRecursive_) {
       option.text = 'Set rec.';
     } else {
@@ -3117,23 +3102,6 @@ Blockly.Blocks['let_typed'] = {
     if (Blockly.Names.equals(oldName, this.getField('VAR').getText())) {
       this.setFieldValue(newName, 'VAR');
     }
-  },
-
-  /**
-   * Add menu option to create getter/setter block for this setter/getter.
-   * @param {!Array} options List of menu options to add to.
-   * @this Blockly.Block
-   */
-  customContextMenu: function(options) {
-    var option = {enabled: true};
-    var name = this.getField('VAR').getText();
-    option.text = Blockly.Msg.VARIABLES_GET_CREATE_SET.replace('%1', name);
-    var xmlField = goog.dom.createDom('field', null, name);
-    xmlField.setAttribute('name', 'VAR');
-    var xmlBlock = goog.dom.createDom('block', null, xmlField);
-    xmlBlock.setAttribute('type', 'let_typed');
-    option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
-    options.push(option);
   },
 
   /**
