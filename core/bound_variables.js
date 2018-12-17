@@ -422,7 +422,7 @@ Blockly.BoundVariables.getVisibleVariableValues = function(variable) {
   var field = variable.getContainerField();
   var block = variable.getSourceBlock();
   var targetBlock = block.outputConnection.targetBlock();
-  if (!variable.isReference()) {
+  if (!variable.isReferenceVariable()) {
     throw 'Not support for a variable value.';
   }
   var values = [];

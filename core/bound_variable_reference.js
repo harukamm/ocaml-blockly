@@ -38,19 +38,12 @@ Blockly.BoundVariableValueReference = function(block, fieldName, typeExpr,
   this.temporayDisplayName_ = varName;
 
   Blockly.BoundVariableValueReference.superClass_.constructor.call(this,
-      block, fieldName, typeExpr);
+      block, fieldName, typeExpr,
+      Blockly.BoundVariableAbstract.REFERENCE_VARIABLE);
 
   Blockly.BoundVariables.addReference(this.workspace_, this);
 };
 goog.inherits(Blockly.BoundVariableValueReference, Blockly.BoundVariableAbstract);
-
-/**
- * Wether this variable is a reference to a variable value.
- * @return {boolean} True if this variable is a reference.
- */
-Blockly.BoundVariableValueReference.prototype.isReference = function() {
-  return true;
-};
 
 /**
  * Gets the variable name for this reference. Returns that of the value if the

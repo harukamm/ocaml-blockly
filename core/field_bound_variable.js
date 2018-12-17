@@ -25,17 +25,18 @@ goog.require('goog.string');
 
 /**
  * Class for a variable's dropdown field with variable binding.
- * @param {boolean} isValue Whether the field is for a variable value.
- *     Otherwise, for a variable reference.
  * @param {!typeExpr} typeExpr The type expression of this variable.
  * @param {string} varName The default name for the variable.  If null, the
  *     generated name will be used.
  * @param {string} scopeName The default name for the input as the value's
  *     scope. Ignored if the field is for a variable reference.
+ * @param {!number} label Enum indicate which type of variable. (Normal
+ *     variable or constructor) The type of enum is defined in the
+ *     bound-variable-abstract class.
  * @extends {Blockly.FieldDropdown}
  * @constructor
  */
-Blockly.FieldBoundVariable = function(isValue, typeExpr, varName, scopeName) {
+Blockly.FieldBoundVariable = function(typeExpr, varName, scopeName, label) {
   // The FieldDropdown constructor would call setValue, which might create a
   // variable.  Just do the relevant parts of the constructor.
   this.menuGenerator_ = Blockly.FieldBoundVariable.dropdownCreate;
@@ -51,14 +52,24 @@ Blockly.FieldBoundVariable = function(isValue, typeExpr, varName, scopeName) {
    * Could not be changed later.
    * @type {boolean}
    */
-  this.forValue_ = isValue;
+  this.forValue_ = label == Blockly.BoundVariableAbstract.VALUE_VARIABLE ||
+      label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+
+  /**
+   * Whether this field is for a normal variable. Otherwise, it represents
+   * constructor.
+   * @type {boolean}
+   */
+  this.isNormalVariable_ =
+      label == Blockly.BoundVariableAbstract.VALUE_VARIABLE ||
+      label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
 
   /**
    * The default name of the input inside which this variable is visible.
    * Always null if this field is for a variable reference.
    * @type {string}
    */
-  this.defaultScopeInputName_ = isValue ? scopeName : null;
+  this.defaultScopeInputName_ = this.forValue_ ? scopeName : null;
 
   /**
    * The value of this field's variable if this.forValue_ is true, otherwise
@@ -128,8 +139,8 @@ Blockly.FieldBoundVariable.prototype.typeVarHighlights_ = [];
  */
 Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
     scopeInputName, opt_varName) {
-  return new Blockly.FieldBoundVariable(true, valueTypeExpr, opt_varName,
-      scopeInputName);
+  return new Blockly.FieldBoundVariable(valueTypeExpr, opt_varName,
+      scopeInputName, Blockly.BoundVariableAbstract.VALUE_VARIABLE);
 };
 
 /**
@@ -141,7 +152,8 @@ Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
  */
 Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
     opt_varName) {
-  return new Blockly.FieldBoundVariable(false, referenceTypeExpr, opt_varName);
+  return new Blockly.FieldBoundVariable(referenceTypeExpr, opt_varName,
+      null, Blockly.BoundVariableAbstract.REFERENCE_VARIABLE);
 };
 
 /**
@@ -220,6 +232,8 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
   if (!this.variable_) {
     this.initDefaultVariableName_();
 
+    goog.asserts.assert(this.isNormalVariable_, 'not implemented');
+
     if (this.forValue_) {
       this.hasPotentialBlock = this.sourceBlock_.isMovable();
       goog.asserts.assert(this.defaultScopeInputName_,
@@ -281,6 +295,7 @@ Blockly.FieldBoundVariable.prototype.setSourceBlock = function(block) {
  *     Otherwise, a variable reference.
  */
 Blockly.FieldBoundVariable.prototype.isForValue = function() {
+  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
   return this.forValue_;
 };
 
@@ -290,6 +305,7 @@ Blockly.FieldBoundVariable.prototype.isForValue = function() {
  * @param {!Blockly.BoundVariableValue}
  */
 Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
+  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
   if (this.forValue_) {
     throw 'Can\'t set a bound value to a variable value.';
   }
@@ -304,6 +320,7 @@ Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
  * @return {Blockly.BoundVariableValue}
  */
 Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
+  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
   if (this.forValue_) {
     throw 'Can\'t get a bound value from a variable value.';
   }
@@ -387,6 +404,7 @@ Blockly.FieldBoundVariable.prototype.updateText = function() {
 Blockly.FieldBoundVariable.prototype.setValue = function(id, opt_workspace) {
   var workspace = opt_workspace ? opt_workspace : this.sourceBlock_.workspace;
   var variable;
+  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
   if (this.forValue_) {
     variable = Blockly.BoundVariables.getValueById(workspace, id);
     if (!variable) {
@@ -579,6 +597,7 @@ Blockly.FieldBoundVariable.prototype.onItemSelected = function(menu, menuItem) {
  * Creates a block refers to this variable value.
  */
 Blockly.FieldBoundVariable.prototype.createBlock = function() {
+  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
   if (!this.hasPotentialBlock || !this.forValue_ || !this.variable_) {
     throw 'The field is not allowed to create a block.';
   }

@@ -18,9 +18,10 @@ goog.require('goog.string');
  *     variable.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of this
  *     variable.
+ * @param {!number} label The enum representing type of variable.
  * @constructor
  */
-Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr) {
+Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr, label) {
   /**
    * The block the variable is declared in.
    * @type {!Blockly.Block}
@@ -44,6 +45,12 @@ Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr) {
    * @type {Blockly.TypeExpr}
    */
   this.typeExpr_ = typeExpr;
+
+  /**
+   * The enum representing type of variable.
+   * @type {number}
+   */
+  this.label_ = label;
 
   /**
    * A unique id for the variable.
@@ -128,11 +135,35 @@ Blockly.BoundVariableAbstract.prototype.getId = function() {
   return this.id_;
 };
 
+Blockly.BoundVariableAbstract.VALUE_VARIABLE = 1;
+Blockly.BoundVariableAbstract.REFERENCE_VARIABLE = 2;
+Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR = 3;
+Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR = 4;
+
 /**
- * Wether this variable is a reference to a variable value.
- * @return {boolean} True if this variable is a reference.
+ * Functions to return if the variable is of the specified type.
  */
-Blockly.BoundVariableAbstract.prototype.isReference = undefined;
+Blockly.BoundVariableAbstract.prototype.isValueVariable = function() {
+  return this.label_ == Blockly.BoundVariableAbstract.VALUE_VARIABLE;
+};
+Blockly.BoundVariableAbstract.prototype.isReferenceVariable = function() {
+  return this.label_ == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
+};
+Blockly.BoundVariableAbstract.prototype.isValueConstructor = function() {
+  return this.label_ == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+};
+Blockly.BoundVariableAbstract.prototype.isReferenceConstructor = function() {
+  return this.label_ == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR;
+};
+
+Blockly.BoundVariableAbstract.prototype.isNormalVariable = function() {
+  return this.label_ == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE ||
+      this.label_ == Blockly.BoundVariableAbstract.VALUE_VARIABLE;
+};
+Blockly.BoundVariableAbstract.prototype.isConstructor = function() {
+  return this.label_ == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR ||
+      this.label_ == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+};
 
 /**
  * Get the variable name for this variable.

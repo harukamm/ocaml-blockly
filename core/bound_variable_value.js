@@ -54,7 +54,7 @@ Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
   this.deleteLater_ = false;
 
   Blockly.BoundVariableValue.superClass_.constructor.call(this, block,
-      fieldName, typeExpr);
+      fieldName, typeExpr, Blockly.BoundVariableAbstract.VALUE_VARIABLE);
 
   Blockly.BoundVariables.addValue(this.workspace_, this);
 
@@ -91,15 +91,6 @@ Blockly.BoundVariableValue.prototype.unifyTypeExpr = function() {
   for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
     reference.unifyTypeExpr();
   }
-};
-
-/**
- * Wether this variable is a reference to a variable value.
- * @return {boolean} True if this variable is a reference.
- * @override
- */
-Blockly.BoundVariableValue.prototype.isReference = function() {
-  return false;
 };
 
 /**
