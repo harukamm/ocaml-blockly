@@ -28,15 +28,13 @@ goog.require('goog.string');
  * @param {!typeExpr} typeExpr The type expression of this variable.
  * @param {string} varName The default name for the variable.  If null, the
  *     generated name will be used.
- * @param {string} scopeName The default name for the input as the value's
- *     scope. Ignored if the field is for a variable reference.
  * @param {!number} label Enum indicate which type of variable. (Normal
  *     variable or constructor) The type of enum is defined in the
  *     bound-variable-abstract class.
  * @extends {Blockly.FieldDropdown}
  * @constructor
  */
-Blockly.FieldBoundVariable = function(typeExpr, varName, scopeName, label) {
+Blockly.FieldBoundVariable = function(typeExpr, varName, label) {
   // The FieldDropdown constructor would call setValue, which might create a
   // variable.  Just do the relevant parts of the constructor.
   this.menuGenerator_ = Blockly.FieldBoundVariable.dropdownCreate;
@@ -63,13 +61,6 @@ Blockly.FieldBoundVariable = function(typeExpr, varName, scopeName, label) {
   this.isNormalVariable_ =
       label == Blockly.BoundVariableAbstract.VALUE_VARIABLE ||
       label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
-
-  /**
-   * The default name of the input inside which this variable is visible.
-   * Always null if this field is for a variable reference.
-   * @type {string}
-   */
-  this.defaultScopeInputName_ = this.forValue_ ? scopeName : null;
 
   /**
    * The value of this field's variable if this.forValue_ is true, otherwise
@@ -131,16 +122,13 @@ Blockly.FieldBoundVariable.prototype.typeVarHighlights_ = [];
 /**
  * Obtain a newly created bound-variable field of value type.
  * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
- * @param {string} scopeInputName The name of input on which the variable value
- *     is visible.
  * @param {string} opt_varName The default name for the variable.  If null, the
  *     generated name will be used.
  * @return {!Blockly.FieldBoundVariable} The created field.
  */
-Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
-    scopeInputName, opt_varName) {
+Blockly.FieldBoundVariable.newValue = function(valueTypeExpr, opt_varName) {
   return new Blockly.FieldBoundVariable(valueTypeExpr, opt_varName,
-      scopeInputName, Blockly.BoundVariableAbstract.VALUE_VARIABLE);
+      Blockly.BoundVariableAbstract.VALUE_VARIABLE);
 };
 
 /**
@@ -153,7 +141,7 @@ Blockly.FieldBoundVariable.newValue = function(valueTypeExpr,
 Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
     opt_varName) {
   return new Blockly.FieldBoundVariable(referenceTypeExpr, opt_varName,
-      null, Blockly.BoundVariableAbstract.REFERENCE_VARIABLE);
+      Blockly.BoundVariableAbstract.REFERENCE_VARIABLE);
 };
 
 /**
@@ -236,12 +224,9 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
 
     if (this.forValue_) {
       this.hasPotentialBlock = this.sourceBlock_.isMovable();
-      goog.asserts.assert(this.defaultScopeInputName_,
-          'The name of input representing the value\'s scope is not ' +
-          'initialized.');
       this.variable_ = Blockly.BoundVariables.createValue(
           this.sourceBlock_, this.name, this.defaultTypeExpr_,
-          this.defaultScopeInputName_, this.defaultVariableName_);
+          this.defaultVariableName_);
     } else {
       this.variable_ = Blockly.BoundVariables.createReference(
           this.sourceBlock_, this.name, this.defaultTypeExpr_,

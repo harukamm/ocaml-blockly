@@ -16,22 +16,11 @@ goog.require('goog.string');
  * @param {!string} fieldName The name of the field that contains this
  *     variable.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
- * @param {!string} scopeInputName The name of the input where the variable can
- *     be referred to.
  * @param {!string} variableName The default name of this variable value.
  * @constructor
  */
 Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
-    scopeInputName, variableName) {
-  /**
-   * The name of input which this variable can be used. (e.g. Suppose that the
-   * source block is 'let X = I1 in I2' where I1 and I2 is value inputs.
-   * this.inputName must be the name of input I2 because the variable X can be
-   * used only inside I2.
-   * @type {string}
-   */
-  this.scopeInputName_ = scopeInputName;
-
+     variableName) {
   /**
    * The variable name for this value.
    * @type {string}
@@ -172,15 +161,6 @@ Blockly.BoundVariableValue.prototype.referenceCount = function() {
 };
 
 /**
- * Return the name of input on which this variable can be referred to. The
- * input must be exist in this variable's block.
- * @return {!string} The name of input.
- */
-Blockly.BoundVariableValue.prototype.getScopeInputName = function() {
-  return this.scopeInputName_;
-};
-
-/**
  * Store the reference to a list of references.
  * @param {!Blockly.BoundVariableValueReference} reference The reference to
  *     store a list of references.
@@ -238,8 +218,7 @@ Blockly.BoundVariableValue.prototype.clearCyclicReference = function() {
 Blockly.BoundVariableValue.prototype.copyTo = function(variable) {
   var targetBlock = variable.getSourceBlock();
   if (this.sourceBlock_.type !== targetBlock.type ||
-      this.fieldName_ !== variable.getContainerFieldName() ||
-      this.scopeInputName_ != variable.getScopeInputName()) {
+      this.fieldName_ !== variable.getContainerFieldName()) {
     throw 'Can\'t copy to a variable of the different type';
   }
 

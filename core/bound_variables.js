@@ -21,14 +21,12 @@ goog.require('goog.string');
  * @param {!Blockly.Block} block The block to add the value to.
  * @param {string} fieldName The name of the variable field.
  * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
- * @param {string} scopeInputName The name of input on which the variable value
- *     is visible.
  * @param {!string} variableName The default name of this variable value.
  */
 Blockly.BoundVariables.createValue = function(block, fieldName, valueTypeExpr,
-      scopeInputName, variableName) {
+      variableName) {
   return new Blockly.BoundVariableValue(block, fieldName, valueTypeExpr,
-      scopeInputName, variableName);
+      variableName);
 };
 
 /**

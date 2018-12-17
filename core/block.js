@@ -2677,7 +2677,7 @@ Blockly.Blocks['lambda_typed'] = {
     this.setColour(290);
     var A = Blockly.TypeExpr.generateTypeVar();
     var B = Blockly.TypeExpr.generateTypeVar();
-    var variable_field = Blockly.FieldBoundVariable.newValue(A, 'RETURN');
+    var variable_field = Blockly.FieldBoundVariable.newValue(A);
     this.appendDummyInput()
         .appendField('λ')
         .appendField(variable_field, 'VAR');
@@ -2948,7 +2948,7 @@ Blockly.Blocks['let_typed'] = {
     var varType = Blockly.TypeExpr.generateTypeVar();
     var exp1Type = Blockly.TypeExpr.generateTypeVar();
     var exp2Type = Blockly.TypeExpr.generateTypeVar();
-    var variable_field = Blockly.FieldBoundVariable.newValue(varType, 'EXP2');
+    var variable_field = Blockly.FieldBoundVariable.newValue(varType);
     var dumm = this.appendDummyInput('VARIABLE')
         .appendField('let', 'LET_LABEL')
         .appendField(variable_field, 'VAR');
@@ -3119,7 +3119,7 @@ Blockly.Blocks['let_typed'] = {
     for (var x = 0; x < this.argumentCount_; x++) {
       var text = childNodes[x].textContent;
       var A = Blockly.TypeExpr.generateTypeVar();
-      var field = Blockly.FieldBoundVariable.newValue(A, 'EXP1');
+      var field = Blockly.FieldBoundVariable.newValue(A);
 
       input.appendField(field, 'ARG' + x);
       field.init();
@@ -3165,7 +3165,7 @@ Blockly.Blocks['let_typed'] = {
     while (this.argumentCount_ < itemCount) {
       var A = Blockly.TypeExpr.generateTypeVar();
       var name = 'arg' + this.argumentCount_;
-      var field = Blockly.FieldBoundVariable.newValue(A, 'EXP1', name);
+      var field = Blockly.FieldBoundVariable.newValue(A, name);
       input.appendField(field, 'ARG' + this.argumentCount_);
       if (this.rendered) {
         field.init();
