@@ -71,7 +71,7 @@ Blockly.TypedLang['int_arithmetic_typed'] = function(block) {
 
 Blockly.TypedLang['float_typed'] = function(block) {
   // float value.
-  var code = block.getFieldValue('FLOAT');
+  var code = block.getFieldValue('Float');
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
