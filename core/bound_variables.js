@@ -41,14 +41,20 @@ Blockly.BoundVariables.addValue = function(workspace, value) {
   var block = value.getSourceBlock();
   var fieldName = value.getContainerFieldName();
 
-  if (block.typedValue[fieldName] || value.inBlockDB) {
-    throw 'The value is already added to the variable map of other block.';
+  if (value.isNormalVariable()) {
+    if (block.typedValue[fieldName] || value.inBlockDB) {
+      throw 'The value is already added to the variable map of other block.';
+    }
+    block.typedValue[fieldName] = value;
+    value.inBlockDB = true;
   }
-  block.typedValue[fieldName] = value;
-  value.inBlockDB = true;
 
   var id = value.getId();
-  var valueDB = workspace.getValueDB();
+  if (value.isNormalVariable()) {
+    var valueDB = workspace.getValueDB();
+  } else {
+    var valueDB = workspace.getValueConstructorDB();
+  }
 
   if (valueDB[id] || value.inWorkspaceDB) {
     throw 'The value already exists in DB.';
@@ -67,14 +73,20 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
   var block = value.getSourceBlock();
   var fieldName = value.getContainerFieldName();
 
-  if (value.inBlockDB && !block.typedValue[fieldName]) {
-    throw 'The value doesn\'t exist in DB.';
+  if (value.isNormalVariable()) {
+    if (value.inBlockDB && !block.typedValue[fieldName]) {
+      throw 'The value doesn\'t exist in DB.';
+    }
+    delete block.typedValue[fieldName];
+    value.inBlockDB = false;
   }
-  delete block.typedValue[fieldName];
-  value.inBlockDB = false;
 
   var id = value.getId();
-  var valueDB = workspace.getValueDB();
+  if (value.isNormalVariable()) {
+    var valueDB = workspace.getValueDB();
+  } else {
+    var valueDB = workspace.getValueConstructorDB();
+  }
 
   if (value.inWorkspaceDB && !valueDB[id]) {
     throw 'The value doesn\'t exist in DB.';
@@ -91,6 +103,11 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
  */
 Blockly.BoundVariables.getValueById = function(workspace, id) {
   var valueDB = workspace.getValueDB();
+  return valueDB[id] || null;
+};
+
+Blockly.BoundVariables.getValueConstructorById = function(workspace, id) {
+  var valueDB = workspace.getValueConstructorDB();
   return valueDB[id] || null;
 };
 
@@ -120,14 +137,21 @@ Blockly.BoundVariables.addReference = function(workspace, reference) {
   var block = reference.getSourceBlock();
   var fieldName = reference.getContainerFieldName();
 
-  if (block.typedReference[fieldName] || reference.inBlockDB) {
-    throw 'The reference is already added to the variable map of other block.';
+  if (reference.isNormalVariable()) {
+    if (block.typedReference[fieldName] || reference.inBlockDB) {
+      throw 'The reference is already added to the variable map of other ' +
+          'block.';
+    }
+    block.typedReference[fieldName] = reference;
+    reference.inBlockDB = true;
   }
-  block.typedReference[fieldName] = reference;
-  reference.inBlockDB = true;
 
   var id = reference.getId();
-  var referenceDB = workspace.getReferenceDB();
+  if (reference.isNormalVariable()) {
+    var referenceDB = workspace.getReferenceDB();
+  } else {
+    var referenceDB = workspace.getReferenceConstructorDB();
+  }
 
   if (referenceDB[id] || reference.inWorkspaceDB) {
     throw 'The reference ID already exists in the DB.';
@@ -146,14 +170,20 @@ Blockly.BoundVariables.removeReference = function(workspace, reference) {
   var block = reference.getSourceBlock();
   var fieldName = reference.getContainerFieldName();
 
-  if (reference.inBlockDB && !block.typedReference[fieldName]) {
-    throw 'The reference doesn\'t exist in DB.';
+  if (reference.isNormalVariable()) {
+    if (reference.inBlockDB && !block.typedReference[fieldName]) {
+      throw 'The reference doesn\'t exist in DB.';
+    }
+    delete block.typedReference[fieldName];
+    reference.inBlockDB = false;
   }
-  delete block.typedReference[fieldName];
-  reference.inBlockDB = false;
 
   var id = reference.getId();
-  var referenceDB = workspace.getReferenceDB();
+  if (reference.isNormalVariable()) {
+    var referenceDB = workspace.getReferenceDB();
+  } else {
+    var referenceDB = workspace.getReferenceConstructorDB();
+  }
 
   if (!referenceDB[id] || !reference.inWorkspaceDB) {
     throw 'The reference doesn\'t exist in DB.';
@@ -172,6 +202,11 @@ Blockly.BoundVariables.removeReference = function(workspace, reference) {
  */
 Blockly.BoundVariables.getReferenceById = function(workspace, id) {
   var referenceDB = workspace.getReferenceDB();
+  return referenceDB[id] || null;
+};
+
+Blockly.BoundVariables.getReferenceConstructorById = function(workspace, id) {
+  var referenceDB = workspace.getConstructorDB();
   return referenceDB[id] || null;
 };
 
@@ -194,8 +229,12 @@ Blockly.BoundVariables.clearWorkspaceVariableDB = function(workspace) {
   }
   var referenceDB = workspace.getReferenceDB();
   var valueDB = workspace.getValueDB();
+  var referenceCtrDB = workspace.getReferenceConstructorDB();
+  var valueCtrDB = workspace.getValueConstructorDB();
   clearVariableDB(referenceDB);
   clearVariableDB(valueDB);
+  clearVariableDB(referenceCtrDB);
+  clearVariableDB(valueCtrDB);
 };
 
 /**

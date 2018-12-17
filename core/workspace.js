@@ -77,6 +77,16 @@ Blockly.Workspace = function(opt_options) {
    */
   this.referenceDB_ = Object.create(null);
   /**
+   * @type {!Object}
+   * @private
+   */
+  this.valueConstructorDB_ = Object.create(null);
+  /**
+   * @type {!Object}
+   * @private
+   */
+  this.referenceConstructorDB_ = Object.create(null);
+  /**
    * @type {!Array.<!Function>}
    * @private
    */
@@ -275,6 +285,14 @@ Blockly.Workspace.prototype.getValueDB = function() {
  */
 Blockly.Workspace.prototype.getReferenceDB = function() {
   return this.referenceDB_;
+};
+
+Blockly.Workspace.prototype.getValueConstructorDB = function() {
+  return this.valueConstructorDB_;
+};
+
+Blockly.Workspace.prototype.getReferenceConstructorDB = function() {
+  return this.referenceConstructorDB_;
 };
 
 /**
