@@ -24,14 +24,14 @@ Blockly.Blocks['defined_datatype_typed'] = {
         .appendField('type ')
         .appendField(new Blockly.FieldTextInput('data'), 'NAME')
         .appendField('=');
-    this.appendValueInput('VARIANT_INP0')
+    this.appendValueInput('CTR_INP0')
         .appendField('|')
-        .appendField(variableField0, 'VARIANT0')
+        .appendField(variableField0, 'CTR0')
         .appendField('of')
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.appendValueInput('VARIANT_INP1')
+    this.appendValueInput('CTR_INP1')
         .appendField('|')
-        .appendField(variableField1, 'VARIANT1')
+        .appendField(variableField1, 'CTR1')
         .appendField('of')
         .setAlign(Blockly.ALIGN_RIGHT)
     this.setOutput(false);
