@@ -520,6 +520,7 @@ Blockly.BoundVariables.generateUniqueName = function(label, workspace) {
     }
   }
 
+  var isCtr = label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
   var name = null;
   var acode = 'a'.charCodeAt(0);
   var zcode = 'z';
@@ -529,6 +530,7 @@ Blockly.BoundVariables.generateUniqueName = function(label, workspace) {
     var zcode = 'z'.charCodeAt(0);
     for (; !name && code <= zcode; code++) {
       name = String.fromCharCode(code);
+      name = isCtr ? name.toUpperCase() : name;
       if (0 < n) {
         name += n;
       }
