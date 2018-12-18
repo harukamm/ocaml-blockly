@@ -41,18 +41,18 @@ Test.init = function() {
 Test.run = function() {
   var prevHeight = 0;
   for (var i = 0; i < Test.tests.length; i++) {
-    BlockOfOCamlUtils.codeToBlock(Test.tests[i]);
-    // var block = result[0];
-    // var resolved = result[1];
-    // if (block && resolved) {
-    //   console.log("success: '" + Test.tests[i] + "'");
-    // } else if (block) {
-    //   console.log("succes but can not resolved: '" + Test.tests[i] + "'");
-    // } else {
-    //   console.log("failed to convert code: '" + Test.tests[i] + "'");
-    // }
-    // block.moveBy(10, prevHeight + 10);
-    // prevHeight = block.height;
+    var code = Test.tests[i];
+    var result = BlockOfOCamlUtils.codeToBlock(code);
+    var block = result.block;
+    var errCode = result.errCode;
+    if (errCode) {
+      var msg = result.errMsg;
+      console.log("failed: '" + code + "' " + msg);
+    } else {
+      console.log("success: '" + code + "'");
+      block.moveBy(10, prevHeight + 10);
+      prevHeight = block.height;
+    }
   }
 };
 
