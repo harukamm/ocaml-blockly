@@ -38,6 +38,11 @@ Blockly.Blocks['defined_datatype_typed'] = {
 
     this.constructId_ = ctrId;
     this.itemCount_ = 2;
+    this.disableTransfer_ = true;
+  },
+
+  typeExprReplaced() {
+    throw 'Not allowed to replace type expression for value construct.';
   }
 };
 

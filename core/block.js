@@ -1176,8 +1176,12 @@ Blockly.Block.prototype.setCollapsed = function(collapsed) {
  * @return {boolean} True if transferable.
  */
 Blockly.Block.prototype.isTransferable = function() {
-  // All blocks in a workspace of typed version are transferable.
-  return this.workspace.options.typedVersion || this.transferable_;
+  // All blocks in a workspace of typed version are transferable except blocks
+  // disabled to transfer.
+  if (this.workspace.options.typedVersion) {
+    return this.disableTransfer_ !== true;
+  }
+  return this.transferable_;
 };
 
 /**
