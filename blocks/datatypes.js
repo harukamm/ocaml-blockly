@@ -71,3 +71,21 @@ Blockly.Blocks['create_construct_typed'] = {
     this.setOutputTypeExpr(ctrType);
   }
 };
+
+Blockly.Blocks['int_type_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['TYPES_HUE']);
+    this.appendDummyInput()
+        .appendField('int');
+    this.setOutput(true);
+  }
+};
+
+Blockly.Blocks['float_type_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['TYPES_HUE']);
+    this.appendDummyInput()
+        .appendField('float');
+    this.setOutput(true);
+  }
+};
