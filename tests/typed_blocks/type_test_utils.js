@@ -13,30 +13,34 @@ function create_typed_workspace() {
 
 /* Begin functions for variables. */
 
-function getVariableFieldName(block) {
+function getVariableFieldName(block, opt_n) {
   switch (block.type) {
     case 'let_typed':
     case 'lambda_typed':
     case 'variables_get_typed':
       return 'VAR';
-      break;
+    case 'defined_datatype_typed':
+      goog.asserts.assert(goog.isNumber(opt_n));
+      return 'CTR' + opt_n;
+    case 'create_construct_typed':
+      return 'CONSTRUCTOR';
     default:
       assertTrue(false, 'Unexpected case.');
   }
 }
 
-function getVariableField(block) {
-  var fieldName = getVariableFieldName(block);
+function getVariableField(block, opt_n) {
+  var fieldName = getVariableFieldName(block, opt_n);
   return block.getField(fieldName);
 }
 
-function getVariable(block) {
-  var field = getVariableField(block);
+function getVariable(block, opt_n) {
+  var field = getVariableField(block, opt_n);
   return field.getVariable();
 }
 
-function getVariableName(block) {
-  var field = getVariableField(block);
+function getVariableName(block, opt_n) {
+  var field = getVariableField(block, opt_n);
   return field.getVariable().getVariableName();
 }
 

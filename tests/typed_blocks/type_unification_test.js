@@ -1262,3 +1262,17 @@ function test_type_unification_fixLambdaIdInLetPoly() {
   fixLambdaIdInLetPoly(false, true);
   fixLambdaIdInLetPoly(false, false);
 }
+
+function test_type_unification_constructBlockSimple() {
+  var workspace = create_typed_workspace();
+  try {
+    var defineCtr = workspace.newBlock('defined_datatype_typed');
+    var ctrValue = getVariable(defineCtr, 0);
+    var ctr = workspace.newBlock('create_construct_typed');
+    var ctrReference = getVariable(ctr);
+    // TODO(harukam): The following call fails. Fix it.
+    ctrReference.setBoundValue(ctrValue);
+  } finally {
+    workspace.dispose();
+  }
+}
