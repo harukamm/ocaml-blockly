@@ -10,12 +10,13 @@ goog.require('Blockly.Blocks');
 goog.require('Blockly');
 
 Blockly.Blocks['defined_datatype_typed'] = {
+  // Declare constructor types.
   init: function() {
     this.setColour(160);
     var A = Blockly.TypeExpr.generateTypeVar();
     var B = Blockly.TypeExpr.generateTypeVar();
-    var variableField0 = Blockly.FieldBoundVariable.newValue(A);
-    var variableField1 = Blockly.FieldBoundVariable.newValue(B);
+    var variableField0 = Blockly.FieldBoundVariable.newValueConstructor(A);
+    var variableField1 = Blockly.FieldBoundVariable.newValueConstructor(B);
     this.appendDummyInput()
         .appendField('type ')
         .appendField(new Blockly.FieldTextInput('data'), 'NAME')
