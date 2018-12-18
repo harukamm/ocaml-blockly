@@ -11,13 +11,7 @@ BlockOfOCamlUtils.codeToBlock = function(code) {
   if (typeof blockOfOCaml === "undefined") {
     throw "Load script convert.js";
   }
-  try {
-    var xmlStr = blockOfOCaml(code);
-  } catch (e) {
-    alert ("Syntax error or not-supported AST error.");
-    return;
-  }
-  var result = BlockOfOCamlUtils.fromXMLString(xmlStr);
+  var result = BlockOfOCamlUtils.codeToBlockImpl_(code);
   var errMsg = BlockOfOCamlUtils.getErrorMessage(result.errCode);
   if (errMsg) {
     alert(errMsg);
@@ -59,15 +53,21 @@ BlockOfOCamlUtils.getErrorMessage = function(code) {
   }
 };
 
-BlockOfOCamlUtils.fromXMLString = function(str, opt_workspace) {
-  var workspace = opt_workspace ? opt_workspace : Blockly.mainWorkspace;
-  var parser = new DOMParser();
-  var xml = parser.parseFromString(str, "text/xml");
-  var parseError = xml.getElementsByTagName("parsererror").length != 0;
+BlockOfOCamlUtils.codeToBlockImpl_ = function(code, opt_workspace) {
   var result = {
       errCode: BlockOfOCamlUtils.ERROR_NONE,
       block: null
   };
+  try {
+    var xmlStr = blockOfOCaml(code);
+  } catch (e) {
+    result.errCode = BlockOfOCamlUtils.ERROR_AST_PARSING;
+    return result;
+  }
+  var workspace = opt_workspace ? opt_workspace : Blockly.mainWorkspace;
+  var parser = new DOMParser();
+  var xml = parser.parseFromString(xmlStr, "text/xml");
+  var parseError = xml.getElementsByTagName("parsererror").length != 0;
   if (parseError) {
     result.errCode = BlockOfOCamlUtils.ERROR_XML_PARSING;
     return result;
