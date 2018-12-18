@@ -53,6 +53,12 @@ Blockly.TypeExpr.FUN_ = 130;
  * @type {number}
  * @private
  */
+Blockly.TypeExpr.CONSTRUCT_ = 140;
+
+/**
+ * @type {number}
+ * @private
+ */
 Blockly.TypeExpr.TVAR_ = 135;
 
 /**
@@ -82,6 +88,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'pair';
     case Blockly.TypeExpr.FUN_:
       return 'fun';
+    case Blockly.TypeExpr.CONSTRUCT_:
+      return 'construct';
     case Blockly.TypeExpr.TVAR_:
       return 'typeVar';
     default:
@@ -115,6 +123,9 @@ Blockly.TypeExpr.prototype.isPair = function() {
 };
 Blockly.TypeExpr.prototype.isFunction = function() {
   return this.label == Blockly.TypeExpr.FUN_;
+};
+Blockly.TypeExpr.prototype.isConstruct = function() {
+  return this.label == Blockly.TypeExpr.CONSTRUCT_;
 };
 Blockly.TypeExpr.prototype.isTypeVar = function() {
   return this.label == Blockly.TypeExpr.TVAR_;
@@ -479,6 +490,45 @@ Blockly.TypeExpr.FUN.prototype.deepDeref = function() {
 }
 
 /**
+ * @param {string} id The string to identify constructor type. Null if it's not
+ *     identified.
+ * @constructor
+ * @extends {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.CONSTRUCT = function(id) {
+  this.id = goog.isString(id) ? id : null;
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.CONSTRUCT_);
+}
+goog.inherits(Blockly.TypeExpr.CONSTRUCT, Blockly.TypeExpr);
+
+/**
+ * @param {boolean=} opt_deref
+ * @return {string}
+ * @override
+ */
+Blockly.TypeExpr.CONSTRUCT.prototype.toString = function(opt_deref) {
+  return "CONSTRUCT(" + (this.id ? this.id : "null") + ")";
+}
+
+/**
+ * Deeply clone the object
+ * @return {Blockly.TypeExpr}
+ * @override
+ */
+Blockly.TypeExpr.CONSTRUCT.prototype.clone = function() {
+  return new Blockly.TypeExpr.CONSTRUCT(this.id);
+}
+
+/**
+ * Returns the object which is dereferenced recursively.
+ * @return {Blockly.TypeExpr}
+ * @override
+ */
+Blockly.TypeExpr.CONSTRUCT.prototype.deepDeref = function() {
+  return new Blockly.TypeExpr.CONSTRUCT(this.id);
+}
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @param {string} name
@@ -700,6 +750,8 @@ Blockly.TypeExpr.prototype.unify = function(other) {
             'Unify error: variable occurrace');
         tvar.val = othr;
       }
+    } else if (t1.isConstruct() && t2.isConstruct()) {
+      goog.asserts.assert(t1.id && i2.id && t1.id == t2.id);
     } else {
       goog.asserts.assert(t1.label == t2.label, 'Unify error: Cannot unify');
       var children1 = t1.getChildren();
@@ -773,7 +825,7 @@ Blockly.TypeExpr.prototype.disconnect = function(other) {
 
 Blockly.TypeExpr.prototype.flatten = function() {
   var t = this.deepDeref();
-  if (t.isTypeVar() || t.isPrimitive()) {
+  if (t.isTypeVar() || t.isPrimitive() || t.isConstruct()) {
     return [t];
   }
   var children = t.getChildren();
@@ -799,6 +851,9 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
   // Check if the types are primitive ones.
   if (typ1.isPrimitive()) {
     return true;
+  }
+  if (typ1.isConstruct()) {
+    return typ1.id && typ2.id ? typ1.id == typ2.id : false;
   }
   if (typ1.isTypeVar()) {
     return typ1.name == typ2.name;

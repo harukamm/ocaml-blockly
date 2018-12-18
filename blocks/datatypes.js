@@ -13,10 +13,13 @@ Blockly.Blocks['defined_datatype_typed'] = {
   // Declare constructor types.
   init: function() {
     this.setColour(160);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var B = Blockly.TypeExpr.generateTypeVar();
-    var variableField0 = Blockly.FieldBoundVariable.newValueConstructor(A);
-    var variableField1 = Blockly.FieldBoundVariable.newValueConstructor(B);
+    var ctrId = Blockly.utils.genUid();
+    var ctrType0 = new Blockly.TypeExpr.CONSTRUCT(ctrId);
+    var ctrType1 = new Blockly.TypeExpr.CONSTRUCT(ctrId);
+    var variableField0 =
+        Blockly.FieldBoundVariable.newValueConstructor(ctrType0);
+    var variableField1 =
+        Blockly.FieldBoundVariable.newValueConstructor(ctrType1);
     this.appendDummyInput()
         .appendField('type ')
         .appendField(new Blockly.FieldTextInput('data'), 'NAME')
@@ -32,6 +35,8 @@ Blockly.Blocks['defined_datatype_typed'] = {
         .appendField('of')
         .setAlign(Blockly.ALIGN_RIGHT)
     this.setOutput(false);
+
+    this.constructId_ = ctrId;
     this.itemCount_ = 2;
   }
 };
@@ -39,11 +44,12 @@ Blockly.Blocks['defined_datatype_typed'] = {
 Blockly.Blocks['create_construct_typed'] = {
   init: function() {
     this.setColour(160);
-    var A = Blockly.TypeExpr.generateTypeVar();
-    var variableField = Blockly.FieldBoundVariable.newReferenceConstructor(A);
+    var ctrType = new Blockly.TypeExpr.CONSTRUCT(null);
+    var variableField =
+        Blockly.FieldBoundVariable.newReferenceConstructor(ctrType);
     this.appendDummyInput()
         .appendField(variableField, 'CONSTRUCTOR');
     this.setOutput(true);
-    this.setOutputTypeExpr(A);
+    this.setOutputTypeExpr(ctrType);
   }
 };

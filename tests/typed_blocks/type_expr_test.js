@@ -466,3 +466,20 @@ function test_type_expr_schemeInstantiate() {
     }
   }
 }
+
+function test_type_expr_constructs() {
+  // type yy = Foo of ...
+  //         | Hoge of ...
+  var xxType = new Blockly.TypeExpr.CONSTRUCT(null);
+  var yyType = new Blockly.TypeExpr.CONSTRUCT('yy');
+  var n = new Blockly.TypeExpr.TVAR('n', yyType);
+  assertFalse(xxType.ableToUnify(yyType));
+  assertTrue(n.ableToUnify(n));
+  assertFalse(n.ableToUnify(xxType));
+
+  assertTrue(Blockly.TypeExpr.equals(yyType, yyType));
+  assertFalse(Blockly.TypeExpr.equals(xxType, yyType));
+
+  assertEquals(n.toString(), "<n=CONSTRUCT(yy)>");
+  assertEquals(xxType.toString(), "CONSTRUCT(null)");
+}
