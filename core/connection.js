@@ -668,7 +668,9 @@ Blockly.Connection.prototype.checkType_ = function(otherConnection) {
  */
 Blockly.Connection.prototype.checkTypeWithReason_ = function(otherConnection,
     opt_final) {
-  if (this.typeExprEnabled()) {
+  var typeEnabled = this.typeExprEnabled();
+  var otherTypeEnabled = otherConnection.typeExprEnabled();
+  if (typeEnabled && otherTypeEnabled) {
     if (!this.typeExpr.ableToUnify(otherConnection.typeExpr)) {
       return Blockly.Connection.REASON_TYPE_UNIFICATION;
     }
@@ -676,6 +678,8 @@ Blockly.Connection.prototype.checkTypeWithReason_ = function(otherConnection,
       return Blockly.Connection.REASON_VARIABLE_REFERENCE;
     }
     return Blockly.Connection.CAN_CONNECT;
+  } else if (typeEnabled || otherTypeEnabled) {
+    return Blockly.Connection.REASON_TYPE_UNIFICATION;
   }
   if (!this.check_ || !otherConnection.check_) {
     // One or both sides are promiscuous enough that anything will fit.
