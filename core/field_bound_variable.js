@@ -326,7 +326,6 @@ Blockly.FieldBoundVariable.prototype.isForConstructor = function() {
  * @param {!Blockly.BoundVariableValue}
  */
 Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
-  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
   if (this.forValue_) {
     throw 'Can\'t set a bound value to a variable value.';
   }
@@ -341,7 +340,6 @@ Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
  * @return {Blockly.BoundVariableValue}
  */
 Blockly.FieldBoundVariable.prototype.getBoundValue = function() {
-  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
   if (this.forValue_) {
     throw 'Can\'t get a bound value from a variable value.';
   }
