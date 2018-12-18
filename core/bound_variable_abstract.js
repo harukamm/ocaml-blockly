@@ -50,7 +50,7 @@ Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr, label) {
    * The enum representing type of variable.
    * @type {number}
    */
-  this.label_ = label;
+  this.label = label;
 
   /**
    * A unique id for the variable.
@@ -144,25 +144,25 @@ Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR = 4;
  * Functions to return if the variable is of the specified type.
  */
 Blockly.BoundVariableAbstract.prototype.isValueVariable = function() {
-  return this.label_ == Blockly.BoundVariableAbstract.VALUE_VARIABLE;
+  return this.label == Blockly.BoundVariableAbstract.VALUE_VARIABLE;
 };
 Blockly.BoundVariableAbstract.prototype.isReferenceVariable = function() {
-  return this.label_ == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
+  return this.label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
 };
 Blockly.BoundVariableAbstract.prototype.isValueConstructor = function() {
-  return this.label_ == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+  return this.label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
 };
 Blockly.BoundVariableAbstract.prototype.isReferenceConstructor = function() {
-  return this.label_ == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR;
+  return this.label == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR;
 };
 
 Blockly.BoundVariableAbstract.prototype.isNormalVariable = function() {
-  return this.label_ == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE ||
-      this.label_ == Blockly.BoundVariableAbstract.VALUE_VARIABLE;
+  return this.label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE ||
+      this.label == Blockly.BoundVariableAbstract.VALUE_VARIABLE;
 };
 Blockly.BoundVariableAbstract.prototype.isConstructor = function() {
-  return this.label_ == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR ||
-      this.label_ == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+  return this.label == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR ||
+      this.label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
 };
 
 /**
