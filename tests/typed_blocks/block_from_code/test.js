@@ -42,7 +42,7 @@ Test.run = function() {
   var prevHeight = 0;
   for (var i = 0; i < Test.tests.length; i++) {
     var code = Test.tests[i];
-    var result = BlockOfOCamlUtils.codeToBlock(code);
+    var result = BlockOfOCamlUtils.codeToBlock(code, false);
     var block = result.block;
     var errCode = result.errCode;
     if (errCode) {

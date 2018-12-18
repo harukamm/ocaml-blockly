@@ -7,14 +7,17 @@ BlockOfOCamlUtils.ERROR_INVALID_BLOCK_XML = 3;
 BlockOfOCamlUtils.ERROR_UNDEFINED_VARIABLE = 4;
 BlockOfOCamlUtils.ERROR_TYPE_INFERENCE = 5;
 
-BlockOfOCamlUtils.codeToBlock = function(code) {
+BlockOfOCamlUtils.codeToBlock = function(code, opt_alert) {
   if (typeof blockOfOCaml === "undefined") {
     throw "Load script convert.js";
   }
   var result = BlockOfOCamlUtils.codeToBlockImpl_(code);
   var errMsg = BlockOfOCamlUtils.getErrorMessage(result.errCode);
   if (errMsg) {
-    alert(errMsg);
+    result.errMsg = errMsg;
+    if (opt_alert !== false) {
+      alert(errMsg);
+    }
   }
   return result;
 };
