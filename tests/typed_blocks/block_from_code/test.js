@@ -41,18 +41,18 @@ Test.init = function() {
 Test.run = function() {
   var prevHeight = 0;
   for (var i = 0; i < Test.tests.length; i++) {
-    var result = Test.codeToBlock(Test.tests[i]);
-    var block = result[0];
-    var resolved = result[1];
-    if (block && resolved) {
-      console.log("success: '" + Test.tests[i] + "'");
-    } else if (block) {
-      console.log("succes but can not resolved: '" + Test.tests[i] + "'");
-    } else {
-      console.log("failed to convert code: '" + Test.tests[i] + "'");
-    }
-    block.moveBy(10, prevHeight + 10);
-    prevHeight = block.height;
+    BlockOfOCamlUtils.codeToBlock(Test.tests[i]);
+    // var block = result[0];
+    // var resolved = result[1];
+    // if (block && resolved) {
+    //   console.log("success: '" + Test.tests[i] + "'");
+    // } else if (block) {
+    //   console.log("succes but can not resolved: '" + Test.tests[i] + "'");
+    // } else {
+    //   console.log("failed to convert code: '" + Test.tests[i] + "'");
+    // }
+    // block.moveBy(10, prevHeight + 10);
+    // prevHeight = block.height;
   }
 };
 
@@ -78,34 +78,11 @@ Test.onClickConvert = function(event) {
     return;
   }
   try {
-    Test.codeToBlock(code);
+    BlockOfOCamlUtils.codeToBlock(code);
   } catch(e) {
     console.log(e);
   }
   return false;
-};
-
-Test.codeToBlock = function(code) {
-  var xmlStr = blockOfOCaml(code);
-  var block = null;
-  return Test.fromXMLString(xmlStr);
-};
-
-Test.fromXMLString = function(str, opt_workspace) {
-  var workspace = opt_workspace ? opt_workspace : Blockly.mainWorkspace;
-  var parser = new DOMParser();
-  var xml = parser.parseFromString(str, "text/xml");
-  var parseError = xml.getElementsByTagName("parsererror").length != 0;
-  if (parseError) {
-    console.log(xml);
-    throw "Parser error";
-  } else {
-    var block = Blockly.Xml.domToBlock(xml.children[0], workspace, true);
-    var resolved = block.resolveReference(null, true);
-    block.updateTypeInference();
-    block.workspace.renderTypeChangedWorkspaces();
-    return [block, resolved];
-  }
 };
 
 Test.getBBox_ = function(element) {
