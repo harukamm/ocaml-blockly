@@ -647,15 +647,19 @@ Blockly.FieldBoundVariable.prototype.createBlock = function() {
  * @private
  */
 Blockly.FieldBoundVariable.prototype.newReferenceBlock_ = function() {
-  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
-
   var workspace = this.sourceBlock_.workspace;
-  // TODO(harukam): Avoid providing prototype name using string literal.
-  var getterBlock = workspace.newBlock('variables_get_typed');
+
+  if (this.isForConstructor()) {
+    var getterBlock = workspace.newBlock('create_construct_typed');
+    var field = getterBlock.getField('CONSTRUCTOR');
+  } else {
+    var getterBlock = workspace.newBlock('variables_get_typed');
+    var field = getterBlock.getField('VAR');
+  }
   if (goog.isFunction(getterBlock.initSvg)) {
     getterBlock.initSvg();
   }
-  var field = getterBlock.getField('VAR');
+
   field.setVariableName(this.variable_.getVariableName());
   field.setBoundValue(this.variable_);
   getterBlock.render(false);
