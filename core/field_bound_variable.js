@@ -619,13 +619,33 @@ Blockly.FieldBoundVariable.prototype.onItemSelected = function(menu, menuItem) {
 };
 
 /**
- * Creates a block refers to this variable value.
+ * Creates a block referring to this variable value and move the block under
+ * the block shaped path on this field.
+ * @param {!Blockly.BlockSvg} The new reference block located in the same
+ *     position with this field's block shaped path.
  */
 Blockly.FieldBoundVariable.prototype.createBlock = function() {
-  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
   if (!this.hasPotentialBlock || !this.forValue_ || !this.variable_) {
     throw 'The field is not allowed to create a block.';
   }
+  var getterBlock = this.newReferenceBlock_();
+
+  var blockPos = this.sourceBlock_.getRelativeToSurfaceXY();
+  var offsetInBlock = this.getRelativeToBlockXY_();
+  var newBlockPos = goog.math.Coordinate.sum(blockPos, offsetInBlock);
+  getterBlock.moveBy(newBlockPos.x, newBlockPos.y);
+
+  return getterBlock;
+};
+
+/**
+ * Creates new block which contain a reference variable referring to this value.
+ * @return {!Blockly.Block} The newly created reference block.
+ * @private
+ */
+Blockly.FieldBoundVariable.prototype.newReferenceBlock_ = function() {
+  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
+
   var workspace = this.sourceBlock_.workspace;
   // TODO(harukam): Avoid providing prototype name using string literal.
   var getterBlock = workspace.newBlock('variables_get_typed');
@@ -636,11 +656,6 @@ Blockly.FieldBoundVariable.prototype.createBlock = function() {
   field.setVariableName(this.variable_.getVariableName());
   field.setBoundValue(this.variable_);
   getterBlock.render(false);
-
-  var blockPos = this.sourceBlock_.getRelativeToSurfaceXY();
-  var offsetInBlock = this.getRelativeToBlockXY_();
-  var newBlockPos = goog.math.Coordinate.sum(blockPos, offsetInBlock);
-  getterBlock.moveBy(newBlockPos.x, newBlockPos.y);
 
   return getterBlock;
 };
