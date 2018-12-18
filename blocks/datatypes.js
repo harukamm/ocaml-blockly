@@ -36,3 +36,14 @@ Blockly.Blocks['defined_datatype_typed'] = {
   }
 };
 
+Blockly.Blocks['create_construct_typed'] = {
+  init: function() {
+    this.setColour(160);
+    var A = Blockly.TypeExpr.generateTypeVar();
+    var variableField = Blockly.FieldBoundVariable.newReferenceConstructor(A);
+    this.appendDummyInput()
+        .appendField(variableField, 'CONSTRUCTOR');
+    this.setOutput(true);
+    this.setOutputTypeExpr(A);
+  }
+};
