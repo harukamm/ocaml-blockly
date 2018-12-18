@@ -1270,7 +1270,8 @@ function test_type_unification_constructBlockSimple() {
     var ctrValue = getVariable(defineCtr, 0);
     var ctr = workspace.newBlock('create_construct_typed');
     var ctrReference = getVariable(ctr);
-    // TODO(harukam): The following call fails. Fix it.
+    ctrValue.setVariableName('Foo');
+    ctrReference.setVariableName('Foo');
     ctrReference.setBoundValue(ctrValue);
   } finally {
     workspace.dispose();

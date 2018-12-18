@@ -43,6 +43,19 @@ Blockly.Blocks['defined_datatype_typed'] = {
 
   typeExprReplaced() {
     throw 'Not allowed to replace type expression for value construct.';
+  },
+
+  getTypeScheme(fieldName) {
+    if (fieldName.startsWith('CTR')) {
+      var numstr = fieldName.substring(3);
+      var x = parseInt(numstr);
+      if (!isNaN(x) && x < this.itemCount_) {
+        var name = 'CTR' + x;
+        var field = this.getField(name);
+        var variable = field.getVariable();
+        return Blockly.Scheme.monoType(variable.getTypeExpr());
+      }
+    }
   }
 };
 
