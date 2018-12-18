@@ -484,3 +484,26 @@ function test_type_expr_constructs() {
   assertEquals(n.toString(), "<n=CONSTRUCT(yy)>");
   assertEquals(xxType.toString(), "CONSTRUCT(null)");
 }
+
+function test_type_expr_type_constructor() {
+  var type1 = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+  var type2 = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+  var n = new Blockly.TypeExpr.TVAR('n', null);
+  var m = new Blockly.TypeExpr.TVAR('m', n);
+  assertTrue(type1.isTypeConstructor());
+  assertTrue(type2.isTypeConstructor());
+  assertTrue(type1.ableToUnify(type2));
+  assertTrue(type1.ableToUnify(type2));
+  assertFalse(m.ableToUnify(type1));
+  assertFalse(m.ableToUnify(type2));
+
+  var error = false;
+  try {
+    Blockly.TypeExpr.equals(yyType, yyType);
+  } catch (e) {
+    error = true;
+  }
+  assertTrue(error);
+  assertEquals(type1.toString(), "TYPE_CONSTRUCTOR");
+  assertEquals(type2.toString(), "TYPE_CONSTRUCTOR");
+}

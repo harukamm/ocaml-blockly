@@ -59,6 +59,12 @@ Blockly.TypeExpr.CONSTRUCT_ = 140;
  * @type {number}
  * @private
  */
+Blockly.TypeExpr.TYPE_CONSTRUCTOR_ = 150;
+
+/**
+ * @type {number}
+ * @private
+ */
 Blockly.TypeExpr.TVAR_ = 135;
 
 /**
@@ -90,6 +96,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'fun';
     case Blockly.TypeExpr.CONSTRUCT_:
       return 'construct';
+    case Blockly.TypeExpr.TYPE_CONSTRUCTOR_:
+      return 'type constructor';
     case Blockly.TypeExpr.TVAR_:
       return 'typeVar';
     default:
@@ -126,6 +134,9 @@ Blockly.TypeExpr.prototype.isFunction = function() {
 };
 Blockly.TypeExpr.prototype.isConstruct = function() {
   return this.label == Blockly.TypeExpr.CONSTRUCT_;
+};
+Blockly.TypeExpr.prototype.isTypeConstructor = function() {
+  return this.label == Blockly.TypeExpr.TYPE_CONSTRUCTOR_;
 };
 Blockly.TypeExpr.prototype.isTypeVar = function() {
   return this.label == Blockly.TypeExpr.TVAR_;
@@ -529,6 +540,33 @@ Blockly.TypeExpr.CONSTRUCT.prototype.deepDeref = function() {
 }
 
 /**
+ * @constructor
+ * @extends {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.TYPE_CONSTRUCTOR = function() {
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.TYPE_CONSTRUCTOR_);
+}
+goog.inherits(Blockly.TypeExpr.TYPE_CONSTRUCTOR, Blockly.TypeExpr);
+
+/**
+ * @param {boolean=} opt_deref
+ * @return {string}
+ * @override
+ */
+Blockly.TypeExpr.TYPE_CONSTRUCTOR.prototype.toString = function(opt_deref) {
+  return "TYPE_CONSTRUCTOR";
+}
+
+/**
+ * Deeply clone the object
+ * @return {Blockly.TypeExpr}
+ * @override
+ */
+Blockly.TypeExpr.TYPE_CONSTRUCTOR.prototype.clone = function() {
+  return new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+}
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @param {string} name
@@ -734,6 +772,11 @@ Blockly.TypeExpr.prototype.unify = function(other) {
     var pair = staq.pop();
     var t1 = pair[0];
     var t2 = pair[1];
+    if (t1.isTypeConstructor() && t2.isTypeConstructor()) {
+      continue;
+    } else if (t1.isTypeConstructor() || t2.isTypeConstructor()) {
+      goog.asserts.assert(false, 'Can not unify type constructor.');
+    }
     if (t1.isTypeVar() || t2.isTypeVar()) {
       var t1_is_tvar = t1.isTypeVar();
       if (t1_is_tvar && t2.isTypeVar())
@@ -833,7 +876,8 @@ Blockly.TypeExpr.prototype.disconnect = function(other) {
 
 Blockly.TypeExpr.prototype.flatten = function() {
   var t = this.deepDeref();
-  if (t.isTypeVar() || t.isPrimitive() || t.isConstruct()) {
+  if (t.isTypeVar() || t.isPrimitive() || t.isConstruct() ||
+      t.isTypeConstructor()) {
     return [t];
   }
   var children = t.getChildren();
@@ -862,6 +906,9 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
   }
   if (typ1.isConstruct()) {
     return typ1.id && typ2.id ? typ1.id == typ2.id : false;
+  }
+  if (typ1.isTypeConstructor()) {
+    goog.asserts.assert(false, 'Can not compare type ctr.');
   }
   if (typ1.isTypeVar()) {
     return typ1.name == typ2.name;
