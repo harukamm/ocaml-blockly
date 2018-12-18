@@ -943,13 +943,9 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
   if (isForValue) {
     if (xml.hasAttribute('workspace-id')) {
       var workspace = getWorkspaceFromDom(xml);
-      if (isForVariable) {
-        var variableInDB =
-            Blockly.BoundVariables.getValueById(workspace, xml.id);
-      } else {
-        var variableInDB =
-            Blockly.BoundVariables.getValueConstructorById(workspace, xml.id);
-      }
+      var variableInDB =
+          Blockly.BoundVariables.getValueById(field.label_, workspace, xml.id);
+
       if (!workspace.isFlyout && variableInDB) {
         // Copy the existing variable to this field's variable because a single
         // bound-variable can not be shared by multiple blocks.
@@ -961,13 +957,10 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
     // Build the variable binding if <refer-to> DOM is specified.
     if (childDom && childDom.nodeName.toLowerCase() == 'refer-to') {
       var valuesWorkspace = getWorkspaceFromDom(childDom);
-      if (isForVariable) {
-        var value = Blockly.BoundVariables.getValueById(valuesWorkspace,
-            childDom.id);
-      } else {
-        var value =
-            Blockly.BoundVariables.getValueConstructorById(workspace, xml.id);
-      }
+      var targetLabel =
+          Blockly.BoundVariableAbstract.getTargetLabel(field.label_);
+      var value = Blockly.BoundVariables.getValueById(targetLabel,
+          valuesWorkspace, childDom.id);
       if (!valuesWorkspace.isFlyout) {
         if (!value) {
           throw 'The variable value is not found.';

@@ -196,6 +196,24 @@ Blockly.BoundVariableAbstract.prototype.dispose = function() {
 };
 
 /**
+ * Get the target variable's label of the variable of the given label.
+ */
+Blockly.BoundVariableAbstract.getTargetLabel = function(label) {
+  switch (label) {
+    case Blockly.BoundVariableAbstract.VALUE_VARIABLE:
+      return Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
+    case Blockly.BoundVariableAbstract.REFERENCE_VARIABLE:
+      return Blockly.BoundVariableAbstract.VALUE_VARIABLE;
+    case Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR:
+      return Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR;
+    case Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR:
+      return Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+    default:
+      goog.asserts.assert(false, 'Unknown variable type.');
+  }
+};
+
+/**
  * The given two variables are matched to bind them with each other.
  * @param {!Blockly.BoundVariableAbstract} v1
  * @param {!Blockly.BoundVariableAbstract} v2

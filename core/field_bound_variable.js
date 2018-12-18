@@ -201,8 +201,13 @@ Blockly.FieldBoundVariable.prototype.initDefaultVariableName_ = function() {
       return;
     }
   }
+  if (this.forValue_) {
+    var valueLabel = this.label_;
+  } else {
+    var valueLabel = Blockly.BoundVariableAbstract.getTargetLabel(this.label_);
+  }
   this.defaultVariableName_ = Blockly.BoundVariables.generateUniqueName(
-      this.sourceBlock_.workspace);
+      valueLabel, this.sourceBlock_.workspace);
 };
 
 /**

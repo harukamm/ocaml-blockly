@@ -50,11 +50,7 @@ Blockly.BoundVariables.addValue = function(workspace, value) {
   }
 
   var id = value.getId();
-  if (value.isNormalVariable()) {
-    var valueDB = workspace.getValueDB();
-  } else {
-    var valueDB = workspace.getValueConstructorDB();
-  }
+  var valueDB = workspace.getValueDB(value.label);
 
   if (valueDB[id] || value.inWorkspaceDB) {
     throw 'The value already exists in DB.';
@@ -82,11 +78,7 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
   }
 
   var id = value.getId();
-  if (value.isNormalVariable()) {
-    var valueDB = workspace.getValueDB();
-  } else {
-    var valueDB = workspace.getValueConstructorDB();
-  }
+  var valueDB = workspace.getValueDB(value.label);
 
   if (value.inWorkspaceDB && !valueDB[id]) {
     throw 'The value doesn\'t exist in DB.';
@@ -97,17 +89,13 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
 
 /**
  * Find the value on workspace workspace with the specified ID.
+ * @param {!number} label An enum representing which type of value.
  * @param {!Blockly.Workspace} workspace The workspace to search for the value.
  * @param {string} id ID of workspace to find.
  * @return {Blockly.BoundVariableValue} The sought after value or null.
  */
-Blockly.BoundVariables.getValueById = function(workspace, id) {
-  var valueDB = workspace.getValueDB();
-  return valueDB[id] || null;
-};
-
-Blockly.BoundVariables.getValueConstructorById = function(workspace, id) {
-  var valueDB = workspace.getValueConstructorDB();
+Blockly.BoundVariables.getValueById = function(label, workspace, id) {
+  var valueDB = workspace.getValueDB(label);
   return valueDB[id] || null;
 };
 
@@ -147,11 +135,7 @@ Blockly.BoundVariables.addReference = function(workspace, reference) {
   }
 
   var id = reference.getId();
-  if (reference.isNormalVariable()) {
-    var referenceDB = workspace.getReferenceDB();
-  } else {
-    var referenceDB = workspace.getReferenceConstructorDB();
-  }
+  var referenceDB = workspace.getReferenceDB(reference.label);
 
   if (referenceDB[id] || reference.inWorkspaceDB) {
     throw 'The reference ID already exists in the DB.';
@@ -179,11 +163,7 @@ Blockly.BoundVariables.removeReference = function(workspace, reference) {
   }
 
   var id = reference.getId();
-  if (reference.isNormalVariable()) {
-    var referenceDB = workspace.getReferenceDB();
-  } else {
-    var referenceDB = workspace.getReferenceConstructorDB();
-  }
+  var referenceDB = workspace.getReferenceDB(reference.label);
 
   if (!referenceDB[id] || !reference.inWorkspaceDB) {
     throw 'The reference doesn\'t exist in DB.';
@@ -194,19 +174,15 @@ Blockly.BoundVariables.removeReference = function(workspace, reference) {
 
 /**
  * Look up a reference on the given workspace.
+ * @param {!number} label An enum representing which type of value.
  * @param {!Blockly.Workspace} workspace The workspace to search for the
  *     reference.
  * @param {string} id The ID to use to look up the variable, or null.
  * @return {Blockly.BoundVariableValueReference} The sought after reference or
  *     null.
  */
-Blockly.BoundVariables.getReferenceById = function(workspace, id) {
-  var referenceDB = workspace.getReferenceDB();
-  return referenceDB[id] || null;
-};
-
-Blockly.BoundVariables.getReferenceConstructorById = function(workspace, id) {
-  var referenceDB = workspace.getConstructorDB();
+Blockly.BoundVariables.getReferenceById = function(label, workspace, id) {
+  var referenceDB = workspace.getReferenceDB(label);
   return referenceDB[id] || null;
 };
 
@@ -227,10 +203,14 @@ Blockly.BoundVariables.clearWorkspaceVariableDB = function(workspace) {
       delete db[id];
     }
   }
-  var referenceDB = workspace.getReferenceDB();
-  var valueDB = workspace.getValueDB();
-  var referenceCtrDB = workspace.getReferenceConstructorDB();
-  var valueCtrDB = workspace.getValueConstructorDB();
+  var referenceDB = workspace.getReferenceDB(
+      Blockly.BoundVariableAbstract.REFERENCE_VARIABLE);
+  var valueDB = workspace.getValueDB(
+      Blockly.BoundVariableAbstract.VALUE_VARIABLE);
+  var referenceCtrDB = workspace.getReferenceDB(
+      Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR);
+  var valueCtrDB = workspace.getValueDB(
+      Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR);
   clearVariableDB(referenceDB);
   clearVariableDB(valueDB);
   clearVariableDB(referenceCtrDB);
@@ -260,16 +240,17 @@ Blockly.BoundVariables.clearCyclicReferenceOnBlock = function(block) {
 
 /**
  * Get whether the given variable name is unique on the related workspaces.
+ * @param {!number} label An enum representing which type of value.
  * @param {!string} name The name of variable.
  * @param {!Blockly.Workspace} workspace The workspace to specify a group of
  *     related workspaces. Check if these workspaces don't have a variable of
  *     the given name.
  * @return {boolean} True if the name is unique on the related workspaces.
  */
-Blockly.BoundVariables.isUniqueName = function(name, workspace) {
+Blockly.BoundVariables.isUniqueName = function(label, name, workspace) {
   var workspaceFamily = Blockly.WorkspaceTree.getFamily(workspace);
   for (var i = 0, ws; ws = workspaceFamily[i]; i++) {
-    var valueDB = ws.getValueDB();
+    var valueDB = ws.getValueDB(label);
     var keys = Object.keys(valueDB);
     for (var j = 0, key; key = keys[j]; j++) {
       var value = valueDB[key];
@@ -437,7 +418,14 @@ Blockly.BoundVariables.canRenameTo = function(variable, newName) {
   if (oldName === newName) {
     return true;
   }
-  if (Blockly.BoundVariables.isUniqueName(newName, variable.getWorkspace())) {
+  if (variable.isReferenceVariable() || variable.isReferenceConstructor()) {
+    var valueLabel = Blockly.BoundVariableAbstract.getTargetLabel(
+        variable.label);
+  } else {
+    var valueLabel = variable.label;
+  }
+  if (Blockly.BoundVariables.isUniqueName(valueLabel, newName,
+        variable.getWorkspace())) {
     return true;
   }
 
@@ -505,15 +493,16 @@ Blockly.BoundVariables.isLegalName = function(newName) {
 /**
  * Return a new variable name that is not yet being used on the related
  * workspace except for flyout ones.
+ * @param {!number} label An enum representing which type of value.
  * @param {!Blockly.Workspace} workspace The workspace on which to generate
  *     a new variable name.
  * @return {!string} New variable name.
  */
-Blockly.BoundVariables.generateUniqueName = function(workspace) {
+Blockly.BoundVariables.generateUniqueName = function(label, workspace) {
   var workspaceFamily = Blockly.WorkspaceTree.getFamily(workspace);
   var namesMap = {};
   for (var i = 0, ws; ws = workspaceFamily[i]; i++) {
-    var valueDB = ws.getValueDB();
+    var valueDB = ws.getValueDB(label);
     var keys = Object.keys(valueDB);
     for (var j = 0, key; key = keys[j]; j++) {
       var value = valueDB[key];

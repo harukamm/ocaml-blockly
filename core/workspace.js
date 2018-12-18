@@ -272,27 +272,35 @@ Blockly.Workspace.prototype.getTopComments = function(ordered) {
 /**
  * Returns the list of values on the workspace. The callers of this function
  * change the content of the list.
+ * @param {!number} label An enum indicating which type of value.
  * @return {!Object} The value DB of the workspace.
  */
-Blockly.Workspace.prototype.getValueDB = function() {
-  return this.valueDB_;
+Blockly.Workspace.prototype.getValueDB = function(label) {
+  switch (label) {
+    case Blockly.BoundVariableAbstract.VALUE_VARIABLE:
+      return this.valueDB_;
+    case Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR:
+      return this.valueConstructorDB_;
+    default:
+      throw 'Unknown value label';
+  }
 };
 
 /**
  * Returns the list of references on the workspace. The callers of this
  * function can change the content of the list.
+ * @param {!number} label An enum indicating which type of reference.
  * @return {!Object} The reference DB of the workspace.
  */
-Blockly.Workspace.prototype.getReferenceDB = function() {
-  return this.referenceDB_;
-};
-
-Blockly.Workspace.prototype.getValueConstructorDB = function() {
-  return this.valueConstructorDB_;
-};
-
-Blockly.Workspace.prototype.getReferenceConstructorDB = function() {
-  return this.referenceConstructorDB_;
+Blockly.Workspace.prototype.getReferenceDB = function(label) {
+  switch (label) {
+    case Blockly.BoundVariableAbstract.REFERENCE_VARIABLE:
+      return this.referenceDB_;
+    case Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR:
+      return this.referenceConstructorDB_;
+    default:
+      throw 'Unknown reference label';
+  }
 };
 
 /**
