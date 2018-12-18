@@ -540,7 +540,8 @@ Blockly.BoundVariables.renameToGeneratedNames = function(block) {
   var workspace = block.workspace;
   var values = Blockly.BoundVariables.getAllVariablesOnBlocks(block, false);
   for (var i = 0, val; val = values[i]; i++) {
-    var generated = Blockly.BoundVariables.generateUniqueName(workspace);
+    var generated = Blockly.BoundVariables.generateUniqueName(
+        Blockly.BoundVariableAbstract.VALUE_VARIABLE, workspace);
     val.setVariableName(generated);
   }
 };
