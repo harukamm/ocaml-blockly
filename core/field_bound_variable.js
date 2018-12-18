@@ -583,7 +583,11 @@ Blockly.FieldBoundVariable.dropdownCreate = function() {
   //     options[i] = [value.getVariableName(), value.getId()];
   //   }
   // }
-  options.push([Blockly.Msg['RENAME_VARIABLE'], Blockly.RENAME_VARIABLE_ID]);
+  if (this.isForConstructor()) {
+    options.push(['Rename constructor...', Blockly.RENAME_VARIABLE_ID]);
+  } else {
+    options.push(['Rename variable..', Blockly.RENAME_VARIABLE_ID]);
+  }
   // var name = this.getVariableName();
   // if (Blockly.Msg['DELETE_VARIABLE']) {
   //   options.push(
