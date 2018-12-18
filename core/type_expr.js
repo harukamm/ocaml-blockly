@@ -751,7 +751,15 @@ Blockly.TypeExpr.prototype.unify = function(other) {
         tvar.val = othr;
       }
     } else if (t1.isConstruct() && t2.isConstruct()) {
-      goog.asserts.assert(t1.id && i2.id && t1.id == t2.id);
+      if (t1.id && t2.id) {
+        goog.asserts.assert(t1.id == t2.id);
+      } else if (t2.id) {
+        t1.id = t2.id;
+      } else if (t1.id) {
+        t2.id = t1.id;
+      } else {
+        goog.asserts.assert(false, 'Cannot unify undefined constructor');
+      }
     } else {
       goog.asserts.assert(t1.label == t2.label, 'Unify error: Cannot unify');
       var children1 = t1.getChildren();
