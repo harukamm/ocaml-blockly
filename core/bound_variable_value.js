@@ -169,6 +169,8 @@ Blockly.BoundVariableValue.prototype.referenceCount = function() {
  *     store a list of references.
  */
 Blockly.BoundVariableValue.prototype.storeReference = function(reference) {
+  goog.asserts.assert(Blockly.BoundVariableAbstract.isPair(this, reference));
+
   if (this.referenceList_.indexOf(reference) != -1) {
     throw 'Duplicated references.';
   }
@@ -184,6 +186,8 @@ Blockly.BoundVariableValue.prototype.storeReference = function(reference) {
  *     remove from a list of references.
  */
 Blockly.BoundVariableValue.prototype.removeReference = function(reference) {
+  goog.asserts.assert(Blockly.BoundVariableAbstract.isPair(this, reference));
+
   var removalIndex = this.referenceList_.indexOf(reference);
   if (removalIndex == -1) {
     throw 'Unable to find the reference.';
