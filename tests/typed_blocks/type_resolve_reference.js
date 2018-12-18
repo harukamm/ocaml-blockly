@@ -239,6 +239,7 @@ function test_resolve_reference_renameVariableCheck() {
     assertTrue(Blockly.BoundVariables.canRenameTo(value1, 'y'));
     assertTrue(Blockly.BoundVariables.canRenameTo(reference, 'y'));
     assertTrue(Blockly.BoundVariables.canRenameTo(value2, 'x'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(value2, 'x\''));
   } finally {
     workspace.dispose();
   }

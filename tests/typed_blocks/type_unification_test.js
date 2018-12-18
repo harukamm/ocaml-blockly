@@ -1273,6 +1273,9 @@ function test_type_unification_constructBlockSimple() {
     ctrValue.setVariableName('Foo');
     ctrReference.setVariableName('Foo');
     ctrReference.setBoundValue(ctrValue);
+    assertTrue(Blockly.BoundVariables.canRenameTo(ctrReference, 'Bee'));
+    assertTrue(Blockly.BoundVariables.canRenameTo(ctrReference, 'Be\'e'));
+    assertFalse(Blockly.BoundVariables.canRenameTo(ctrReference, 'eAd'));
   } finally {
     workspace.dispose();
   }

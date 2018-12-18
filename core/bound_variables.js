@@ -411,7 +411,7 @@ Blockly.BoundVariables.getAffectedBlocksForTypeInfer = function(blocks) {
  * @return {boolean} True if the renaming is valid.
  */
 Blockly.BoundVariables.canRenameTo = function(variable, newName) {
-  if (!Blockly.BoundVariables.isLegalName(newName)) {
+  if (!Blockly.BoundVariables.isLegalName(variable, newName)) {
     return false;
   }
   var oldName = variable.getVariableName();
@@ -472,20 +472,30 @@ Blockly.BoundVariables.getVisibleVariableValues = function(variable) {
 
 /**
  * Returns whether the given name is legal as a variable name.
+ * @param {!Blockly.BoundVariableAbstract} variable The variable to be renamed.
  * @param {string} newName The new variable name.
  * @return {boolean} True if the name is legal.
  */
-Blockly.BoundVariables.isLegalName = function(newName) {
+Blockly.BoundVariables.isLegalName = function(variable, newName) {
   if (!newName) {
     return false;
   }
   // Check if a string follows the naming convention.
-  if (newName.match(/^[a-z_]\w*$/) == null) {
-    return false;
-  }
-  // TODO(harukam): Support wildcard.
-  if (newName === '_') {
-    return false;
+  // Reference: https://caml.inria.fr/pub/docs/manual-ocaml/names.html
+  if (variable.isConstructor()) {
+    // [A-Z][\w']*
+    if (newName.match(/^[A-Z][\w']*$/) == null) {
+      return false;
+    }
+  } else {
+    // [a-z_][\w']*
+    if (newName.match(/^[a-z_][\w']*$/) == null) {
+      return false;
+    }
+    // TODO(harukam): Support wildcard.
+    if (newName === '_') {
+      return false;
+    }
   }
   return true;
 };
