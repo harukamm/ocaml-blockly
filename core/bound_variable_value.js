@@ -123,11 +123,15 @@ Blockly.BoundVariableValue.prototype.getAllBoundVariables = function() {
 /**
  * Dispose of this value.
  * @param {boolean=} opt_removeReference True if force to remove reference
- *     blocks which refer to this variable.
+ *     blocks which refer to this variable. If variable represents constructor,
+ *     defaults to true.
  * @override
  */
 Blockly.BoundVariableValue.prototype.dispose = function(opt_removeReference) {
-  if (opt_removeReference === true) {
+  var forceToRemove = this.isConstructor() ?
+      opt_removeReference !== false: opt_removeReference === true;
+
+  if (forceToRemove) {
     var referenceList = [].concat(this.referenceList_);
     for (var i = 0, ref; ref = referenceList[i]; i++) {
       var refBlock = ref.getSourceBlock();
