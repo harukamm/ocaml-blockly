@@ -28,12 +28,14 @@ Blockly.Blocks['defined_datatype_typed'] = {
         .appendField('|')
         .appendField(variableField0, 'CTR0')
         .appendField('of')
+        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
         .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('CTR_INP1')
         .appendField('|')
         .appendField(variableField1, 'CTR1')
         .appendField('of')
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
+        .setAlign(Blockly.ALIGN_RIGHT);
     this.setOutput(false);
 
     this.constructId_ = ctrId;
@@ -78,6 +80,8 @@ Blockly.Blocks['int_type_typed'] = {
     this.appendDummyInput()
         .appendField('int');
     this.setOutput(true);
+    var typeCtrType = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+    this.setOutputTypeExpr(typeCtrType);
   }
 };
 
@@ -87,5 +91,7 @@ Blockly.Blocks['float_type_typed'] = {
     this.appendDummyInput()
         .appendField('float');
     this.setOutput(true);
+    var typeCtrType = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+    this.setOutputTypeExpr(typeCtrType);
   }
 };
