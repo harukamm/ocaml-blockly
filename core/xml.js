@@ -952,7 +952,7 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
         variableInDB.copyTo(variable);
       }
     }
-  } else if (isForVariable) {
+  } else {
     var childDom = xml.children.length && xml.children[0];
     // Build the variable binding if <refer-to> DOM is specified.
     if (childDom && childDom.nodeName.toLowerCase() == 'refer-to') {

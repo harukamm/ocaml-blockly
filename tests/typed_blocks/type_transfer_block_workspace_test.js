@@ -970,3 +970,30 @@ function test_type_transfer_block_workspace_lambdaBlockTransferManyTimes() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_constructBlockSimple() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    var defineCtr = workspace.newBlock('defined_datatype_typed');
+    var ctrValue = getVariable(defineCtr, 0);
+    var ctr = workspace.newBlock('create_construct_typed');
+    var ctrReference = getVariable(ctr);
+    ctrValue.setVariableName('Foo');
+    ctrReference.setVariableName('Foo');
+    ctrReference.setBoundValue(ctrValue);
+    assertEquals(ctrReference.getBoundValue(), ctrValue);
+    assertEquals(ctrValue.referenceCount(), 1);
+    assertFalse(defineCtr.isTransferable());
+    assertTrue(ctr.isTransferable());
+
+    var transBlock = repeat_transfer_workspace(ctr, otherWorkspace, 10);
+    var newRef = getVariable(transBlock);
+    assertNotEquals(ctrReference.getBoundValue(), ctrValue);
+    assertEquals(ctrValue.referenceCount(), 1);
+    assertEquals(newRef.getBoundValue(), ctrValue);
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}
