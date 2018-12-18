@@ -97,7 +97,7 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
     case Blockly.TypeExpr.CONSTRUCT_:
       return 'construct';
     case Blockly.TypeExpr.TYPE_CONSTRUCTOR_:
-      return 'type constructor';
+      return 'type-constructor';
     case Blockly.TypeExpr.TVAR_:
       return 'typeVar';
     default:

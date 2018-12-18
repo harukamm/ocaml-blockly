@@ -167,6 +167,24 @@ Blockly.RenderedTypeExpr.shape['fun'] = {
 Blockly.RenderedTypeExpr.shape['construct'] =
     Object.assign({}, Blockly.RenderedTypeExpr.shape['original']);
 
+Blockly.RenderedTypeExpr.shape['type-constructor'] = {
+  down: function(steps) {
+    steps.push('l 0,5 -8,0 q 3,3.7 3,7.5 t -3,7.5 l 8,0');
+  },
+
+  up: function(steps) {
+    steps.push('l -8,0 q 3,-3.7 3,-7.5 t -3,-7.5 l 8,0 l 0,-5');
+  },
+
+  height: function() {
+    return 20;
+  },
+
+  offsetsY: function() {
+    return [];
+  }
+};
+
 Blockly.RenderedTypeExpr.shape['typeVar'] = {
   down: function(steps) {
     steps.push('l 0,5 -8,0 0,15 8,0 0,5');
