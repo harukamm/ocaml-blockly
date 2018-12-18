@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Blockly Test: block from code</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="text/javascript" src="../../../blockly_uncompressed.js"></script>
+  <script src="../../../blocks/logic.js"></script>
+  <script src="../../../blocks/loops.js"></script>
+  <script src="../../../blocks/math.js"></script>
+  <script src="../../../blocks/text.js"></script>
+  <script src="../../../blocks/lists.js"></script>
+  <script src="../../../blocks/colour.js"></script>
+  <script src="../../../blocks/variables.js"></script>
+  <script src="../../../blocks/procedures.js"></script>
+  <script src="../../../blocks/parameters.js"></script>
+  <script src="../../../blocks/datatypes.js"></script>
+  <script src="../../../generators/typedlang.js"></script>
+  <script src="../../../generators/typedlang/blocks.js"></script>
+
+  <script type="text/javascript" src="../../../msg/js/en.js"></script>
+  <script type="text/javascript" src="../../../demos/generator/converter.js"></script>
+  <script type="text/javascript" src="test.js"></script>
+</head>
+<body>
+  <div id="workspaceArea">
+    <div id="blocklyDiv"></div>
+  </div>
+  <div id="rightArea">
+    <h1 class="titleHeader">Playground</h1>
+    <div class="content">
+      <div class="codeToBlock">
+        <div>
+          <h2 class="contentTitle">OCaml => block</h2>
+          <textarea class="ocamlCode" type="text" rows="10" cols="40">let x = 1 in 2</textarea>
+        </div>
+        <button class="btn" onclick="Test.onClickConvert(event)">Convert to block</button>
+      </div>
+      <div class="blockToCode">
+        <h2 class="contentTitle">block => OCaml</h2>
+        <p>
+          <textarea class="generatedCode" type="text" rows="10" cols="40"
+              readonly></textarea>
+          <button class="btn" onclick="Test.showCode()">Update</button>
+          <button class="btn" onclick="Test.runCode()">Run</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="clear"></div>
+  <xml id="toolbox" style="display: none">
+    <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+      <block type="logic_boolean_typed"></block>
+      <block type="logic_ternary_typed"></block>
+      <block type="logic_compare_typed"></block>
+    </category>
+    <category name="Lists" colour="%{BKY_LISTS_HUE}">
+      <block type="lists_create_with_typed"></block>
+    </category>
+    <category name="Math" colour="%{BKY_MATH_HUE}">
+      <block type="int_typed"></block>
+      <block type="float_typed"></block>
+      <block type="int_arithmetic_typed"></block>
+      <block type="float_arithmetic_typed"></block>
+    </category>
+    <category name="Pairs" colour="%{BKY_PAIRS_HUE}">
+      <block type="pair_create_typed"></block>
+      <block type="pair_first_typed"></block>
+      <block type="pair_second_typed"></block>
+    </category>
+    <category name="Functions" colour="%{BKY_PROCEDURES_HUE}">
+      <block type="lambda_typed"></block>
+      <block type="lambda_app_typed"></block>
+      <block type="match_typed"></block>
+      <block type="defined_datatype_typed"></block>
+    </category>
+    <category name="Variables" colour="%{BKY_VARIABLES_HUE}">
+      <block type="let_typed"></block>
+      <block type="letrec_typed"></block>
+    </category>
+  </xml>
+</body>
+</html>
