@@ -185,6 +185,10 @@ Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
     if (scheme) {
       scheme.unify(this.typeExpr_);
     }
+    if (this.isConstructor()) {
+      // Update parameter according to the definition of constructor.
+      this.sourceBlock_.infer();
+    }
   }
 };
 

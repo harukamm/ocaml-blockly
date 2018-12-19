@@ -1787,8 +1787,13 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
  */
 Blockly.Block.doTypeInference = function(workspace) {
   function isTyped(block) {
-    return !!block.workspace &&
-      !!block.outputConnection && !!block.outputConnection.typeExpr;
+    if (!block.workspace) {
+      return false;
+    } else if (block.outputConnection && block.outputConnection.typeExpr) {
+      return true;
+    } else {
+      return block.type === 'defined_datatype_typed';
+    }
   }
 
   if (workspace.isFlyout) {

@@ -1276,6 +1276,33 @@ function test_type_unification_constructBlockSimple() {
     assertTrue(Blockly.BoundVariables.canRenameTo(ctrReference, 'Bee'));
     assertTrue(Blockly.BoundVariables.canRenameTo(ctrReference, 'Be\'e'));
     assertFalse(Blockly.BoundVariables.canRenameTo(ctrReference, 'eAd'));
+
+    function check(typeBlock, typeName) {
+      var inp = ctr.getInput('PARAM');
+      assertNull(inp);
+      defineCtr.getInput('CTR_INP0').connection.connect(typeBlock.outputConnection);
+      var inp = ctr.getInput('PARAM');
+      assertNotNull(inp);
+      if (typeName === 'int') {
+        assertTrue(inp.connection.typeExpr.isInt());
+        var block = workspace.newBlock('int_typed');
+      } else if (typeName === 'float') {
+        assertTrue(inp.connection.typeExpr.isFloat());
+        var block = workspace.newBlock('float_typed');
+      } else {
+        assertTrue(false);
+      }
+      inp.connection.connect(block.outputConnection);
+      assertTrue(inp.connection.isConnected());
+    }
+    var intType = workspace.newBlock('int_type_typed');
+    var floatType = workspace.newBlock('float_type_typed');
+    check(intType, 'int');
+    intType.outputConnection.disconnect();
+    check(floatType, 'float');
+    floatType.outputConnection.disconnect();
+    check(intType, 'int');
+    intType.outputConnection.disconnect();
   } finally {
     workspace.dispose();
   }

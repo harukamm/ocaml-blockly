@@ -41,10 +41,17 @@ Blockly.Blocks['defined_datatype_typed'] = {
     this.constructId_ = ctrId;
     this.itemCount_ = 2;
     this.disableTransfer_ = true;
+    /** @type {!Object<!string, string|null>} */
+    this.lastTypeCtor_ = {'CTR0': null, 'CTR1': null};
   },
 
   typeExprReplaced() {
     throw 'Not allowed to replace type expression for value construct.';
+  },
+
+  getTypeCtorDef: function(fieldName) {
+    return fieldName in this.lastTypeCtor_ ?
+        this.lastTypeCtor_[fieldName] : null;
   },
 
   getTypeScheme(fieldName) {
@@ -52,11 +59,27 @@ Blockly.Blocks['defined_datatype_typed'] = {
       var numstr = fieldName.substring(3);
       var x = parseInt(numstr);
       if (!isNaN(x) && x < this.itemCount_) {
-        var name = 'CTR' + x;
-        var field = this.getField(name);
-        var variable = field.getVariable();
-        return Blockly.Scheme.monoType(variable.getTypeExpr());
+        return new Blockly.TypeExpr.CONSTRUCT(this.constructId_);
       }
+    }
+    return null;
+  },
+
+  infer: function(ctx) {
+    for (var x = 0; x < this.itemCount_; x++) {
+      var inputName = 'CTR_INP' + x;
+      var block = this.getInputTargetBlock(inputName);
+      if (!block) {
+        this.lastTypeCtor_['CTR' + x] = null;
+        continue;
+      }
+      var outType = block.outputConnection &&
+          block.outputConnection.typeExpr;
+      goog.asserts.assert(!!outType);
+      outType.unify(new Blockly.TypeExpr.TYPE_CONSTRUCTOR);
+
+      var typeCtor = block.getTypeCtor();
+      this.lastTypeCtor_['CTR' + x] = typeCtor;
     }
   }
 };
@@ -71,6 +94,42 @@ Blockly.Blocks['create_construct_typed'] = {
         .appendField(variableField, 'CONSTRUCTOR');
     this.setOutput(true);
     this.setOutputTypeExpr(ctrType);
+    this.definition_ = null;
+  },
+
+  infer: function() {
+    var outType = this.outputConnection.typeExpr;
+    var value = this.getField('CONSTRUCTOR').getBoundValue();
+    if (!value) {
+      return outType;
+    }
+    // TODO(harukam): Move the following code to the bound-varaible class.
+    var valueBlock = value.getSourceBlock();
+    var fieldName = value.getContainerFieldName();
+    var def = valueBlock.getTypeCtorDef(fieldName);
+
+    if (this.definition_ === def) {
+      return outType;
+    }
+
+    var input = this.getInput('PARAM');
+    if (input) {
+      this.removeInput('PARAM');
+    }
+
+    if (def === 'int') {
+      this.appendValueInput('PARAM')
+          .setTypeExpr(new Blockly.TypeExpr.INT())
+    } else if (def === 'float') {
+      this.appendValueInput('PARAM')
+          .setTypeExpr(new Blockly.TypeExpr.FLOAT())
+    } else if (!def) {
+      // Definition is cleared by user.
+    } else {
+      goog.asserts.assert(false, 'Unknown type ctor.');
+    }
+    this.definition_ = def;
+    return outType;
   }
 };
 
@@ -82,6 +141,12 @@ Blockly.Blocks['int_type_typed'] = {
     this.setOutput(true);
     var typeCtrType = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
     this.setOutputTypeExpr(typeCtrType);
+  },
+
+  getTypeCtor: function() {
+    // Note: Currently nested type constructor is not supported, so simply
+    // using string to represent it.
+    return 'int';
   }
 };
 
@@ -93,5 +158,9 @@ Blockly.Blocks['float_type_typed'] = {
     this.setOutput(true);
     var typeCtrType = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
     this.setOutputTypeExpr(typeCtrType);
+  },
+
+  getTypeCtor: function() {
+    return 'float';
   }
 };
