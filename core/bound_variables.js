@@ -446,7 +446,7 @@ Blockly.BoundVariables.getAffectedBlocksForTypeInfer = function(blocks) {
  * @return {boolean} True if the renaming is valid.
  */
 Blockly.BoundVariables.canRenameTo = function(variable, newName) {
-  if (!Blockly.BoundVariables.isLegalName(variable, newName)) {
+  if (!Blockly.BoundVariables.isLegalName(variable.label, newName)) {
     return false;
   }
   var oldName = variable.getVariableName();
@@ -507,17 +507,25 @@ Blockly.BoundVariables.getVisibleVariableValues = function(variable) {
 
 /**
  * Returns whether the given name is legal as a variable name.
- * @param {!Blockly.BoundVariableAbstract} variable The variable to be renamed.
+ * @param {!number} label An enum representing which type of variable.
  * @param {string} newName The new variable name.
  * @return {boolean} True if the name is legal.
  */
-Blockly.BoundVariables.isLegalName = function(variable, newName) {
+Blockly.BoundVariables.isLegalName = function(label, newName) {
   if (!newName) {
     return false;
   }
+  var isConstructor =
+      label == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR ||
+      label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+  var isNormalVariable =
+      label == Blockly.BoundVariableAbstract.VALUE_VARIABLE ||
+      label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
+  goog.asserts.assert(isConstructor || isNormalVariable);
+
   // Check if a string follows the naming convention.
   // Reference: https://caml.inria.fr/pub/docs/manual-ocaml/names.html
-  if (variable.isConstructor()) {
+  if (isConstructor) {
     // [A-Z][\w']*
     if (newName.match(/^[A-Z][\w']*$/) == null) {
       return false;

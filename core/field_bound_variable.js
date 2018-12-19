@@ -196,7 +196,7 @@ Blockly.FieldBoundVariable.prototype.initDefaultVariableName_ = function() {
   var original = this.defaultVariableName_;
   if (goog.isString(original)) {
     var cleaned = original.trim();
-    if (Blockly.BoundVariables.isLegalName(cleaned)) {
+    if (Blockly.BoundVariables.isLegalName(this.label_, cleaned)) {
       this.defaultVariableName_ = cleaned;
       return;
     }
