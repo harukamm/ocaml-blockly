@@ -127,6 +127,31 @@ Blockly.Mutator.prototype.createEditor_ = function() {
   this.svgDialog_ = Blockly.utils.createSvgElement('svg',
       {'x': Blockly.Bubble.BORDER_WIDTH, 'y': Blockly.Bubble.BORDER_WIDTH},
       null);
+  this.initWorkspace_();
+
+  // Mutator flyouts go inside the mutator workspace's <g> rather than in
+  // a top level svg. Instead of handling scale themselves, mutators
+  // inherit scale from the parent workspace.
+  // To fix this, scale needs to be applied at a different level in the dom.
+  var flyoutSvg =  this.workspace_.addFlyout_('g');
+  var background = this.workspace_.createDom('blocklyMutatorBackground');
+
+  // Insert the flyout after the <rect> but before the block canvas so that
+  // the flyout is underneath in z-order.  This makes blocks layering during
+  // dragging work properly.
+  background.insertBefore(flyoutSvg, this.workspace_.svgBlockCanvas_);
+  this.svgDialog_.appendChild(background);
+
+  return this.svgDialog_;
+};
+
+/**
+ * Initialize the workspace if it has not been created.
+ */
+Blockly.Mutator.prototype.initWorkspace_ = function() {
+  if (this.workspace_) {
+    return;
+  }
   // Convert the list of names into a list of XML objects for the flyout.
   if (this.quarkNames_.length) {
     var quarkXml = goog.dom.createDom('xml');
@@ -151,21 +176,6 @@ Blockly.Mutator.prototype.createEditor_ = function() {
   this.workspace_ = new Blockly.WorkspaceSvg(workspaceOptions);
   this.workspace_.isMutator = true;
   this.workspace_.ownerMutator_ = this;
-
-  // Mutator flyouts go inside the mutator workspace's <g> rather than in
-  // a top level svg. Instead of handling scale themselves, mutators
-  // inherit scale from the parent workspace.
-  // To fix this, scale needs to be applied at a different level in the dom.
-  var flyoutSvg =  this.workspace_.addFlyout_('g');
-  var background = this.workspace_.createDom('blocklyMutatorBackground');
-
-  // Insert the flyout after the <rect> but before the block canvas so that
-  // the flyout is underneath in z-order.  This makes blocks layering during
-  // dragging work properly.
-  background.insertBefore(flyoutSvg, this.workspace_.svgBlockCanvas_);
-  this.svgDialog_.appendChild(background);
-
-  return this.svgDialog_;
 };
 
 /**
