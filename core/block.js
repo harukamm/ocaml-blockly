@@ -2820,13 +2820,13 @@ Blockly.Blocks['match_typed'] = {
         .appendField('with')
         .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('PATTERN1')
-        .setTypeExpr(A);
+        .setTypeExpr(new Blockly.TypeExpr.PATTERN());
     this.appendValueInput('OUTPUT1')
         .setTypeExpr(B)
         .appendField('->')
         .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('PATTERN2')
-        .setTypeExpr(A);
+        .setTypeExpr(new Blockly.TypeExpr.PATTERN());
     this.appendValueInput('OUTPUT2')
         .setTypeExpr(B)
         .appendField('->')
@@ -2856,10 +2856,12 @@ Blockly.Blocks['match_typed'] = {
     var output2_type = this.callInfer_('OUTPUT2', ctx);
     if (input_type)
       input_type.unify(input_expected);
+    // TODO(harukam): Unify type expression pattern1_type indicates with
+    // input_expected.
     if (pattern1_type)
-      pattern1_type.unify(input_expected);
+      pattern1_type.unify(new Blockly.TypeExpr.PATTERN());
     if (pattern2_type)
-      pattern2_type.unify(input_expected);
+      pattern2_type.unify(new Blockly.TypeExpr.PATTERN());
     if (output1_type)
       output1_type.unify(expected);
     if (output2_type)
