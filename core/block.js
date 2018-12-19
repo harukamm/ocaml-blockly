@@ -1927,7 +1927,6 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind) {
     var name = variable.getVariableName();
     var value = env[name];
     var currentValue = variable.getBoundValue();
-    var valid = currentValue ? currentValue == value : !!value;
     if (!value) {
       // Refers to an undefined variable.
       return false;

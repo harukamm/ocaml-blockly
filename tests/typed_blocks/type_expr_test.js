@@ -497,13 +497,11 @@ function test_type_expr_type_constructor() {
   assertFalse(m.ableToUnify(type1));
   assertFalse(m.ableToUnify(type2));
 
-  var error = false;
-  try {
-    Blockly.TypeExpr.equals(yyType, yyType);
-  } catch (e) {
-    error = true;
-  }
-  assertTrue(error);
+  // Can not compare type constructor type-expr so far. equals function always
+  // returns false.
+  assertFalse(Blockly.TypeExpr.equals(type1, type1));
+  assertFalse(Blockly.TypeExpr.equals(type1, type2));
+
   assertEquals(type1.toString(), "TYPE_CONSTRUCTOR");
   assertEquals(type2.toString(), "TYPE_CONSTRUCTOR");
 }

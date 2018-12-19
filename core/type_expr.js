@@ -908,7 +908,7 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
     return typ1.id && typ2.id ? typ1.id == typ2.id : false;
   }
   if (typ1.isTypeConstructor()) {
-    goog.asserts.assert(false, 'Can not compare type ctr.');
+    return false;
   }
   if (typ1.isTypeVar()) {
     return typ1.name == typ2.name;
