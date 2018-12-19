@@ -147,6 +147,16 @@ Blockly.Blocks['int_type_typed'] = {
     // Note: Currently nested type constructor is not supported, so simply
     // using string to represent it.
     return 'int';
+  },
+
+  canBeUnplugged: function() {
+    var parent = this.getParent();
+    if (!parent) {
+      return true;
+    }
+    // TODO(harukam): Ask the parent, which must be define-datatypes block,
+    // whether changing definition of datatype is fine or not.
+    return true;
   }
 };
 
@@ -162,5 +172,15 @@ Blockly.Blocks['float_type_typed'] = {
 
   getTypeCtor: function() {
     return 'float';
+  },
+
+  canBeUnplugged: function() {
+    var parent = this.getParent();
+    if (!parent) {
+      return true;
+    }
+    // TODO(harukam): Ask the parent, which must be define-datatypes block,
+    // whether changing definition of datatype is fine or not.
+    return true;
   }
 };
