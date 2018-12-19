@@ -420,6 +420,9 @@ Blockly.Gesture.prototype.updateIsDraggingBlock_ = function() {
     return false;
   }
 
+  var unplugCheck = goog.isFunction(this.targetBlock_.canBeUnplugged) ?
+      this.targetBlock_.canBeUnplugged.bind(this.targetBlock_) : null;
+
   if (this.flyout_) {
     this.isDraggingBlock_ = this.updateIsDraggingFromFlyout_();
     this.draggedFromFlyout_ = true;
@@ -428,6 +431,9 @@ Blockly.Gesture.prototype.updateIsDraggingBlock_ = function() {
     // and drag it from there.
     this.isDraggingBlock_ = this.updateIsDraggingFromField_();
     this.draggedFromFlyout_= true;
+  } else if (unplugCheck && !unplugCheck()) {
+    // The block has a parent, and can not be unplugged from the parent. Do not
+    // start dragging the block.
   } else if (this.targetBlock_.isMovable()) {
     this.isDraggingBlock_ = true;
     this.draggedFromFlyout_ = false;

@@ -250,6 +250,10 @@ Blockly.onKeyDown_ = function(e) {
   // Common code for delete and cut.
   // Don't delete in the flyout.
   if (deleteBlock && !Blockly.selected.workspace.isFlyout) {
+    if (goog.isFunction(deleteBlock.canBeUnplugged) &&
+        deleteBlock.canBeUnplugged.call(deleteBlock)) {
+      return;
+    }
     Blockly.Events.setGroup(true);
     Blockly.hideChaff();
     Blockly.selected.dispose(/* heal */ true, true);
