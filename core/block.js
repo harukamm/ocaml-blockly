@@ -2687,7 +2687,7 @@ Blockly.Blocks['lambda_typed'] = {
     var B = Blockly.TypeExpr.generateTypeVar();
     var variable_field = Blockly.FieldBoundVariable.newValue(A);
     this.appendDummyInput()
-        .appendField('λ')
+        .appendField('fun ')
         .appendField(variable_field, 'VAR');
     this.appendValueInput('RETURN')
         .setTypeExpr(B)
