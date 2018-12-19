@@ -2960,22 +2960,24 @@ Blockly.Blocks['let_typed'] = {
     var exp1Type = Blockly.TypeExpr.generateTypeVar();
     var exp2Type = Blockly.TypeExpr.generateTypeVar();
     var variable_field = Blockly.FieldBoundVariable.newValue(varType);
-    var dumm = this.appendDummyInput('VARIABLE')
+    this.appendDummyInput('VARIABLE')
         .appendField('let', 'LET_LABEL')
-        .appendField(variable_field, 'VAR');
-    this.appendDummyInput('ARGS');
+        .appendField(variable_field, 'VAR')
+        .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('EXP1')
         .setTypeExpr(exp1Type)
         .appendField('=')
-        .setWorkbench(new Blockly.Workbench());
+        .setWorkbench(new Blockly.Workbench())
+        .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('EXP2')
         .setTypeExpr(exp2Type)
         .appendField('in')
-        .setWorkbench(new Blockly.Workbench());
+        .setWorkbench(new Blockly.Workbench())
+        .setAlign(Blockly.ALIGN_RIGHT);
     this.setMutator(new Blockly.Mutator(['args_create_with_item']));
     this.setOutput(true);
     this.setOutputTypeExpr(exp2Type);
-    this.setInputsInline(true);
+    this.setInputsInline(false);
 
     var defaultRecFlag = opt_recur === true;
     this.isRecursive_ = false;
@@ -3141,9 +3143,13 @@ Blockly.Blocks['let_typed'] = {
    * @this Blockly.Block
    */
   domToMutation: function(xmlElement) {
-    var input = this.getInput('ARGS');
-    while (input.fieldRow.length) {
-      var field = input.fieldRow.pop();
+    var input = this.getInput('VARIABLE');
+    var fields = [].concat(input.fieldRow);
+    for (var i = 0, field; field = fields[i]; i++) {
+      if (!field.name.startsWith('ARG')) {
+        continue;
+      }
+      goog.array.remove(input.fieldRow, field);
       field.dispose(true);
     }
     var childNodes = xmlElement.childNodes;
@@ -3187,17 +3193,20 @@ Blockly.Blocks['let_typed'] = {
    */
   compose: function(containerBlock) {
     var itemCount = containerBlock.getItemCount();
-    var input = this.getInput('ARGS');
+    var input = this.getInput('VARIABLE');
     var contextChanged = itemCount != this.argumentCount_;
+
     while (itemCount < this.argumentCount_) {
-      var field = input.fieldRow.pop();
+      var index = this.argumentCount_ - 1;
+      var name = 'ARG' + index;
+      var field = this.getField(name);
       field.dispose(true);
+      goog.array.remove(input.fieldRow, field);
       this.argumentCount_--;
     }
     while (this.argumentCount_ < itemCount) {
       var A = Blockly.TypeExpr.generateTypeVar();
-      var name = 'arg' + this.argumentCount_;
-      var field = Blockly.FieldBoundVariable.newValue(A, name);
+      var field = Blockly.FieldBoundVariable.newValue(A);
       input.appendField(field, 'ARG' + this.argumentCount_);
       if (this.rendered) {
         field.init();
