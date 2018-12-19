@@ -243,8 +243,11 @@ Blockly.onKeyDown_ = function(e) {
       }
     } else if (e.keyCode == 90) {
       // 'z' for undo 'Z' is for redo.
-      Blockly.hideChaff();
-      Blockly.mainWorkspace.undo(e.shiftKey);
+      // TODO(harukam): Support undo events in the proper workspace. Due to
+      // implementation of workbench and workspace transferring, there is need
+      // to undo events on other workspaces (not the main workspace.)
+      // Blockly.hideChaff();
+      // Blockly.mainWorkspace.undo(e.shiftKey);
     }
   }
   // Common code for delete and cut.
