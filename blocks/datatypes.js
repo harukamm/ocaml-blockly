@@ -95,18 +95,3 @@ Blockly.Blocks['float_type_typed'] = {
     this.setOutputTypeExpr(typeCtrType);
   }
 };
-
-Blockly.Blocks['pair_type_typed'] = {
-  init: function() {
-    this.setColour(Blockly.Msg['TYPES_HUE']);
-    this.appendValueInput('TYPE_CTR_INP0')
-        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR());
-    this.appendDummyInput()
-        .appendField('*');
-    this.appendValueInput('TYPE_CTR_INP1')
-        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR());
-    this.setOutput(true);
-    this.setOutputTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR());
-    this.setInputsInline(true);
-  }
-}
