@@ -578,10 +578,12 @@ Blockly.TypeExpr.TYPE_CONSTRUCTOR.prototype.clone = function() {
 };
 
 /**
+ * @param {!Blockly.TypeExpr} pattExpr
  * @constructor
  * @extends {Blockly.TypeExpr}
  */
-Blockly.TypeExpr.PATTERN = function() {
+Blockly.TypeExpr.PATTERN = function(pattExpr) {
+  this.pattExpr = pattExpr;
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.PATTERN_);
 };
 goog.inherits(Blockly.TypeExpr.PATTERN, Blockly.TypeExpr);
@@ -592,7 +594,7 @@ goog.inherits(Blockly.TypeExpr.PATTERN, Blockly.TypeExpr);
  * @override
  */
 Blockly.TypeExpr.PATTERN.prototype.toString = function(opt_deref) {
-  return "PATTERN";
+  return "PATTERN(" + this.pattExpr.toString() + ")";
 };
 
 /**
@@ -601,7 +603,16 @@ Blockly.TypeExpr.PATTERN.prototype.toString = function(opt_deref) {
  * @override
  */
 Blockly.TypeExpr.PATTERN.prototype.clone = function() {
-  return new Blockly.TypeExpr.PATTERN();
+  return new Blockly.TypeExpr.PATTERN(this.pattExpr.clone());
+};
+
+/**
+ * @param {!Blockly.TypeExpr} otherPatt
+ */
+Blockly.TypeExpr.PATTERN.prototype.unifyPattern = function(otherPatt) {
+  goog.asserts.assert(otherPatt.isPattern(), 'The give type is not pattern ' +
+      'type-expr.');
+  this.pattExpr.unify(otherPatt.pattExpr);
 };
 
 /**
@@ -810,8 +821,11 @@ Blockly.TypeExpr.prototype.unify = function(other) {
     var pair = staq.pop();
     var t1 = pair[0];
     var t2 = pair[1];
-    if (t1.isTypeConstructor() && t2.isTypeConstructor() ||
-        t1.isPattern() && t2.isPattern()) {
+    if (t1.isTypeConstructor() && t2.isTypeConstructor()) {
+      continue;
+    }
+    if (t1.isPattern() && t2.isPattern()) {
+      t1.unifyPattern(t2);
       continue;
     }
     if (t1.isTypeConstructor() || t2.isTypeConstructor() ||
@@ -952,7 +966,7 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
     return false;
   }
   if (typ1.isPattern()) {
-    return false;
+    return Blockly.TypeExpr.equals(typ1.pattExpr, typ2.pattExpr);
   }
   if (typ1.isTypeVar()) {
     return typ1.name == typ2.name;
