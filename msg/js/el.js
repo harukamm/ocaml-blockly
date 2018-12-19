@@ -431,4 +431,5 @@ Blockly.Msg["TEXTS_HUE"] = "160";
 Blockly.Msg["PROCEDURES_HUE"] = "290";
 Blockly.Msg["COLOUR_HUE"] = "20";
 Blockly.Msg["PAIRS_HUE"] = "120";
+Blockly.Msg["PATTERN_HUE"] = "#9b72b0";
 Blockly.Msg["TYPES_HUE"] = "#00a968";
