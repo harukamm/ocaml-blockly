@@ -2820,13 +2820,13 @@ Blockly.Blocks['match_typed'] = {
         .appendField('with')
         .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('PATTERN1')
-        .setTypeExpr(new Blockly.TypeExpr.PATTERN());
+        .setTypeExpr(new Blockly.TypeExpr.PATTERN(A));
     this.appendValueInput('OUTPUT1')
         .setTypeExpr(B)
         .appendField('->')
         .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('PATTERN2')
-        .setTypeExpr(new Blockly.TypeExpr.PATTERN());
+        .setTypeExpr(new Blockly.TypeExpr.PATTERN(A));
     this.appendValueInput('OUTPUT2')
         .setTypeExpr(B)
         .appendField('->')
@@ -2848,20 +2848,21 @@ Blockly.Blocks['match_typed'] = {
 
   infer: function(ctx) {
     var expected = this.outputConnection.typeExpr;
+    var expected_pattern1 = this.getInput('PATTERN1').connection.typeExpr;
+    var expected_pattern2 = this.getInput('PATTERN2').connection.typeExpr;
     var input_expected = this.getInput('INPUT').connection.typeExpr;
+
     var input_type = this.callInfer_('INPUT', ctx);
     var pattern1_type = this.callInfer_('PATTERN1', ctx);
     var pattern2_type = this.callInfer_('PATTERN2', ctx);
     var output1_type = this.callInfer_('OUTPUT1', ctx);
     var output2_type = this.callInfer_('OUTPUT2', ctx);
     if (input_type)
-      input_type.unify(input_expected);
-    // TODO(harukam): Unify type expression pattern1_type indicates with
-    // input_expected.
+      input_expected.unify(input_type);
     if (pattern1_type)
-      pattern1_type.unify(new Blockly.TypeExpr.PATTERN());
+      expected_pattern1.unify(pattern1_type);
     if (pattern2_type)
-      pattern2_type.unify(new Blockly.TypeExpr.PATTERN());
+      expected_pattern2.unify(pattern2_type);
     if (output1_type)
       output1_type.unify(expected);
     if (output2_type)

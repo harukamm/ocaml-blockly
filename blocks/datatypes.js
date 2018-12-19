@@ -189,17 +189,26 @@ Blockly.Blocks['float_type_typed'] = {
 
 Blockly.Blocks['empty_construct_pattern_typed'] = {
   init: function() {
+    var A = Blockly.TypeExpr.generateTypeVar();
+    var list = new Blockly.TypeExpr.LIST(A);
     this.setColour(Blockly.Msg['PATTERN_HUE']);
     this.appendDummyInput()
         .appendField('[ ]');
     this.setOutput(true);
-    this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN());
+    this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN(list));
     this.setInputsInline(true);
+  },
+
+  clearTypes: function() {
+    var type = this.outputConnection.typeExpr.pattExpr;
+    type.element_type.clear();
   }
 };
 
 Blockly.Blocks['cons_construct_pattern_typed'] = {
   init: function() {
+    var A = Blockly.TypeExpr.generateTypeVar();
+    var list = new Blockly.TypeExpr.LIST(A);
     var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
         Blockly.BoundVariableAbstract.VALUE_VARIABLE);
     this.setColour(Blockly.Msg['PATTERN_HUE']);
@@ -209,7 +218,12 @@ Blockly.Blocks['cons_construct_pattern_typed'] = {
     this.appendDummyInput()
         .appendField(new Blockly.FieldTextInput('xs', validator));
     this.setOutput(true);
-    this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN());
+    this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN(list));
     this.setInputsInline(true);
+  },
+
+  clearTypes: function() {
+    var type = this.outputConnection.typeExpr.pattExpr;
+    type.element_type.clear();
   }
 };
