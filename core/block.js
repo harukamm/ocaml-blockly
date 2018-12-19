@@ -3015,19 +3015,24 @@ Blockly.Blocks['let_typed'] = {
    *     representations.
    */
   getVisibleVariables: function(conn) {
-    var map = {};
     if (!conn) {
-      // NOP
-    } else if (this.getInput('EXP1').connection == conn) {
+      return {};
+    }
+    var map = {};
+    var isExp1 = this.getInput('EXP1').connection == conn;
+    var isExp2 = !isExp1 && this.getInput('EXP2').connection == conn;
+
+    if (isExp2 || isExp1 && this.isRecursive_) {
+      var variable = this.typedValue['VAR'];
+      var name = variable.getVariableName();
+      map[name] = variable;
+    }
+    if (isExp1) {
       for (var x = 0; x < this.argumentCount_; x++) {
         var variable = this.typedValue['ARG' + x];
         var name = variable.getVariableName();
         map[name] = variable;
       }
-    } else if (this.getInput('EXP2').connection == conn) {
-      var variable = this.typedValue['VAR'];
-      var name = variable.getVariableName();
-      map[name] = variable;
     }
     return map;
   },

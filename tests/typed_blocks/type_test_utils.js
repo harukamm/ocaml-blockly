@@ -16,6 +16,7 @@ function create_typed_workspace() {
 function getVariableFieldName(block, opt_n) {
   switch (block.type) {
     case 'let_typed':
+    case 'letrec_typed':
     case 'lambda_typed':
     case 'variables_get_typed':
       return 'VAR';

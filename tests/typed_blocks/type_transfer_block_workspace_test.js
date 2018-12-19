@@ -1028,3 +1028,56 @@ function test_type_transfer_block_workspace_letRecRestoredOnTransBlock() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_letRecSimple() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    // let rec f = fun x -> f x
+    var originalLetRecBlock = workspace.newBlock('letrec_typed');
+    assertTrue(originalLetRecBlock.isRecursive());
+    var originalLambdaBlock = workspace.newBlock('lambda_typed');
+
+    originalLetRecBlock.getInput('EXP1').connection.connect(
+        originalLambdaBlock.outputConnection);
+
+    var appBlock = workspace.newBlock('lambda_app_typed');
+    originalLambdaBlock.getInput('RETURN').connection.connect(
+        appBlock.outputConnection);
+
+    var argVar = getVariable(originalLambdaBlock);
+    var varBlock = workspace.newBlock('variables_get_typed');
+    setVariableName(originalLambdaBlock, 'x');
+    setVariableName(varBlock, 'x');
+    getVariable(varBlock).setBoundValue(argVar);
+
+    appBlock.getInput('ARG').connection.connect(varBlock.outputConnection);
+
+    var recurVarBlock = workspace.newBlock('variables_get_typed');
+    var letVar = originalLetRecBlock.typedValue['VAR'];
+    setVariableName(originalLetRecBlock, 'f');
+    setVariableName(recurVarBlock, 'f');
+    appBlock.getInput('FUN').connection.connect(recurVarBlock.outputConnection);
+
+    var transBlock = repeat_transfer_workspace(originalLetRecBlock,
+        otherWorkspace, 10);
+    assertTrue(originalLetRecBlock.isRecursive());
+    assertNotNull(transBlock.getField('REC_LABEL'));
+
+    // Expects that type scheme for variable f is ∀a b. a -> b
+    var scheme = transBlock.getTypeScheme('VAR');
+    assertEquals(scheme.names.length, 2);
+    var type = scheme.type.deepDeref();
+    assertTrue(type.isFunction());
+    var bindVar1 = type.arg_type;
+    var bindVar2 = type.return_type;
+    assertTrue(bindVar1.isTypeVar());
+    assertTrue(bindVar2.isTypeVar());
+    assertTrue(bindVar1.name !== bindVar2.name);
+    assertTrue(scheme.names.indexOf(bindVar1.name) != -1);
+    assertTrue(scheme.names.indexOf(bindVar2.name) != -1);
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}
