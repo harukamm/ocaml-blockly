@@ -315,6 +315,11 @@ Blockly.Xml.blockToDom = function(block, opt_noId, opt_rootBlock) {
   if (block.isTransferable()) {
     element.setAttribute('transferable', true);
   }
+  if (goog.isFunction(block.isRecursive)) {
+    var value = block.isRecursive();
+    element.setAttribute('rec', value ? 'true' : 'false');
+  }
+
   if (block.disabled) {
     element.setAttribute('disabled', true);
   }
@@ -862,6 +867,10 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace,
   var transferable = xmlBlock.getAttribute('transferable');
   if (transferable) {
     block.setTransferable(transferable == 'true');
+  }
+  var recFlag = xmlBlock.getAttribute('rec');
+  if (recFlag && goog.isFunction(block.setRecursiveFlag)) {
+    block.setRecursiveFlag(recFlag == 'true');
   }
   if (xmlBlock.nodeName.toLowerCase() == 'shadow') {
     // Ensure all children are also shadows.

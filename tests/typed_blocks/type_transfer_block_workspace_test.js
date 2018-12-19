@@ -997,3 +997,34 @@ function test_type_transfer_block_workspace_constructBlockSimple() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_letRecRestoredOnTransBlock() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    var originalLetBlock = workspace.newBlock('let_typed');
+    assertFalse(originalLetBlock.isRecursive());
+    originalLetBlock.setRecursiveFlag(true);
+    assertTrue(originalLetBlock.isRecursive());
+    assertNotNull(originalLetBlock.getField('REC_LABEL'));
+
+    var transBlock = repeat_transfer_workspace(originalLetBlock,
+        otherWorkspace, 10);
+    assertTrue(transBlock.isRecursive());
+    assertNotNull(transBlock.getField('REC_LABEL'));
+
+    var originalLetRecBlock = workspace.newBlock('letrec_typed');
+    assertTrue(originalLetRecBlock.isRecursive());
+    originalLetRecBlock.setRecursiveFlag(false);
+    assertFalse(originalLetRecBlock.isRecursive());
+    assertNull(originalLetRecBlock.getField('REC_LABEL'));
+
+    var transBlock = repeat_transfer_workspace(originalLetRecBlock,
+        otherWorkspace, 10);
+    assertFalse(originalLetRecBlock.isRecursive());
+    assertNull(transBlock.getField('REC_LABEL'));
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}
