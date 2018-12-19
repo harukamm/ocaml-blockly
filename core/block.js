@@ -3074,9 +3074,9 @@ Blockly.Blocks['let_typed'] = {
     }
     var option = {enabled: true};
     if (this.isRecursive_) {
-      option.text = 'Set rec.';
-    } else {
       option.text = 'Remove rec.';
+    } else {
+      option.text = 'Set rec.';
     }
     option.callback = this.setRecursiveFlag.bind(this, !this.isRecursive_);
     options.push(option);
