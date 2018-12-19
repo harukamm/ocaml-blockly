@@ -97,6 +97,7 @@ Blockly.Blocks['create_construct_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(ctrType);
     this.definition_ = null;
+    this.setInputsInline(true);
   },
 
   infer: function() {
