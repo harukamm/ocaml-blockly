@@ -184,3 +184,28 @@ Blockly.Blocks['float_type_typed'] = {
     return true;
   }
 };
+
+Blockly.Blocks['empty_construct_pattern_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['PATTERN_HUE']);
+    this.appendDummyInput()
+        .appendField('[ ]');
+    this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN());
+    this.setInputsInline(true);
+  }
+};
+
+Blockly.Blocks['cons_construct_pattern_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['PATTERN_HUE']);
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldTextInput('x', false))
+        .appendField('::')
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldTextInput('xs', false));
+    this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN());
+    this.setInputsInline(true);
+  }
+};
