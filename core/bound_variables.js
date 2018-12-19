@@ -556,6 +556,18 @@ Blockly.BoundVariables.renameToGeneratedNames = function(block) {
         Blockly.BoundVariableAbstract.VALUE_VARIABLE, workspace);
     val.setVariableName(generated);
   }
+
+  var ctorValueDB =
+      workspace.getValueDB(Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR);
+  var keys = Object.keys(ctorValueDB);
+  for (var i = 0, key; key = keys[i]; i++) {
+    var val = ctorValueDB[key];
+    if (val.getSourceBlock() == block) {
+      var generated = Blockly.BoundVariables.generateUniqueName(
+          Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR, workspace);
+      val.setVariableName(generated);
+    }
+  }
 };
 
 /**
