@@ -65,6 +65,12 @@ Blockly.TypeExpr.TYPE_CONSTRUCTOR_ = 150;
  * @type {number}
  * @private
  */
+Blockly.TypeExpr.PATTERN_ = 160;
+
+/**
+ * @type {number}
+ * @private
+ */
 Blockly.TypeExpr.TVAR_ = 135;
 
 /**
@@ -98,6 +104,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'construct';
     case Blockly.TypeExpr.TYPE_CONSTRUCTOR_:
       return 'type-constructor';
+    case Blockly.TypeExpr.PATTERN_:
+      return 'pattern';
     case Blockly.TypeExpr.TVAR_:
       return 'typeVar';
     default:
@@ -137,6 +145,9 @@ Blockly.TypeExpr.prototype.isConstruct = function() {
 };
 Blockly.TypeExpr.prototype.isTypeConstructor = function() {
   return this.label == Blockly.TypeExpr.TYPE_CONSTRUCTOR_;
+};
+Blockly.TypeExpr.prototype.isPattern = function() {
+  return this.label == Blockly.TypeExpr.PATTERN_;
 };
 Blockly.TypeExpr.prototype.isTypeVar = function() {
   return this.label == Blockly.TypeExpr.TVAR_;
@@ -555,7 +566,7 @@ goog.inherits(Blockly.TypeExpr.TYPE_CONSTRUCTOR, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.TYPE_CONSTRUCTOR.prototype.toString = function(opt_deref) {
   return "TYPE_CONSTRUCTOR";
-}
+};
 
 /**
  * Deeply clone the object
@@ -564,7 +575,34 @@ Blockly.TypeExpr.TYPE_CONSTRUCTOR.prototype.toString = function(opt_deref) {
  */
 Blockly.TypeExpr.TYPE_CONSTRUCTOR.prototype.clone = function() {
   return new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
-}
+};
+
+/**
+ * @constructor
+ * @extends {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.PATTERN = function() {
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.PATTERN_);
+};
+goog.inherits(Blockly.TypeExpr.PATTERN, Blockly.TypeExpr);
+
+/**
+ * @param {boolean=} opt_deref
+ * @return {string}
+ * @override
+ */
+Blockly.TypeExpr.PATTERN.prototype.toString = function(opt_deref) {
+  return "PATTERN";
+};
+
+/**
+ * Deeply clone the object
+ * @return {Blockly.TypeExpr}
+ * @override
+ */
+Blockly.TypeExpr.PATTERN.prototype.clone = function() {
+  return new Blockly.TypeExpr.PATTERN();
+};
 
 /**
  * @extends {Blockly.TypeExpr}
@@ -772,10 +810,13 @@ Blockly.TypeExpr.prototype.unify = function(other) {
     var pair = staq.pop();
     var t1 = pair[0];
     var t2 = pair[1];
-    if (t1.isTypeConstructor() && t2.isTypeConstructor()) {
+    if (t1.isTypeConstructor() && t2.isTypeConstructor() ||
+        t1.isPattern() && t2.isPattern()) {
       continue;
-    } else if (t1.isTypeConstructor() || t2.isTypeConstructor()) {
-      goog.asserts.assert(false, 'Can not unify type constructor.');
+    }
+    if (t1.isTypeConstructor() || t2.isTypeConstructor() ||
+        t1.isPattern() || t2.isPattern()) {
+      goog.asserts.assert(false, 'Cannot unify type constructor nor pattern.');
     }
     if (t1.isTypeVar() || t2.isTypeVar()) {
       var t1_is_tvar = t1.isTypeVar();
@@ -908,6 +949,9 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
     return typ1.id && typ2.id ? typ1.id == typ2.id : false;
   }
   if (typ1.isTypeConstructor()) {
+    return false;
+  }
+  if (typ1.isPattern()) {
     return false;
   }
   if (typ1.isTypeVar()) {

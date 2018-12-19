@@ -505,3 +505,26 @@ function test_type_expr_type_constructor() {
   assertEquals(type1.toString(), "TYPE_CONSTRUCTOR");
   assertEquals(type2.toString(), "TYPE_CONSTRUCTOR");
 }
+
+function test_type_expr_patternSimple() {
+  var type1 = new Blockly.TypeExpr.PATTERN();
+  var type2 = new Blockly.TypeExpr.PATTERN();
+  var n = new Blockly.TypeExpr.TVAR('n', null);
+  var m = new Blockly.TypeExpr.TVAR('m', n);
+  assertTrue(type1.isPattern());
+  assertTrue(type2.isPattern());
+  assertTrue(type1.ableToUnify(type2));
+  assertTrue(type1.ableToUnify(type2));
+  assertFalse(m.ableToUnify(type1));
+  assertFalse(m.ableToUnify(type2));
+
+  type1.unify(type2);
+
+  // Can not compare pattern type-expr so far. equals function always returns
+  // false.
+  assertFalse(Blockly.TypeExpr.equals(type1, type1));
+  assertFalse(Blockly.TypeExpr.equals(type1, type2));
+
+  assertEquals(type1.toString(), "PATTERN");
+  assertEquals(type2.toString(), "PATTERN");
+}
