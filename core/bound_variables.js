@@ -293,6 +293,41 @@ Blockly.BoundVariables.getAllRootBlocks = function(variables, opt_bounds) {
   return rootBlocks;
 };
 
+Blockly.BoundVariables.findReferencesInside = function(value, connection) {
+  if (value.referenceCount() == 0) {
+    return [];
+  }
+  var references = [].concat(value.referenceList_);
+  var block = connection.getSourceBlock();
+  var contextWorkspace = connection.contextWorkbench &&
+      connection.contextWorkbench.getWorkspace();
+  var result = [];
+
+  for (var i = 0, ref; ref = references[i]; i++) {
+    var workspace = ref.getWorkspace();
+    if (workspace.isMutator && workspace != block.workspace) {
+      var isDescendant = !!contextWorkspace &&
+          Blockly.WorkspaceTree.isDescendant(workspace, contextWorkspace);
+      if (isDescendant) {
+        result.push(ref);
+      }
+    }
+    if (workspace == block.workspace) {
+      var refBlock = ref.getSourceBlock();
+      while (refBlock && refBlock.getParent()) {
+        var parent = refBlock.getParent();
+        if (parent != block) {
+          // NOP.
+        } else if (refBlock.outputConnection.targetConnection == connection) {
+          result.push(ref);
+        }
+        refBlock = parent;
+      }
+    }
+  }
+  return result;
+};
+
 /**
  * Returns a list of values without duplicates that the given references refer
  * to.

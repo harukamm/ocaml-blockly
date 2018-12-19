@@ -3063,21 +3063,37 @@ Blockly.Blocks['let_typed'] = {
         var recLabel = new Blockly.FieldLabel('rec');
         input.insertFieldAt(1, recLabel, 'REC_LABEL');
       } else {
-        // TODO(harukam): Remove recursive references in EXP1 input.
+        var refs = this.getRecursiveReferences();
+        for (var i = 0, ref; ref = refs[i]; i++) {
+          ref.getSourceBlock().dispose();
+        }
         input.removeField('REC_LABEL');
       }
+      this.isRecursive_ = flag;
+
       if (this.rendered) {
         this.render();
+        if (!flag) {
+          this.updateWorkbenchFlyout();
+        }
       }
-      this.isRecursive_ = flag;
     }
+  },
+
+  getRecursiveReferences: function() {
+    var variable = this.typedValue['VAR']
+    var exp1 = this.getInput('EXP1').connection;
+    return Blockly.BoundVariables.findReferencesInside(variable, exp1);
   },
 
   customContextMenu: function(options) {
     if (this.isFlyout) {
       return;
     }
-    var option = {enabled: true};
+    var canBeToggled = true;
+    // It's possible to set canBeToggled false if this.getRecursiveReferences()
+    // returns non empty array.
+    var option = {enabled: canBeToggled};
     if (this.isRecursive_) {
       option.text = 'Remove rec.';
     } else {

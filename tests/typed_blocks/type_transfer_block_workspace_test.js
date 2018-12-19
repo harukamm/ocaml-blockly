@@ -1076,6 +1076,12 @@ function test_type_transfer_block_workspace_letRecSimple() {
     assertTrue(bindVar1.name !== bindVar2.name);
     assertTrue(scheme.names.indexOf(bindVar1.name) != -1);
     assertTrue(scheme.names.indexOf(bindVar2.name) != -1);
+
+    assertTrue(transBlock.resolveReference(null));
+    assertEquals(transBlock.getRecursiveReferences().length, 1);
+    transBlock.setRecursiveFlag(false);
+    assertTrue(transBlock.resolveReference(null));
+    assertEquals(transBlock.getRecursiveReferences().length, 0);
   } finally {
     workspace.dispose();
     otherWorkspace.dispose();

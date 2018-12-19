@@ -489,6 +489,7 @@ function test_resolve_reference_letRecParameterShadowing() {
     reference.setVariableName('f');
     reference.setBoundValue(argVar);
     exp1.connect(argVarBlock.outputConnection);
+    assertEquals(letBlock.getRecursiveReferences().length, 0);
 
     // Expects that type scheme for variable f is ∀a. a -> a
     var scheme = letBlock.getTypeScheme('VAR');
