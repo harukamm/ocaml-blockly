@@ -13,6 +13,8 @@ Blockly.Blocks['defined_datatype_typed'] = {
   // Declare constructor types.
   init: function() {
     this.setColour(160);
+    var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
+        Blockly.BoundVariableAbstract.VALUE_VARIABLE);
     var ctrId = Blockly.utils.genUid();
     var ctrType0 = new Blockly.TypeExpr.CONSTRUCT(ctrId);
     var ctrType1 = new Blockly.TypeExpr.CONSTRUCT(ctrId);
@@ -22,7 +24,7 @@ Blockly.Blocks['defined_datatype_typed'] = {
         Blockly.FieldBoundVariable.newValueConstructor(ctrType1);
     this.appendDummyInput()
         .appendField('type ')
-        .appendField(new Blockly.FieldTextInput('data'), 'NAME')
+        .appendField(new Blockly.FieldTextInput('data'), validator)
         .appendField('=');
     this.appendValueInput('CTR_INP0')
         .appendField('|')
@@ -198,12 +200,14 @@ Blockly.Blocks['empty_construct_pattern_typed'] = {
 
 Blockly.Blocks['cons_construct_pattern_typed'] = {
   init: function() {
+    var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
+        Blockly.BoundVariableAbstract.VALUE_VARIABLE);
     this.setColour(Blockly.Msg['PATTERN_HUE']);
     this.appendDummyInput()
-        .appendField(new Blockly.FieldTextInput('x', false))
+        .appendField(new Blockly.FieldTextInput('x', validator))
         .appendField('::')
     this.appendDummyInput()
-        .appendField(new Blockly.FieldTextInput('xs', false));
+        .appendField(new Blockly.FieldTextInput('xs', validator));
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN());
     this.setInputsInline(true);

@@ -544,6 +544,24 @@ Blockly.BoundVariables.isLegalName = function(label, newName) {
 };
 
 /**
+ * Validate the given name based on a type of variable.
+ * @param {!number} label An enum representing which type of variable.
+ * @param {string} newName The new variable name.
+ * @param {string|null} Either the accepted text, a replacement text, or null
+ *     to abort the change.
+ */
+Blockly.BoundVariables.variableNameValidator = function(label, newName) {
+  if (!newName) {
+    return null;
+  }
+  var trimmed = newName.trim();
+  if (Blockly.BoundVariables.isLegalName(label, trimmed)) {
+    return trimmed;
+  }
+  return null;
+};
+
+/**
  * Return a new variable name that is not yet being used on the related
  * workspace except for flyout ones.
  * @param {!number} label An enum representing which type of value.
