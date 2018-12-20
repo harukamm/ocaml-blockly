@@ -68,6 +68,10 @@ Blockly.BoundVariableValueReference.prototype.setVariableName = function(newName
   }
   // Update the text only if the new name is different from the displayed one.
   if (this.temporayDisplayName_ !== newName) {
+    var newName = Blockly.BoundVariables.variableNameValidator(this.label,
+        newName);
+    goog.asserts.assert(newName, 'The given name is illegal.');
+
     // Save the new displayed name.
     this.temporayDisplayName_ = newName;
     this.referenceChange_();

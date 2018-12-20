@@ -101,6 +101,10 @@ Blockly.BoundVariableValue.prototype.getVariableName = function() {
  */
 Blockly.BoundVariableValue.prototype.setVariableName = function(newName) {
   if (this.variableName_ !== newName) {
+    var newName = Blockly.BoundVariables.variableNameValidator(this.label,
+        newName);
+    goog.asserts.assert(newName, 'The given name is illegal.');
+
     this.variableName_ = newName;
     for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
       reference.setVariableName(newName);
