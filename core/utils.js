@@ -921,7 +921,8 @@ Blockly.utils.showRects = function(workspaces, opt_emphasize) {
     container.style.pointerEvents = 'none';
     this.rectContainer_ = container;
   }
-  for (var i = 0, ws; ws = workspaces[i]; i++) {
+  if (opt_emphasize) {
+    var ws = opt_emphasize;
     var element = document.createElement('div');
     container.appendChild(element);
     var rect = ws.workspaceArea_;
@@ -930,11 +931,7 @@ Blockly.utils.showRects = function(workspaces, opt_emphasize) {
     element.style.width = '' + Math.floor(rect.width) + 'px';
     element.style.height = '' + Math.floor(rect.height) + 'px';
     element.style.position = 'absolute';
-    if (opt_emphasize && opt_emphasize == ws) {
-      element.style.border = '2px solid #ff0000';
-    } else {
-      element.style.border = '1px dotted #000';
-    }
+    element.style.border = '2px solid #ff0000';
     element.style.zIndex = '9999999';
   }
 };
