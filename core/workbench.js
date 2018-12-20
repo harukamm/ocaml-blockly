@@ -58,6 +58,8 @@ Blockly.Workbench.prototype.initialized_ = false;
  */
 Blockly.Workbench.prototype.contextConnection_ = null;
 
+Blockly.Workbench.prototype.SIZE = 10;
+
 /**
  * Draw the workbench icon.
  * @param {!Element} group The icon group.
@@ -70,8 +72,8 @@ Blockly.Workbench.prototype.drawIcon_ = function(group) {
         'class': 'blocklyWorkbenchIconShape',
         'rx': '4',
         'ry': '4',
-        'height': '16',
-        'width': '16'
+        'height': '9',
+        'width': '9'
       },
       group);
   // Gear teeth.
