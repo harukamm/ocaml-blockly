@@ -97,12 +97,12 @@ Blockly.FieldBoundVariable.fromJson = function(options) {
 Blockly.FieldBoundVariable.WIDGET_TYPE_VARIABLES_ = 'vhighlights';
 
 /**
- * The minimum height of block shaped path.
+ * The fixed height of block shaped path.
  * Must be less than the value of Blockly.BlockSvg.MIN_BLOCK_Y.
  * @type {number}
  * @constant
  */
-Blockly.FieldBoundVariable.BLOCK_MIN_HEIGHT = 23;
+Blockly.FieldBoundVariable.FIXED_HEIGHT = 23;
 
 /**
  * Whether the field has a potential block, and it can be created then dragged
@@ -470,6 +470,7 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
 
   var dropdownHeight = this.size_.height - 9;
   var pathObj = this.getBlockShapedPath_(blockShapeWidth);
+  var scaleY = pathObj.scaleY;
   var blockShapeHeight = pathObj.height;
   this.blockShapedPath_.setAttribute('d', pathObj.path);
 
@@ -488,15 +489,15 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
     xy.y -= (blockShapeHeight - dropdownHeight) / 2;
   } else {
     // Otherwise, add padding on the top of block.
-    xy.y -= (Blockly.FieldBoundVariable.BLOCK_MIN_HEIGHT - dropdownHeight) / 2;
+    xy.y -= (Blockly.FieldBoundVariable.FIXED_HEIGHT - dropdownHeight) / 2;
   }
   this.blockShapedPath_.setAttribute('transform',
-      'translate(' + xy.x + ',' + xy.y + ')');
+      'translate(' + xy.x + ',' + xy.y + ') scale(1, ' + scaleY + ')');
 
   this.size_.width = blockShapeWidth - Blockly.BlockSvg.TAB_WIDTH;
   this.size_.height = Math.max(Blockly.BlockSvg.MIN_BLOCK_Y, blockShapeHeight);
 
-  this.renderTypeVarHighlights_(xy);
+  this.renderTypeVarHighlights_(xy, scaleY);
 
   this.lastRenderedTypeExpr_ = this.variable_.getTypeExpr().deepDeref();
 };
@@ -519,26 +520,30 @@ Blockly.FieldBoundVariable.prototype.getBlockShapedPath_ = function(width) {
     Blockly.RenderedTypeExpr.renderTypeExpr(typeExpr,
         inlineSteps, 1 /** Gets the down path. */);
 
+    var fixedHeight = Blockly.FieldBoundVariable.FIXED_HEIGHT;
     var downHeight = 0;
-    var minHeight = Blockly.FieldBoundVariable.BLOCK_MIN_HEIGHT;
-    if (height < minHeight) {
-      downHeight = minHeight - height;
-      height = minHeight;
+    var scaleY = 1;
+    if (height < fixedHeight) {
+      downHeight = fixedHeight - height;
+      height = fixedHeight;
+    } else if (fixedHeight < height) {
+      scaleY = fixedHeight / height;
     }
     var rectWidth = width - Blockly.BlockSvg.TAB_WIDTH;
     inlineSteps.push('l 0 ' + downHeight + ' ' + rectWidth + ' 0 l 0 -' + height + ' l -' +
         rectWidth + ' 0 z');
   }
-  return {height: height, path: inlineSteps.join(' ')};
+  return {height: height, path: inlineSteps.join(' '), scaleY: scaleY};
 };
 
 /**
  * Render type variable highlights for the block shape.
  * @param {!goog.math.Coordinate} xy The location of the top left corner of
  *     the block shape SVG.
+ * @param {number} scaleY The vertical scale for highlights.
  * @private
  */
-Blockly.FieldBoundVariable.prototype.renderTypeVarHighlights_ = function(xy) {
+Blockly.FieldBoundVariable.prototype.renderTypeVarHighlights_ = function(xy, scaleY) {
   while (this.typeVarHighlights_.length) {
     var element = this.typeVarHighlights_.pop();
     goog.dom.removeNode(element);
@@ -547,7 +552,7 @@ Blockly.FieldBoundVariable.prototype.renderTypeVarHighlights_ = function(xy) {
   var typeExpr = this.variable_ && this.variable_.getTypeExpr();
   if (typeExpr) {
     this.typeVarHighlights_ = Blockly.RenderedTypeExpr.createHighlightedSvg(
-        typeExpr, xy, this.fieldGroup_);
+        typeExpr, xy, scaleY, this.fieldGroup_);
   }
 };
 

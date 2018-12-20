@@ -339,10 +339,12 @@ Blockly.RenderedTypeExpr.getHighlightedPath = function(type) {
 /**
  * @param {!Blockly.TypeExpr} type
  * @param {!goog.math.Coordinate} xy
+ * @param {number} scaleY
  * @param {!Element} parent
  * @return {!Array.<!Element>}
  */
-Blockly.RenderedTypeExpr.createHighlightedSvg = function(type, xy, parent) {
+Blockly.RenderedTypeExpr.createHighlightedSvg = function(type, xy, scaleY,
+    parent) {
   /** @type {Array<{color: string, path: string}>} */
   var typeVarHighlights =
       Blockly.RenderedTypeExpr.typeVarHighlights(type);
@@ -355,7 +357,8 @@ Blockly.RenderedTypeExpr.createHighlightedSvg = function(type, xy, parent) {
           'class': 'blocklyTypeVarPath',
           stroke: highlight.color,
           d: highlight.path,
-          transform: 'translate(' + xy.x + ', ' + xy.y + ')'
+          transform: 'translate(' + xy.x + ', ' + xy.y + ') ' +
+              'scale(1, ' + scaleY + ')'
         },
         parent));
   }
