@@ -2965,6 +2965,30 @@ Blockly.Blocks['match_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(false);
+    this.setMutator(new Blockly.FlyoutMutator([
+        'empty_construct_pattern_typed',
+        'cons_construct_pattern_typed'], true));
+  },
+
+  getVisibleVariables: function(conn) {
+    if (!conn) {
+      return {};
+    }
+    var output1 = this.getInput('OUTPUT1').connection;
+    var output2 = this.getInput('OUTPUT2').connection;
+    if (conn === output1) {
+      var target = this.getInputTargetBlock('PATTERN1');
+    } else if (conn == output2) {
+      var target = this.getInputTargetBlock('PATTERN2');
+    }
+    if (!target) {
+      return;
+    }
+    var map = {};
+    if (goog.isFunction(target.updateUpperContext)) {
+      target.updateUpperContext(map);
+    }
+    return map;
   },
 
   clearTypes: function() {

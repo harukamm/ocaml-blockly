@@ -295,6 +295,17 @@ Blockly.Blocks['cons_construct_pattern_typed_value'] = {
     return Blockly.Scheme.monoType(type);
   },
 
+  updateUpperContext: function(map) {
+    var parent = this.getParent();
+    if (parent && parent.type !== 'match_typed') {
+      return;
+    }
+    var fstName = this.typedValue['FIRST'].getVariableName();
+    var consName = this.typedValue['CONS'].getVariableName();
+    map[fstName] = this.typedValue['FIRST'];
+    map[consName] = this.typedValue['CONS'];
+  },
+
   clearTypes: function() {
     var type = this.outputConnection.typeExpr.pattExpr;
     type.element_type.clear();

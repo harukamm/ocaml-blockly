@@ -1307,3 +1307,25 @@ function test_type_unification_constructBlockSimple() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_matchPatternSimple() {
+  var workspace = create_typed_workspace();
+  try {
+    var block = workspace.newBlock('match_typed');
+    var pattern = workspace.newBlock('cons_construct_pattern_typed_value');
+    var ptnConn = block.getInput('PATTERN1').connection;
+    ptnConn.connect(pattern.outputConnection);
+    assertEquals(ptnConn.typeExpr.pattExpr.deref(),
+        pattern.outputConnection.typeExpr.pattExpr.deref());
+    var var1 = workspace.newBlock('variables_get_typed');
+    var reference = var1.typedReference['VAR'];
+    reference.setVariableName('x');
+    var value = pattern.typedValue['FIRST'];
+    value.setVariableName('x');
+    reference.setBoundValue(value);
+    var outConn = block.getInput('OUTPUT1').connection;
+    assertTrue(var1.resolveReference(outConn));
+  } finally {
+    workspace.dispose();
+  }
+}
