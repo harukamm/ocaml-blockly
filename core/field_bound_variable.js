@@ -471,7 +471,7 @@ Blockly.FieldBoundVariable.prototype.render_ = function() {
   var dropdownHeight = this.size_.height - 9;
   var pathObj = this.getBlockShapedPath_(blockShapeWidth);
   var scaleY = pathObj.scaleY;
-  var blockShapeHeight = pathObj.height;
+  var blockShapeHeight = pathObj.height * scaleY;
   this.blockShapedPath_.setAttribute('d', pathObj.path);
 
   this.blockShapedPath_.setAttribute('height', blockShapeHeight);
