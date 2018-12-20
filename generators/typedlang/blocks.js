@@ -29,7 +29,7 @@ Blockly.TypedLang['logic_compare_typed'] = function(block) {
       Blockly.TypedLang.ORDER_ATOMIC);
   var argument1 = Blockly.TypedLang.valueToCode(block, 'B',
       Blockly.TypedLang.ORDER_ATOMIC);
-  var code = argument0 + ' ' + operator + ' ' + argument1;
+  var code = '(' + argument0 + ' ' + operator + ' ' + argument1 + ')';
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
@@ -65,7 +65,7 @@ Blockly.TypedLang['int_arithmetic_typed'] = function(block) {
   var order = Blockly.TypedLang.ORDER_ATOMIC;
   var argument0 = Blockly.TypedLang.valueToCode(block, 'A', order);
   var argument1 = Blockly.TypedLang.valueToCode(block, 'B', order);
-  var code = argument0 + operator + argument1;
+  var code = '(' + argument0 + operator + argument1 + ')';
   return [code, order];
 };
 
@@ -89,7 +89,7 @@ Blockly.TypedLang['float_arithmetic_typed'] = function(block) {
   var argument0 = Blockly.TypedLang.valueToCode(block, 'A', order);
   var argument1 = Blockly.TypedLang.valueToCode(block, 'B', order);
   var code;
-  code = argument0 + operator + argument1;
+  code = '(' + argument0 + operator + argument1 + ')';
   return [code, order];
 };
 
@@ -140,7 +140,7 @@ Blockly.TypedLang['lambda_app_typed'] = function(block) {
       Blockly.TypedLang.ORDER_ATOMIC);
   var right = Blockly.TypedLang.valueToCode(block, 'ARG',
       Blockly.TypedLang.ORDER_ATOMIC);
-  var code = left + ' ' + right;
+  var code = '(' + left + ' ' + right + ')';
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
