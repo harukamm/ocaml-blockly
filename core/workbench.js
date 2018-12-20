@@ -519,24 +519,32 @@ Blockly.Workbench.prototype.updateScreen_ = function() {
  * @param {!Object} env The variable environments the block can refer to.
  * @param {boolean=} opt_bind True to newly bind variable reference with the
  *     variable found in the context.
+ * @param {Array=} opt_reason If provided, store any references that can not be
+ *     resolved to the array.
  * @return {boolean} True if reference blocks on the workbench's workspace and
  *     its nested workbenchs' workspaces can be resolved.
  */
-Blockly.Workbench.prototype.checkReference = function(env, opt_bind) {
+Blockly.Workbench.prototype.checkReference = function(env, opt_bind,
+    opt_reason) {
   if (!this.workspace_) {
     return true;
   }
+  var resolved = true;
   var context = Object.assign({}, env);
   Object.assign(context, this.getBlockContext());
 
   var topBlocks = this.workspace_.getTopBlocks();
   for (var i = 0, topBlock; topBlock = topBlocks[i]; i++) {
     // This function will be called recursively for each of nested workbenchs.
-    if (!topBlock.resolveReferenceOnDescendants(context, opt_bind)) {
-      return false;
+    if (!topBlock.resolveReferenceOnDescendants(context, opt_bind,
+        opt_reason)) {
+      if (!goog.isArray(opt_reason)) {
+        return false;
+      }
+      resolved = false;
     }
   }
-  return true;
+  return resolved;
 };
 
 /**
