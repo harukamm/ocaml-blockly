@@ -3446,7 +3446,7 @@ Blockly.Blocks['let_typed'] = {
       exp1.unify(expected_exp1);
 
     if (variable.getTypeExpr().deref().isFunction()) {
-      var scheme = Blockly.Scheme.create({}, variable.getTypeExpr());
+      var scheme = Blockly.Scheme.create(ctx.env, variable.getTypeExpr());
     } else {
       var scheme = Blockly.Scheme.monoType(variable.getTypeExpr());
     }
