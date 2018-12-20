@@ -3298,10 +3298,11 @@ Blockly.Blocks['let_typed'] = {
     }
     if (contextChanged) {
       this.updateTypeInference(true);
-      if (this.rendered) {
-        this.updateWorkbenchFlyout();
-        this.workspace.renderTypeChangedWorkspaces();
-      }
+      // Do not call the following functions. Newly created fields are not
+      // initialized yet. They will be called by mutator instance after the
+      // fields initialization.
+      //   this.updateWorkbenchFlyout();
+      //   this.workspace.renderTypeChangedWorkspaces();
     }
   },
 

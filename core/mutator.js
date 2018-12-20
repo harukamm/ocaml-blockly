@@ -401,6 +401,10 @@ Blockly.Mutator.prototype.updateBlock_ = function() {
       Blockly.Events.setGroup(false);
     }, Blockly.BUMP_DELAY);
   }
+  if (block.rendered && block.workspace.options.typedVersion) {
+    block.updateWorkbenchFlyout();
+    block.workspace.renderTypeChangedWorkspaces();
+  }
   if (block.rendered) {
     block.render();
   }
