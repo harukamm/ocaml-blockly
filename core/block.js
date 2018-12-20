@@ -3159,9 +3159,7 @@ Blockly.Blocks['let_typed'] = {
 
       if (this.rendered) {
         this.render();
-        if (!flag) {
-          this.updateWorkbenchFlyout();
-        }
+        this.updateWorkbenchFlyout();
       }
     }
   },
