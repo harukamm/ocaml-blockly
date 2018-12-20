@@ -180,7 +180,9 @@ Blockly.TypedLang['let_typed'] = function(block) {
   var exp2 = Blockly.TypedLang.valueToCode(block, 'EXP2',
       Blockly.TypedLang.ORDER_ATOMIC);
 
-  var code = 'let ' + varname + arg + ' = ' + exp1 + ' in ' + exp2;
+  var code = 'let ';
+  if (block.isRecursive()) code += 'rec ';
+  code += varname + arg + ' = ' + exp1 + ' in ' + exp2;
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
