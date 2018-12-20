@@ -2678,6 +2678,87 @@ Blockly.Blocks['pair_second_typed'] = {
   }
 };
 
+Blockly.Blocks['function_app_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['COLOUR_HUE']);
+    var A = Blockly.TypeExpr.generateTypeVar();
+    this.setHelpUrl(Blockly.Msg.VARIABLES_GET_HELPURL);
+    this.appendDummyInput()
+        .appendField(Blockly.FieldBoundVariable.newReference(A), 'VAR')
+
+    this.paramCount_ = 0;
+    this.setInputsInline(true);
+    this.setOutput(true);
+    this.setOutputTypeExpr(A);
+  },
+
+  updateInput: function() {
+    var variable = this.typedReference['VAR'];
+    var type = variable.getTypeExpr();
+    var types = Blockly.TypeExpr.functionToArray(type);
+    //goog.asserts.assert(2 <= types.length, 'Function type is expected.');
+
+    if (2 <= types.length) {
+      var returnType = types.pop();
+      var argTypes = types;
+    } else {
+      var returnType = type;
+      var argTypes = [];
+    }
+
+    while (argTypes.length < this.paramCount_) {
+      var index = this.paramCount_ - 1;
+      this.removeInput('PARAM' + index);
+      this.paramCount_--;
+    }
+    for (var i = 0; i < argTypes.length; i++) {
+      var inputName = 'PARAM' + i;
+      if (this.paramCount_ <= i) {
+        var rendered = this.rendered;
+        this.rendered = false;
+        var input = this.appendValueInput(inputName);
+        this.rendered = rendered;
+        this.paramCount_++;
+      } else {
+        var input = this.getInput(inputName);
+      }
+      input.setTypeExpr(types[i], true);
+    }
+    this.setOutputTypeExpr(returnType, true);
+  },
+
+  clearTypes: function() {
+    this.typedReference['VAR'].getTypeExpr().clear();
+    for (var i = 0; i < this.paramCount_; i++) {
+      this.callClearTypes_('PARAM' + i);
+      var input = this.getInput('PARAM' + i);
+      input.connection.typeExpr.clear();
+    }
+    this.outputConnection.typeExpr.clear();
+  },
+
+  infer: function(ctx) {
+    var variable = this.typedReference['VAR'];
+    var varName = variable.getVariableName();
+    var schemeInEnv = (varName in ctx.env) && ctx.env[varName];
+    if (schemeInEnv || ctx.unifyOrphan) {
+      console.log(this.rendered);
+      variable.unifyTypeExpr();
+      this.updateInput();
+    }
+
+    for (var i = 0; i < this.paramCount_; i++) {
+      var paramType = this.callInfer_('PARAM' + i, ctx);
+      var input = this.getInput('PARAM' + i);
+      var expectedParamType = input.connection.typeExpr;
+      if (paramType) {
+        expectedParamType.unify(paramType);
+      }
+    }
+    return this.outputConnection.typeExpr;
+  }
+},
+
 Blockly.Blocks['lambda_typed'] = {
   /**
    */

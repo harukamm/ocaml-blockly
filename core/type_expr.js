@@ -1000,3 +1000,17 @@ Blockly.TypeExpr.createFunType = function(types) {
   }
   return result;
 };
+
+Blockly.TypeExpr.functionToArray = function(type) {
+  var t = type.deref();
+  if (!t.isFunction()) {
+    return [];
+  }
+  var result = [];
+  while (t.isFunction()) {
+    result.push(t.arg_type);
+    t = t.return_type.deref();
+  }
+  result.push(t);
+  return result;
+};
