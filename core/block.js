@@ -2788,8 +2788,11 @@ Blockly.Blocks['function_app_typed'] = {
     var variable = this.typedReference['VAR'];
     var varName = variable.getVariableName();
     var schemeInEnv = (varName in ctx.env) && ctx.env[varName];
-    if (schemeInEnv || ctx.unifyOrphan) {
-      console.log(this.rendered);
+    if (schemeInEnv) {
+      // Fix: let rec c = ... c
+      schemeInEnv.unify(variable.getTypeExpr());
+      this.updateInput();
+    } else if (ctx.unifyOrphan) {
       variable.unifyTypeExpr();
       this.updateInput();
     }
@@ -3378,17 +3381,6 @@ Blockly.Blocks['let_typed'] = {
     var var_name = variable.getVariableName();
     var expected_exp1 = this.getInput('EXP1').connection.typeExpr;
     var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
-    var env1 = Object.assign({}, ctx.env);
-    for (var x = 0; x < this.argumentCount_; x++) {
-      var argVar = this.typedValue['ARG' + x];
-      var varName = argVar.getVariableName();
-      env1[varName] = Blockly.Scheme.monoType(argVar.getTypeExpr());
-    }
-    var ctx1 = {unifyOrphan: ctx.unifyOrphan, env: env1};
-    var exp1 = this.callInfer_('EXP1', ctx1);
-
-    if (exp1)
-      exp1.unify(expected_exp1);
 
     if (this.argumentCount_ == 0) {
       var exp1Type = this.getInput('EXP1').connection.typeExpr;
@@ -3404,6 +3396,25 @@ Blockly.Blocks['let_typed'] = {
       var funType = Blockly.TypeExpr.createFunType(funTypes);
       variable.getTypeExpr().unify(funType);
     }
+    // Create the context for the EXP1 input.
+    var env1 = Object.assign({}, ctx.env);
+    if (this.isRecursive_) {
+      // If the variable would be function type, it must be found out before
+      // calling the function callInfer_ on the EXP1 input. Otherwise, nested
+      // reference blocks can be unified with out-of-date types.
+      // 'function_app_typed' block may be rendered wrongly for example.
+      env1[var_name] = Blockly.Scheme.monoType(variable.getTypeExpr());
+    }
+    for (var x = 0; x < this.argumentCount_; x++) {
+      var argVar = this.typedValue['ARG' + x];
+      var varName = argVar.getVariableName();
+      env1[varName] = Blockly.Scheme.monoType(argVar.getTypeExpr());
+    }
+    var ctx1 = {unifyOrphan: ctx.unifyOrphan, env: env1};
+    var exp1 = this.callInfer_('EXP1', ctx1);
+
+    if (exp1)
+      exp1.unify(expected_exp1);
 
     if (variable.getTypeExpr().deref().isFunction()) {
       var scheme = Blockly.Scheme.create({}, variable.getTypeExpr());
