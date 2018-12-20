@@ -3404,6 +3404,8 @@ Blockly.Blocks['let_typed'] = {
       // reference blocks can be unified with out-of-date types.
       // 'function_app_typed' block may be rendered wrongly for example.
       env1[var_name] = Blockly.Scheme.monoType(variable.getTypeExpr());
+      // TODO(harukam): Pretend orphan blocks on workbenches to be unified with
+      // poly-type. All of recursive reference must be mono-type.
     }
     for (var x = 0; x < this.argumentCount_; x++) {
       var argVar = this.typedValue['ARG' + x];
