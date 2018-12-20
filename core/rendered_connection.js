@@ -475,19 +475,12 @@ Blockly.RenderedConnection.prototype.renderTypeVarHighlights = function() {
       delete this.typeVarPaths_[i];
     }
   }
-  var typeExpr = this.typeExpr;
-  if (opt_isOutput === true) {
-    var block = this.sourceBlock_;
-    if (goog.isFunction(block.outputTypeExprToRender)) {
-      typeExpr = block.outputTypeExprToRender();
-    }
-  }
   this.typeVarPaths_ = [];
   var xy = this.sourceBlock_.getRelativeToSurfaceXY();
   var pos = new goog.math.Coordinate(this.x_ - xy.x, this.y_ - xy.y);
 
   this.typeVarPaths_ = Blockly.RenderedTypeExpr.createHighlightedSvg(
-      typeExpr, pos, 1, this.sourceBlock_.getSvgRoot());
+      this.typeExpr, pos, 1, this.sourceBlock_.getSvgRoot());
 };
 
 /**
