@@ -3091,7 +3091,10 @@ Blockly.Blocks['variables_get_typed'] = {
     var schemeInEnv = (varName in ctx.env) && ctx.env[varName];
     var scheme;
     if (schemeInEnv) {
-      variable.unifyTypeExpr();
+      // Fix: let rec c = <c> + c.
+      // If this is recursive reference on the exp1, unifyTypeExpr() does not
+      // work correctly because getTypeScheme() always return null.
+      schemeInEnv.unify(variable.getTypeExpr());
       // TODO(harukam): Check the equality between a type scheme in existing
       // in the env and that of the binding value.
     } else if (ctx.unifyOrphan) {
