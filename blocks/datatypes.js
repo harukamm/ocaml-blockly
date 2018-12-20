@@ -111,25 +111,33 @@ Blockly.Blocks['create_construct_typed'] = {
     var fieldName = value.getContainerFieldName();
     var def = valueBlock.getTypeCtorDef(fieldName);
 
-    if (this.definition_ === def) {
+    var input = this.getInput('PARAM');
+
+    if (input && this.definition_ === def) {
+      var expected = input.connection.typeExpr;
+      var paramType = this.callInfer_('PARAM', ctx);
+      if (paramType) {
+        expected.unify(paramType);
+      }
       return outType;
     }
 
-    var input = this.getInput('PARAM');
-    if (input) {
-      this.removeInput('PARAM');
+    if (!input) {
+      if (def === 'int') {
+        this.appendValueInput('PARAM')
+            .setTypeExpr(new Blockly.TypeExpr.INT())
+      } else if (def === 'float') {
+        this.appendValueInput('PARAM')
+            .setTypeExpr(new Blockly.TypeExpr.FLOAT())
+      } else if (def === null) {
+        // Do nothing. there is no arguments.
+      } else {
+        goog.asserts.assert(false, 'Unknown type ctor.');
+      }
     }
-
-    if (def === 'int') {
-      this.appendValueInput('PARAM')
-          .setTypeExpr(new Blockly.TypeExpr.INT())
-    } else if (def === 'float') {
-      this.appendValueInput('PARAM')
-          .setTypeExpr(new Blockly.TypeExpr.FLOAT())
-    } else if (!def) {
+    if (input && !def) {
       // Definition is cleared by user.
-    } else {
-      goog.asserts.assert(false, 'Unknown type ctor.');
+      this.removeInput('PARAM');
     }
     this.definition_ = def;
     return outType;
