@@ -217,6 +217,13 @@ Blockly.Blocks['empty_construct_pattern_typed'] = {
     this.setInputsInline(true);
   },
 
+  transformToValue: function(workspace) {
+    var valueBlock = workspace.newBlock('empty_construct_pattern_typed');
+    valueBlock.initSvg();
+    valueBlock.render();
+    return valueBlock;
+  },
+
   clearTypes: function() {
     var type = this.outputConnection.typeExpr.pattExpr;
     type.element_type.clear();
