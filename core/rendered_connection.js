@@ -370,7 +370,7 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function(parentBlock,
     childBlock.render();
   }
 
-  if (parentBlock.rendered && childBlock.rendered) {
+  if (parentBlock.rendered && childBlock.rendered && this.typeExprEnabled()) {
     // Re-render all blocks which contain changed type expression on related
     // workspaces.
     parentBlock.workspace.renderTypeChangedWorkspaces();
@@ -444,9 +444,11 @@ Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
       parentBlock.render();
     }
 
-    // Re-render all blocks which contain changed type expression on related
-    // workspaces.
-    parentBlock.workspace.renderTypeChangedWorkspaces();
+    if (this.typeExprEnabled()) {
+      // Re-render all blocks which contain changed type expression on related
+      // workspaces.
+      parentBlock.workspace.renderTypeChangedWorkspaces();
+    }
   }
 };
 
