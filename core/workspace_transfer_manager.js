@@ -254,11 +254,15 @@ Blockly.WorkspaceTransferManager.prototype.setStartTransferring_ = function(
  */
 Blockly.WorkspaceTransferManager.prototype.execTransferring_ = function(
     transferringBlock, opt_beforeDispose) {
-  var xml = Blockly.Xml.blockToDom(transferringBlock);
-  // Create a new block with disabling type checks.
-  var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_, true);
-  newBlock.replaceTypeExprWith(transferringBlock);
-  newBlock.replaceWorkbenchWorkspaceWith(transferringBlock);
+  if (transferringBlock.isPattern()) {
+    var newBlock = transferringBlock.transformToValue(this.pointedWorkspace_);
+  } else {
+    var xml = Blockly.Xml.blockToDom(transferringBlock);
+    // Create a new block with disabling type checks.
+    var newBlock = Blockly.Xml.domToBlock(xml, this.pointedWorkspace_, true);
+    newBlock.replaceTypeExprWith(transferringBlock);
+    newBlock.replaceWorkbenchWorkspaceWith(transferringBlock);
+  }
 
   // Aline this block according to the new surface.
   var localXY = transferringBlock.getRelativeToSurfaceXY();

@@ -391,7 +391,7 @@ Blockly.Block.prototype.getConnections_ = function(_all) {
  */
 Blockly.Block.prototype.getEquivalentConnection = function(connection) {
   var targetBlock = connection.getSourceBlock();
-  if (this.type !== targetBlock.type) {
+  if (this.type !== targetBlock.type && !this.isPairPattern(targetBlock)) {
     return null;
   } else if (this == targetBlock) {
     return connection;
@@ -1832,6 +1832,37 @@ Blockly.Block.doTypeInference = function(workspace) {
   }
 
   Blockly.Block.inferBlocksType_(blocksToUpdate, true, true);
+};
+
+/**
+ * Find if this block and the given block is a pair of pattern block and
+ * pattern value block.
+ * @param {!Blockly.Block} otherBlock The other block.
+ * @return {boolean} True if this block and otherBlock is a pair of pattern
+ *     block.
+ */
+Blockly.Block.prototype.isPairPattern = function(otherBlock) {
+  var pairs = [['cons_construct_pattern_typed_value',
+    'cons_construct_pattern_typed']];
+  for (var i = 0, pair; pair = pairs[i]; i++) {
+    if (this.type === pair[0] && otherBlock.type === pair[1] ||
+        this.type === pair[1] && otherBlock.type === pair[0]) {
+      return true;
+    }
+  }
+  return false;
+};
+
+/**
+ * Returns if this block is a pattern block.
+ * @return {boolean} True if this block has a type of pattern.
+ */
+Blockly.Block.prototype.isPattern = function() {
+  if (this.outputConnection &&
+      this.outputConnection.typeExpr.deref().isPattern()) {
+    return true;
+  }
+  return false;
 };
 
 /**

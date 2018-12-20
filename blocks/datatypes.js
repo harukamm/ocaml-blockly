@@ -231,13 +231,61 @@ Blockly.Blocks['cons_construct_pattern_typed'] = {
         Blockly.BoundVariableAbstract.VALUE_VARIABLE);
     this.setColour(Blockly.Msg['PATTERN_HUE']);
     this.appendDummyInput()
-        .appendField(new Blockly.FieldTextInput('x', validator))
+        .appendField(new Blockly.FieldTextInput('x', validator), 'FIRST')
         .appendField('::')
     this.appendDummyInput()
-        .appendField(new Blockly.FieldTextInput('xs', validator));
+        .appendField(new Blockly.FieldTextInput('xs', validator), 'CONS');
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN(list));
     this.setInputsInline(true);
+  },
+
+  transformToValue: function(workspace) {
+    var valueBlock = workspace.newBlock(
+        'cons_construct_pattern_typed_value');
+    var first = this.getField('FIRST');
+    var cons = this.getField('CONS');
+    valueBlock.initSvg();
+    valueBlock.render();
+    valueBlock.typedValue['FIRST'].setVariableName(first.getText());
+    valueBlock.typedValue['CONS'].setVariableName(cons.getText());
+    return valueBlock;
+  },
+
+  clearTypes: function() {
+    var type = this.outputConnection.typeExpr.pattExpr;
+    type.element_type.clear();
+  }
+};
+
+Blockly.Blocks['cons_construct_pattern_typed_value'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['PATTERN_HUE']);
+    var A = Blockly.TypeExpr.generateTypeVar();
+    var list = new Blockly.TypeExpr.LIST(A);
+    var firstVariable = Blockly.FieldBoundVariable.newValue(A, 'x');
+    var consVariable = Blockly.FieldBoundVariable.newValue(list, 'xs');
+
+    this.appendDummyInput()
+        .appendField(firstVariable, 'FIRST')
+        .appendField(':: ')
+    this.appendDummyInput()
+        .appendField(consVariable, 'CONS');
+     this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN(list));
+    this.setInputsInline(true);
+  },
+
+  getTypeScheme: function(fieldName) {
+    if (fieldName !== 'FIRST' && fieldName !== 'CONS') {
+      return null;
+    }
+    if (fieldName === 'FIRST') {
+      var type = this.typedValue['FIRST'].getTypeExpr();
+    } else {
+      var type = this.typedValue['CONS'].getTypeExpr();
+    }
+    return Blockly.Scheme.monoType(type);
   },
 
   clearTypes: function() {

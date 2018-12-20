@@ -228,7 +228,7 @@ Blockly.DraggedConnectionManager.prototype.replaceBlock = function(newBlock) {
   if (oldBlock == newBlock) {
     return;
   }
-  if (oldBlock.type !== newBlock.type) {
+  if (oldBlock.type !== newBlock.type && !oldBlock.isPairPattern(newBlock)) {
     throw 'Can not replace the dragged block with a block of another type.';
   }
   // Find a connection in the new block equivalent to the current

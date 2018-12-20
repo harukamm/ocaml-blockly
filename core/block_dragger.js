@@ -511,6 +511,10 @@ Blockly.BlockDragger.prototype.updateReferenceStateDuringBlockDrag_ =
     if (!this.draggingBlock_.resolveReference(null, false, targetWorkspace)) {
       resolved = false;
     }
+    // Pattern block can not be an orphan.
+    if (this.draggingBlock_.isPattern()) {
+      resolved = false;
+    }
   }
 
   if (this.wouldDropAllowed_ !== resolved) {
