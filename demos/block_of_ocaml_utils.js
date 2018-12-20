@@ -12,7 +12,7 @@ BlockOfOCamlUtils.codeToBlock = function(code, opt_alert) {
     throw "Load script convert.js";
   }
   var result = BlockOfOCamlUtils.codeToBlockImpl_(code);
-  var errMsg = BlockOfOCamlUtils.getErrorMessage(result.errCode);
+  var errMsg = BlockOfOCamlUtils.getErrorMessage(result);
   if (errMsg) {
     result.errMsg = errMsg;
     if (opt_alert !== false) {
@@ -37,8 +37,8 @@ BlockOfOCamlUtils.forceDispose = function(block) {
   block.dispose();
 };
 
-BlockOfOCamlUtils.getErrorMessage = function(code) {
-  switch (code) {
+BlockOfOCamlUtils.getErrorMessage = function(result) {
+  switch (result.errCode) {
     case BlockOfOCamlUtils.ERROR_NONE:
       return null;
     case BlockOfOCamlUtils.ERROR_AST_PARSING:
@@ -48,7 +48,8 @@ BlockOfOCamlUtils.getErrorMessage = function(code) {
     case BlockOfOCamlUtils.ERROR_INVALID_BLOCK_XML:
       return "Invalid Block XML";
     case BlockOfOCamlUtils.ERROR_UNDEFINED_VARIABLE:
-      return "Undefined varaible";
+      var names = result.undefines.join(' ');
+      return "Undefined varaible: " + names;
     case BlockOfOCamlUtils.ERROR_TYPE_INFERENCE:
       return "Type error";
     default:
@@ -81,8 +82,10 @@ BlockOfOCamlUtils.codeToBlockImpl_ = function(code, opt_workspace) {
     result.errCode = BlockOfOCamlUtils.ERROR_INVALID_BLOCK_XML;
     return result;
   }
-  var resolved = block.resolveReference(null, true);
+  var undefineds = [];
+  var resolved = block.resolveReference(null, true, null, undefineds);
   if (!resolved) {
+    result.undefines = goog.array.map(undefineds, x => x.getVariableName());
     result.errCode = BlockOfOCamlUtils.ERROR_UNDEFINED_VARIABLE;
     BlockOfOCamlUtils.forceDispose(block);
     return result;
