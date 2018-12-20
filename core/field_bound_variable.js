@@ -648,10 +648,14 @@ Blockly.FieldBoundVariable.prototype.createBlock = function() {
  */
 Blockly.FieldBoundVariable.prototype.newReferenceBlock_ = function() {
   var workspace = this.sourceBlock_.workspace;
+  var typeExpr = this.variable_.getTypeExpr();
 
   if (this.isForConstructor()) {
     var getterBlock = workspace.newBlock('create_construct_typed');
     var field = getterBlock.getField('CONSTRUCTOR');
+  } else if (typeExpr.deref().isFunction()) {
+    var getterBlock = workspace.newBlock('function_app_typed');
+    var field = getterBlock.getField('VAR');
   } else {
     var getterBlock = workspace.newBlock('variables_get_typed');
     var field = getterBlock.getField('VAR');
@@ -662,6 +666,9 @@ Blockly.FieldBoundVariable.prototype.newReferenceBlock_ = function() {
 
   field.setVariableName(this.variable_.getVariableName());
   field.setBoundValue(this.variable_);
+  if (goog.isFunction(getterBlock.updateInput)) {
+    getterBlock.updateInput();
+  }
   getterBlock.render(false);
 
   return getterBlock;
