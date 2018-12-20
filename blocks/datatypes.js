@@ -100,7 +100,7 @@ Blockly.Blocks['create_construct_typed'] = {
     this.setInputsInline(true);
   },
 
-  infer: function() {
+  infer: function(ctx) {
     var outType = this.outputConnection.typeExpr;
     var value = this.getField('CONSTRUCTOR').getBoundValue();
     if (!value) {
