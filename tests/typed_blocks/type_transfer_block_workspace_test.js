@@ -1118,6 +1118,19 @@ function test_type_transfer_block_workspace_letRecSimple() {
     assertTrue(functionApp.resolveReference(null));
     assertEquals(functionApp.paramCount_, 2);
 
+    function monoTypeCheck(type1, type2) {
+      var funarr1 = Blockly.TypeExpr.functionToArray(type1);
+      var funarr2 = Blockly.TypeExpr.functionToArray(type2);
+      for (var i = 0; i < funarr1.length; i++) {
+        assertEquals(funarr1[i], funarr2[i]);
+      }
+    }
+    // Recursive reference in the EXP1 must be mono type.
+    // TODO(harukam): mono-type check fails. Fix it.
+    var letType = letValue.getTypeExpr();
+    var refType = functionApp.typedReference['VAR'].getTypeExpr();
+    monoTypeCheck(letType, refType);
+
     var argBlock1 = workbench.getWorkspace().newBlock('variables_get_typed');
     var argBlock2 = workbench.getWorkspace().newBlock('variables_get_typed');
     var ref1 = getVariable(argBlock1);
@@ -1131,10 +1144,15 @@ function test_type_transfer_block_workspace_letRecSimple() {
     param0.connect(argBlock1.outputConnection);
     param1.connect(argBlock2.outputConnection);
 
+    // let rec f x y = f x y in ...
     var exp1 = letRecBlock.getInput('EXP1').connection;
     var transferredBlock = virtually_transfer_workspace(functionApp,
         workspace, functionApp.outputConnection, exp1);
     transferredBlock.outputConnection.connect(exp1);
+    // Recursive reference in the EXP1 must be mono type.
+    var letType = letValue.getTypeExpr();
+    var refType = transferredBlock.typedReference['VAR'].getTypeExpr();
+    monoTypeCheck(letType, refType);
   } finally {
     if (workbench) {
       workbench.dispose();
