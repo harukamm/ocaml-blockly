@@ -187,7 +187,7 @@ Blockly.TypedLang['let_typed'] = function(block) {
 };
 
 Blockly.TypedLang['letrec_typed'] = function(block) {
-  Blockly.TypedLang['let_typed'].call(this, block);
+  return Blockly.TypedLang['let_typed'].call(this, block);
 };
 
 Blockly.TypedLang['defined_datatype_typed'] = function(block) {
@@ -202,17 +202,18 @@ Blockly.TypedLang['defined_datatype_typed'] = function(block) {
   var ctorField1 = block.getField('CTR1');
 
   var code = 'type ' + dataName + ' =';
-  code += '  | ' + ctorField0.getVariableName() +
+  code += '  | ' + ctorField0.getVariableName();
   if (type0) {
     code += ' of ' + type0;
   }
   code += '\n';
 
-  code += '  | ' + ctorField1.getVariableName() +
+  code += '  | ' + ctorField1.getVariableName();
   if (type1) {
     code += ' of ' + type1;
   }
   code += '\n';
+  return code;
 };
 
 Blockly.TypedLang['create_construct_typed'] = function(block) {
@@ -224,6 +225,7 @@ Blockly.TypedLang['create_construct_typed'] = function(block) {
   } else {
     code += ' ?';
   }
+  return code;
 };
 
 Blockly.TypedLang['int_type_typed'] = function(block) {
@@ -232,6 +234,10 @@ Blockly.TypedLang['int_type_typed'] = function(block) {
 
 Blockly.TypedLang['float_type_typed'] = function(block) {
   return 'float';
+};
+
+Blockly.TypedLang['empty_construct_pattern_typed'] = function(block) {
+  return '[]';
 };
 
 Blockly.TypedLang['cons_construct_pattern_typed'] = function(block) {
