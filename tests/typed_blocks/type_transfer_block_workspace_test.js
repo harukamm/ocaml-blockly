@@ -1122,10 +1122,10 @@ function test_type_transfer_block_workspace_letRecSimple() {
     var param = functionApp.getInput('PARAM0').connection;
     param.connect(argBlock.outputConnection);
 
-    var exp1 = letRecBlock.getInput('EXP2').connection;
-    // TODO(harukam): The following transferring fails. Fix it.
+    var exp1 = letRecBlock.getInput('EXP1').connection;
     var transferredBlock = virtually_transfer_workspace(functionApp,
         workspace, functionApp.outputConnection, exp1);
+    transferredBlock.outputConnection.connect(exp1);
   } finally {
     if (workbench) {
       workbench.dispose();

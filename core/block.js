@@ -2774,6 +2774,18 @@ Blockly.Blocks['function_app_typed'] = {
     this.setOutputTypeExpr(returnType, true);
   },
 
+  populateInput: function(name) {
+    if (!name.startsWith('PARAM')) {
+      return null;
+    }
+    var numstr = name.substring(5);
+    var n = parseInt(numstr);
+    if (this.paramCount_ <= n) {
+      this.updateInput();
+    }
+    return this.getInput('PARAM' + n);
+  },
+
   clearTypes: function() {
     this.typedReference['VAR'].getTypeExpr().clear();
     for (var i = 0; i < this.paramCount_; i++) {

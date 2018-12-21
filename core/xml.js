@@ -790,6 +790,9 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace,
       case 'value':
       case 'statement':
         input = block.getInput(name);
+        if (!input && goog.isFunction(block.populateInput)) {
+          input = block.populateInput.call(block, name);
+        }
         if (!input) {
           console.warn('Ignoring non-existent input ' + name + ' in block ' +
                        prototypeName);
