@@ -1092,35 +1092,44 @@ function test_type_transfer_block_workspace_letRecSimple() {
   var workspace = create_typed_workspace();
   var workbench;
   try {
-    // let rec f x =  ..
+    // let rec f x y =  ..
     var letRecBlock = workspace.newBlock('letrec_typed');
     var mutator = create_mock_mutator(letRecBlock, 'args_create_with_item');
     assertEquals(letRecBlock.argumentCount_, 0);
     mutator._append();
+    mutator._append();
     mutator._update();
-    assertEquals(letRecBlock.argumentCount_, 1);
+    assertEquals(letRecBlock.argumentCount_, 2);
     var letValue = letRecBlock.typedValue['VAR'];
-    var argValue = letRecBlock.typedValue['ARG0'];
+    var argValue1 = letRecBlock.typedValue['ARG0'];
+    var argValue2 = letRecBlock.typedValue['ARG1'];
     letValue.setVariableName('f');
-    argValue.setVariableName('x');
+    argValue1.setVariableName('x');
+    argValue2.setVariableName('y');
 
     workbench = create_mock_workbench(letRecBlock, 'EXP1');
     var blocks = getFlyoutBlocksFromWorkbench(workbench);
-    assertEquals(blocks.length, 2);
+    assertEquals(blocks.length, 3);
 
     var functionApp = workbench.getWorkspace().newBlock('function_app_typed');
     functionApp.typedReference['VAR'].setVariableName('f');
     functionApp.typedReference['VAR'].setBoundValue(letValue);
     functionApp.updateInput();
     assertTrue(functionApp.resolveReference(null));
-    assertEquals(functionApp.paramCount_, 1);
+    assertEquals(functionApp.paramCount_, 2);
 
-    var argBlock = workbench.getWorkspace().newBlock('variables_get_typed');
-    var ref = getVariable(argBlock);
-    ref.setVariableName('x');
-    ref.setBoundValue(argValue);
-    var param = functionApp.getInput('PARAM0').connection;
-    param.connect(argBlock.outputConnection);
+    var argBlock1 = workbench.getWorkspace().newBlock('variables_get_typed');
+    var argBlock2 = workbench.getWorkspace().newBlock('variables_get_typed');
+    var ref1 = getVariable(argBlock1);
+    var ref2 = getVariable(argBlock2);
+    ref1.setVariableName('x');
+    ref2.setVariableName('y');
+    ref1.setBoundValue(argValue1);
+    ref2.setBoundValue(argValue2);
+    var param0 = functionApp.getInput('PARAM0').connection;
+    var param1 = functionApp.getInput('PARAM1').connection;
+    param0.connect(argBlock1.outputConnection);
+    param1.connect(argBlock2.outputConnection);
 
     var exp1 = letRecBlock.getInput('EXP1').connection;
     var transferredBlock = virtually_transfer_workspace(functionApp,
