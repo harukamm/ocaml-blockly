@@ -1087,3 +1087,49 @@ function test_type_transfer_block_workspace_letRecSimple() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_letRecSimple() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    // let rec f x =  ..
+    var letRecBlock = workspace.newBlock('letrec_typed');
+    var mutator = create_mock_mutator(letRecBlock, 'args_create_with_item');
+    assertEquals(letRecBlock.argumentCount_, 0);
+    mutator._append();
+    mutator._update();
+    assertEquals(letRecBlock.argumentCount_, 1);
+    var letValue = letRecBlock.typedValue['VAR'];
+    var argValue = letRecBlock.typedValue['ARG0'];
+    letValue.setVariableName('f');
+    argValue.setVariableName('x');
+
+    workbench = create_mock_workbench(letRecBlock, 'EXP1');
+    var blocks = getFlyoutBlocksFromWorkbench(workbench);
+    assertEquals(blocks.length, 2);
+
+    var functionApp = workbench.getWorkspace().newBlock('function_app_typed');
+    functionApp.typedReference['VAR'].setVariableName('f');
+    functionApp.typedReference['VAR'].setBoundValue(letValue);
+    functionApp.updateInput();
+    assertTrue(functionApp.resolveReference(null));
+    assertEquals(functionApp.paramCount_, 1);
+
+    var argBlock = workbench.getWorkspace().newBlock('variables_get_typed');
+    var ref = getVariable(argBlock);
+    ref.setVariableName('x');
+    ref.setBoundValue(argValue);
+    var param = functionApp.getInput('PARAM0').connection;
+    param.connect(argBlock.outputConnection);
+
+    var exp1 = letRecBlock.getInput('EXP2').connection;
+    // TODO(harukam): The following transferring fails. Fix it.
+    var transferredBlock = virtually_transfer_workspace(functionApp,
+        workspace, functionApp.outputConnection, exp1);
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
