@@ -76,7 +76,7 @@ Blockly.FlyoutMutator.prototype.resizeBubble_ = function() {
     width = workspaceSize.width + workspaceSize.x;
   }
   var height = workspaceSize.height + doubleBorderWidth * 3;
-  width += doubleBorderWidth * 3;
+  width += doubleBorderWidth;
   // Only resize if the size difference is significant.  Eliminates shuddering.
   if (Math.abs(this.workspaceWidth_ - width) > doubleBorderWidth ||
       Math.abs(this.workspaceHeight_ - height) > doubleBorderWidth) {
@@ -122,6 +122,7 @@ Blockly.FlyoutMutator.prototype.setVisible = function(visible) {
       this.workspace_.flyout_.init(this.workspace_);
       this.workspace_.flyout_.show(tree.childNodes);
     }
+    this.flyoutWorkspace_ = this.workspace_.flyout_.getWorkspace();
 
     if (this.workspace_.flyout_) {
       var margin = this.workspace_.flyout_.CORNER_RADIUS * 2;
@@ -133,9 +134,15 @@ Blockly.FlyoutMutator.prototype.setVisible = function(visible) {
     if (this.block_.RTL) {
       x = -x;
     }
+    this.sourceListener_ =
+        this.flyoutWorkspace_.addChangeListener(this.workspaceChanged_.bind(this));
     this.resizeBubble_();
     this.updateColour();
   } else {
+    if (this.sourceListener_) {
+      this.flyoutWorkspace_.removeChangeListener(this.sourceListener_);
+      this.sourceListener_ = null;
+    }
     // Dispose of the bubble.
     this.svgDialog_ = null;
     this.workspace_.dispose();
@@ -144,10 +151,15 @@ Blockly.FlyoutMutator.prototype.setVisible = function(visible) {
     this.bubble_ = null;
     this.workspaceWidth_ = 0;
     this.workspaceHeight_ = 0;
-    if (this.sourceListener_) {
-      this.block_.workspace.removeChangeListener(this.sourceListener_);
-      this.sourceListener_ = null;
-    }
+  }
+};
+
+/**
+ * @override
+ */
+Blockly.FlyoutMutator.prototype.workspaceChanged_ = function(e) {
+  if (!this.flyoutWorkspace_.isDragging()) {
+    this.resizeBubble_();
   }
 };
 
