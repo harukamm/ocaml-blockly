@@ -2612,6 +2612,59 @@ Blockly.Blocks['lists_create_with_typed'] = {
   }
 };
 
+Blockly.Blocks['list_empty_typed'] = {
+  init: function() {
+    this.setColour(260);
+    var element_type = Blockly.TypeExpr.generateTypeVar();
+    var listType = new Blockly.TypeExpr.LIST(element_type);
+    this.appendDummyInput()
+        .appendField('[ ]');
+    this.setOutput(true);
+    this.setOutputTypeExpr(listType);
+    this.setInputsInline(true);
+  },
+
+  clearTypes: function() {
+    this.outputConnection.typeExpr.element_type.clear();
+  }
+};
+
+Blockly.Blocks['list_cons_typed'] = {
+  init: function() {
+    this.setColour(260);
+    var element_type = Blockly.TypeExpr.generateTypeVar();
+    var listType = new Blockly.TypeExpr.LIST(element_type);
+    this.appendValueInput('FIRST')
+        .setTypeExpr(element_type);
+    this.appendValueInput('CONS')
+        .setTypeExpr(listType)
+        .appendField('::');
+    this.setOutput(true);
+    this.setOutputTypeExpr(listType);
+    this.setInputsInline(true);
+  },
+
+  clearTypes: function() {
+    this.outputConnection.typeExpr.element_type.clear();
+    this.callClearTypes_('FIRST');
+    this.callClearTypes_('CONS');
+  },
+
+  infer: function(ctx) {
+    var expected = this.outputConnection.typeExpr;
+    var expectedElementType = expected.element_type;
+    var listType = this.callInfer_('CONS', ctx);
+    var elementType = this.callInfer_('FIRST', ctx);
+    if (listType) {
+      expected.unify(listType);
+    }
+    if (elementType) {
+      expectedElementType.unify(elementType);
+    }
+    return expected;
+  }
+};
+
 /**
  * Pairs
  */

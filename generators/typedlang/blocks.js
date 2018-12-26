@@ -104,6 +104,19 @@ Blockly.TypedLang['lists_create_with_typed'] = function(block) {
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
+Blockly.TypedLang['list_empty_typed'] = function(block) {
+  return ['[]', Blockly.TypedLang.ORDER_ATOMIC];
+};
+
+Blockly.TypedLang['list_cons_typed'] = function(block) {
+  var first = Blockly.TypedLang.valueToCode(block, 'FIRST',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  var rest = Blockly.TypedLang.valueToCode(block, 'CONS',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  var code = '(' + first + ') :: ' + rest;
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+};
+
 Blockly.TypedLang['pair_create_typed'] = function(block) {
   var fst = Blockly.TypedLang.valueToCode(block, 'FIRST',
       Blockly.TypedLang.ORDER_ATOMIC);
