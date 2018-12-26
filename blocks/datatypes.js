@@ -24,7 +24,7 @@ Blockly.Blocks['defined_datatype_typed'] = {
         Blockly.FieldBoundVariable.newValueConstructor(ctrType1);
     this.appendDummyInput()
         .appendField('type ')
-        .appendField(new Blockly.FieldTextInput('data'), validator)
+        .appendField(new Blockly.FieldTextInput('data', validator), 'DATANAME')
         .appendField('=');
     this.appendValueInput('CTR_INP0')
         .appendField('|')
