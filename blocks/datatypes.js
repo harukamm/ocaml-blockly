@@ -274,6 +274,7 @@ Blockly.Blocks['cons_construct_pattern_typed_value'] = {
     var consVariable = Blockly.FieldBoundVariable.newValue(list, 'xs');
 
     this.appendDummyInput()
+        .appendField(' ')
         .appendField(firstVariable, 'FIRST')
         .appendField(':: ')
     this.appendDummyInput()
