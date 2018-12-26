@@ -2836,7 +2836,6 @@ Blockly.Blocks['lambda_typed'] = {
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField('->')
         .setWorkbench(new Blockly.Workbench());
-    this.setInputsInline(true);
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.TypeExpr.FUN(A, B));
   },
