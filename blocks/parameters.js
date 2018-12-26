@@ -21,7 +21,6 @@ Blockly.Blocks['args_create_with_item'] = {
         .appendField('x');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_ITEM_TOOLTIP']);
     this.contextMenu = false;
   }
 };
@@ -36,7 +35,6 @@ Blockly.Blocks['args_create_with_container'] = {
     this.appendDummyInput()
         .appendField('args');
     this.appendStatementInput('STACK');
-    this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_CONTAINER_TOOLTIP']);
     this.contextMenu = false;
   },
 
