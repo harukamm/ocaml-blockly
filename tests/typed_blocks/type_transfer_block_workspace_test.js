@@ -1126,7 +1126,6 @@ function test_type_transfer_block_workspace_recursiveReferenceMustBeMonoType() {
       }
     }
     // Recursive reference in the EXP1 must be mono type.
-    // TODO(harukam): mono-type check fails. Fix it.
     var letType = letValue.getTypeExpr();
     var refType = functionApp.typedReference['VAR'].getTypeExpr();
     monoTypeCheck(letType, refType);

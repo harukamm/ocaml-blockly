@@ -157,10 +157,13 @@ Blockly.BoundVariableValue.prototype.dispose = function(opt_removeReference) {
 
 /**
  * Returns a type scheme for this variable value.
+ * @param {!Blockly.BoundVariableValueReference} reference The reference which
+ *     requires a type scheme. The source block might provide a different type
+ *     scheme depending on which reference is applied.
  * @return {Blockly.Scheme} The type scheme for this value.
  */
-Blockly.BoundVariableValue.prototype.getTypeScheme = function() {
-  return this.sourceBlock_.getTypeScheme(this.fieldName_);
+Blockly.BoundVariableValue.prototype.getTypeScheme = function(reference) {
+  return this.sourceBlock_.getTypeScheme(this.fieldName_, reference);
 };
 
 /**

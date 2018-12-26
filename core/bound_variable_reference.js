@@ -185,7 +185,7 @@ Blockly.BoundVariableValueReference.prototype.valueTypeExprChanged = function(
 Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
   var valueType = this.value_ && this.value_.getTypeExpr();
   if (valueType) {
-    var scheme = this.value_.getTypeScheme();
+    var scheme = this.value_.getTypeScheme(this);
     if (scheme) {
       scheme.unify(this.typeExpr_);
     }

@@ -3265,10 +3265,8 @@ Blockly.Blocks['let_typed'] = {
     return map;
   },
 
-  getTypeScheme: function(fieldName) {
-    if (fieldName in this.lastTypeScheme_) {
-      return this.lastTypeScheme_[fieldName];
-    } else if (fieldName.startsWith('ARG')) {
+  getTypeScheme: function(fieldName, opt_reference) {
+    if (fieldName.startsWith('ARG')) {
       var numstr = fieldName.substring(3);
       var x = parseInt(numstr);
       if (!isNaN(x) && x < this.argumentCount_) {
@@ -3277,7 +3275,16 @@ Blockly.Blocks['let_typed'] = {
         return Blockly.Scheme.monoType(argv.getTypeExpr());
       }
     }
-    return null;
+    if (fieldName !== 'VAR') {
+      return null;
+    }
+    if ('REC_VAR' in this.lastTypeScheme_ && opt_reference) {
+      var refs = this.getRecursiveReferences();
+      if (refs.indexOf(opt_reference) != -1) {
+        return this.lastTypeScheme_['REC_VAR'];
+      }
+    }
+    return this.lastTypeScheme_['VAR'];
   },
 
   isRecursive: function() {
@@ -3469,6 +3476,7 @@ Blockly.Blocks['let_typed'] = {
       variable.getTypeExpr().clear();
     }
     delete this.lastTypeScheme_['VAR'];
+    delete this.lastTypeScheme_['REC_VAR'];
   },
 
   infer: function(ctx) {
@@ -3493,14 +3501,9 @@ Blockly.Blocks['let_typed'] = {
     }
     // Create the context for the EXP1 input.
     var env1 = Object.assign({}, ctx.env);
+    var monoScheme = Blockly.Scheme.monoType(variable.getTypeExpr());
     if (this.isRecursive_) {
-      // If the variable would be function type, it must be found out before
-      // calling the function callInfer_ on the EXP1 input. Otherwise, nested
-      // reference blocks can be unified with out-of-date types.
-      // 'function_app_typed' block may be rendered wrongly for example.
-      env1[var_name] = Blockly.Scheme.monoType(variable.getTypeExpr());
-      // TODO(harukam): Pretend orphan blocks on workbenches to be unified with
-      // poly-type. All of recursive reference must be mono-type.
+      env1[var_name] = monoScheme;
     }
     for (var x = 0; x < this.argumentCount_; x++) {
       var argVar = this.typedValue['ARG' + x];
@@ -3513,15 +3516,22 @@ Blockly.Blocks['let_typed'] = {
     if (exp1)
       exp1.unify(expected_exp1);
 
-    if (variable.getTypeExpr().deref().isFunction()) {
-      var scheme = Blockly.Scheme.create(ctx.env, variable.getTypeExpr());
+    var applyPolyType = variable.getTypeExpr().deref().isFunction();
+    var schemeForExp2;
+    if (applyPolyType) {
+      if (this.isRecursive_) {
+        // Pretend recursive reference blocks to be unified with poly-type.
+        // All of recursive reference must be mono-type.
+        this.lastTypeScheme_['REC_VAR'] = monoScheme;
+      }
+      schemeForExp2 = Blockly.Scheme.create(ctx.env, variable.getTypeExpr());
     } else {
-      var scheme = Blockly.Scheme.monoType(variable.getTypeExpr());
+      schemeForExp2 = monoScheme;
     }
-    this.lastTypeScheme_['VAR'] = scheme;
+    this.lastTypeScheme_['VAR'] = schemeForExp2;
 
     var env2 = Object.assign({}, ctx.env);
-    env2[var_name] = scheme;
+    env2[var_name] = schemeForExp2;
     var ctx2 = {unifyOrphan: ctx.unifyOrphan, env: env2};
     var exp2 = this.callInfer_('EXP2', ctx2);
 
