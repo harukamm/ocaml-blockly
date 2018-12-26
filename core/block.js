@@ -3308,8 +3308,11 @@ Blockly.Blocks['let_typed'] = {
 
   getRecursiveReferences: function() {
     var variable = this.typedValue['VAR']
-    var exp1 = this.getInput('EXP1').connection;
-    return Blockly.BoundVariables.findReferencesInside(variable, exp1);
+    var inputExp1 = this.getInput('EXP1');
+    if (!inputExp1) {
+      return [];
+    }
+    return Blockly.BoundVariables.findReferencesInside(variable, inputExp1.connection);
   },
 
   customContextMenu: function(options) {
