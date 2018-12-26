@@ -4,7 +4,16 @@ var Typed = {};
 
 Typed.workspace = null;
 
+Typed.defaultCode = "let rec pi_impl n d = " +
+    "if n > 0.0 then " +
+    "n *. n /. d /. (d -. 2.0) *. pi_impl (n -. 2.0) (d -. 2.0) " +
+    "else 1.0 in let pi n = 2.0 *. pi_impl (n *. 2.0) (n *. 2.0 +. 1.0) " +
+    "in pi 9000.0";
+
 Typed.init = function() {
+  var input = document.querySelector(".ocamlCode");
+  input.value = Typed.defaultCode;
+
   var onresize = function(e) {
     var container = document.getElementById('workspaceArea');
     var bBox = Typed.getBBox_(container);
