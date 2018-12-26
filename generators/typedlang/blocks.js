@@ -213,7 +213,7 @@ Blockly.TypedLang['defined_datatype_typed'] = function(block) {
     code += ' of ' + type1;
   }
   code += '\n';
-  return code;
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['create_construct_typed'] = function(block) {
@@ -225,29 +225,31 @@ Blockly.TypedLang['create_construct_typed'] = function(block) {
   } else {
     code += ' ?';
   }
-  return code;
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['int_type_typed'] = function(block) {
-  return 'int';
+  return ['int', Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['float_type_typed'] = function(block) {
-  return 'float';
+  return ['float', Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['empty_construct_pattern_typed'] = function(block) {
-  return '[]';
+  return ['[]', Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['cons_construct_pattern_typed'] = function(block) {
   var first = block.getField('FIRST');
   var cons = block.getField('CONS');
-  return first.getText() + '::' + cons.getText();
+  return [first.getText() + '::' + cons.getText(),
+      Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['cons_construct_pattern_typed_value'] = function(block) {
   var first = block.typedValue['FIRST'].getVariableName();
   var cons = block.typedValue['CONS'].getVariableName();
-  return first + '::' + cons;
+  return [first + '::' + cons,
+      Blockly.TypedLang.ORDER_ATOMIC];
 };
