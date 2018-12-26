@@ -1088,7 +1088,7 @@ function test_type_transfer_block_workspace_letRecSimple() {
   }
 }
 
-function test_type_transfer_block_workspace_letRecSimple() {
+function test_type_transfer_block_workspace_recursiveReferenceMustBeMonoType() {
   var workspace = create_typed_workspace();
   var workbench;
   try {
