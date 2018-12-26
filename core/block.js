@@ -2966,13 +2966,15 @@ Blockly.Blocks['match_typed'] = {
     this.appendValueInput('OUTPUT1')
         .setTypeExpr(B)
         .appendField('->')
-        .setAlign(Blockly.ALIGN_RIGHT);
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .setWorkbench(new Blockly.Workbench());
     this.appendValueInput('PATTERN2')
         .setTypeExpr(new Blockly.TypeExpr.PATTERN(A));
     this.appendValueInput('OUTPUT2')
         .setTypeExpr(B)
         .appendField('->')
-        .setAlign(Blockly.ALIGN_RIGHT);
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .setWorkbench(new Blockly.Workbench());
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(false);
