@@ -127,6 +127,18 @@ Blockly.TypedLang['pair_second_typed'] = function(block) {
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
+Blockly.TypedLang['function_app_typed'] = function(block) {
+  var code = block.getField('VAR').getVariableName();
+  var params = [];
+  for (var i = 0; i < block.paramCount_; i++) {
+    var p = Blockly.TypedLang.valueToCode(block, 'PARAM' + i,
+        Blockly.TypedLang.ORDER_ATOMIC);
+    params.push('(' + p + ')');
+  }
+  code += params.length == 0 ? '' : ' ' + params.join(' ');
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+};
+
 Blockly.TypedLang['lambda_typed'] = function(block) {
   var varname = block.typedValue['VAR'].getVariableName();
   var body = Blockly.TypedLang.valueToCode(block, 'RETURN',
