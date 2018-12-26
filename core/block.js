@@ -2281,7 +2281,6 @@ Blockly.Blocks['logic_ternary_typed'] = {
     this.appendValueInput('ELSE')
         .setTypeExpr(A)
         .appendField('else');
-    this.setInputsInline(true);
     this.setOutput(true);
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.LOGIC_TERNARY_TOOLTIP);
