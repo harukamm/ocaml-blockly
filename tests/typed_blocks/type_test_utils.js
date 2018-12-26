@@ -322,6 +322,7 @@ function create_mock_workbench(block, opt_inputName) {
     block.workbenches = [workbenchMock];
   }
 
+  connection.contextWorkbench = workbenchMock;
   workspace.isMutator = true;
   workspace.ownerMutator_ = workbenchMock;
 
