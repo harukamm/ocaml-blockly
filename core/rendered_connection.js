@@ -361,6 +361,8 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function(parentBlock,
       parentBlock, childBlock);
 
   childBlock.updateWorkbenchFlyout();
+  // in case of match pattern.
+  parentBlock.updateWorkbenchFlyout();
   // Rerender the parent so that it may reflow.
   if (parentBlock.rendered) {
     parentBlock.render();
@@ -432,6 +434,8 @@ Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
     childBlock.updateDisabled();
   }
   childBlock.updateWorkbenchFlyout();
+  // in case of match pattern.
+  parentBlock.updateWorkbenchFlyout();
   if (parentBlock.rendered && childBlock.rendered) {
     if (parentConnection.type == Blockly.NEXT_STATEMENT ||
         parentConnection.type == Blockly.PREVIOUS_STATEMENT) {
