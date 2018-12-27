@@ -3211,19 +3211,14 @@ Blockly.Blocks['let_typed'] = {
         .appendField('=')
         .setWorkbench(new Blockly.Workbench())
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.appendValueInput('EXP2')
-        .setTypeExpr(exp2Type)
-        .appendField('in')
-        .setWorkbench(new Blockly.Workbench())
-        .setAlign(Blockly.ALIGN_RIGHT);
     this.setMutator(new Blockly.Mutator(['parameters_arg_item']));
-    this.setOutput(true);
-    this.setOutputTypeExpr(exp2Type);
     this.setInputsInline(false);
 
     var defaultRecFlag = opt_recur === true;
     this.isRecursive_ = false;
     this.setRecursiveFlag(defaultRecFlag);
+    this.setIsStatement(false);
+
     this.argumentCount_ = 0;
     exp1Type.unify(varType);
 
@@ -3304,6 +3299,44 @@ Blockly.Blocks['let_typed'] = {
       }
     }
     return this.lastTypeScheme_['VAR'];
+  },
+
+  canToggleIsStatement: function() {
+    if (this.isStatement_) {
+      return !this.previousConnection.isConnected() &&
+          !this.nextConnection.isConnected();
+    }
+    return !this.outputConnection.isConnected();
+  },
+
+  setIsStatement: function(newIsStatement) {
+    if (this.isStatement_ == newIsStatement) {
+      return;
+    }
+    if (newIsStatement) {
+      goog.asserts.assert('Not supported yet.');
+      var exp2Input = this.getInput('EXP2');
+      if (exp2Input) {
+        var workbench = exp2Input.connection.contextWorkbench;
+        workbench.dispose();
+        this.removeInput('EXP2');
+      }
+      this.setOutput(false);
+      this.setPreviousStatement(true);
+      this.setNextStatement(true);
+    } else {
+      this.setPreviousStatement(false);
+      this.setNextStatement(false);
+      this.setOutput(true);
+      var exp2Type = Blockly.TypeExpr.generateTypeVar();
+      this.appendValueInput('EXP2')
+          .setTypeExpr(exp2Type)
+          .appendField('in')
+          .setWorkbench(new Blockly.Workbench())
+          .setAlign(Blockly.ALIGN_RIGHT);
+      this.setOutputTypeExpr(exp2Type);
+    }
+    this.isStatement_ = newIsStatement;
   },
 
   isRecursive: function() {
