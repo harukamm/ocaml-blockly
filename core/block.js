@@ -3195,7 +3195,7 @@ Blockly.Blocks['let_typed'] = {
    * @param {boolean} opt_recur True if declare recursive function.
    * @this Blockly.Block
    */
-  init: function(opt_recur) {
+  init: function(opt_recur, opt_statement) {
     this.setHelpUrl(Blockly.Msg.VARIABLES_SET_HELPURL);
     this.setColour(330);
     var varType = Blockly.TypeExpr.generateTypeVar();
@@ -3217,7 +3217,7 @@ Blockly.Blocks['let_typed'] = {
     var defaultRecFlag = opt_recur === true;
     this.isRecursive_ = false;
     this.setRecursiveFlag(defaultRecFlag);
-    this.setIsStatement(false);
+    this.setIsStatement(opt_statement === true);
 
     this.argumentCount_ = 0;
     exp1Type.unify(varType);
@@ -3589,4 +3589,10 @@ Blockly.Blocks['letrec_typed'] =
   Object.assign({}, Blockly.Blocks['let_typed']);
 Blockly.Blocks['letrec_typed'].init = function() {
   Blockly.Blocks['let_typed'].init.call(this, true);
+};
+
+Blockly.Blocks['letstatement_typed'] =
+  Object.assign({}, Blockly.Blocks['let_typed']);
+Blockly.Blocks['letstatement_typed'].init = function() {
+  Blockly.Blocks['let_typed'].init.call(this, false, true);
 };
