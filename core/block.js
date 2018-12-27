@@ -3192,7 +3192,7 @@ Blockly.Blocks['let_typed'] = {
         .appendField('in')
         .setWorkbench(new Blockly.Workbench())
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.setMutator(new Blockly.Mutator(['args_create_with_item']));
+    this.setMutator(new Blockly.Mutator(['parameters_arg_item']));
     this.setOutput(true);
     this.setOutputTypeExpr(exp2Type);
     this.setInputsInline(false);
@@ -3397,13 +3397,13 @@ Blockly.Blocks['let_typed'] = {
    */
   decompose: function(workspace) {
     var containerBlock =
-        workspace.newBlock('args_create_with_container');
+        workspace.newBlock('parameters_arg_container');
     if (containerBlock.initSvg) {
       containerBlock.initSvg();
     }
     var connection = containerBlock.getInput('STACK').connection;
     for (var x = 0; x < this.argumentCount_; x++) {
-      var itemBlock = workspace.newBlock('args_create_with_item');
+      var itemBlock = workspace.newBlock('parameters_arg_item');
       if (itemBlock.initSvg) {
         itemBlock.initSvg();
       }

@@ -1094,7 +1094,7 @@ function test_type_transfer_block_workspace_recursiveReferenceMustBeMonoType() {
   try {
     // let rec f x y =  ..
     var letRecBlock = workspace.newBlock('letrec_typed');
-    var mutator = create_mock_mutator(letRecBlock, 'args_create_with_item');
+    var mutator = create_mock_mutator(letRecBlock, 'parameters_arg_item');
     assertEquals(letRecBlock.argumentCount_, 0);
     mutator._append();
     mutator._append();

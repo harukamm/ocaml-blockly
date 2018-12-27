@@ -10,7 +10,7 @@ goog.provide('Blockly.Parameters');
 goog.require('Blockly.Blocks');
 goog.require('Blockly');
 
-Blockly.Blocks['args_create_with_item'] = {
+Blockly.Blocks['parameters_arg_item'] = {
   /**
    * Mutator block for adding arguments.
    * @this Blockly.Block
@@ -25,7 +25,7 @@ Blockly.Blocks['args_create_with_item'] = {
   }
 };
 
-Blockly.Blocks['args_create_with_container'] = {
+Blockly.Blocks['parameters_arg_container'] = {
   /**
    * Mutator block for arguments container.
    * @this Blockly.Block

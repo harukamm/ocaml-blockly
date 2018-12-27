@@ -472,7 +472,7 @@ function test_resolve_reference_letRecParameterShadowing() {
     assertTrue(recurVarBlock.resolveReference(exp2));
 
     // let rec f f = f
-    var mutator = create_mock_mutator(letBlock, 'args_create_with_item');
+    var mutator = create_mock_mutator(letBlock, 'parameters_arg_item');
     assertEquals(letBlock.argumentCount_, 0);
     mutator._append();
     mutator._update();

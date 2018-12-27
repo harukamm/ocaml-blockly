@@ -1095,7 +1095,7 @@ function test_type_unification_mockMutator() {
   var workspace = create_typed_workspace();
   try {
     var letBlock = workspace.newBlock('let_typed');
-    var mutator = create_mock_mutator(letBlock, 'args_create_with_item');
+    var mutator = create_mock_mutator(letBlock, 'parameters_arg_item');
     assertEquals(letBlock.argumentCount_, 0);
     mutator._append();
     mutator._append();
@@ -1122,7 +1122,7 @@ function test_type_unification_polyTypeForIdFunc() {
   var workbench2;
   try {
     var letBlock = workspace.newBlock('let_typed');
-    var mutator = create_mock_mutator(letBlock, 'args_create_with_item');
+    var mutator = create_mock_mutator(letBlock, 'parameters_arg_item');
     assertEquals(letBlock.argumentCount_, 0);
     mutator._append();
     mutator._update();
