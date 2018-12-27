@@ -3400,7 +3400,11 @@ Blockly.Blocks['let_typed'] = {
       var field = Blockly.FieldBoundVariable.newValue(A);
 
       input.appendField(field, 'ARG' + x);
-      field.init();
+      if (this.rendered) {
+        field.init();
+      } else {
+        field.initModel();
+      }
     }
   },
   /**
