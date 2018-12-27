@@ -1156,6 +1156,17 @@ Blockly.BlockSvg.prototype.updateWorkbenchFlyout = function() {
 };
 
 /**
+ * Render all blocks which are connected to this block directly or indirectly.
+ */
+Blockly.BlockSvg.prototype.renderAll = function() {
+  var root = this.getRootBlock();
+  var descendants = root.getDescendants();
+  for (var i = 0, child; child = descendants[i]; i++) {
+    child.render(false);
+  }
+};
+
+/**
  * Return whether the block contains a type expression which has been updated
  * since the last block rendering.
  * @return {boolean} True if the block contains an updated type expression.

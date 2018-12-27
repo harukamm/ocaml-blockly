@@ -381,6 +381,7 @@ Blockly.BlockDragger.prototype.fireMoveEvent_ = function() {
  * @private
  */
 Blockly.BlockDragger.prototype.transferAndConnect_ = function() {
+  var execTransferring = false;
   if (this.workspaceTransferManager_ &&
       this.workspaceTransferManager_.wouldTransfer()) {
     var manager = this.draggedConnectionManager_;
@@ -392,10 +393,18 @@ Blockly.BlockDragger.prototype.transferAndConnect_ = function() {
     }
     this.workspaceTransferManager_.placeNewBlock(
         local, closest, replaceCallback.bind(this));
+    execTransferring = true;
   }
   if (this.draggedConnectionManager_.wouldConnectBlock()) {
-    // Applying connections also rerenders the relevant blocks.
+    // Applying connections rerenders type changed blocks on related
+    // workspaces.
     this.draggedConnectionManager_.applyConnections();
+  } else if (execTransferring) {
+    // If block is transferred to another workspace, type-exprs on the new
+    // blocks are updated because of type replacement. Descendants blocks
+    // should be re-rendered.
+    // e.g.) let a = <> in a + <>
+    this.draggingBlock_.renderAll();
   } else {
     this.draggingBlock_.render();
   }
