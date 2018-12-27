@@ -1186,3 +1186,42 @@ function test_type_transfer_block_workspace_appBlockWithCyclicReference() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_appBlockWithEmptyInput() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    // let f x y = x +. y in f <> <>
+    var letBlock = createLetBlockWithArguments(workspace, 'f x y');
+    var argX = letBlock.typedValue['ARG0'];
+    var argY = letBlock.typedValue['ARG1'];
+    var floatArith = workspace.newBlock('float_arithmetic_typed');
+    var blockX = createReferenceBlock(argX);
+    var blockY = createReferenceBlock(argY);
+    letBlock.getInput('EXP1').connection.connect(floatArith.outputConnection);
+    floatArith.getInput('A').connection.connect(blockX.outputConnection);
+    floatArith.getInput('B').connection.connect(blockY.outputConnection);
+
+    var functionApp = createReferenceBlock(letBlock.typedValue['VAR'], true);
+    letBlock.getInput('EXP2').connection.connect(functionApp.outputConnection);
+
+    function checkFloatType(letBlock) {
+      assertEquals(letBlock.argumentCount_, 2);
+      var block = letBlock.getInputTargetBlock('EXP2');
+      assertEquals(block.type, 'function_app_typed');
+      assertEquals(block.paramCount_, 2);
+      assertTrue(block.getInput('PARAM0').connection.typeExpr.deref().isFloat());
+      assertTrue(block.getInput('PARAM1').connection.typeExpr.deref().isFloat());
+      assertTrue(block.outputConnection.typeExpr.deref().isFloat());
+    }
+
+    checkFloatType(letBlock);
+    var transBlock = virtually_transfer_workspace(letBlock, otherWorkspace);
+    checkFloatType(transBlock);
+    var transBlock = repeat_transfer_workspace(transBlock, workspace, 10);
+    checkFloatType(transBlock);
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}
