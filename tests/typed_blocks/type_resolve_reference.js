@@ -503,3 +503,23 @@ function test_resolve_reference_letRecParameterShadowing() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_letStatementSimple() {
+  var workspace = create_typed_workspace();
+  try {
+    var letBlock1 = workspace.newBlock('letstatement_typed');
+    var letBlock2 = workspace.newBlock('letstatement_typed');
+    var letBlock3 = workspace.newBlock('letstatement_typed');
+    letBlock1.nextConnection.connect(letBlock2.previousConnection);
+    letBlock2.nextConnection.connect(letBlock3.previousConnection);
+    var value1 = letBlock1.typedValue['VAR'];
+    var varBlock = createReferenceBlock(value1, false);
+    var exp1 = letBlock2.getInput('EXP1').connection;
+    assertTrue(varBlock.resolveReference(exp1));
+    var exp1 = letBlock3.getInput('EXP1').connection;
+    assertTrue(varBlock.resolveReference(exp1));
+    assertTrue(letBlock1.resolveReference(null));
+  } finally {
+    workspace.dispose();
+  }
+}

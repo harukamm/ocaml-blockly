@@ -1671,6 +1671,28 @@ Blockly.Block.prototype.getInputTargetBlock = function(name) {
 };
 
 /**
+ * Returns the target connection which connect this block to the parent block.
+ * @return {Blockly.Connection} The target connection if this block has a
+ *     parent. Otherwise, null.
+ */
+Blockly.Block.prototype.getParentConnection = function() {
+  var parentBlock = this.getParent();
+  if (!parentBlock) {
+    return null;
+  }
+  var targetConnection;
+  if (this.outputConnection) {
+    targetConnection = this.outputConnection.targetConnection;
+  } else if (this.previousConnection) {
+    targetConnection = this.previousConnection.targetConnection;
+  }
+  goog.asserts.assert(targetConnection &&
+      targetConnection.getSourceBlock() == parentBlock,
+      'The parent\'s connection is not found.');
+  return targetConnection;
+};
+
+/**
  * Returns the comment on this block (or '' if none).
  * @return {string} Block's comment.
  */
@@ -1948,8 +1970,7 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
     }
 
     for (var i = 0, child; child = block.childBlocks_[i]; i++) {
-      var outputConn = child.outputConnection;
-      var targetConn = outputConn.targetConnection;
+      var targetConn = child.getParentConnection();
       var additionalEnv = block.getVisibleVariablesImpl(targetConn);
       var envOfChild = Object.assign({}, envOfParent);
       Object.assign(envOfChild, additionalEnv);
@@ -2015,7 +2036,7 @@ Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit,
   var blocksToCheck = [[this, conn]];
   var block = this;
   while (block.getParent()) {
-    var targetConnection = block.outputConnection.targetConnection;
+    var targetConnection = block.getParentConnection();
     block = block.getParent();
     blocksToCheck.push([block, targetConnection]);
   }
@@ -3262,9 +3283,11 @@ Blockly.Blocks['let_typed'] = {
     }
     var map = {};
     var isExp1 = this.getInput('EXP1').connection == conn;
-    var isExp2 = !isExp1 && this.getInput('EXP2').connection == conn;
+    var isNext = !isExp1 && this.nextConnection == conn;
+    var isExp2 = !isExp1 && !isNext &&
+        this.getInput('EXP2').connection == conn;
 
-    if (isExp2 || isExp1 && this.isRecursive_) {
+    if (isNext || isExp2 || isExp1 && this.isRecursive_) {
       var variable = this.typedValue['VAR'];
       var name = variable.getVariableName();
       map[name] = variable;
@@ -3314,7 +3337,6 @@ Blockly.Blocks['let_typed'] = {
       return;
     }
     if (newIsStatement) {
-      goog.asserts.assert('Not supported yet.');
       var exp2Input = this.getInput('EXP2');
       if (exp2Input) {
         var workbench = exp2Input.connection.contextWorkbench;
