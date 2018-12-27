@@ -56,26 +56,6 @@ Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
 goog.inherits(Blockly.BoundVariableValue, Blockly.BoundVariableAbstract);
 
 /**
- * Store the given type expression in this variable.
- * @param {Blockly.TypeExpr|null} typeExpr The type expression to be stored in
- *     this variable, or could be null if another block takes the place of the
- *     block.
- * @override
- */
-Blockly.BoundVariableValue.prototype.setTypeExpr = function(typeExpr) {
-  var oldTypeExpr = this.typeExpr_;
-  var newTypeExpr = typeExpr;
-
-  if (oldTypeExpr != newTypeExpr) {
-    for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
-      reference.valueTypeExprChanged(oldTypeExpr, newTypeExpr);
-    }
-  }
-
-  Blockly.BoundVariableValue.superClass_.setTypeExpr.call(this, typeExpr);
-};
-
-/**
  * Bind references' type expression with this value's type expression.
  * @override
  */

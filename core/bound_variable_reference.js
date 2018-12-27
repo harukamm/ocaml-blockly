@@ -165,20 +165,6 @@ Blockly.BoundVariableValueReference.prototype.removeBoundValue = function() {
 };
 
 /**
- * Update the type unification. Called when the type expression of the value
- * has changed.
- */
-Blockly.BoundVariableValueReference.prototype.valueTypeExprChanged = function(
-    oldTypeExpr, newTypeExpr) {
-  if (!this.value_) {
-    throw 'The reference has not been resolved yet.';
-  }
-  if (newTypeExpr) {
-    this.unifyTypeExpr();
-  }
-};
-
-/**
  * Bind the type expression with the value's type expression.
  * @override
  */
