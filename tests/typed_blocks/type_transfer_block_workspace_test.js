@@ -1102,10 +1102,8 @@ function test_type_transfer_block_workspace_recursiveReferenceMustBeMonoType() {
     var blocks = getFlyoutBlocksFromWorkbench(workbench);
     assertEquals(blocks.length, 3);
 
-    var functionApp = workbench.getWorkspace().newBlock('function_app_typed');
-    functionApp.typedReference['VAR'].setVariableName('f');
-    functionApp.typedReference['VAR'].setBoundValue(letValue);
-    functionApp.updateInput();
+    var functionApp = createReferenceBlock(letValue, true,
+        workbench.getWorkspace());
     assertTrue(functionApp.resolveReference(null));
     assertEquals(functionApp.paramCount_, 2);
 
@@ -1162,10 +1160,7 @@ function test_type_transfer_block_workspace_appBlockWithCyclicReference() {
     var argValue1 = letBlock.typedValue['ARG0'];
     var argValue2 = letBlock.typedValue['ARG1'];
 
-    var functionApp = workspace.newBlock('function_app_typed');
-    functionApp.typedReference['VAR'].setVariableName('f');
-    functionApp.typedReference['VAR'].setBoundValue(letValue);
-    functionApp.updateInput();
+    var functionApp = createReferenceBlock(letValue, true);
     assertEquals(functionApp.paramCount_, 2);
     var int1 = workspace.newBlock('int_typed');
     var int2 = workspace.newBlock('int_typed');

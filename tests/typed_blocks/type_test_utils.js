@@ -107,6 +107,20 @@ function createNestedValueBlock(workspace, size, getNthName) {
   return valueBlocks;
 }
 
+function createReferenceBlock(value, useAppBlock, opt_workspace) {
+  var workspace = opt_workspace ? opt_workspace : value.getWorkspace();
+  var prototypeName = useAppBlock ? 'function_app_typed' :
+      'variables_get_typed';
+  var block = workspace.newBlock(prototypeName);
+  var ref = block.typedReference['VAR'];
+  ref.setVariableName(value.getVariableName());
+  ref.setBoundValue(value);
+  if (useAppBlock) {
+    block.updateInput();
+  }
+  return block;
+}
+
 function checkValuesPariedWithValueBlocks(values, valueBlocks) {
   assertEquals(values.length, valueBlocks.length);
   var blockValues = goog.array.map(valueBlocks,
