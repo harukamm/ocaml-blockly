@@ -223,6 +223,26 @@ function create_mock_mutator(block, itemProto) {
   return mutatorMock;
 }
 
+function addArguments(letBlock, additionalArgs) {
+  assertTrue(letBlock.type === 'let_typed' ||
+      letBlock.type === 'letrec_typed');
+  if (goog.isString(additionalArgs)) {
+    additionalArgs = additionalArgs.split(' ');
+  }
+  var mutator = create_mock_mutator(letBlock, 'parameters_arg_item');
+  var oldArgc = letBlock.argumentCount_;
+  for (var i = 0; i < additionalArgs.length; i++) {
+    mutator._append();
+  }
+  mutator._update();
+  assertEquals(letBlock.argumentCount_, oldArgc + additionalArgs.length);
+  for (var i = 0; i < additionalArgs.length; i++) {
+    var argValue = letBlock.typedValue['ARG' + i];
+    argValue.setVariableName(additionalArgs[i]);
+  }
+  mutator.dispose();
+}
+
 function createLetBlockWithArguments(workspace, names, recFlag) {
   var nameList = names.split(' ');
   assertTrue(1 <= nameList.length);
@@ -231,19 +251,9 @@ function createLetBlockWithArguments(workspace, names, recFlag) {
 
   var prototypeName = recFlag ? 'letrec_typed' : 'let_typed';
   var letBlock = workspace.newBlock(prototypeName);
-  var mutator = create_mock_mutator(letBlock, 'parameters_arg_item');
   assertEquals(letBlock.argumentCount_, 0);
-  for (var i = 0; i < argumentNames.length; i++) {
-    mutator._append();
-  }
-  mutator._update();
-  assertEquals(letBlock.argumentCount_, argumentNames.length);
+  addArguments(letBlock, argumentNames);
   letBlock.typedValue['VAR'].setVariableName(varName);
-  for (var i = 0; i < argumentNames.length; i++) {
-    var argValue = letBlock.typedValue['ARG' + i];
-    argValue.setVariableName(argumentNames[i]);
-  }
-  mutator.dispose();
   return letBlock;
 }
 
