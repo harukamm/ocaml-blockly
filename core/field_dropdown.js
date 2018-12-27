@@ -434,6 +434,11 @@ Blockly.FieldDropdown.prototype.render_ = function() {
     this.size_.width = 0;
     return;
   }
+  if (!this.textElement_) {
+    // This field is being disposed. Do not render anything.
+    this.size_.width = 0;
+    return;
+  }
   if (this.sourceBlock_ && this.arrow_) {
     // Update arrow's colour.
     this.arrow_.style.fill = this.sourceBlock_.getColour();
