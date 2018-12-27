@@ -2821,16 +2821,33 @@ Blockly.Blocks['function_app_typed'] = {
     this.setOutputTypeExpr(returnType, true);
   },
 
-  populateInput: function(name) {
-    if (!name.startsWith('PARAM')) {
-      return null;
+  /**
+   * Create XML to represent application inputs.
+   * @return {Element} XML storage element.
+   * @this Blockly.Block
+   */
+  mutationToDom: function() {
+    var container = document.createElement('mutation');
+    container.setAttribute('params', this.paramCount_);
+    return container;
+  },
+  /**
+   * Parse XML to restore the application inputs.
+   * @param {!Element} xmlElement XML storage element.
+   * @this Blockly.Block
+   */
+  domToMutation: function(xmlElement) {
+    var newParamCount = parseInt(xmlElement.getAttribute('params'), 0);
+    goog.asserts.assert(this.paramCount_ == 0,
+        'Default parameter count must be zero.');
+    for (var i = 0; i < newParamCount; i++) {
+      var inputName = 'PARAM' + i;
+      var rendered = this.rendered;
+      this.rendered = false;
+      var input = this.appendValueInput(inputName);
+      this.rendered = rendered;
+      this.paramCount_++;
     }
-    var numstr = name.substring(5);
-    var n = parseInt(numstr);
-    if (this.paramCount_ <= n) {
-      this.updateInput();
-    }
-    return this.getInput('PARAM' + n);
   },
 
   clearTypes: function() {
@@ -2838,7 +2855,11 @@ Blockly.Blocks['function_app_typed'] = {
     for (var i = 0; i < this.paramCount_; i++) {
       this.callClearTypes_('PARAM' + i);
       var input = this.getInput('PARAM' + i);
-      input.connection.typeExpr.clear();
+      // The input might not have type expression if it has been appended
+      // in domToMutation().
+      if (input.connection.typeExpr) {
+        input.connection.typeExpr.clear();
+      }
     }
     this.outputConnection.typeExpr.clear();
   },

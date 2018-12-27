@@ -250,16 +250,22 @@ Blockly.Xml.blockToDom = function(block, opt_noId, opt_rootBlock) {
   if (!opt_noId) {
     element.setAttribute('id', block.id);
   }
-  if (block.mutationToDom) {
-    // Custom data for an advanced block.
-    var mutation = block.mutationToDom();
-    if (mutation && (mutation.hasChildNodes() || mutation.hasAttributes())) {
-      element.appendChild(mutation);
-    }
+
+  // Some blocks should be mutated after initializing the block's fields.
+  // Since components are restored in the same order of XML nodes, the order of
+  // encoding must be changed.
+  var mutateAfterFieldDecoded = block.type === 'function_app_typed';
+
+  if (!mutateAfterFieldDecoded) {
+    Blockly.Xml.blockMutationToDom_(block, element);
   }
 
   var rootBlock = opt_rootBlock ? opt_rootBlock : block;
   Blockly.Xml.allFieldsToDom_(block, element, rootBlock);
+
+  if (mutateAfterFieldDecoded) {
+    Blockly.Xml.blockMutationToDom_(block, element);
+  }
 
   var commentText = block.getCommentText();
   if (commentText) {
@@ -345,6 +351,22 @@ Blockly.Xml.blockToDom = function(block, opt_noId, opt_rootBlock) {
   }
 
   return element;
+};
+
+/**
+ * Store custom data for an advanced block to the container.
+ * @param {!Blockly.Block} block The block
+ * @param {!Element} container
+ * @private
+ */
+Blockly.Xml.blockMutationToDom_ = function(block, container) {
+  if (!block.mutationToDom) {
+    return;
+  }
+  var mutation = block.mutationToDom();
+  if (mutation && (mutation.hasChildNodes() || mutation.hasAttributes())) {
+    container.appendChild(mutation);
+  }
 };
 
 /**
@@ -790,9 +812,6 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace,
       case 'value':
       case 'statement':
         input = block.getInput(name);
-        if (!input && goog.isFunction(block.populateInput)) {
-          input = block.populateInput.call(block, name);
-        }
         if (!input) {
           console.warn('Ignoring non-existent input ' + name + ' in block ' +
                        prototypeName);
