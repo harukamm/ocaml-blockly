@@ -2864,6 +2864,7 @@ Blockly.Blocks['function_app_typed'] = {
       var rendered = this.rendered;
       this.rendered = false;
       var input = this.appendValueInput(inputName);
+      input.setTypeExpr(Blockly.TypeExpr.generateTypeVar());
       this.rendered = rendered;
       this.paramCount_++;
     }
@@ -2874,11 +2875,7 @@ Blockly.Blocks['function_app_typed'] = {
     for (var i = 0; i < this.paramCount_; i++) {
       this.callClearTypes_('PARAM' + i);
       var input = this.getInput('PARAM' + i);
-      // The input might not have type expression if it has been appended
-      // in domToMutation().
-      if (input.connection.typeExpr) {
-        input.connection.typeExpr.clear();
-      }
+      input.connection.typeExpr.clear();
     }
     this.outputConnection.typeExpr.clear();
   },
