@@ -1093,19 +1093,10 @@ function test_type_transfer_block_workspace_recursiveReferenceMustBeMonoType() {
   var workbench;
   try {
     // let rec f x y =  ..
-    var letRecBlock = workspace.newBlock('letrec_typed');
-    var mutator = create_mock_mutator(letRecBlock, 'parameters_arg_item');
-    assertEquals(letRecBlock.argumentCount_, 0);
-    mutator._append();
-    mutator._append();
-    mutator._update();
-    assertEquals(letRecBlock.argumentCount_, 2);
+    var letRecBlock = createLetBlockWithArguments(workspace, 'f x y', true);
     var letValue = letRecBlock.typedValue['VAR'];
     var argValue1 = letRecBlock.typedValue['ARG0'];
     var argValue2 = letRecBlock.typedValue['ARG1'];
-    letValue.setVariableName('f');
-    argValue1.setVariableName('x');
-    argValue2.setVariableName('y');
 
     workbench = create_mock_workbench(letRecBlock, 'EXP1');
     var blocks = getFlyoutBlocksFromWorkbench(workbench);
@@ -1165,20 +1156,11 @@ function test_type_transfer_block_workspace_appBlockWithCyclicReference() {
   var otherWorkspace = create_typed_workspace();
   try {
     // let f x y = .. in f 0 0
-    var letBlock = workspace.newBlock('let_typed');
-    var mutator = create_mock_mutator(letBlock, 'parameters_arg_item');
-    assertEquals(letBlock.argumentCount_, 0);
-    mutator._append();
-    mutator._append();
-    mutator._update();
-    assertEquals(letBlock.argumentCount_, 2);
+    var letBlock = createLetBlockWithArguments(workspace, 'f x y');
     var letValue = letBlock.typedValue['VAR'];
     var originalType = letValue.getTypeExpr();
     var argValue1 = letBlock.typedValue['ARG0'];
     var argValue2 = letBlock.typedValue['ARG1'];
-    letValue.setVariableName('f');
-    argValue1.setVariableName('x');
-    argValue2.setVariableName('y');
 
     var functionApp = workspace.newBlock('function_app_typed');
     functionApp.typedReference['VAR'].setVariableName('f');

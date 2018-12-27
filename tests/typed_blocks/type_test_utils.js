@@ -209,6 +209,30 @@ function create_mock_mutator(block, itemProto) {
   return mutatorMock;
 }
 
+function createLetBlockWithArguments(workspace, names, recFlag) {
+  var nameList = names.split(' ');
+  assertTrue(1 <= nameList.length);
+  var varName = nameList[0];
+  var argumentNames = nameList.splice(1);
+
+  var prototypeName = recFlag ? 'letrec_typed' : 'let_typed';
+  var letBlock = workspace.newBlock(prototypeName);
+  var mutator = create_mock_mutator(letBlock, 'parameters_arg_item');
+  assertEquals(letBlock.argumentCount_, 0);
+  for (var i = 0; i < argumentNames.length; i++) {
+    mutator._append();
+  }
+  mutator._update();
+  assertEquals(letBlock.argumentCount_, argumentNames.length);
+  letBlock.typedValue['VAR'].setVariableName(varName);
+  for (var i = 0; i < argumentNames.length; i++) {
+    var argValue = letBlock.typedValue['ARG' + i];
+    argValue.setVariableName(argumentNames[i]);
+  }
+  mutator.dispose();
+  return letBlock;
+}
+
 /* End functions for mutators. */
 
 /* Begin functions for workbenches. */

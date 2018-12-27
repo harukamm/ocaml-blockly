@@ -1094,13 +1094,7 @@ function test_type_unification_fixBugReferenceBlockTypeInference() {
 function test_type_unification_mockMutator() {
   var workspace = create_typed_workspace();
   try {
-    var letBlock = workspace.newBlock('let_typed');
-    var mutator = create_mock_mutator(letBlock, 'parameters_arg_item');
-    assertEquals(letBlock.argumentCount_, 0);
-    mutator._append();
-    mutator._append();
-    mutator._append();
-    mutator._update();
+    var letBlock = createLetBlockWithArguments(workspace, 'f x y z');
     assertEquals(letBlock.argumentCount_, 3);
     assertNotNull(letBlock.typedValue['ARG0']);
     assertNotNull(letBlock.typedValue['ARG1']);
@@ -1121,14 +1115,9 @@ function test_type_unification_polyTypeForIdFunc() {
   var workbench;
   var workbench2;
   try {
-    var letBlock = workspace.newBlock('let_typed');
-    var mutator = create_mock_mutator(letBlock, 'parameters_arg_item');
-    assertEquals(letBlock.argumentCount_, 0);
-    mutator._append();
-    mutator._update();
+    var letBlock = createLetBlockWithArguments(workspace, 'id x');
     assertEquals(letBlock.argumentCount_, 1);
     assertNotNull(letBlock.typedValue['ARG0']);
-    setVariableName(letBlock, 'id');
 
     workbench = create_mock_workbench(letBlock, 'EXP1');
     var blocks = getFlyoutBlocksFromWorkbench(workbench, workspace);
