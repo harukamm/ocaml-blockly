@@ -3122,19 +3122,6 @@ Blockly.Blocks['variables_get_typed'] = {
     variable.setTypeExpr(A);
   },
 
-  /**
-   * Notification that a variable is renaming.
-   * If the name matches one of this block's variables, rename it.
-   * @param {string} oldName Previous name of variable.
-   * @param {string} newName Renamed variable.
-   * @this Blockly.Block
-   */
-  renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getField('VAR').getText())) {
-      this.setFieldValue(newName, 'VAR');
-    }
-  },
-
   clearTypes: function() {
     var variable = this.typedReference['VAR'];
     goog.asserts.assert(this.outputConnection.typeExpr ==
@@ -3332,19 +3319,6 @@ Blockly.Blocks['let_typed'] = {
     }
     option.callback = this.setRecursiveFlag.bind(this, !this.isRecursive_);
     options.push(option);
-  },
-
-  /**
-   * Notification that a variable is renaming.
-   * If the name matches one of this block's variables, rename it.
-   * @param {string} oldName Previous name of variable.
-   * @param {string} newName Renamed variable.
-   * @this Blockly.Block
-   */
-  renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getField('VAR').getText())) {
-      this.setFieldValue(newName, 'VAR');
-    }
   },
 
   /**
