@@ -1318,3 +1318,23 @@ function test_type_unification_matchPatternSimple() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_fixArgumentAdditionIsFailed() {
+  var workspace = create_typed_workspace();
+  try {
+    // let f = <> in f + <>
+    var letBlock = workspace.newBlock('let_typed');
+    var letValue = letBlock.typedValue['VAR'];
+    letValue.setVariableName('f');
+    var varBlock = createReferenceBlock(letValue);
+    var intArith1 = workspace.newBlock('int_arithmetic_typed');
+    letBlock.getInput('EXP2').connection.connect(intArith1.outputConnection);
+    intArith1.getInput('A').connection.connect(varBlock.outputConnection);
+    // TODO(harukam): The following test fails. Avoid adding new argument if
+    // it causes type inference error.
+    // addArguments(letBlock, 'x');
+  } finally {
+    disableAllTypeCheck(letBlock);
+    workspace.dispose();
+  }
+}

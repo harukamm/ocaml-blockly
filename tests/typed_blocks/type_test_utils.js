@@ -223,6 +223,16 @@ function create_mock_mutator(block, itemProto) {
   return mutatorMock;
 }
 
+function disableAllTypeCheck(block) {
+  var desc = block.getDescendants();
+  for (var i = 0, child; child = desc[i]; i++) {
+    var connections = child.getConnections_();
+    for (var j = 0, conn; conn = connections[j]; j++) {
+      conn.disableTypeCheck(true);
+    }
+  }
+}
+
 function addArguments(letBlock, additionalArgs) {
   assertTrue(letBlock.type === 'let_typed' ||
       letBlock.type === 'letrec_typed');
