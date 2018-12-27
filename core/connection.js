@@ -755,7 +755,7 @@ Blockly.Connection.prototype.setTypeExpr = function(t, opt_overwrite) {
  */
 Blockly.Connection.prototype.replaceTypeExprWith = function(oldConnection,
     opt_removeTypeExpr) {
-  if (this.typeExpr && oldConnection.typeExpr) {
+  if (oldConnection.typeExpr) {
     this.setTypeExpr(oldConnection.typeExpr, true);
 
     if (opt_removeTypeExpr !== false) {

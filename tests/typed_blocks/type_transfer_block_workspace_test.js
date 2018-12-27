@@ -1169,17 +1169,25 @@ function test_type_transfer_block_workspace_appBlockWithCyclicReference() {
     functionApp.getInput('PARAM1').connection.connect(int2.outputConnection);
     var originalTypeExpr = functionApp.typedReference['VAR'].getTypeExpr();
     var outTypeExpr = functionApp.outputConnection.typeExpr;
+    var param0Type = functionApp.getInput('PARAM0').connection.typeExpr;
+    var param1Type = functionApp.getInput('PARAM1').connection.typeExpr;
 
     function typeReplacementCheck(oldB, newB) {
       var newApp = newB.getInputTargetBlock('EXP2');
       assertEquals(outTypeExpr, newApp.outputConnection.typeExpr);
       assertEquals(originalTypeExpr, newApp.typedReference['VAR'].getTypeExpr());
+      assertEquals(param0Type, newApp.getInput('PARAM0').connection.typeExpr);
+      assertEquals(param1Type, newApp.getInput('PARAM1').connection.typeExpr);
     }
     var transBlock = virtually_transfer_workspace(letBlock,
         otherWorkspace, null, null, typeReplacementCheck);
     var transAppBlock = transBlock.getInputTargetBlock('EXP2');
     assertEquals(transBlock.argumentCount_, 2);
     assertEquals(transAppBlock.paramCount_, 2);
+    assertNotNull(transAppBlock.getInput('PARAM0').connection.typeExpr);
+    assertNotNull(transAppBlock.getInput('PARAM1').connection.typeExpr);
+    assertTrue(transAppBlock.getInput('PARAM0').connection.typeExpr.deref().isInt());
+    assertTrue(transAppBlock.getInput('PARAM1').connection.typeExpr.deref().isInt());
     var transBlock = repeat_transfer_workspace(transBlock, workspace, 10);
   } finally {
     workspace.dispose();
