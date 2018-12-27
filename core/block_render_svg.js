@@ -478,7 +478,7 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
       input.renderWidth = Math.max(input.renderWidth, bBox.width);
     }
 
-    // Sorin: expand based on connection height
+    // Expand based on connection height
     if (input.connection && input.connection.typeExpr) {
       var typeHeight =
           Blockly.RenderedTypeExpr.getTypeExprHeight(input.connection.typeExpr);
@@ -814,7 +814,7 @@ Blockly.BlockSvg.prototype.renderDrawRight_ = function(pathObject, inputRows,
       pathObject.highlightSteps.push('V', cursor.y - 1);
     }
   }
-  // Sorin: adjust height to display output
+  // Adjust height to display output
   if (this.outputConnection && this.outputConnection.typeExpr) {
     var out_height = Blockly.RenderedTypeExpr.getTypeExprHeight(
         this.outputConnection.typeExpr);

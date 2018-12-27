@@ -199,7 +199,6 @@ Blockly.Css.CONTENT = [
     'stroke-width: 4px;',
   '}',
 
-  // Sorin
   '.blocklyTypeVarPath {',
     'stroke-width: 3px;',
     'fill: none;',

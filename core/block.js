@@ -2219,7 +2219,6 @@ Blockly.Blocks['logic_compare_typed'] = {
     this.setHelpUrl(Blockly.Msg.LOGIC_COMPARE_HELPURL);
     this.setColour(210);
     this.setOutput(true, 'Boolean');
-    // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr.BOOL());
     var A = Blockly.TypeExpr.generateTypeVar();
     this.appendValueInput('A')
@@ -2322,7 +2321,6 @@ Blockly.Blocks['int_typed'] = {
         .appendField(new Blockly.FieldTextInput('0',
         Blockly.FieldTextInput.intValidator), 'INT');
     this.setOutput(true, 'Int');
-    // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr.INT());
     this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
   }
@@ -2343,7 +2341,6 @@ Blockly.Blocks['int_arithmetic_typed'] = {
     this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
     this.setColour(230);
     this.setOutput(true, 'Int');
-    // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr.INT());
     this.appendValueInput('A')
         .setTypeExpr(new Blockly.TypeExpr.INT())
@@ -2397,7 +2394,6 @@ Blockly.Blocks['float_typed'] = {
         .appendField(new Blockly.FieldTextInput('0.',
         Blockly.FieldTextInput.floatValidator), 'Float');
     this.setOutput(true, 'Float');
-    // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr.FLOAT());
     this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
   }
@@ -2418,7 +2414,6 @@ Blockly.Blocks['float_arithmetic_typed'] = {
     this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
     this.setColour(100);
     this.setOutput(true, 'Float');
-    // Sorin
     this.setOutputTypeExpr(new Blockly.TypeExpr.FLOAT());
     this.appendValueInput('A')
         .setTypeExpr(new Blockly.TypeExpr.FLOAT())

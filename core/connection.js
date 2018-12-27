@@ -229,7 +229,6 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
     parentConnection.setShadowDom(shadowDom);
   }
 
-  // Sorin
   if (this.typeExprEnabled()) {
     if (!childBlock.resolveReference(parentConnection, true)) {
       throw 'Connecting these blocks will occur invalid variable reference.';
@@ -273,7 +272,6 @@ Blockly.Connection.prototype.dispose = function() {
   this.db_ = null;
   this.dbOpposite_ = null;
 
-  // Sorin
   if (this.typeVarPaths_) {
     for (var i = 0; i < this.typeVarPaths_.length; i++) {
       goog.dom.removeNode(this.typeVarPaths_[i]);
