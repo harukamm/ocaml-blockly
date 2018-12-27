@@ -1159,3 +1159,53 @@ function test_type_transfer_block_workspace_recursiveReferenceMustBeMonoType() {
     workspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_appBlockWithCyclicReference() {
+  var workspace = create_typed_workspace();
+  var otherWorkspace = create_typed_workspace();
+  try {
+    // let f x y = .. in f 0 0
+    var letBlock = workspace.newBlock('let_typed');
+    var mutator = create_mock_mutator(letBlock, 'parameters_arg_item');
+    assertEquals(letBlock.argumentCount_, 0);
+    mutator._append();
+    mutator._append();
+    mutator._update();
+    assertEquals(letBlock.argumentCount_, 2);
+    var letValue = letBlock.typedValue['VAR'];
+    var originalType = letValue.getTypeExpr();
+    var argValue1 = letBlock.typedValue['ARG0'];
+    var argValue2 = letBlock.typedValue['ARG1'];
+    letValue.setVariableName('f');
+    argValue1.setVariableName('x');
+    argValue2.setVariableName('y');
+
+    var functionApp = workspace.newBlock('function_app_typed');
+    functionApp.typedReference['VAR'].setVariableName('f');
+    functionApp.typedReference['VAR'].setBoundValue(letValue);
+    functionApp.updateInput();
+    assertEquals(functionApp.paramCount_, 2);
+    var int1 = workspace.newBlock('int_typed');
+    var int2 = workspace.newBlock('int_typed');
+    letBlock.getInput('EXP2').connection.connect(functionApp.outputConnection);
+    functionApp.getInput('PARAM0').connection.connect(int1.outputConnection);
+    functionApp.getInput('PARAM1').connection.connect(int2.outputConnection);
+    var originalTypeExpr = functionApp.typedReference['VAR'].getTypeExpr();
+    var outTypeExpr = functionApp.outputConnection.typeExpr;
+
+    function typeReplacementCheck(oldB, newB) {
+      var newApp = newB.getInputTargetBlock('EXP2');
+      assertEquals(outTypeExpr, newApp.outputConnection.typeExpr);
+      assertEquals(originalTypeExpr, newApp.typedReference['VAR'].getTypeExpr());
+    }
+    var transBlock = virtually_transfer_workspace(letBlock,
+        otherWorkspace, null, null, typeReplacementCheck);
+    var transAppBlock = transBlock.getInputTargetBlock('EXP2');
+    assertEquals(transBlock.argumentCount_, 2);
+    assertEquals(transAppBlock.paramCount_, 2);
+    var transBlock = repeat_transfer_workspace(transBlock, workspace, 10);
+  } finally {
+    workspace.dispose();
+    otherWorkspace.dispose();
+  }
+}

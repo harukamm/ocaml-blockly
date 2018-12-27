@@ -2786,6 +2786,25 @@ Blockly.Blocks['function_app_typed'] = {
     this.setOutputTypeExpr(A);
   },
 
+  /**
+   * Update the type expressions of bound-variable fields on this block.
+   * Would be called if the block's type expressions are replaced with other
+   * ones, and a type expression this field's variable refers to is no longer
+   * up-to-date.
+   * @param {Blockly.Block} block The source block to replace this block with.
+   *     Could be used to additionally replace the type expression of fields.
+   */
+  typeExprReplaced: function(block) {
+    var variable = this.typedReference['VAR'];
+    var typeOwner = block ? block.typedReference['VAR'] : null;
+
+    if (typeOwner) {
+      variable.setTypeExpr(typeOwner.getTypeExpr());
+    } else {
+      variable.setTypeExpr(null);
+    }
+  },
+
   updateInput: function() {
     var variable = this.typedReference['VAR'];
     var type = variable.getTypeExpr();
