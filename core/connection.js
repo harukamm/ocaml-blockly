@@ -309,14 +309,16 @@ Blockly.Connection.prototype.isConnected = function() {
  * Checks whether the current connection can connect with the target
  * connection.
  * @param {Blockly.Connection} target Connection to check compatibility with.
- * @param {boolean=} opt_final True if two connections will be connected
- *    immediately if they are found compatible.
+ * @param {Object=} opt_settings Object to specify settings for connection
+ *     check with the following properties.
+ *     - finalCheck: True if two connections will be connected immediately if
+ *       they are found compatible.
  * @return {number} Blockly.Connection.CAN_CONNECT if the connection is legal,
  *    an error code otherwise.
  * @private
  */
 Blockly.Connection.prototype.canConnectWithReason_ = function(target,
-    opt_final) {
+    opt_settings) {
   if (!target) {
     return Blockly.Connection.REASON_TARGET_NULL;
   }
@@ -329,15 +331,16 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target,
   }
   var transferable = blockA && blockB && blockA.isTransferable() &&
       blockB.isTransferable();
+  var isFinalCheck = !!opt_settings && opt_settings.finalCheck;
   if (blockA && blockA == blockB) {
     return Blockly.Connection.REASON_SELF_CONNECTION;
   } else if (target.type != Blockly.OPPOSITE_TYPE[this.type]) {
     return Blockly.Connection.REASON_WRONG_TYPE;
   } else if (blockA && blockB && blockA.workspace !== blockB.workspace &&
-      (opt_final === true || !transferable)) {
+      (isFinalCheck === true || !transferable)) {
     return Blockly.Connection.REASON_DIFFERENT_WORKSPACES;
   } else {
-    var reason = this.checkTypeWithReason_(target, opt_final);
+    var reason = this.checkTypeWithReason_(target, opt_settings);
     if (reason != Blockly.Connection.CAN_CONNECT) {
       return reason;
     }
@@ -353,12 +356,12 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target,
  * and throws an exception if they are not.
  * @param {Blockly.Connection} target The connection to check compatibility
  *    with.
- * @param {boolean=} opt_final True if two connections will be connected
- *    immediately if they are found compatible.
  * @private
  */
-Blockly.Connection.prototype.checkConnection_ = function(target, opt_final) {
-  switch (this.canConnectWithReason_(target, opt_final)) {
+Blockly.Connection.prototype.checkConnection_ = function(target) {
+  var settings = {finalCheck: true};
+  var reason = this.canConnectWithReason_(target, settings);
+  switch (reason) {
     case Blockly.Connection.CAN_CONNECT:
       break;
     case Blockly.Connection.REASON_SELF_CONNECTION:
@@ -451,7 +454,7 @@ Blockly.Connection.prototype.connect = function(otherConnection,
     this.disableTypeCheck(true);
     otherConnection.disableTypeCheck(true);
   }
-  this.checkConnection_(otherConnection, true);
+  this.checkConnection_(otherConnection);
   // Determine which block is superior (higher in the source stack).
   if (this.isSuperior()) {
     // Superior block.
@@ -626,12 +629,14 @@ Blockly.Connection.prototype.targetBlock = function() {
  * when this connection connects to the given connection.
  * @param {Blockly.Connection} otherConnection Connection to compare against.
  *     If null, check if variables only on the block contains can be resolved.
- * @param {boolean=} opt_bind True to newly bind variable reference with the
- *     variable found in the context.
+ * @param {Object=} settings Object to specify settings for connection
+ *     check with the following properties.
+ *     - finalCheck: True if two connections will be connected immediately if
+ *       they are found compatible.
  * @return {boolean} True if variables on blocks can be resolved.
  */
 Blockly.Connection.prototype.checkBoundVariables = function(otherConnection,
-    opt_bind) {
+    opt_settings) {
   if (otherConnection) {
     var superior = this.isSuperior() ? this : otherConnection;
     var inferior = superior == this ? otherConnection : this;
@@ -640,7 +645,9 @@ Blockly.Connection.prototype.checkBoundVariables = function(otherConnection,
     var superior = null;
     var childBlock = this.getSourceBlock();
   }
-  return childBlock.resolveReference(superior, opt_bind === true);
+  var isFinalCheck = !!opt_settings && opt_settings.finalCheck;
+  var bindNewly = isFinalCheck === true;
+  return childBlock.resolveReference(superior, bindNewly);
 };
 
 /**
@@ -659,13 +666,15 @@ Blockly.Connection.prototype.checkType_ = function(otherConnection) {
  * Is this connection compatible with another connection with respect to the
  * value type system? If no compatible, find the reason.
  * @param {Blockly.Connection} target Connection to check compatibility with.
- * @param {boolean=} opt_final True if two connections will be connected
- *    immediately if they are found compatible.
+ * @param {Object=} opt_settings Object to specify settings for connection
+ *     check with the following properties.
+ *     - finalCheck: True if two connections will be connected immediately if
+ *       they are found compatible.
  * @return {number} Blockly.Connection.CAN_CONNECT if the connection is legal,
  *    an error code otherwise.
  */
 Blockly.Connection.prototype.checkTypeWithReason_ = function(otherConnection,
-    opt_final) {
+    opt_settings) {
   var typeEnabled = this.typeExprEnabled();
   var otherTypeEnabled = otherConnection.typeExprEnabled();
   if (typeEnabled && otherTypeEnabled) {
@@ -673,7 +682,7 @@ Blockly.Connection.prototype.checkTypeWithReason_ = function(otherConnection,
     if (dx) {
       return Blockly.Connection.REASON_TYPE_UNIFICATION;
     }
-    if (!this.checkBoundVariables(otherConnection, opt_final)) {
+    if (!this.checkBoundVariables(otherConnection, opt_settings)) {
       return Blockly.Connection.REASON_VARIABLE_REFERENCE;
     }
     return Blockly.Connection.CAN_CONNECT;
