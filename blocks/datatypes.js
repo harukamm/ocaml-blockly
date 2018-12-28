@@ -249,7 +249,7 @@ Blockly.Blocks['cons_construct_pattern_typed'] = {
 
   transformToValue: function(workspace) {
     var valueBlock = workspace.newBlock(
-        'cons_construct_pattern_typed_value');
+        'cons_construct_pattern_value_typed');
     var first = this.getField('FIRST');
     var cons = this.getField('CONS');
     valueBlock.initSvg();
@@ -265,7 +265,7 @@ Blockly.Blocks['cons_construct_pattern_typed'] = {
   }
 };
 
-Blockly.Blocks['cons_construct_pattern_typed_value'] = {
+Blockly.Blocks['cons_construct_pattern_value_typed'] = {
   init: function() {
     this.setColour(Blockly.Msg['PATTERN_HUE']);
     var A = Blockly.TypeExpr.generateTypeVar();

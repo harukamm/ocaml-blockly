@@ -1864,7 +1864,7 @@ Blockly.Block.doTypeInference = function(workspace) {
  *     block.
  */
 Blockly.Block.prototype.isPairPattern = function(otherBlock) {
-  var pairs = [['cons_construct_pattern_typed_value',
+  var pairs = [['cons_construct_pattern_value_typed',
     'cons_construct_pattern_typed']];
   for (var i = 0, pair; pair = pairs[i]; i++) {
     if (this.type === pair[0] && otherBlock.type === pair[1] ||

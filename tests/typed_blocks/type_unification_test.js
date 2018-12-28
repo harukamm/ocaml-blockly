@@ -1301,7 +1301,7 @@ function test_type_unification_matchPatternSimple() {
   var workspace = create_typed_workspace();
   try {
     var block = workspace.newBlock('match_typed');
-    var pattern = workspace.newBlock('cons_construct_pattern_typed_value');
+    var pattern = workspace.newBlock('cons_construct_pattern_value_typed');
     var ptnConn = block.getInput('PATTERN1').connection;
     ptnConn.connect(pattern.outputConnection);
     assertEquals(ptnConn.typeExpr.pattExpr.deref(),

@@ -272,7 +272,7 @@ Blockly.TypedLang['cons_construct_pattern_typed'] = function(block) {
       Blockly.TypedLang.ORDER_ATOMIC];
 };
 
-Blockly.TypedLang['cons_construct_pattern_typed_value'] = function(block) {
+Blockly.TypedLang['cons_construct_pattern_value_typed'] = function(block) {
   var first = block.typedValue['FIRST'].getVariableName();
   var cons = block.typedValue['CONS'].getVariableName();
   return [first + '::' + cons,
