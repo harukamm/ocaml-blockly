@@ -3593,7 +3593,7 @@ Blockly.Blocks['let_typed'] = {
     var schemeForExp2;
     if (applyPolyType) {
       if (this.isRecursive_) {
-        // Pretend recursive reference blocks to be unified with poly-type.
+        // Prevent recursive reference blocks to be unified with poly-type.
         // All of recursive reference must be mono-type.
         this.lastTypeScheme_['REC_VAR'] = monoScheme;
       }
