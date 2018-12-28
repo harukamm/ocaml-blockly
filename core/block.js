@@ -1762,6 +1762,8 @@ Blockly.Block.prototype.moveBy = function(dx, dy) {
   Blockly.Events.fire(event);
 };
 
+/* Begin functions related type inference. */
+
 /**
  * Update type inference for each block in the given list.
  * @param {!Array.<!Blockly.Block>} blocks List of blocks whose type
@@ -1875,6 +1877,8 @@ Blockly.Block.doTypeInference = function(workspace) {
   Blockly.Block.inferBlocksType_(blocksToUpdate, true, true);
 };
 
+/* End functions related type inference. */
+
 /**
  * Find if this block and the given block is a pair of pattern block and
  * pattern value block.
@@ -1905,6 +1909,8 @@ Blockly.Block.prototype.isPattern = function() {
   }
   return false;
 };
+
+/* Begin functions related variable binding. */
 
 /**
  * Whether there would be no getter block which refers to a non-existing
@@ -2110,6 +2116,8 @@ Blockly.Block.prototype.getVisibleVariablesImpl = function(conn) {
   return goog.isFunction(this.getVisibleVariables) ?
       this.getVisibleVariables(conn) : {};
 };
+
+/* End functions related variable binding. */
 
 /**
  * Create a connection of the specified type.
