@@ -669,7 +669,8 @@ Blockly.Connection.prototype.checkTypeWithReason_ = function(otherConnection,
   var typeEnabled = this.typeExprEnabled();
   var otherTypeEnabled = otherConnection.typeExprEnabled();
   if (typeEnabled && otherTypeEnabled) {
-    if (!this.typeExpr.ableToUnify(otherConnection.typeExpr)) {
+    var dx = this.typeExpr.unifyErrorDiagnosis(otherConnection.typeExpr);
+    if (dx) {
       return Blockly.Connection.REASON_TYPE_UNIFICATION;
     }
     if (!this.checkBoundVariables(otherConnection, opt_final)) {

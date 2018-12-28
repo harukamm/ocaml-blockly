@@ -907,6 +907,25 @@ Blockly.TypeExpr.prototype.ableToUnify = function(other) {
 }
 
 /**
+ * Return the reason why this type expression can not be unified with the
+ * given one.
+ * @param {!Blockly.TypeExpr} other The type expression.
+ * @return {Object} Object with reason why type unification fails. Null if
+ *     they can be unified, return null.
+ */
+Blockly.TypeExpr.prototype.unifyErrorDiagnosis = function(other) {
+  var t1 = this.clone();
+  var t2 = other.clone();
+  try {
+    t1.unify(t2);
+    return null;
+  } catch (e) {
+    // TODO(harukam): Returns a proper error message.
+    return {message: e.message};
+  }
+};
+
+/**
  * Disconnect this type expression from another one if they are type variables
  * and either one contains the other.
  * @param {!Blockly.TypeExpr} other
