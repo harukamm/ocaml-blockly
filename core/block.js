@@ -1803,21 +1803,29 @@ Blockly.Block.prototype.updateTypeInference = function(opt_reset) {
 };
 
 /**
+ * Returns whether the block is typed and has a type expression.
+ * @param {!Blockly.Block} block
+ * @return {boolean} True if the given block is typed.
+ * @static
+ */
+Blockly.Block.isTypedBlock = function(block) {
+  if (!block.workspace || !block.type.endsWith('_typed')) {
+    return false;
+  }
+  if (block.outputConnection && block.outputConnection.typeExpr) {
+    return true;
+  }
+  // Some typed blocks don't have the output connection. Check if the given
+  // block is one of them.
+  return block.type === 'defined_datatype_typed';
+};
+
+/**
  * Trigger type inference on the given workspace and its descendant
  * workbenches's workspace.
  * @static
  */
 Blockly.Block.doTypeInference = function(workspace) {
-  function isTyped(block) {
-    if (!block.workspace) {
-      return false;
-    } else if (block.outputConnection && block.outputConnection.typeExpr) {
-      return true;
-    } else {
-      return block.type === 'defined_datatype_typed';
-    }
-  }
-
   if (workspace.isFlyout) {
     return;
   }
@@ -1830,7 +1838,7 @@ Blockly.Block.doTypeInference = function(workspace) {
   while (staq.length) {
     var ws = staq.pop();
     var topBlocks = ws.getTopBlocks();
-    topBlocks = goog.array.filter(topBlocks, isTyped);
+    topBlocks = goog.array.filter(topBlocks, Blockly.Block.isTypedBlock);
     Array.prototype.push.apply(blocksToUpdate, topBlocks);
 
     if (ws.isFlyout) {
