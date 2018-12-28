@@ -202,16 +202,30 @@ Blockly.TypedLang['let_typed'] = function(block) {
   var arg = args.length == 0 ? '' : ' ' + args.join(' ');
   var exp1 = Blockly.TypedLang.valueToCode(block, 'EXP1',
       Blockly.TypedLang.ORDER_ATOMIC);
-  var exp2 = Blockly.TypedLang.valueToCode(block, 'EXP2',
-      Blockly.TypedLang.ORDER_ATOMIC);
 
   var code = 'let ';
   if (block.isRecursive()) code += 'rec ';
-  code += varname + arg + ' = ' + exp1 + ' in ' + exp2;
+  code += varname + arg + ' = ' + exp1;
+
+  if (block.getIsStatement()) {
+    var nextBlock = block.getNextBlock();
+    if (nextBlock) {
+      code += '\n';
+      code += Blockly.TypedLang.blockToCode(nextBlock);
+    }
+    return code;
+  }
+  var exp2 = Blockly.TypedLang.valueToCode(block, 'EXP2',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  code += ' in ' + exp2;
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['letrec_typed'] = function(block) {
+  return Blockly.TypedLang['let_typed'].call(this, block);
+};
+
+Blockly.TypedLang['letstatement_typed'] = function(block) {
   return Blockly.TypedLang['let_typed'].call(this, block);
 };
 

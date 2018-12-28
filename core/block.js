@@ -3365,6 +3365,10 @@ Blockly.Blocks['let_typed'] = {
     return !this.outputConnection.isConnected();
   },
 
+  getIsStatement: function() {
+    return this.isStatement_;
+  },
+
   setIsStatement: function(newIsStatement) {
     if (this.isStatement_ == newIsStatement) {
       return;
