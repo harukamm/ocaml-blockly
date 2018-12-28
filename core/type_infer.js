@@ -16,10 +16,9 @@ goog.require('goog.asserts');
  * @constructor
  */
 Blockly.Scheme = function(names, type) {
-  var inst = type.instantiate(names);
-
   // Clone the type expression except free type variables, so that bound
-  // variables would be changed.
+  // variables would not be changed accidentally.
+  var inst = type.instantiate(names);
   this.type = inst.instance;
 
   var newBoundVariables = inst.bounds;
