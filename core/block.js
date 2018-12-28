@@ -1877,6 +1877,54 @@ Blockly.Block.doTypeInference = function(workspace) {
   Blockly.Block.inferBlocksType_(blocksToUpdate, true, true);
 };
 
+/**
+ * Call the clearTypes function indirectly if it exists.
+ * @param {string|Blockly.Connection} name The name of the input or
+ *     connection.
+ */
+Blockly.Block.prototype.callClearTypes_ = function(name) {
+  if (goog.isString(name)) {
+    var input = this.getInput(name);
+    goog.asserts.assert(!!input, 'Invalid input name');
+    var connection = input.connection;
+  } else {
+    var connection = name;
+  }
+  var childBlock = connection.targetBlock();
+  if (childBlock && childBlock.clearTypes)
+    childBlock.clearTypes();
+};
+
+/**
+ * Call the Infer function indirectly if it exists.
+ * @param {string|Blockly.Connection} name The name of the input or
+ *     connection.
+ * @param {unifyOrphan:boolean, env:!Object<string, Blockly.Scheme>} ctx
+ *     Object with the following two properties.
+ *     - unifyOrphan: Whether to unify type expression of reference variable
+ *       which do not have the bound value in its environment.
+ *     - env: The current type scheme environment.
+ * @return {Blockly.TypeExpr} type expression of the input
+ */
+Blockly.Block.prototype.callInfer_ = function(name, ctx) {
+  if (goog.isString(name)) {
+    var input = this.getInput(name);
+    goog.asserts.assert(!!input, 'Invalid input name');
+    var connection = input.connection;
+  } else {
+    var connection = name;
+  }
+  var childBlock = connection.targetBlock();
+  if (!childBlock)
+    return null;
+  else if (childBlock.infer)
+    return childBlock.infer(ctx);
+  else if (childBlock.outputConnection)
+    return childBlock.outputConnection.typeExpr;
+  else
+    return null;
+};
+
 /* End functions related type inference. */
 
 /**
@@ -2127,54 +2175,6 @@ Blockly.Block.prototype.getVisibleVariablesImpl = function(conn) {
  */
 Blockly.Block.prototype.makeConnection_ = function(type) {
   return new Blockly.Connection(this, type);
-};
-
-/**
- * Call the Infer function indirectly if it exists.
- * @param {string|Blockly.Connection} name The name of the input or
- *     connection.
- * @param {unifyOrphan:boolean, env:!Object<string, Blockly.Scheme>} ctx
- *     Object with the following two properties.
- *     - unifyOrphan: Whether to unify type expression of reference variable
- *       which do not have the bound value in its environment.
- *     - env: The current type scheme environment.
- * @return {Blockly.TypeExpr} type expression of the input
- */
-Blockly.Block.prototype.callInfer_ = function(name, ctx) {
-  if (goog.isString(name)) {
-    var input = this.getInput(name);
-    goog.asserts.assert(!!input, 'Invalid input name');
-    var connection = input.connection;
-  } else {
-    var connection = name;
-  }
-  var childBlock = connection.targetBlock();
-  if (!childBlock)
-    return null;
-  else if (childBlock.infer)
-    return childBlock.infer(ctx);
-  else if (childBlock.outputConnection)
-    return childBlock.outputConnection.typeExpr;
-  else
-    return null;
-};
-
-/**
- * Call the clearTypes function indirectly if it exists.
- * @param {string|Blockly.Connection} name The name of the input or
- *     connection.
- */
-Blockly.Block.prototype.callClearTypes_ = function(name) {
-  if (goog.isString(name)) {
-    var input = this.getInput(name);
-    goog.asserts.assert(!!input, 'Invalid input name');
-    var connection = input.connection;
-  } else {
-    var connection = name;
-  }
-  var childBlock = connection.targetBlock();
-  if (childBlock && childBlock.clearTypes)
-    childBlock.clearTypes();
 };
 
 /**
