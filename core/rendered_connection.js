@@ -337,16 +337,18 @@ Blockly.RenderedConnection.prototype.hideAll = function() {
  * @param {!Blockly.Connection} candidate A nearby connection to check.
  * @param {number} maxRadius The maximum radius allowed for connections, in
  *     workspace units.
+ * @param {Blockly.Connection.typeCheckContext=} opt_context Context of type
+ *     check.
  * @return {boolean} True if the connection is allowed, false otherwise.
  */
 Blockly.RenderedConnection.prototype.isConnectionAllowed = function(candidate,
-    maxRadius) {
+    maxRadius, opt_context) {
   if (this.distanceFrom(candidate) > maxRadius) {
     return false;
   }
 
   return Blockly.RenderedConnection.superClass_.isConnectionAllowed.call(this,
-      candidate);
+      candidate, opt_context);
 };
 
 /**

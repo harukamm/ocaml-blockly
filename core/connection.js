@@ -399,11 +399,14 @@ Blockly.Connection.prototype.checkConnection_ = function(target) {
 /**
  * Check if the two connections can be dragged to connect to each other.
  * @param {!Blockly.Connection} candidate A nearby connection to check.
+ * @param {Blockly.Connection.typeCheckContext=} opt_context Context of type
+ *     check.
  * @return {boolean} True if the connection is allowed, false otherwise.
  */
-Blockly.Connection.prototype.isConnectionAllowed = function(candidate) {
+Blockly.Connection.prototype.isConnectionAllowed = function(candidate,
+    opt_context) {
   // Type checking.
-  var canConnect = this.canConnectWithReason_(candidate);
+  var canConnect = this.canConnectWithReason_(candidate, opt_context);
   if (canConnect != Blockly.Connection.CAN_CONNECT) {
     return false;
   }
