@@ -1233,3 +1233,54 @@ function test_type_transfer_block_workspace_appBlockWithEmptyInput() {
     otherWorkspace.dispose();
   }
 }
+
+function test_type_transfer_block_workspace_statementLetPotentialContext() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    // let var0 = <>
+    // let var1 = <>
+    //      _____/\__________
+    //     | let var2 = <>   |
+    //     | let var3 = var0 |
+    //      -----------------
+    var letBlock0 = workspace.newBlock('letstatement_typed');
+    var letBlock1 = workspace.newBlock('letstatement_typed');
+    setVariableName(letBlock0, 'var0');
+    setVariableName(letBlock1, 'var1');
+    letBlock0.nextConnection.connect(letBlock1.previousConnection);
+    workbench = create_mock_workbench(letBlock1, 'EXP1');
+    var letBlock2 = workbench.getWorkspace().newBlock('letstatement_typed');
+    var letBlock3 = workbench.getWorkspace().newBlock('letstatement_typed');
+    setVariableName(letBlock2, 'var2');
+    setVariableName(letBlock3, 'var3');
+    letBlock2.nextConnection.connect(letBlock3.previousConnection);
+    var value0 = letBlock0.typedValue['VAR'];
+    var varBlock = createReferenceBlock(value0, false, workbench.getWorkspace());
+    assertTrue(varBlock.resolveReference(null));
+    assertFalse(varBlock.resolveReference(letBlock0.getInput('EXP1').connection));
+    assertTrue(varBlock.resolveReference(letBlock1.getInput('EXP1').connection));
+    assertTrue(varBlock.resolveReference(letBlock2.getInput('EXP1').connection));
+    assertTrue(varBlock.resolveReference(letBlock3.getInput('EXP1').connection));
+    varBlock.outputConnection.connect(letBlock3.getInput('EXP1').connection);
+
+    function potCtxCheck(oldB, newB) {
+      var potCtx = newB.getPotentialContext();
+      var size = Object.keys(potCtx).length;
+      assertEquals(size, 2);
+      assertTrue('var0' in potCtx);
+      assertTrue('var1' in potCtx);
+      assertEquals(potCtx['var0'], value0);
+      assertEquals(potCtx['var1'], letBlock1.typedValue['VAR']);
+    }
+
+    var transBlock = virtually_transfer_workspace(letBlock2, workspace,
+        letBlock2.previousConnection, letBlock1.nextConnection, potCtxCheck);
+    transBlock.previousConnection.connect(letBlock1.nextConnection);
+  } finally {
+    if (workbench) {
+      workbench.dispose();
+    }
+    workspace.dispose();
+  }
+}
