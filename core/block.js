@@ -3442,7 +3442,7 @@ Blockly.Blocks['let_typed'] = {
   },
 
   customContextMenu: function(options) {
-    if (this.isFlyout) {
+    if (this.isInFlyout) {
       return;
     }
     var canBeToggled = true;
