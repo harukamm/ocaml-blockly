@@ -113,7 +113,7 @@ Blockly.Blocks['create_construct_typed'] = {
 
     if (input && this.definition_ === def) {
       var expected = input.connection.typeExpr;
-      var paramType = this.callInfer_('PARAM', ctx);
+      var paramType = this.callInfer('PARAM', ctx);
       if (paramType) {
         expected.unify(paramType);
       }

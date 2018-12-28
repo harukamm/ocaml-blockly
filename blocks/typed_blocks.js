@@ -78,14 +78,14 @@ Blockly.Blocks['logic_compare_typed'] = {
 
   clearTypes: function() {
     this.getInput('A').connection.typeExpr.clear();
-    this.callClearTypes_('A');
-    this.callClearTypes_('B');
+    this.callClearTypes('A');
+    this.callClearTypes('B');
   },
 
   infer: function(ctx) {
     var expected_left = this.getInput('A').connection.typeExpr;
-    var left = this.callInfer_('A', ctx);
-    var right = this.callInfer_('B', ctx);
+    var left = this.callInfer('A', ctx);
+    var right = this.callInfer('B', ctx);
     if (left)
       left.unify(expected_left);
     if (right)
@@ -120,19 +120,19 @@ Blockly.Blocks['logic_ternary_typed'] = {
 
   clearTypes: function() {
     this.outputConnection.typeExpr.clear();
-    this.callClearTypes_('IF');
-    this.callClearTypes_('THEN');
-    this.callClearTypes_('ELSE');
+    this.callClearTypes('IF');
+    this.callClearTypes('THEN');
+    this.callClearTypes('ELSE');
   },
 
   infer: function(ctx) {
     var cond_expected = new Blockly.TypeExpr.BOOL();
-    var cond_type = this.callInfer_('IF', ctx);
+    var cond_type = this.callInfer('IF', ctx);
     if (cond_type)
       cond_type.unify(cond_expected);
     var expected = this.outputConnection.typeExpr;
-    var then_type = this.callInfer_('THEN', ctx);
-    var else_type = this.callInfer_('ELSE', ctx);
+    var then_type = this.callInfer('THEN', ctx);
+    var else_type = this.callInfer('ELSE', ctx);
     if (then_type)
       then_type.unify(expected);
     if (else_type)
@@ -196,14 +196,14 @@ Blockly.Blocks['int_arithmetic_typed'] = {
   },
 
   clearTypes: function() {
-    this.callClearTypes_('A');
-    this.callClearTypes_('B');
+    this.callClearTypes('A');
+    this.callClearTypes('B');
   },
 
   infer: function(ctx) {
     var expected_left = new Blockly.TypeExpr.INT();
-    var left = this.callInfer_('A', ctx);
-    var right = this.callInfer_('B', ctx);
+    var left = this.callInfer('A', ctx);
+    var right = this.callInfer('B', ctx);
     if (left)
       left.unify(expected_left);
     if (right)
@@ -267,14 +267,14 @@ Blockly.Blocks['float_arithmetic_typed'] = {
   },
 
   clearTypes: function() {
-    this.callClearTypes_('A');
-    this.callClearTypes_('B');
+    this.callClearTypes('A');
+    this.callClearTypes('B');
   },
 
   infer: function(ctx) {
     var expected_left = new Blockly.TypeExpr.FLOAT();
-    var left = this.callInfer_('A', ctx);
-    var right = this.callInfer_('B', ctx);
+    var left = this.callInfer('A', ctx);
+    var right = this.callInfer('B', ctx);
     if (left)
       left.unify(expected_left);
     if (right)
@@ -420,13 +420,13 @@ Blockly.Blocks['lists_create_with_typed'] = {
   clearTypes: function() {
     this.outputConnection.typeExpr.element_type.clear();
     for (var x = 0; x < this.itemCount_; x++)
-      this.callClearTypes_('ADD' + x);
+      this.callClearTypes('ADD' + x);
   },
 
   infer: function(ctx) {
     var expected = this.outputConnection.typeExpr;
     for (var x = 0; x < this.itemCount_; x++) {
-      var type = this.callInfer_('ADD' + x, ctx);
+      var type = this.callInfer('ADD' + x, ctx);
       if (type)
         type.unify(expected.element_type);
     }
@@ -468,15 +468,15 @@ Blockly.Blocks['list_cons_typed'] = {
 
   clearTypes: function() {
     this.outputConnection.typeExpr.element_type.clear();
-    this.callClearTypes_('FIRST');
-    this.callClearTypes_('CONS');
+    this.callClearTypes('FIRST');
+    this.callClearTypes('CONS');
   },
 
   infer: function(ctx) {
     var expected = this.outputConnection.typeExpr;
     var expectedElementType = expected.element_type;
-    var listType = this.callInfer_('CONS', ctx);
-    var elementType = this.callInfer_('FIRST', ctx);
+    var listType = this.callInfer('CONS', ctx);
+    var elementType = this.callInfer('FIRST', ctx);
     if (listType) {
       expected.unify(listType);
     }
@@ -511,14 +511,14 @@ Blockly.Blocks['pair_create_typed'] = {
   clearTypes: function() {
     this.outputConnection.typeExpr.first_type.clear();
     this.outputConnection.typeExpr.second_type.clear();
-    this.callClearTypes_('FIRST');
-    this.callClearTypes_('SECOND');
+    this.callClearTypes('FIRST');
+    this.callClearTypes('SECOND');
   },
 
   infer: function(ctx) {
     var expected = this.outputConnection.typeExpr;
-    var first = this.callInfer_('FIRST', ctx);
-    var second = this.callInfer_('SECOND', ctx);
+    var first = this.callInfer('FIRST', ctx);
+    var second = this.callInfer('SECOND', ctx);
     if (first)
       first.unify(expected.first_type);
     if (second)
@@ -546,13 +546,13 @@ Blockly.Blocks['pair_first_typed'] = {
 
   clearTypes: function() {
     this.outputConnection.typeExpr.clear();
-    this.callClearTypes_('FIRST');
+    this.callClearTypes('FIRST');
   },
 
   infer: function(ctx) {
     var expected = this.outputConnection.typeExpr;
     var expected_arg = this.getInput('FIRST').connection.typeExpr;
-    var arg = this.callInfer_('FIRST', ctx);
+    var arg = this.callInfer('FIRST', ctx);
     if (arg) {
       arg.unify(expected_arg);
     }
@@ -579,13 +579,13 @@ Blockly.Blocks['pair_second_typed'] = {
 
   clearTypes: function() {
     this.outputConnection.typeExpr.clear();
-    this.callClearTypes_('SECOND');
+    this.callClearTypes('SECOND');
   },
 
   infer: function(ctx) {
     var expected = this.outputConnection.typeExpr;
     var expected_arg = this.getInput('SECOND').connection.typeExpr;
-    var arg = this.callInfer_('SECOND', ctx);
+    var arg = this.callInfer('SECOND', ctx);
     if (arg) {
       arg.unify(expected_arg);
     }
@@ -694,7 +694,7 @@ Blockly.Blocks['function_app_typed'] = {
   clearTypes: function() {
     this.typedReference['VAR'].getTypeExpr().clear();
     for (var i = 0; i < this.paramCount_; i++) {
-      this.callClearTypes_('PARAM' + i);
+      this.callClearTypes('PARAM' + i);
       var input = this.getInput('PARAM' + i);
       input.connection.typeExpr.clear();
     }
@@ -715,7 +715,7 @@ Blockly.Blocks['function_app_typed'] = {
     }
 
     for (var i = 0; i < this.paramCount_; i++) {
-      var paramType = this.callInfer_('PARAM' + i, ctx);
+      var paramType = this.callInfer('PARAM' + i, ctx);
       var input = this.getInput('PARAM' + i);
       var expectedParamType = input.connection.typeExpr;
       if (paramType) {
@@ -794,7 +794,7 @@ Blockly.Blocks['lambda_typed'] = {
         variable.getTypeExpr());
     variable.getTypeExpr().clear();
     this.outputConnection.typeExpr.return_type.clear();
-    this.callClearTypes_('RETURN');
+    this.callClearTypes('RETURN');
   },
 
   infer: function(ctx) {
@@ -804,7 +804,7 @@ Blockly.Blocks['lambda_typed'] = {
     var env2 = Object.assign({}, ctx.env);
     env2[var_name] = Blockly.Scheme.monoType(expected.arg_type);
     var ctx2 = {unifyOrphan: ctx.unifyOrphan, env: env2};
-    var return_type = this.callInfer_('RETURN', ctx2);
+    var return_type = this.callInfer('RETURN', ctx2);
     if (return_type)
       return_type.unify(expected.return_type);
     return expected;
@@ -831,15 +831,15 @@ Blockly.Blocks['lambda_app_typed'] = {
   clearTypes: function() {
     this.getInput('FUN').connection.typeExpr.arg_type.clear();
     this.getInput('FUN').connection.typeExpr.return_type.clear();
-    this.callClearTypes_('FUN');
-    this.callClearTypes_('ARG');
+    this.callClearTypes('FUN');
+    this.callClearTypes('ARG');
   },
 
   infer: function(ctx) {
     var expected = this.outputConnection.typeExpr;
     var fun_expected = this.getInput('FUN').connection.typeExpr;
-    var fun_type = this.callInfer_('FUN', ctx);
-    var arg_type = this.callInfer_('ARG', ctx);
+    var fun_type = this.callInfer('FUN', ctx);
+    var arg_type = this.callInfer('ARG', ctx);
     if (fun_type)
       fun_type.unify(fun_expected);
     if (arg_type)
@@ -906,11 +906,11 @@ Blockly.Blocks['match_typed'] = {
   clearTypes: function() {
     this.outputConnection.typeExpr.clear();
     this.getInput('INPUT').connection.typeExpr.clear();
-    this.callClearTypes_('INPUT');
-    this.callClearTypes_('PATTERN1');
-    this.callClearTypes_('PATTERN2');
-    this.callClearTypes_('OUTPUT1');
-    this.callClearTypes_('OUTPUT2');
+    this.callClearTypes('INPUT');
+    this.callClearTypes('PATTERN1');
+    this.callClearTypes('PATTERN2');
+    this.callClearTypes('OUTPUT1');
+    this.callClearTypes('OUTPUT2');
   },
 
   infer: function(ctx) {
@@ -919,11 +919,11 @@ Blockly.Blocks['match_typed'] = {
     var expected_pattern2 = this.getInput('PATTERN2').connection.typeExpr;
     var input_expected = this.getInput('INPUT').connection.typeExpr;
 
-    var input_type = this.callInfer_('INPUT', ctx);
-    var pattern1_type = this.callInfer_('PATTERN1', ctx);
-    var pattern2_type = this.callInfer_('PATTERN2', ctx);
-    var output1_type = this.callInfer_('OUTPUT1', ctx);
-    var output2_type = this.callInfer_('OUTPUT2', ctx);
+    var input_type = this.callInfer('INPUT', ctx);
+    var pattern1_type = this.callInfer('PATTERN1', ctx);
+    var pattern2_type = this.callInfer('PATTERN2', ctx);
+    var output1_type = this.callInfer('OUTPUT1', ctx);
+    var output2_type = this.callInfer('OUTPUT2', ctx);
     if (input_type)
       input_expected.unify(input_type);
     if (pattern1_type)
@@ -1359,12 +1359,12 @@ Blockly.Blocks['let_typed'] = {
     this.typedValue['VAR'].getTypeExpr().clear();
     var exp1Type = this.getInput('EXP1').connection.typeExpr;
     exp1Type.clear();
-    this.callClearTypes_('EXP1');
+    this.callClearTypes('EXP1');
     if (this.isStatement_)  {
-      this.callClearTypes_(this.nextConnection);
+      this.callClearTypes(this.nextConnection);
     } else {
       this.getInput('EXP2').connection.typeExpr.clear();
-      this.callClearTypes_('EXP2');
+      this.callClearTypes('EXP2');
     }
     for (var x = 0; x < this.argumentCount_; x++) {
       var variable = this.typedValue['ARG' + x];
@@ -1405,7 +1405,7 @@ Blockly.Blocks['let_typed'] = {
       env1[varName] = Blockly.Scheme.monoType(argVar.getTypeExpr());
     }
     var ctx1 = {unifyOrphan: ctx.unifyOrphan, env: env1};
-    var exp1 = this.callInfer_('EXP1', ctx1);
+    var exp1 = this.callInfer('EXP1', ctx1);
 
     if (exp1)
       exp1.unify(expected_exp1);
@@ -1428,12 +1428,12 @@ Blockly.Blocks['let_typed'] = {
     env2[var_name] = schemeForExp2;
     var ctx2 = {unifyOrphan: ctx.unifyOrphan, env: env2};
     if (this.isStatement_) {
-      this.callInfer_(this.nextConnection, ctx2);
+      this.callInfer(this.nextConnection, ctx2);
       return null;
     }
 
     var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
-    var exp2 = this.callInfer_('EXP2', ctx2);
+    var exp2 = this.callInfer('EXP2', ctx2);
     if (exp2)
       exp2.unify(expected_exp2);
 

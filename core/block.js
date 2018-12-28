@@ -1882,7 +1882,7 @@ Blockly.Block.doTypeInference = function(workspace) {
  * @param {string|Blockly.Connection} name The name of the input or
  *     connection.
  */
-Blockly.Block.prototype.callClearTypes_ = function(name) {
+Blockly.Block.prototype.callClearTypes = function(name) {
   if (goog.isString(name)) {
     var input = this.getInput(name);
     goog.asserts.assert(!!input, 'Invalid input name');
@@ -1906,7 +1906,7 @@ Blockly.Block.prototype.callClearTypes_ = function(name) {
  *     - env: The current type scheme environment.
  * @return {Blockly.TypeExpr} type expression of the input
  */
-Blockly.Block.prototype.callInfer_ = function(name, ctx) {
+Blockly.Block.prototype.callInfer = function(name, ctx) {
   if (goog.isString(name)) {
     var input = this.getInput(name);
     goog.asserts.assert(!!input, 'Invalid input name');
