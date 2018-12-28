@@ -4,8 +4,6 @@
  */
 'use strict';
 
-goog.provide('Blockly.Blocks.DataType');
-
 goog.require('Blockly.Blocks');
 goog.require('Blockly');
 

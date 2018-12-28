@@ -5,8 +5,6 @@
  */
 'use strict';
 
-goog.provide('Blockly.Parameters');
-
 goog.require('Blockly.Blocks');
 goog.require('Blockly');
 
