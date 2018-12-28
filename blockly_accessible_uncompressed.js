@@ -101,6 +101,7 @@ goog.addDependency("../../../" + dir + "/core/flyout_base.js", ['Blockly.Flyout'
 goog.addDependency("../../../" + dir + "/core/flyout_button.js", ['Blockly.FlyoutButton'], ['goog.dom', 'goog.math.Coordinate']);
 goog.addDependency("../../../" + dir + "/core/flyout_dragger.js", ['Blockly.FlyoutDragger'], ['Blockly.WorkspaceDragger', 'goog.asserts', 'goog.math.Coordinate']);
 goog.addDependency("../../../" + dir + "/core/flyout_horizontal.js", ['Blockly.HorizontalFlyout'], ['Blockly.Block', 'Blockly.Events', 'Blockly.FlyoutButton', 'Blockly.Flyout', 'Blockly.WorkspaceSvg', 'goog.dom', 'goog.events', 'goog.math.Rect', 'goog.userAgent']);
+goog.addDependency("../../../" + dir + "/core/flyout_mutator.js", ['Blockly.FlyoutMutator'], ['Blockly.Bubble', 'Blockly.Events.BlockChange', 'Blockly.Events.Ui', 'Blockly.Mutator', 'Blockly.WorkspaceSvg', 'goog.dom']);
 goog.addDependency("../../../" + dir + "/core/flyout_vertical.js", ['Blockly.VerticalFlyout'], ['Blockly.Block', 'Blockly.Events', 'Blockly.Flyout', 'Blockly.FlyoutButton', 'Blockly.utils', 'Blockly.WorkspaceSvg', 'goog.dom', 'goog.events', 'goog.math.Rect', 'goog.userAgent']);
 goog.addDependency("../../../" + dir + "/core/flyout_vertical_for_workbench.js", ['Blockly.WorkbenchVerticalFlyout'], ['Blockly.VerticalFlyout', 'goog.asserts']);
 goog.addDependency("../../../" + dir + "/core/generator.js", ['Blockly.Generator'], ['Blockly.Block', 'goog.asserts']);
@@ -123,7 +124,7 @@ goog.addDependency("../../../" + dir + "/core/touch.js", ['Blockly.Touch'], ['go
 goog.addDependency("../../../" + dir + "/core/touch_gesture.js", ['Blockly.TouchGesture'], ['Blockly.Gesture', 'goog.asserts', 'goog.math.Coordinate']);
 goog.addDependency("../../../" + dir + "/core/trashcan.js", ['Blockly.Trashcan'], ['goog.dom', 'goog.math', 'goog.math.Rect']);
 goog.addDependency("../../../" + dir + "/core/type_expr.js", ['Blockly.TypeExpr'], ['goog.asserts', 'goog.dom']);
-goog.addDependency("../../../" + dir + "/core/type_infer.js", ['Blockly.Scheme'], ['goog.asserts']);
+goog.addDependency("../../../" + dir + "/core/type_scheme.js", ['Blockly.Scheme'], ['goog.asserts']);
 goog.addDependency("../../../" + dir + "/core/ui_events.js", ['Blockly.Events.Ui'], ['Blockly.Events', 'Blockly.Events.Abstract', 'goog.array', 'goog.asserts', 'goog.math.Coordinate']);
 goog.addDependency("../../../" + dir + "/core/ui_menu_utils.js", ['Blockly.utils.uiMenu'], []);
 goog.addDependency("../../../" + dir + "/core/utils.js", ['Blockly.utils'], ['Blockly.Touch', 'goog.dom', 'goog.events.BrowserFeature', 'goog.math.Coordinate', 'goog.userAgent']);
@@ -1795,6 +1796,7 @@ goog.require('Blockly.FieldVariable');
 goog.require('Blockly.Flyout');
 goog.require('Blockly.FlyoutButton');
 goog.require('Blockly.FlyoutDragger');
+goog.require('Blockly.FlyoutMutator');
 goog.require('Blockly.Generator');
 goog.require('Blockly.Gesture');
 goog.require('Blockly.Grid');
