@@ -3373,11 +3373,13 @@ Blockly.Blocks['let_typed'] = {
     if (this.isStatement_ == newIsStatement) {
       return;
     }
+    var storedRendered = this.rendered;
+    this.rendered = false;
     if (newIsStatement) {
       var exp2Input = this.getInput('EXP2');
       if (exp2Input) {
         var workbench = exp2Input.connection.contextWorkbench;
-        workbench.dispose();
+        workbench && workbench.dispose();
         this.removeInput('EXP2');
       }
       this.setOutput(false);
@@ -3393,7 +3395,13 @@ Blockly.Blocks['let_typed'] = {
           .appendField('in')
           .setWorkbench(new Blockly.Workbench())
           .setAlign(Blockly.ALIGN_RIGHT);
+      // Initialize SVG icon.
+      this.initSvg && this.initSvg();
       this.setOutputTypeExpr(exp2Type);
+    }
+    this.rendered = storedRendered;
+    if (this.rendered) {
+      this.render();
     }
     this.isStatement_ = newIsStatement;
   },
@@ -3447,6 +3455,15 @@ Blockly.Blocks['let_typed'] = {
       option.text = 'Set rec.';
     }
     option.callback = this.setRecursiveFlag.bind(this, !this.isRecursive_);
+    options.push(option);
+
+    var option = {enabled: this.canToggleIsStatement()};
+    if (this.isStatement_) {
+      option.text = 'Add in';
+    } else {
+      option.text = 'Remove in';
+    }
+    option.callback = this.setIsStatement.bind(this, !this.isStatement_);
     options.push(option);
   },
 

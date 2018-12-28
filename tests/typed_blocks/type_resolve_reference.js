@@ -509,7 +509,8 @@ function test_resolve_reference_letStatementSimple() {
   try {
     var letBlock1 = workspace.newBlock('letstatement_typed');
     var letBlock2 = workspace.newBlock('letstatement_typed');
-    var letBlock3 = workspace.newBlock('letstatement_typed');
+    var letBlock3 = workspace.newBlock('let_typed');
+    letBlock3.setIsStatement(true);
     letBlock1.nextConnection.connect(letBlock2.previousConnection);
     letBlock2.nextConnection.connect(letBlock3.previousConnection);
     var value1 = letBlock1.typedValue['VAR'];
