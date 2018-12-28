@@ -628,8 +628,7 @@ Blockly.Connection.prototype.targetBlock = function() {
  * Returns whether type expression on the two connections can be unified with
  * each other and also variables on both of connection's block can be resolved
  * when they are connected.
- * @param {Blockly.Connection} otherConnection Connection to compare against.
- *     If null, check if variables only on the block contains can be resolved.
+ * @param {!Blockly.Connection} otherConnection Connection to compare against.
  * @param {Object=} opt_settings Object to specify settings for connection
  *     check with the following properties.
  *     - finalCheck: True if two connections will be connected immediately if
@@ -643,14 +642,10 @@ Blockly.Connection.prototype.checkTypeExprAndVariables_ = function(
   if (dx) {
     return Blockly.Connection.REASON_TYPE_UNIFICATION;
   }
-  if (otherConnection) {
-    var superior = this.isSuperior() ? this : otherConnection;
-    var inferior = superior == this ? otherConnection : this;
-    var childBlock = inferior.getSourceBlock();
-  } else {
-    var superior = null;
-    var childBlock = this.getSourceBlock();
-  }
+  var superior = this.isSuperior() ? this : otherConnection;
+  var inferior = superior == this ? otherConnection : this;
+  var childBlock = inferior.getSourceBlock();
+
   var bindNewly = settings.finalCheck === true;
   var resolved = childBlock.resolveReference(superior, bindNewly);
   if (!resolved) {
