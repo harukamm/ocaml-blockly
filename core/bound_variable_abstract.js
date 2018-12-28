@@ -220,21 +220,7 @@ Blockly.BoundVariableAbstract.getTargetLabel = function(label) {
  * @return {boolean} True if type of two variables is matched.
  */
 Blockly.BoundVariableAbstract.isPair = function(v1, v2) {
-  var label1 = v1.label;
-  var label2 = v2.label;
-  goog.asserts.assert(!isNaN(label1) && !isNaN(label2), 'Invalid enum.')
-  switch (label1) {
-    case Blockly.BoundVariableAbstract.VALUE_VARIABLE:
-      return label2 == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
-    case Blockly.BoundVariableAbstract.REFERENCE_VARIABLE:
-      return label2 == Blockly.BoundVariableAbstract.VALUE_VARIABLE;
-    case Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR:
-      return label2 == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR;
-    case Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR:
-      return label2 == cBlockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
-    default:
-      goog.asserts.assert(false, 'Unknown variable type.');
-  }
+  return v1.label == Blockly.BoundVariableAbstract.getTargetLabel(v2.label);
 };
 
 /**
