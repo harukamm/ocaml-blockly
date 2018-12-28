@@ -1817,7 +1817,18 @@ Blockly.Block.isTypedBlock = function(block) {
   }
   // Some typed blocks don't have the output connection. Check if the given
   // block is one of them.
-  return block.type === 'defined_datatype_typed';
+  if (block.type === 'defined_datatype_typed') {
+    return true;
+  }
+  var m = block.type.match(/let([a-z]*)_typed/);
+  if (!m) {
+    return false;
+  }
+  if (m[1] === '' || m[1] === 'rec' || m[1] === 'statement') {
+    var variable = block.typedValue['VAR'];
+    return !!variable && !!variable.getTypeExpr();
+  }
+  return false;
 };
 
 /**
@@ -2112,7 +2123,8 @@ Blockly.Block.prototype.makeConnection_ = function(type) {
 
 /**
  * Call the Infer function indirectly if it exists.
- * @param {string} name The name of the input
+ * @param {string|Blockly.Connection} name The name of the input or
+ *     connection.
  * @param {unifyOrphan:boolean, env:!Object<string, Blockly.Scheme>} ctx
  *     Object with the following two properties.
  *     - unifyOrphan: Whether to unify type expression of reference variable
@@ -2121,25 +2133,38 @@ Blockly.Block.prototype.makeConnection_ = function(type) {
  * @return {Blockly.TypeExpr} type expression of the input
  */
 Blockly.Block.prototype.callInfer_ = function(name, ctx) {
-  var input = this.getInput(name);
-  goog.asserts.assert(!!input, 'Invalid input name');
-  var childBlock = input.connection.targetBlock();
+  if (goog.isString(name)) {
+    var input = this.getInput(name);
+    goog.asserts.assert(!!input, 'Invalid input name');
+    var connection = input.connection;
+  } else {
+    var connection = name;
+  }
+  var childBlock = connection.targetBlock();
   if (!childBlock)
     return null;
   else if (childBlock.infer)
     return childBlock.infer(ctx);
-  else
+  else if (childBlock.outputConnection)
     return childBlock.outputConnection.typeExpr;
+  else
+    return null;
 };
 
 /**
  * Call the clearTypes function indirectly if it exists.
- * @param {string} name The name of the input
+ * @param {string|Blockly.Connection} name The name of the input or
+ *     connection.
  */
 Blockly.Block.prototype.callClearTypes_ = function(name) {
-  var input = this.getInput(name);
-  goog.asserts.assert(!!input, 'Invalid input name');
-  var childBlock = input.connection.targetBlock();
+  if (goog.isString(name)) {
+    var input = this.getInput(name);
+    goog.asserts.assert(!!input, 'Invalid input name');
+    var connection = input.connection;
+  } else {
+    var connection = name;
+  }
+  var childBlock = connection.targetBlock();
   if (childBlock && childBlock.clearTypes)
     childBlock.clearTypes();
 };
@@ -3541,9 +3566,13 @@ Blockly.Blocks['let_typed'] = {
     this.typedValue['VAR'].getTypeExpr().clear();
     var exp1Type = this.getInput('EXP1').connection.typeExpr;
     exp1Type.clear();
-    this.getInput('EXP2').connection.typeExpr.clear();
     this.callClearTypes_('EXP1');
-    this.callClearTypes_('EXP2');
+    if (this.isStatement_)  {
+      this.callClearTypes_(this.nextConnection);
+    } else {
+      this.getInput('EXP2').connection.typeExpr.clear();
+      this.callClearTypes_('EXP2');
+    }
     for (var x = 0; x < this.argumentCount_; x++) {
       var variable = this.typedValue['ARG' + x];
       variable.getTypeExpr().clear();
@@ -3556,7 +3585,6 @@ Blockly.Blocks['let_typed'] = {
     var variable = this.typedValue['VAR'];
     var var_name = variable.getVariableName();
     var expected_exp1 = this.getInput('EXP1').connection.typeExpr;
-    var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
 
     if (this.argumentCount_ == 0) {
       var exp1Type = this.getInput('EXP1').connection.typeExpr;
@@ -3606,8 +3634,13 @@ Blockly.Blocks['let_typed'] = {
     var env2 = Object.assign({}, ctx.env);
     env2[var_name] = schemeForExp2;
     var ctx2 = {unifyOrphan: ctx.unifyOrphan, env: env2};
-    var exp2 = this.callInfer_('EXP2', ctx2);
+    if (this.isStatement_) {
+      this.callInfer_(this.nextConnection, ctx2);
+      return null;
+    }
 
+    var expected_exp2 = this.getInput('EXP2').connection.typeExpr;
+    var exp2 = this.callInfer_('EXP2', ctx2);
     if (exp2)
       exp2.unify(expected_exp2);
 

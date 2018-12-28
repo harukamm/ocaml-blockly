@@ -1240,10 +1240,10 @@ function test_type_transfer_block_workspace_statementLetPotentialContext() {
   try {
     // let var0 = <>
     // let var1 = <>
-    //      _____/\__________
-    //     | let var2 = <>   |
-    //     | let var3 = var0 |
-    //      -----------------
+    //      _____/\_______________
+    //     | let var2 = <>        |
+    //     | let var3 = <> + var0 |
+    //      ----------------------
     var letBlock0 = workspace.newBlock('letstatement_typed');
     var letBlock1 = workspace.newBlock('letstatement_typed');
     setVariableName(letBlock0, 'var0');
@@ -1262,7 +1262,11 @@ function test_type_transfer_block_workspace_statementLetPotentialContext() {
     assertTrue(varBlock.resolveReference(letBlock1.getInput('EXP1').connection));
     assertTrue(varBlock.resolveReference(letBlock2.getInput('EXP1').connection));
     assertTrue(varBlock.resolveReference(letBlock3.getInput('EXP1').connection));
-    varBlock.outputConnection.connect(letBlock3.getInput('EXP1').connection);
+    var intArith = workbench.getWorkspace().newBlock('int_arithmetic_typed');
+    intArith.getInput('B').connection.connect(varBlock.outputConnection);
+    letBlock3.getInput('EXP1').connection.connect(intArith.outputConnection);
+    assertTrue(varBlock.outputConnection.typeExpr.deref().isInt());
+    assertTrue(value0.getTypeExpr().deref().isInt());
 
     function potCtxCheck(oldB, newB) {
       var potCtx = newB.getPotentialContext();
@@ -1277,6 +1281,13 @@ function test_type_transfer_block_workspace_statementLetPotentialContext() {
     var transBlock = virtually_transfer_workspace(letBlock2, workspace,
         letBlock2.previousConnection, letBlock1.nextConnection, potCtxCheck);
     transBlock.previousConnection.connect(letBlock1.nextConnection);
+    var transArithBlock = transBlock.getNextBlock().getInputTargetBlock('EXP1');
+    var transVarBlock = transArithBlock.getInputTargetBlock('B');
+    var transVarType = transVarBlock.typedReference['VAR'].getTypeExpr();
+    assertTrue(transVarType.deref().isInt());
+    assertTrue(value0.getTypeExpr().deref().isInt());
+    transVarBlock.dispose();
+    assertTrue(value0.getTypeExpr().deref().isTypeVar());
   } finally {
     if (workbench) {
       workbench.dispose();
