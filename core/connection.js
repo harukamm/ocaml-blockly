@@ -625,18 +625,24 @@ Blockly.Connection.prototype.targetBlock = function() {
 };
 
 /**
- * Returns whether all variables on both of connection's block can be resolved
- * when this connection connects to the given connection.
+ * Returns whether type expression on the two connections can be unified with
+ * each other and also variables on both of connection's block can be resolved
+ * when they are connected.
  * @param {Blockly.Connection} otherConnection Connection to compare against.
  *     If null, check if variables only on the block contains can be resolved.
- * @param {Object=} settings Object to specify settings for connection
+ * @param {Object=} opt_settings Object to specify settings for connection
  *     check with the following properties.
  *     - finalCheck: True if two connections will be connected immediately if
  *       they are found compatible.
  * @return {boolean} True if variables on blocks can be resolved.
  */
-Blockly.Connection.prototype.checkBoundVariables = function(otherConnection,
-    opt_settings) {
+Blockly.Connection.prototype.checkTypeExprAndVariables_ = function(
+    otherConnection, opt_settings) {
+  var settings = opt_settings ? opt_settings : {};
+  var dx = this.typeExpr.unifyErrorDiagnosis(otherConnection.typeExpr);
+  if (dx) {
+    return Blockly.Connection.REASON_TYPE_UNIFICATION;
+  }
   if (otherConnection) {
     var superior = this.isSuperior() ? this : otherConnection;
     var inferior = superior == this ? otherConnection : this;
@@ -645,9 +651,12 @@ Blockly.Connection.prototype.checkBoundVariables = function(otherConnection,
     var superior = null;
     var childBlock = this.getSourceBlock();
   }
-  var isFinalCheck = !!opt_settings && opt_settings.finalCheck;
-  var bindNewly = isFinalCheck === true;
-  return childBlock.resolveReference(superior, bindNewly);
+  var bindNewly = settings.finalCheck === true;
+  var resolved = childBlock.resolveReference(superior, bindNewly);
+  if (!resolved) {
+    return Blockly.Connection.REASON_VARIABLE_REFERENCE;
+  }
+  return Blockly.Connection.CAN_CONNECT;
 };
 
 /**
@@ -678,15 +687,9 @@ Blockly.Connection.prototype.checkTypeWithReason_ = function(otherConnection,
   var typeEnabled = this.typeExprEnabled();
   var otherTypeEnabled = otherConnection.typeExprEnabled();
   if (typeEnabled && otherTypeEnabled) {
-    var dx = this.typeExpr.unifyErrorDiagnosis(otherConnection.typeExpr);
-    if (dx) {
-      return Blockly.Connection.REASON_TYPE_UNIFICATION;
-    }
-    if (!this.checkBoundVariables(otherConnection, opt_settings)) {
-      return Blockly.Connection.REASON_VARIABLE_REFERENCE;
-    }
-    return Blockly.Connection.CAN_CONNECT;
-  } else if (typeEnabled || otherTypeEnabled) {
+    return this.checkTypeExprAndVariables_(otherConnection, opt_settings);
+  }
+  if (typeEnabled || otherTypeEnabled) {
     return Blockly.Connection.REASON_TYPE_UNIFICATION;
   }
   if (!this.check_ || !otherConnection.check_) {
