@@ -109,6 +109,8 @@ Blockly.ErrorItem.prototype.toMessage = function() {
     } else {
       msg += 'unbound.';
     }
+  } else if (this.label == Blockly.ErrorItem.TYPE_ERROR) {
+    msg = this.errorElement.toMessage();
   } else {
     goog.asserts.fail('Unknown label');
   }

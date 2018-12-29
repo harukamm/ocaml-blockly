@@ -1156,3 +1156,30 @@ Blockly.TypeExpr.errorInconsistentLabel = function(t1, t2) {
   return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT,
     t1, t2);
 };
+
+/**
+ * Returns error message.
+ * @return {!string}
+ */
+Blockly.TypeExpr.Error.prototype.toMessage = function() {
+  var s1 = this.t1 ? this.t1.getDisplayText() : '';
+  var s2 = this.t2 ? this.t2.getDisplayText() : '';
+  switch (this.label) {
+    case Blockly.TypeExpr.ERROR_TYPECTOR:
+      return 'Type constructor type is not compatible with ' + s1 + '.';
+    case Blockly.TypeExpr.ERROR_PATTERN:
+      return 'Pattern type is not compatible with ' + s1;
+    case Blockly.TypeExpr.ERROR_OCCUR_CHECK:
+      return 'The type variable ' + s1 + ' occurs inside ' + s2 + '.';
+    case Blockly.TypeExpr.ERROR_CTOR_INCONSISTENT:
+      if (s1 === '' || s2 === '') {
+        // Constructor name is not found.
+        return 'Two type constructors belong to differenct types.'
+      }
+      return 'The constructor does not belong to type ' + s2 + '.';
+    case Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT:
+      return 'Has type ' + s1 + ' but expected of type ' + s2;
+    default:
+      goog.asserts.fail('Unexpected type error label.');
+  }
+};
