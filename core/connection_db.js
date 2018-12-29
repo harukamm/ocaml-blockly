@@ -239,9 +239,17 @@ Blockly.ConnectionDB.prototype.isInYRange_ = function(index, baseY, maxRadius) {
  */
 Blockly.ConnectionDB.prototype.canConnectWithError_ = function(conn, target,
     maxRadius, maxErrorRadius) {
-  // TODO(harukam): Implement to collect reason.
-  var context = new Blockly.Connection.typeCheckContext(false);
-  return conn.isConnectionAllowed(target, maxRadius, context);
+  var errorCollector = new Blockly.ErrorCollector();
+  var context = new Blockly.Connection.typeCheckContext(false, errorCollector);
+
+  var isAllowed = conn.isConnectionAllowed(target, maxRadius, context);
+  if (isAllowed) {
+    return true;
+  }
+  if (!errorCollector.isEmpty()) {
+    return errorCollector;
+  }
+  return false;
 };
 
 /**

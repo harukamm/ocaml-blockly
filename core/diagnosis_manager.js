@@ -29,4 +29,12 @@ Blockly.DiagnosisManager.prototype.dispose = function() {
  * @constructor
  */
 Blockly.ErrorCollector = function() {
+  this.errors_ = [];
+};
+
+/**
+ * Returns whether the collector doesn't hold any error.
+ */
+Blockly.ErrorCollector.prototype.isEmpty = function() {
+  return this.errors_.length == 0;
 };
