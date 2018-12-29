@@ -86,6 +86,14 @@ Blockly.TypeExpr.prototype.toString = function(opt_deref) {
 }
 
 /**
+ * Gets the display text for type expression.
+ * @return {string}
+ */
+Blockly.TypeExpr.prototype.getDisplayText = function() {
+  return this.getTypeName();
+}
+
+/**
  * Return the object's type name.
  * @return {string}
  */
@@ -334,6 +342,15 @@ Blockly.TypeExpr.LIST.prototype.toString = function(opt_deref) {
 }
 
 /**
+ * Gets the display text for type expression.
+ * @return {string}
+ * @private
+ */
+Blockly.TypeExpr.LIST.prototype.getDisplayText = function() {
+  return this.element_type.getDisplayText() + " list";
+}
+
+/**
  * @override
  * @return {Array<Type>}
  */
@@ -396,6 +413,16 @@ goog.inherits(Blockly.TypeExpr.PAIR, Blockly.TypeExpr);
 Blockly.TypeExpr.PAIR.prototype.toString = function(opt_deref) {
   return "PAIR[" + this.first_type.toString(opt_deref) + " * " +
       this.second_type.toString(opt_deref) + "]";
+}
+
+/**
+ * Gets the display text for type expression.
+ * @return {string}
+ * @private
+ */
+Blockly.TypeExpr.PAIR.prototype.getDisplayText = function() {
+  return this.first_type.getDisplayText() + " * " +
+      this.second_type.getDisplayText();
 }
 
 /**
@@ -470,6 +497,16 @@ Blockly.TypeExpr.FUN.prototype.toString = function(opt_deref) {
 }
 
 /**
+ * Gets the display text for type expression.
+ * @return {string}
+ * @private
+ */
+Blockly.TypeExpr.FUN.prototype.getDisplayText = function() {
+  return this.arg_type.getDisplayText() + " -> " +
+      this.return_type.getDisplayText();
+}
+
+/**
  * Deeply clone the object
  * @override
  * @return {Blockly.TypeExpr}
@@ -536,6 +573,19 @@ Blockly.TypeExpr.CONSTRUCT.prototype.toString = function(opt_deref) {
 }
 
 /**
+ * Gets the display text for type expression.
+ * @return {string}
+ * @private
+ */
+Blockly.TypeExpr.CONSTRUCT.prototype.getDisplayText = function() {
+  var dataname;
+  if (Blockly.mainWorkspace) {
+    dataname = Blockly.mainWorkspace.getCtorDataName(this.id);
+  }
+  return dataname ? dataname : null;
+}
+
+/**
  * Deeply clone the object
  * @return {Blockly.TypeExpr}
  * @override
@@ -572,6 +622,15 @@ Blockly.TypeExpr.TYPE_CONSTRUCTOR.prototype.toString = function(opt_deref) {
 };
 
 /**
+ * Gets the display text for type expression.
+ * @return {string}
+ * @private
+ */
+Blockly.TypeExpr.TYPE_CONSTRUCTOR.prototype.getDisplayText = function() {
+  return "<type>";
+};
+
+/**
  * Deeply clone the object
  * @return {Blockly.TypeExpr}
  * @override
@@ -598,6 +657,15 @@ goog.inherits(Blockly.TypeExpr.PATTERN, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.PATTERN.prototype.toString = function(opt_deref) {
   return "PATTERN(" + this.pattExpr.toString() + ")";
+};
+
+/**
+ * Gets the display text for type expression.
+ * @return {string}
+ * @private
+ */
+Blockly.TypeExpr.PATTERN.prototype.getDisplayText = function() {
+  return "<pattern>";
 };
 
 /**
@@ -650,6 +718,19 @@ Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
   } else {
     return "" + inst.toString(opt_deref);
   }
+}
+
+/**
+ * Gets the display text for type expression.
+ * @return {string}
+ * @private
+ */
+Blockly.TypeExpr.TVAR.prototype.getDisplayText = function() {
+  var t = this.deref();
+  if (t.isTypeVar()) {
+    return '\'' + t.name.toLowerCase();
+  }
+  return t.getDisplayText();
 }
 
 /**

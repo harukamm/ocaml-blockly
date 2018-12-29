@@ -49,6 +49,10 @@ Blockly.Blocks['defined_datatype_typed'] = {
     throw 'Not allowed to replace type expression for value construct.';
   },
 
+  getCtorId: function() {
+    return this.constructId_;
+  },
+
   getTypeCtorDef: function(fieldName) {
     return fieldName in this.lastTypeCtor_ ?
         this.lastTypeCtor_[fieldName] : null;

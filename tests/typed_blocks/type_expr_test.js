@@ -535,3 +535,34 @@ function test_type_expr_patternSimple() {
   assertEquals(type1.toString(), "PATTERN(LIST[<t=INT>])");
   assertEquals(type2.toString(), "PATTERN(LIST[INT])");
 }
+
+function test_type_expr_toDisplayText() {
+  var t = new Blockly.TypeExpr.TVAR('T', null);
+  var int1 = new Blockly.TypeExpr.INT();
+  assertEquals(int1.getDisplayText(), 'int');
+  var float1 = new Blockly.TypeExpr.FLOAT();
+  assertEquals(float1.getDisplayText(), 'float');
+  var bool1 = new Blockly.TypeExpr.BOOL();
+  assertEquals(bool1.getDisplayText(), 'bool');
+  var a = new Blockly.TypeExpr.TVAR('A', null);
+  var b = new Blockly.TypeExpr.TVAR('B', a);
+  assertEquals(b.getDisplayText(), '\'a');
+  var list = new Blockly.TypeExpr.LIST(b);
+  assertEquals(list.getDisplayText(), '\'a list');
+  b.unify(bool1);
+  assertEquals(list.getDisplayText(), 'bool list');
+  var c = new Blockly.TypeExpr.TVAR('C', null);
+  var pair = new Blockly.TypeExpr.PAIR(c, float1);
+  assertEquals(pair.getDisplayText(), '\'c * float');
+
+  var d = new Blockly.TypeExpr.TVAR('DDD', null);
+  var fun = Blockly.TypeExpr.createFunType([pair, list, d, int1]);
+  assertEquals(fun.getDisplayText(), '\'c * float -> bool list -> \'ddd -> int');
+
+  var ctor = new Blockly.TypeExpr.CONSTRUCT('id');
+  assertEquals(ctor.getDisplayText(), null);
+  var tctor = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+  assertEquals(tctor.getDisplayText(), '<type>');
+  var patt = new Blockly.TypeExpr.PATTERN(b);
+  assertEquals(patt.getDisplayText(), '<pattern>');
+}

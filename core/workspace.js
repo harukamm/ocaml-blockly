@@ -270,6 +270,26 @@ Blockly.Workspace.prototype.getTopComments = function(ordered) {
 };
 
 /**
+ * Finds the name of constructor datatype with the given id.
+ * @param {!string} id The string to identify constructor definition.
+ * @return {string} The name of constructor definition or null.
+ */
+Blockly.Workspace.prototype.getCtorDataName = function(id) {
+  var topBlocks = this.getTopBlocks();
+  for (var i = 0, topBlock; topBlock = topBlocks[i]; i++) {
+    if (topBlock.type !== 'defined_datatype_typed') {
+      continue;
+    }
+    if (topBlock.getCtorId() === id) {
+      var field = topBlock.getField('DATANAME');
+      var dataName = field.getText();
+      return dataName;
+    }
+  }
+  return null;
+};
+
+/**
  * Returns the list of values on the workspace. The callers of this function
  * change the content of the list.
  * @param {!number} label An enum indicating which type of value.

@@ -1254,8 +1254,12 @@ function test_type_unification_fixLambdaIdInLetPoly() {
 
 function test_type_unification_constructBlockSimple() {
   var workspace = create_typed_workspace();
+  Blockly.mainWorkspace = workspace;
   try {
     var defineCtr = workspace.newBlock('defined_datatype_typed');
+    defineCtr.getField('DATANAME').setText('fooo');
+    var id = defineCtr.getCtorId();
+    assertEquals(workspace.getCtorDataName(id), 'fooo');
     var ctrValue = getVariable(defineCtr, 0);
     var ctr = workspace.newBlock('create_construct_typed');
     var ctrReference = getVariable(ctr);
@@ -1265,6 +1269,8 @@ function test_type_unification_constructBlockSimple() {
     assertTrue(Blockly.BoundVariables.canRenameTo(ctrReference, 'Bee'));
     assertTrue(Blockly.BoundVariables.canRenameTo(ctrReference, 'Be\'e'));
     assertFalse(Blockly.BoundVariables.canRenameTo(ctrReference, 'eAd'));
+    assertEquals(ctrValue.getTypeExpr().getDisplayText(), 'fooo');
+    assertEquals(ctrReference.getTypeExpr().getDisplayText(), 'fooo');
 
     function check(typeBlock, typeName) {
       var inp = ctr.getInput('PARAM');
@@ -1293,6 +1299,7 @@ function test_type_unification_constructBlockSimple() {
     check(intType, 'int');
     intType.outputConnection.disconnect();
   } finally {
+    Blockly.mainWorkspace = null;
     workspace.dispose();
   }
 }
