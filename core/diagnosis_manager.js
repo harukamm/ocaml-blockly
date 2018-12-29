@@ -17,6 +17,7 @@ goog.require('goog.asserts');
  * @constructor
  */
 Blockly.DiagnosisManager = function() {
+  /** @type {!Blockly.ErrorCollector_} */
   this.unboundCollector_ = new Blockly.ErrorCollector()
 };
 
