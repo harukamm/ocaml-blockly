@@ -913,10 +913,12 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       continue;
     }
     if (t1.isTypeConstructor() || t2.isTypeConstructor()) {
-      throw Blockly.TypeExpr.errorUnityTypeCtor(t1, t2);
+      var othr = t1.isTypeConstructor() ? t2 : t1;
+      throw Blockly.TypeExpr.errorUnityTypeCtor(othr);
     }
     if (t1.isPattern() || t2.isPattern()) {
-      throw Blockly.TypeExpr.errorUnityPattern(t1, t2);
+      var othr = t1.isPattern() ? t2 : t1;
+      throw Blockly.TypeExpr.errorUnityPattern(othr);
     }
     if (t1.isTypeVar() || t2.isTypeVar()) {
       var t1_is_tvar = t1.isTypeVar();
@@ -933,7 +935,7 @@ Blockly.TypeExpr.prototype.unify = function(other) {
         var pair = t1_is_tvar ? [tvar.val, othr] : [othr, tvar.val];
         staq.push(pair);
       } else if (othr.occur(tvar.name)) {
-        throw Blockly.TypeExpr.errorOccurCheck();
+        throw Blockly.TypeExpr.errorOccurCheck(tvar, othr);
       } else {
         tvar.val = othr;
       }
@@ -1132,17 +1134,17 @@ Blockly.TypeExpr.ERROR_OCCUR_CHECK = 10;
 Blockly.TypeExpr.ERROR_CTOR_INCONSISTENT = 15;
 Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT = 20;
 
-Blockly.TypeExpr.errorUnityTypeCtor = function(t1, t2) {
-  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_TYPECTOR, t1, t2);
+Blockly.TypeExpr.errorUnityTypeCtor = function(t) {
+  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_TYPECTOR, t, null);
 };
 
-Blockly.TypeExpr.errorUnityPattern = function(t1, t2) {
-  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_PATTERN, t1, t2);
+Blockly.TypeExpr.errorUnityPattern = function(t) {
+  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_PATTERN, t, null);
 };
 
-Blockly.TypeExpr.errorOccurCheck = function() {
-  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_OCCUR_CHECK, null,
-      null);
+Blockly.TypeExpr.errorOccurCheck = function(tvar, type) {
+  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_OCCUR_CHECK, tvar,
+    type);
 };
 
 Blockly.TypeExpr.errorInconsistentCtor = function(t1, t2) {
