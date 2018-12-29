@@ -928,7 +928,10 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       if (othr.isTypeVar() && tvar.name == othr.name)
         continue;
       if (tvar.val != null) {
-        staq.push([tvar.val, othr]);
+        // Don't swap order of pairs in staq. Error objects assume that the
+        // order is consistent.
+        var pair = t1_is_tvar ? [tvar.val, othr] : [othr, tvar.val];
+        staq.push(pair);
       } else if (othr.occur(tvar.name)) {
         throw Blockly.TypeExpr.errorOccurCheck();
       } else {
