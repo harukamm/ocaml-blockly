@@ -147,6 +147,18 @@ Blockly.DraggedConnectionManager.prototype.localConnection = function() {
 };
 
 /**
+ * Return the error based on the most recent move event if any compatible
+ * connection near to the dragged block is not found.
+ * @return {Blockly.ConnectionDB.errorReason}
+ */
+Blockly.DraggedConnectionManager.prototype.closestError = function() {
+  if (this.closestConnection_ || !this.closestError_) {
+    return null;
+  }
+  return this.closestError_;
+};
+
+/**
  * Return whether the block would be connected if dropped immediately, based on
  * information from the most recent move event.
  * @return {boolean} true if the block would be connected if dropped immediately.

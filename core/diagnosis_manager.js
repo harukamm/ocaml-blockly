@@ -17,6 +17,38 @@ goog.require('goog.asserts');
  * @constructor
  */
 Blockly.DiagnosisManager = function() {
+  this.unboundCollector_ = new Blockly.ErrorCollector()
+};
+
+/**
+ * Update the error dialog during a block drag.
+ * @param {Blockly.ConnectionDB.errorReason} closestError The reason why the
+ *     closest connection is incompatible with the dragged block. Null if it's
+ *     compatible.
+ */
+Blockly.DiagnosisManager.prototype.update = function(closestError) {
+  var message = null;
+  if (closestError) {
+    var collector = /** @type {!Blockly.ErrorCollector_} */closestError.error;
+    message = collector.toMessage();
+  } else if (!this.unboundCollector_.isEmpty()) {
+    message = this.unboundCollector_.toMessage();
+  }
+
+  this.updateErrorDialog_(message);
+  this.unboundCollector_.clear();
+};
+
+/**
+ * Update message on the error dialog or hide the dialog.
+ * @param {string} Message to be shown in a dialog. Null to hide the dialog.
+ */
+Blockly.DiagnosisManager.prototype.updateErrorDialog_ = function(message) {
+  // TODO(harukam): Create dialog element.
+  if (!message) {
+    return;
+  }
+  console.log(message);
 };
 
 /**
@@ -51,6 +83,13 @@ Blockly.ErrorCollector.prototype.toMessage = function() {
  */
 Blockly.ErrorCollector.prototype.isEmpty = function() {
   return this.errors_.length == 0;
+};
+
+/**
+ * Clear collected errors.
+ */
+Blockly.ErrorCollector.prototype.clear = function() {
+  this.errors_.length = 0;
 };
 
 /**

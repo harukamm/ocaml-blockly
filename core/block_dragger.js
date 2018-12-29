@@ -327,6 +327,11 @@ Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
   this.draggedConnectionManager_.update(delta, this.deleteArea_,
       targetWorkspace);
 
+  if (this.diagnosisManager_) {
+    this.diagnosisManager_.update(
+        this.draggedConnectionManager_.closestError());
+  }
+
   this.updateReferenceStateDuringBlockDrag_(targetWorkspace);
   this.updateCursorDuringBlockDrag_();
 };
