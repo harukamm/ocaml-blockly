@@ -27,6 +27,7 @@
 goog.provide('Blockly.DraggedConnectionManager');
 
 goog.require('Blockly.BlockAnimations');
+goog.require('Blockly.ConnectionDB.errorReason');
 goog.require('Blockly.RenderedConnection');
 
 goog.require('goog.math.Coordinate');

@@ -25,6 +25,7 @@
 'use strict';
 
 goog.provide('Blockly.Connection');
+goog.provide('Blockly.Connection.typeCheckContext');
 
 goog.require('Blockly.TypeExpr');
 goog.require('Blockly.Events.BlockMove');
