@@ -136,7 +136,7 @@ Blockly.RenderedTypeExpr.shape['pair'] = {
   }
 };
 
-Blockly.RenderedTypeExpr.shape['fun'] = {
+Blockly.RenderedTypeExpr.shape['function'] = {
   down: function(steps) {
     steps.push('l 0,3 -12,0 0,3 12,0');
     Blockly.RenderedTypeExpr.renderTypeExpr(this.arg_type, steps, 1);

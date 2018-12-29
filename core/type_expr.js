@@ -110,7 +110,7 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
     case Blockly.TypeExpr.PAIR_:
       return 'pair';
     case Blockly.TypeExpr.FUN_:
-      return 'fun';
+      return 'function';
     case Blockly.TypeExpr.CONSTRUCT_:
       return 'construct';
     case Blockly.TypeExpr.TYPE_CONSTRUCTOR_:
