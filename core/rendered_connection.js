@@ -191,12 +191,16 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
  *     in the database and the current location (as a result of dragging).
  * @param {Blockly.WorkspaceSvg=} opt_targetWorkspace Workspace to search for
  *     the closest connection.
- * @return {!{connection: ?Blockly.Connection, radius: number}} Contains two
- *     properties: 'connection' which is either another connection or null,
- *     and 'radius' which is the distance.
+ * @param {number=} opt_maxErrorRadius The maximum radius to incompatible
+ *     connection. If not provided, use the same radius with maxRadius.
+ * @return {!{connection: ?Blockly.Connection, radius: number,
+ *       reason: ?Blockly.ConnectionDB.errorReason}} Contains three properties:
+ *    'connection' which is either another connection or null, 'radius' which
+ *    is the distance, 'reason' which is incompatibility reason if connection
+ *    is not found.
  */
 Blockly.RenderedConnection.prototype.closest = function(maxLimit, dxy,
-    opt_targetWorkspace) {
+    opt_targetWorkspace, opt_maxErrorRadius) {
   var db, offsetXY;
   if (opt_targetWorkspace) {
     if (!this.sourceBlock_.isTransferable()) {
@@ -213,7 +217,7 @@ Blockly.RenderedConnection.prototype.closest = function(maxLimit, dxy,
     db = this.dbOpposite_;
     offsetXY = dxy;
   }
-  return db.searchForClosest(this, maxLimit, offsetXY);
+  return db.searchForClosest(this, maxLimit, offsetXY, opt_maxErrorRadius);
 };
 
 /**
