@@ -560,7 +560,7 @@ function test_type_expr_toDisplayText() {
   assertEquals(fun.getDisplayText(), '\'c * float -> bool list -> \'ddd -> int');
 
   var ctor = new Blockly.TypeExpr.CONSTRUCT('id');
-  assertEquals(ctor.getDisplayText(), null);
+  assertEquals(ctor.getDisplayText(), '');
   var tctor = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
   assertEquals(tctor.getDisplayText(), '<type>');
   var patt = new Blockly.TypeExpr.PATTERN(b);

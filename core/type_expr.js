@@ -582,7 +582,7 @@ Blockly.TypeExpr.CONSTRUCT.prototype.getDisplayText = function() {
   if (Blockly.mainWorkspace) {
     dataname = Blockly.mainWorkspace.getCtorDataName(this.id);
   }
-  return dataname ? dataname : null;
+  return dataname ? dataname : '';
 }
 
 /**
