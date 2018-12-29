@@ -653,8 +653,8 @@ Blockly.Connection.prototype.targetBlock = function() {
 Blockly.Connection.prototype.checkTypeExprAndVariables_ = function(
     otherConnection, opt_context) {
   var context = opt_context ? opt_context : {};
-  var dx = this.typeExpr.unifyErrorDiagnosis(otherConnection.typeExpr);
-  if (dx) {
+  var collector = context.errorCollector;
+  if (!this.typeExpr.ableToUnify(otherConnection.typeExpr, collector)) {
     return Blockly.Connection.REASON_TYPE_UNIFICATION;
   }
   var superior = this.isSuperior() ? this : otherConnection;
