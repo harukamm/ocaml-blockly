@@ -144,10 +144,15 @@ Blockly.Connection.prototype.typeCheckDisabled_ = null;
  * Class for context of type checking.
  * @param {boolean} finalCheck True if two connections will be connected
  *     immediately if they are found compatible.
+ * @param {Blockly.ErrorCollector} errorCollector If provided, incompatible
+ *     errors will be stored.
  * @constructor
  */
-Blockly.Connection.typeCheckContext = function(finalCheck) {
+Blockly.Connection.typeCheckContext = function(finalCheck, errorCollector) {
   this.finalCheck = finalCheck;
+  if (errorCollector) {
+    this.errorCollector = errorCollector;
+  }
 };
 
 /**
