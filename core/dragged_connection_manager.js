@@ -92,6 +92,13 @@ Blockly.DraggedConnectionManager = function(block) {
   this.radiusConnection_ = 0;
 
   /**
+   * The reason why the closest connection is incompatible.
+   * @type {Blockly.ConnectionDB.errorReason}
+   * @private
+   */
+  this.closestError_ = null;
+
+  /**
    * Whether the block would be deleted if it were dropped immediately.
    * Updated on every mouse move.
    * @type {boolean}
@@ -298,14 +305,22 @@ Blockly.DraggedConnectionManager.prototype.updateClosest_ = function(dxy,
   this.closestConnection_ = null;
   this.localConnection_ = null;
   this.radiusConnection_ = Blockly.SNAP_RADIUS;
+
+  this.closestError_ = null;
+  var errorRadius = Blockly.SNAP_RADIUS;
+
   for (var i = 0; i < this.availableConnections_.length; i++) {
     var myConnection = this.availableConnections_[i];
-    var neighbour =
-        myConnection.closest(this.radiusConnection_, dxy, opt_targetWorkspace);
+    var neighbour = myConnection.closest(this.radiusConnection_, dxy,
+        opt_targetWorkspace, errorRadius);
     if (neighbour.connection) {
       this.closestConnection_ = neighbour.connection;
       this.localConnection_ = myConnection;
       this.radiusConnection_ = neighbour.radius;
+    }
+    if (neighbour.reason) {
+      this.closestError_ = neighbour.reason;
+      errorRadius = this.closestError_.radius;
     }
   }
   return oldClosestConnection != this.closestConnection_;
