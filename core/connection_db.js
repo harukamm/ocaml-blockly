@@ -253,6 +253,10 @@ Blockly.ConnectionDB.prototype.canConnectWithError_ = function(conn, target,
 };
 
 /**
+ * @param {!Blockly.Connection} conn The conenction rejected by a target
+ *     connection.
+ * @param {number} radius The distance between two connections.
+ * @param {!Blockly.ErrorCollector} error The object collecting error details.
  * @constructor
  */
 Blockly.ConnectionDB.errorReason = function(conn, radius, error) {
