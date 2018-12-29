@@ -35,6 +35,18 @@ Blockly.ErrorCollector = function() {
 };
 
 /**
+ * Creates error message from collected errors.
+ * @return {!string} Error message.
+ */
+Blockly.ErrorCollector.prototype.toMessage = function() {
+  if (this.errors_.length == 0) {
+    return '';
+  }
+  var firstError = this.errors_[0];
+  return firstError.toMessage();
+};
+
+/**
  * Returns whether the collector doesn't hold any error.
  */
 Blockly.ErrorCollector.prototype.isEmpty = function() {
@@ -73,3 +85,23 @@ Blockly.ErrorItem = function(label, errorElement, errorTarget) {
 };
 
 Blockly.ErrorItem.UNBOUND_VARIABLE = 1;
+
+/**
+ * Returns error message.
+ * @return {!string} Error message.
+ */
+Blockly.ErrorItem.prototype.toMessage = function() {
+  var msg = '';
+  if (this.label == Blockly.ErrorItem.UNBOUND_VARIABLE) {
+    var name = this.errorElement.getVariableName();
+    msg += 'Variable `' + name + '\' is ';
+    if (this.errorTarget) {
+      msg += 'bound to unexpected variable value.';
+    } else {
+      msg += 'unbound.';
+    }
+  } else {
+    goog.asserts.fail('Unknown label');
+  }
+  return msg;
+};
