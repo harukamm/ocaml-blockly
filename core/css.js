@@ -652,7 +652,7 @@ Blockly.Css.CONTENT = [
   '}',
 
   /* Category tree in Toolbox. */
-  '.blocklyToolboxDiv {',
+  '.blocklyToolboxDiv, .blocklyDiagnosisDialog {',
     'background-color: #ddd;',
     'overflow-x: visible;',
     'overflow-y: auto;',

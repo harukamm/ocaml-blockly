@@ -19,15 +19,36 @@ goog.require('goog.asserts');
 Blockly.DiagnosisManager = function() {
   /** @type {!Blockly.ErrorCollector_} */
   this.unboundCollector_ = new Blockly.ErrorCollector();
+
+  /** @type {!Element} */
+  this.dialog_ = null;
+
+  /** @type {boolean} */
+  this.visible_ = false;
+
+  this.createDom_();
+};
+
+/**
+ * Create the div to show error message.
+ */
+Blockly.DiagnosisManager.prototype.createDom_ = function() {
+  if (this.dialog_) {
+    return;
+  }
+  this.dialog_ =
+      goog.dom.createDom(goog.dom.TagName.DIV, 'blocklyDiagnosisDialog');
+  document.body.appendChild(this.dialog_);
 };
 
 /**
  * Update the error dialog during a block drag.
+ * @param {!Event} e The most recent move event.
  * @param {Blockly.ConnectionDB.errorReason} closestError The reason why the
  *     closest connection is incompatible with the dragged block. Null if it's
  *     compatible.
  */
-Blockly.DiagnosisManager.prototype.update = function(closestError) {
+Blockly.DiagnosisManager.prototype.update = function(e, closestError) {
   var message = null;
   if (closestError) {
     var collector = /** @type {!Blockly.ErrorCollector_} */closestError.error;
@@ -36,20 +57,36 @@ Blockly.DiagnosisManager.prototype.update = function(closestError) {
     message = this.unboundCollector_.toMessage();
   }
 
-  this.updateErrorDialog_(message);
+  this.updateErrorDialog_(e, message);
   this.unboundCollector_.clear();
 };
 
 /**
  * Update message on the error dialog or hide the dialog.
+ * @param {!Event} e The most recent move event.
  * @param {string} Message to be shown in a dialog. Null to hide the dialog.
  */
-Blockly.DiagnosisManager.prototype.updateErrorDialog_ = function(message) {
-  // TODO(harukam): Create dialog element.
-  if (!message) {
+Blockly.DiagnosisManager.prototype.updateErrorDialog_ = function(e, message) {
+  var newVisible = !!message;
+  if (!newVisible) {
+    if (this.visible_) {
+      this.dialog_.style.display = 'none';
+      this.visible_ = false;
+    }
     return;
   }
-  console.log(message);
+
+  if (!this.visible_) {
+    this.dialog_.style.display = 'block';
+    this.visible_ = true;
+  }
+
+  var anchorY = e.pageY + 20;
+  var anchorX = e.pageX + 20;
+  this.dialog_.style.top = anchorY + 'px';
+  this.dialog_.style.left = anchorX + 'px';
+
+  this.dialog_.textContent = message;
 };
 
 /**
@@ -64,6 +101,9 @@ Blockly.DiagnosisManager.prototype.getUnboundCollector = function() {
  * Dispose of the manager.
  */
 Blockly.DiagnosisManager.prototype.dispose = function() {
+  if (this.dialog_) {
+    goog.dom.removeNode(this.dialog_);
+  }
 };
 
 /**
