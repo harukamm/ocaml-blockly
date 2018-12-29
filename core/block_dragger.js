@@ -546,6 +546,7 @@ Blockly.BlockDragger.prototype.updateReferenceStateDuringBlockDrag_ =
     }
     // Pattern block can not be an orphan.
     if (this.draggingBlock_.isPattern()) {
+      collector.addOrphanPatternError();
       resolved = false;
     }
   }
