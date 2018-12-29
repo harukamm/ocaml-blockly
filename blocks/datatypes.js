@@ -142,12 +142,7 @@ Blockly.Blocks['create_construct_typed'] = {
       var targetBlock = input.connection.targetBlock();
       this.removeInput('PARAM');
       if (targetBlock) {
-        throw 'Pass error collector instead of array to collect undefined ' +
-            'variables.';
-        // TODO(harukam): Fix.
-        var unresolvedRefs = [];
-        targetBlock.resolveReference(null, false, null, unresolvedRefs);
-
+        var unresolvedRefs = this.getUnboundVariables();
         for (var i = 0, ref; ref = unresolvedRefs[i]; i++) {
           ref.getSourceBlock().dispose();
         }

@@ -62,6 +62,19 @@ Blockly.ErrorCollector.prototype.addItem_ = function(item) {
 };
 
 /**
+ * Gets a list of variables from collected errors.
+ * @return {!Array.<!Blockly.BoundVariableValueReference>}
+ */
+Blockly.ErrorCollector.prototype.getUnboundVariables = function() {
+  var unresolved = [];
+  for (var i = 0, err; err = this.errors_[i]; i++) {
+    var reference = err.errorElement;
+    unresolved.push(reference);
+  }
+  return unresolved;
+};
+
+/**
  * @param {!Blockly.BoundVariableValueReference} reference The variable found
  *     to be unbound.
  * @param {Blockly.BoundVariableValue} wrongValue The wrong variable value in

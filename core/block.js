@@ -2172,6 +2172,21 @@ Blockly.Block.prototype.getVisibleVariablesImpl = function(conn) {
       this.getVisibleVariables(conn) : {};
 };
 
+/**
+ * Return a list of variable references on the given block.
+ * @return {!Array.<!Blockly.BoundVariableValueReference>} A list of variables
+ *     which can no be resolved in the block's context.
+ */
+Blockly.Block.prototype.getUnboundVariables = function() {
+  var collector = new Blockly.ErrorCollector();
+  var resolved = this.resolveReference(null, false, null, collector);
+  if (resolved) {
+    goog.asserts.assert(collector.isEmpty());
+    return [];
+  }
+  return collector.getUnboundVariables();
+};
+
 /* End functions related variable binding. */
 
 /**
