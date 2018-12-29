@@ -36,6 +36,10 @@ Blockly.DiagnosisManager = function(block) {
   this.createDom_();
 };
 
+Blockly.DiagnosisManager.OFFSET_X = 20;
+
+Blockly.DiagnosisManager.OFFSET_Y = 20;
+
 /**
  * Create the div to show error message.
  */
@@ -88,8 +92,10 @@ Blockly.DiagnosisManager.prototype.updateErrorDialog_ = function(e, message) {
     this.visible_ = true;
   }
 
-  var anchorY = e.pageY + 20 * this.mainScale_;
-  var anchorX = e.pageX + 20 * this.mainScale_;
+  var anchorY = e.pageY;
+  anchorY += Blockly.DiagnosisManager.OFFSET_Y * this.mainScale_;
+  var anchorX = e.pageX;
+  anchorX += Blockly.DiagnosisManager.OFFSET_X * this.mainScale_;
   this.dialog_.style.top = anchorY + 'px';
   this.dialog_.style.left = anchorX + 'px';
 
