@@ -11,9 +11,9 @@ goog.provide('Blockly.ErrorItem');
 goog.require('goog.asserts');
 
 /**
- * Class to manage reasons why a dragged block is not allowed to connect to
- * the closest connection, why it's dropped in the current position, or etc
- * during a block drag.
+ * Class to show a dialog to explain reasons why a dragged block is not allowed
+ * to connect to the closest connection, why it's dropped in the current
+ * position, or etc during a block drag.
  * @constructor
  */
 Blockly.DiagnosisManager = function() {
