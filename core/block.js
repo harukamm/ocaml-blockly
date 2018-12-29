@@ -2069,26 +2069,30 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
 Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind,
     opt_collector) {
   var referenceList = this.getVariables(true /** Gets only references. */);
-  var unresolved = [];
-  // TODO(harukam): Store details of unresoled variables.
-  // goog.isArray(opt_collector) ? opt_collector : [];
+  var allBound = true;
   for (var i = 0, variable; variable = referenceList[i]; i++) {
     var name = variable.getVariableName();
     var value = env[name];
     var currentValue = variable.getBoundValue();
     if (!value) {
       // Refers to an undefined variable.
-      unresolved.push(variable);
-    } else if (currentValue) {
-      if (currentValue != value) {
-        // Refers to the different variable value.
-        unresolved.push(variable);
+      if (opt_collector) {
+        opt_collector.addUnboundVariable(variable, null);
       }
-    } else if (opt_bind === true) {
+      allBound = false;
+    }
+    if (value && currentValue && currentValue != value) {
+      // Refers to the different variable value.
+      if (opt_collector) {
+        opt_collector.addUnboundVariable(variable, value);
+      }
+      allBound = false;
+    }
+    if (opt_bind === true && value && !currentValue) {
       variable.setBoundValue(value);
     }
   }
-  return unresolved.length == 0;
+  return allBound;
 };
 
 /**
