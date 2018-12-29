@@ -662,7 +662,8 @@ Blockly.Connection.prototype.checkTypeExprAndVariables_ = function(
   var childBlock = inferior.getSourceBlock();
 
   var bindNewly = context.finalCheck === true;
-  var resolved = childBlock.resolveReference(superior, bindNewly);
+  var resolved =
+      childBlock.resolveReference(superior, bindNewly, null, collector);
   if (!resolved) {
     return Blockly.Connection.REASON_VARIABLE_REFERENCE;
   }

@@ -82,6 +82,9 @@ BlockOfOCamlUtils.codeToBlockImpl_ = function(code, opt_workspace) {
     result.errCode = BlockOfOCamlUtils.ERROR_INVALID_BLOCK_XML;
     return result;
   }
+  throw 'Pass error collector instead of array to collect undefined ' +
+      'variables.';
+  // TODO(harukam): Fix.
   var undefineds = [];
   var resolved = block.resolveReference(null, true, null, undefineds);
   if (!resolved) {

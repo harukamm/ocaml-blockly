@@ -29,6 +29,7 @@ goog.provide('Blockly.Block');
 goog.require('Blockly.Blocks');
 goog.require('Blockly.Comment');
 goog.require('Blockly.Connection');
+goog.require('Blockly.ErrorCollector');
 goog.require('Blockly.Events.BlockChange');
 goog.require('Blockly.Events.BlockCreate');
 goog.require('Blockly.Events.BlockDelete');
@@ -1972,13 +1973,13 @@ Blockly.Block.prototype.isPattern = function() {
  * @param {Blockly.Workspace=} opt_workspace If provided, assume that this
  *     block has transferred to the workspace. Must be identical with a
  *     connection's workspace if parentConnection is supplied.
- * @param {Array=} opt_reason If provided, store any references that can not be
- *     resolved to the array.
+ * @param {Blockly.ErrorCollector=} opt_collector If provided, details of
+ *     unresolved variables will be stored.
  * @return {boolean} True if all of getter blocks inside this block  can refer
  *     to a existing variable.
  */
 Blockly.Block.prototype.resolveReference = function(parentConnection,
-      opt_bind, opt_workspace, opt_reason) {
+      opt_bind, opt_workspace, opt_collector) {
   var contextWorkspace;
   var parentBlock;
 
@@ -2001,7 +2002,7 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
         true  /** Includes the potential context. */));
   }
 
-  return this.resolveReferenceOnDescendants(env, opt_bind, opt_reason);
+  return this.resolveReferenceOnDescendants(env, opt_bind, opt_collector);
 };
 
 /**
@@ -2011,12 +2012,12 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
  *     can refer to.
  * @param {boolean=} opt_bind Bind reference block with the proper variable if
  *     true.
- * @param {Array=} opt_reason If provided, store any references that can not be
- *     resolved to the array.
+ * @param {Blockly.ErrorCollector=} opt_collector If provided, details of
+ *     unresolved variables will be stored.
  */
 Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
-    opt_bind, opt_reason) {
-  var returnImmediate = !goog.isArray(opt_reason);
+    opt_bind, opt_collector) {
+  var returnImmediate = !opt_collector;
   var resolved = true;
   var bfsStack = [[this, env]];
   while (bfsStack.length) {
@@ -2024,7 +2025,7 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
     var block = pair[0];
     var envOfParent = pair[1];
 
-    if (!block.resolveReferenceWithEnv_(envOfParent, opt_bind, opt_reason)) {
+    if (!block.resolveReferenceWithEnv_(envOfParent, opt_bind, opt_collector)) {
       resolved = false;
       if (returnImmediate) {
         return false;
@@ -2033,7 +2034,7 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
 
     if (goog.isArray(block.workbenches)) {
       for (var i = 0, workbench; workbench = block.workbenches[i]; i++) {
-        if (!workbench.checkReference(envOfParent, opt_reason)) {
+        if (!workbench.checkReference(envOfParent, opt_collector)) {
           resolved = false;
           if (returnImmediate) {
             return false;
@@ -2060,15 +2061,17 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
  *     can be referred to by reference in this block keyed by variable's name.
  * @param {boolean=} opt_bind Bind the getter with the proper variable if
  *     true.
- * @param {Array=} opt_reason If provided, store any references that can not be
- *     resolved to the array.
+ * @param {Blockly.ErrorCollector} opt_collector If provided, details of
+ *     unresolved variables will be stored.
  * @return {boolean} True if all of references this block contains are
  *     resolved. Otherwise false.
  */
 Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind,
-    opt_reason) {
+    opt_collector) {
   var referenceList = this.getVariables(true /** Gets only references. */);
-  var unresolved = goog.isArray(opt_reason) ? opt_reason : [];
+  var unresolved = [];
+  // TODO(harukam): Store details of unresoled variables.
+  // goog.isArray(opt_collector) ? opt_collector : [];
   for (var i = 0, variable; variable = referenceList[i]; i++) {
     var name = variable.getVariableName();
     var value = env[name];
