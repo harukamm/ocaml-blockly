@@ -29,7 +29,7 @@ goog.provide('Blockly.ConnectionDB.errorReason');
 
 goog.require('Blockly.Connection');
 goog.require('Blockly.Connection.typeCheckContext');
-goog.require('Blockly.DiagnosisCollector');
+goog.require('Blockly.ErrorCollector');
 
 /**
  * Database of connections.

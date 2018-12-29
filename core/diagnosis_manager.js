@@ -5,6 +5,7 @@
 'use strict';
 
 goog.provide('Blockly.DiagnosisManager');
+goog.provide('Blockly.ErrorCollector');
 
 goog.require('goog.asserts');
 
@@ -21,4 +22,11 @@ Blockly.DiagnosisManager = function() {
  * Dispose of the manager.
  */
 Blockly.DiagnosisManager.prototype.dispose = function() {
+};
+
+/**
+ * Class to collect errors.
+ * @constructor
+ */
+Blockly.ErrorCollector = function() {
 };
