@@ -1178,7 +1178,7 @@ Blockly.TypeExpr.Error.prototype.toMessage = function() {
       }
       return 'The constructor does not belong to type ' + s2 + '.';
     case Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT:
-      return 'Has type ' + s1 + ' but expected of type ' + s2;
+      return 'Has type ' + s1 + ' but expected of type ' + s2 + '.';
     default:
       goog.asserts.fail('Unexpected type error label.');
   }
