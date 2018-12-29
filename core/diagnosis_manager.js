@@ -18,7 +18,7 @@ goog.require('goog.asserts');
  */
 Blockly.DiagnosisManager = function() {
   /** @type {!Blockly.ErrorCollector_} */
-  this.unboundCollector_ = new Blockly.ErrorCollector()
+  this.unboundCollector_ = new Blockly.ErrorCollector();
 };
 
 /**
