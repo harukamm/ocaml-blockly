@@ -911,7 +911,13 @@ Blockly.TypeExpr.prototype.ableToUnify = function(other, opt_errorCollector) {
     t1.unify(t2);
     return true;
   } catch (e) {
-    // TODO(harukam): Store error details to error collector.
+    if (!opt_errorCollector) {
+      return false;
+    }
+    if (!(e instanceof Blockly.TypeExpr.Error)) {
+      return false;
+    }
+    opt_errorCollector.addTypeError(e);
     return false;
   }
 }

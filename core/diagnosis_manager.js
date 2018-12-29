@@ -76,6 +76,14 @@ Blockly.ErrorCollector.prototype.addUnboundVariable = function(reference,
 };
 
 /**
+ * @param {!Blockly.TypeExpr.Error} err The caused error object.
+ */
+Blockly.ErrorCollector.prototype.addTypeError = function(typeError) {
+  var item = new Blockly.ErrorItem(Blockly.ErrorItem.TYPE_ERROR, typeError);
+  this.addItem_(item);
+};
+
+/**
  * @constructor
  */
 Blockly.ErrorItem = function(label, errorElement, errorTarget) {
@@ -85,6 +93,7 @@ Blockly.ErrorItem = function(label, errorElement, errorTarget) {
 };
 
 Blockly.ErrorItem.UNBOUND_VARIABLE = 1;
+Blockly.ErrorItem.TYPE_ERROR = 2;
 
 /**
  * Returns error message.
