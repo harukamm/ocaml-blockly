@@ -14,9 +14,16 @@ goog.require('goog.asserts');
  * Class to show a dialog to explain reasons why a dragged block is not allowed
  * to connect to the closest connection, why it's dropped in the current
  * position, or etc during a block drag.
+ * @param {!Blockly.BlockSvg} block The top block in the stack being dragged.
  * @constructor
  */
-Blockly.DiagnosisManager = function() {
+Blockly.DiagnosisManager = function(block) {
+  /** @type {!Blockly.BlockSvg} */
+  this.topBlock_ = block;
+
+  /** @type {number} */
+  this.mainScale_ = this.topBlock_.workspace.getMainWorkspace().scale;
+
   /** @type {!Blockly.ErrorCollector_} */
   this.unboundCollector_ = new Blockly.ErrorCollector();
 
@@ -81,8 +88,8 @@ Blockly.DiagnosisManager.prototype.updateErrorDialog_ = function(e, message) {
     this.visible_ = true;
   }
 
-  var anchorY = e.pageY + 20;
-  var anchorX = e.pageX + 20;
+  var anchorY = e.pageY + 20 * this.mainScale_;
+  var anchorX = e.pageX + 20 * this.mainScale_;
   this.dialog_.style.top = anchorY + 'px';
   this.dialog_.style.left = anchorX + 'px';
 
@@ -101,6 +108,7 @@ Blockly.DiagnosisManager.prototype.getUnboundCollector = function() {
  * Dispose of the manager.
  */
 Blockly.DiagnosisManager.prototype.dispose = function() {
+  this.topBlock_ = null;
   if (this.dialog_) {
     goog.dom.removeNode(this.dialog_);
   }

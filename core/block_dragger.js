@@ -85,7 +85,7 @@ Blockly.BlockDragger = function(block, workspace) {
    */
   this.diagnosisManager_ = null;
   if (Blockly.Block.isTypedBlock(this.draggingBlock_)) {
-    this.diagnosisManager_ = new Blockly.DiagnosisManager();
+    this.diagnosisManager_ = new Blockly.DiagnosisManager(this.draggingBlock_);
   }
 
   /**
