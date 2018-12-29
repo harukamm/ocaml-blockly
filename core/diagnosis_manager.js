@@ -30,6 +30,9 @@ Blockly.DiagnosisManager = function(block) {
   /** @type {!Element} */
   this.dialog_ = null;
 
+  /** @type {string} */
+  this.lastMessage_ = null;
+
   /** @type {boolean} */
   this.visible_ = false;
 
@@ -70,6 +73,7 @@ Blockly.DiagnosisManager.prototype.update = function(e, closestError) {
 
   this.updateErrorDialog_(e, message);
   this.unboundCollector_.clear();
+  this.lastMessage_ = message;
 };
 
 /**
@@ -99,7 +103,9 @@ Blockly.DiagnosisManager.prototype.updateErrorDialog_ = function(e, message) {
   this.dialog_.style.top = anchorY + 'px';
   this.dialog_.style.left = anchorX + 'px';
 
-  this.dialog_.textContent = message;
+  if (this.lastMessage_ === message) {
+    this.dialog_.textContent = message;
+  }
 };
 
 /**
