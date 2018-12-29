@@ -52,6 +52,14 @@ Blockly.DiagnosisManager.prototype.updateErrorDialog_ = function(message) {
 };
 
 /**
+ * Returns object to collect unbound errors. It may be updated by caller.
+ * @return {!Blockly.ErrorCollector}
+ */
+Blockly.DiagnosisManager.prototype.getUnboundCollector = function() {
+  return this.unboundCollector_;
+};
+
+/**
  * Dispose of the manager.
  */
 Blockly.DiagnosisManager.prototype.dispose = function() {
