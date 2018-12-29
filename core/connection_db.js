@@ -222,18 +222,43 @@ Blockly.ConnectionDB.prototype.isInYRange_ = function(index, baseY, maxRadius) {
 };
 
 /**
+ * Check if the given two connections are compatible. Returns true if they are
+ * compatible. Otherwise as follows.
+ * - If the incompatibility reason is not found, just return false.
+ * - If found and the two connections are enough close, return the reason.
+ * @param {!Blockly.Connection} conn The connection searching for a compatible
+ *     mate.
+ * @param {!Blockly.Connection} target The connection to check compatibility
+ *     with.
+ * @param {number} maxRadius The maximum radius allowed for connections.
+ * @param {number} maxErrorRadius The maximum radius for incompatibility reason.
+ * @return {boolean|Object} True if connections are compatible. Otherwise false
+ *     or incompatibility reason.
+ */
+Blockly.ConnectionDB.prototype.canConnectWithError_ = function(conn, target,
+    maxRadius, maxErrorRadius) {
+  // TODO(harukam): Implement to collect reason.
+  var context = new Blockly.Connection.typeCheckContext(false);
+  return conn.isConnectionAllowed(target, maxRadius, context);
+};
+
+/**
  * Find the closest compatible connection to this connection.
  * @param {!Blockly.Connection} conn The connection searching for a compatible
  *     mate.
  * @param {number} maxRadius The maximum radius to another connection.
  * @param {!goog.math.Coordinate} dxy Offset between this connection's location
  *     in the database and the current location (as a result of dragging).
+ * @param {boolean=} opt_reason True to find out why the closest
+ *     connection is incompatible if so. Defaults to false.
  * @return {!{connection: ?Blockly.Connection, radius: number}} Contains two
  *     properties:' connection' which is either another connection or null,
- *     and 'radius' which is the distance.
+ *     and 'radius' which is the distance. If opt_reason is true and
+ *     compatible connection is not found, might contain 'reason'
+ *     property.
  */
 Blockly.ConnectionDB.prototype.searchForClosest = function(conn, maxRadius,
-    dxy) {
+    dxy, opt_reason) {
   // Don't bother.
   if (!this.length) {
     return {connection: null, radius: maxRadius};
@@ -251,31 +276,38 @@ Blockly.ConnectionDB.prototype.searchForClosest = function(conn, maxRadius,
   // and back, so search on both sides of the index.
   var closestIndex = this.findPositionForConnection_(conn);
 
+  var findReason = opt_reason === true;
+  var bestError = null;
+  var bestErrorRadius = maxRadius;
+
   var bestConnection = null;
   var bestRadius = maxRadius;
-  var temp;
 
   // TODO(harukam): Fix it. The height of connection is not constant.
+
+  function update(index) {
+    var target = this[index];
+    var err = this.canConnectWithError_(conn, target, bestRadius, bestErrorRadius);
+    if (err === true) {
+      bestConnection = target;
+      bestRadius = target.distanceFrom(conn);
+    } else if (err !== false) {
+      bestError = err;
+      bestErrorRadius = target.distanceFrom(conn);
+    }
+  }
 
   // Walk forward and back on the y axis looking for the closest x,y point.
   var pointerMin = closestIndex - 1;
   while (pointerMin >= 0 && this.isInYRange_(pointerMin, conn.y_, maxRadius)) {
-    temp = this[pointerMin];
-    if (conn.isConnectionAllowed(temp, bestRadius)) {
-      bestConnection = temp;
-      bestRadius = temp.distanceFrom(conn);
-    }
+    update.call(this, pointerMin);
     pointerMin--;
   }
 
   var pointerMax = closestIndex;
   while (pointerMax < this.length && this.isInYRange_(pointerMax, conn.y_,
       maxRadius)) {
-    temp = this[pointerMax];
-    if (conn.isConnectionAllowed(temp, bestRadius)) {
-      bestConnection = temp;
-      bestRadius = temp.distanceFrom(conn);
-    }
+    update.call(this, pointerMax);
     pointerMax++;
   }
 
@@ -283,6 +315,9 @@ Blockly.ConnectionDB.prototype.searchForClosest = function(conn, maxRadius,
   conn.x_ = baseX;
   conn.y_ = baseY;
 
+  if (!bestConnection && findReason) {
+    return {connection: null, radius: bestRadius, reason: bestError};
+  }
   // If there were no valid connections, bestConnection will be null.
   return {connection: bestConnection, radius: bestRadius};
 };
