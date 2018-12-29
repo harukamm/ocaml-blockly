@@ -1,6 +1,9 @@
 'use strict';
 
 goog.provide('Blockly.TypeExpr');
+goog.provide('Blockly.TypeExpr.Error');
+
+goog.require('Blockly.ErrorCollector');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
@@ -828,9 +831,11 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       t1.unifyPattern(t2);
       continue;
     }
-    if (t1.isTypeConstructor() || t2.isTypeConstructor() ||
-        t1.isPattern() || t2.isPattern()) {
-      goog.asserts.assert(false, 'Cannot unify type constructor nor pattern.');
+    if (t1.isTypeConstructor() || t2.isTypeConstructor()) {
+      throw Blockly.TypeExpr.errorUnityTypeCtor(t1, t2);
+    }
+    if (t1.isPattern() || t2.isPattern()) {
+      throw Blockly.TypeExpr.errorUnityPattern(t1, t2);
     }
     if (t1.isTypeVar() || t2.isTypeVar()) {
       var t1_is_tvar = t1.isTypeVar();
@@ -843,27 +848,30 @@ Blockly.TypeExpr.prototype.unify = function(other) {
         continue;
       if (tvar.val != null) {
         staq.push([tvar.val, othr]);
+      } else if (othr.occur(tvar.name)) {
+        throw Blockly.TypeExpr.errorOccurCheck();
       } else {
-        goog.asserts.assert(!othr.occur(tvar.name),
-            'Unify error: variable occurrace');
         tvar.val = othr;
       }
     } else if (t1.isConstruct() && t2.isConstruct()) {
       if (t1.id && t2.id) {
-        goog.asserts.assert(t1.id == t2.id);
+        if (t1.id != t2.id) {
+          throw Blockly.TypeExpr.errorInconsistentCtor(t1, t2);
+        }
       } else if (t2.id) {
         t1.id = t2.id;
       } else if (t1.id) {
         t2.id = t1.id;
       } else {
-        goog.asserts.assert(false, 'Cannot unify undefined constructor');
+        goog.asserts.fail('Both are undefined constructor.');
       }
+    } else if (t1.label != t2.label) {
+      throw Blockly.TypeExpr.errorInconsistentLabel(t1, t2);
     } else {
-      goog.asserts.assert(t1.label == t2.label, 'Unify error: Cannot unify');
       var children1 = t1.getChildren();
       var children2 = t2.getChildren();
       goog.asserts.assert(children1.length == children2.length,
-          'Unify error: Not matched children length');
+          'Not matched children length');
       for (var i = 0; i < children1.length; i++) {
         var child1 = children1[i];
         var child2 = children2[i];
@@ -1015,4 +1023,44 @@ Blockly.TypeExpr.functionToArray = function(type) {
   }
   result.push(t);
   return result;
+};
+
+/**
+ * Class which defines unification errors.
+ * @param {number} label Enum to specify error type.
+ */
+Blockly.TypeExpr.Error = function(label, t1, t2) {
+  goog.asserts.assert(!isNaN(label));
+  this.label = label;
+  this.t1 = t1;
+  this.t2 = t2;
+};
+
+Blockly.TypeExpr.ERROR_TYPECTOR = 1;
+Blockly.TypeExpr.ERROR_PATTERN = 5;
+Blockly.TypeExpr.ERROR_OCCUR_CHECK = 10;
+Blockly.TypeExpr.ERROR_CTOR_INCONSISTENT = 15;
+Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT = 20;
+
+Blockly.TypeExpr.errorUnityTypeCtor = function(t1, t2) {
+  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_TYPECTOR, t1, t2);
+};
+
+Blockly.TypeExpr.errorUnityPattern = function(t1, t2) {
+  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_PATTERN, t1, t2);
+};
+
+Blockly.TypeExpr.errorOccurCheck = function() {
+  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_OCCUR_CHECK, null,
+      null);
+};
+
+Blockly.TypeExpr.errorInconsistentCtor = function(t1, t2) {
+  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_CTOR_INCONSISTENT,
+      t1, t2);
+};
+
+Blockly.TypeExpr.errorInconsistentLabel = function(t1, t2) {
+  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT,
+    t1, t2);
 };
