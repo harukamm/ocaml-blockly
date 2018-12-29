@@ -27,6 +27,7 @@
 goog.provide('Blockly.BlockDragger');
 
 goog.require('Blockly.BlockAnimations');
+goog.require('Blockly.DiagnosisManager');
 goog.require('Blockly.DraggedConnectionManager');
 goog.require('Blockly.WorkspaceTransferManager');
 goog.require('Blockly.Events.BlockMove');
@@ -74,6 +75,17 @@ Blockly.BlockDragger = function(block, workspace) {
   if (this.draggingBlock_.isTransferable()) {
     this.workspaceTransferManager_ = new Blockly.WorkspaceTransferManager(
         this.draggingBlock_);
+  }
+
+  /**
+   * Object that collect reasons why the dragged block can not connect to the
+   * closest connection and so on.
+   * @type {Blockly.DiagnosisManager}
+   * @private
+   */
+  this.diagnosisManager_ = null;
+  if (Blockly.Block.isTypedBlock(this.draggingBlock_)) {
+    this.diagnosisManager_ = new Blockly.DiagnosisManager();
   }
 
   /**
@@ -190,6 +202,10 @@ Blockly.BlockDragger.prototype.dispose = function() {
   if (this.workspaceTransferManager_) {
     this.workspaceTransferManager_.dispose();
     this.workspaceTransferManager_ = null;
+  }
+  if (this.diagnosisManager_) {
+    this.diagnosisManager_.dispose();
+    this.diagnosisManager_ = null;
   }
   if (this.draggedConnectionManager_) {
     this.draggedConnectionManager_.dispose();
