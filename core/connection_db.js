@@ -243,25 +243,34 @@ Blockly.ConnectionDB.prototype.canConnectWithError_ = function(conn, target,
 };
 
 /**
+ * @constructor
+ */
+Blockly.ConnectionDB.errorReason = function(conn, radius, error) {
+  this.connection = conn;
+  this.radius = radius;
+  this.error = error;
+};
+
+/**
  * Find the closest compatible connection to this connection.
  * @param {!Blockly.Connection} conn The connection searching for a compatible
  *     mate.
  * @param {number} maxRadius The maximum radius to another connection.
  * @param {!goog.math.Coordinate} dxy Offset between this connection's location
  *     in the database and the current location (as a result of dragging).
- * @param {boolean=} opt_reason True to find out why the closest
- *     connection is incompatible if so. Defaults to false.
- * @return {!{connection: ?Blockly.Connection, radius: number}} Contains two
- *     properties:' connection' which is either another connection or null,
- *     and 'radius' which is the distance. If opt_reason is true and
- *     compatible connection is not found, might contain 'reason'
- *     property.
+ * @param {number=} opt_maxErrorRadius The maximum radius to incompatible
+ *     connection. If not provided, use the same radius with maxRadius.
+ * @return {!{connection: ?Blockly.Connection, radius: number,
+ *       reason: ?Blockly.ConnectionDB.errorReason}} Contains three properties:
+ *    'connection' which is either another connection or null, 'radius' which
+ *    is the distance, 'reason' which is incompatibility reason if connection
+ *    is not found.
  */
 Blockly.ConnectionDB.prototype.searchForClosest = function(conn, maxRadius,
-    dxy, opt_reason) {
+    dxy, opt_maxErrorRadius) {
   // Don't bother.
   if (!this.length) {
-    return {connection: null, radius: maxRadius};
+    return {connection: null, radius: maxRadius, reason: null};
   }
 
   // Stash the values of x and y from before the drag.
@@ -276,9 +285,9 @@ Blockly.ConnectionDB.prototype.searchForClosest = function(conn, maxRadius,
   // and back, so search on both sides of the index.
   var closestIndex = this.findPositionForConnection_(conn);
 
-  var findReason = opt_reason === true;
   var bestError = null;
-  var bestErrorRadius = maxRadius;
+  var bestErrorRadius =
+      isNaN(opt_maxErrorRadius) ? maxRadius : opt_maxErrorRadius;
 
   var bestConnection = null;
   var bestRadius = maxRadius;
@@ -315,11 +324,13 @@ Blockly.ConnectionDB.prototype.searchForClosest = function(conn, maxRadius,
   conn.x_ = baseX;
   conn.y_ = baseY;
 
-  if (!bestConnection && findReason) {
-    return {connection: null, radius: bestRadius, reason: bestError};
+  var error = null;
+  if (!bestConnection && bestError) {
+    error = new Blockly.ConnectionDB.errorReason(conn, bestErrorRadius,
+        bestError);
   }
   // If there were no valid connections, bestConnection will be null.
-  return {connection: bestConnection, radius: bestRadius};
+  return {connection: bestConnection, radius: bestRadius, reason: error};
 };
 
 /**
