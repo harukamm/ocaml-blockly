@@ -6,6 +6,7 @@
 
 goog.provide('Blockly.DiagnosisManager');
 goog.provide('Blockly.ErrorCollector');
+goog.provide('Blockly.ErrorItem');
 
 goog.require('goog.asserts');
 
@@ -29,6 +30,7 @@ Blockly.DiagnosisManager.prototype.dispose = function() {
  * @constructor
  */
 Blockly.ErrorCollector = function() {
+  /** @type {!Array.<!Blockly.ErrorItem>} */
   this.errors_ = [];
 };
 
@@ -38,3 +40,36 @@ Blockly.ErrorCollector = function() {
 Blockly.ErrorCollector.prototype.isEmpty = function() {
   return this.errors_.length == 0;
 };
+
+/**
+ * @param {!Blockly.ErrorItem} item
+ * @private
+ */
+Blockly.ErrorCollector.prototype.addItem_ = function(item) {
+  this.errors_.push(item);
+};
+
+/**
+ * @param {!Blockly.BoundVariableValueReference} reference The variable found
+ *     to be unbound.
+ * @param {Blockly.BoundVariableValue} wrongValue The wrong variable value in
+ *     the reference's context. If null, the reference is just undefined in the
+ *     context.
+ */
+Blockly.ErrorCollector.prototype.addUnboundVariable = function(reference,
+    wrongValue) {
+  var item = new Blockly.ErrorItem(Blockly.ErrorItem.UNBOUND_VARIABLE,
+      reference, wrongValue);
+  this.addItem_(item);
+};
+
+/**
+ * @constructor
+ */
+Blockly.ErrorItem = function(label, errorElement, errorTarget) {
+  this.label = label;
+  this.errorElement = errorElement;
+  this.errorTarget = errorTarget;
+};
+
+Blockly.ErrorItem.UNBOUND_VARIABLE = 1;
