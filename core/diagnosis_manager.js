@@ -176,8 +176,10 @@ Blockly.ErrorCollector.prototype.addItem_ = function(item) {
 Blockly.ErrorCollector.prototype.getUnboundVariables = function() {
   var unresolved = [];
   for (var i = 0, err; err = this.errors_[i]; i++) {
-    var reference = err.errorElement;
-    unresolved.push(reference);
+    if (err.label == Blockly.ErrorItem.UNBOUND_VARIABLE) {
+      var reference = err.errorElement;
+      unresolved.push(reference);
+    }
   }
   return unresolved;
 };
