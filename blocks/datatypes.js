@@ -98,7 +98,6 @@ Blockly.Blocks['create_construct_typed'] = {
         .appendField(variableField, 'CONSTRUCTOR');
     this.setOutput(true);
     this.setOutputTypeExpr(ctrType);
-    this.definition_ = null;
     this.setInputsInline(true);
   },
 
@@ -112,35 +111,22 @@ Blockly.Blocks['create_construct_typed'] = {
     var valueBlock = value.getSourceBlock();
     var fieldName = value.getContainerFieldName();
     var def = valueBlock.getTypeCtorDef(fieldName);
+    goog.asserts.assert(def === null || def === 'int' ||
+        def === 'float', 'Unknown type ctor.');
 
     var input = this.getInput('PARAM');
 
-    if (input && this.definition_ === def) {
-      var expected = input.connection.typeExpr;
-      var paramType = this.callInfer('PARAM', ctx);
-      if (paramType) {
-        expected.unify(paramType);
-      }
-      return outType;
-    }
-
-    if (!input) {
-      if (def === 'int') {
-        this.appendValueInput('PARAM')
-            .setTypeExpr(new Blockly.TypeExpr.INT())
-      } else if (def === 'float') {
-        this.appendValueInput('PARAM')
-            .setTypeExpr(new Blockly.TypeExpr.FLOAT())
-      } else if (def === null) {
-        // Do nothing. there is no arguments.
-      } else {
-        goog.asserts.assert(false, 'Unknown type ctor.');
-      }
-    }
-    if (input && !def) {
+    if (def === 'int' && !input) {
+      this.appendValueInput('PARAM')
+          .setTypeExpr(new Blockly.TypeExpr.INT())
+    } else if (def === 'float' && !input) {
+      this.appendValueInput('PARAM')
+          .setTypeExpr(new Blockly.TypeExpr.FLOAT())
+    } else if (def === null && input) {
       // Definition is cleared by user.
       var targetBlock = input.connection.targetBlock();
       this.removeInput('PARAM');
+      input = null;
       if (targetBlock) {
         var unresolvedRefs = targetBlock.getUnboundVariables();
         for (var i = 0, ref; ref = unresolvedRefs[i]; i++) {
@@ -148,7 +134,13 @@ Blockly.Blocks['create_construct_typed'] = {
         }
       }
     }
-    this.definition_ = def;
+    if (input) {
+      var expected = input.connection.typeExpr;
+      var paramType = this.callInfer('PARAM', ctx);
+      if (paramType) {
+        expected.unify(paramType);
+      }
+    }
     return outType;
   }
 };
