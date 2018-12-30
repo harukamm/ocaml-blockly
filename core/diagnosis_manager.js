@@ -103,7 +103,7 @@ Blockly.DiagnosisManager.prototype.updateErrorDialog_ = function(e, message) {
   this.dialog_.style.top = anchorY + 'px';
   this.dialog_.style.left = anchorX + 'px';
 
-  if (this.lastMessage_ === message) {
+  if (this.lastMessage_ !== message) {
     this.dialog_.textContent = message;
   }
 };
