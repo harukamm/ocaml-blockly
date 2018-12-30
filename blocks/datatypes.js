@@ -41,8 +41,6 @@ Blockly.Blocks['defined_datatype_typed'] = {
     this.constructId_ = ctrId;
     this.itemCount_ = 2;
     this.disableTransfer_ = true;
-    /** @type {!Object<!string, string|null>} */
-    this.lastTypeCtor_ = {'CTR0': null, 'CTR1': null};
   },
 
   typeExprReplaced() {
@@ -54,8 +52,20 @@ Blockly.Blocks['defined_datatype_typed'] = {
   },
 
   getTypeCtorDef: function(fieldName) {
-    return fieldName in this.lastTypeCtor_ ?
-        this.lastTypeCtor_[fieldName] : null;
+    if (!fieldName.startsWith('CTR')) {
+      return undefined;
+    }
+    var n = parseInt(fieldName.substring(3));
+    if (isNaN(n) || this.itemCount_ <= n) {
+      return undefined;
+    }
+    var inputName = 'CTR_INP' + n;
+    var block = this.getInputTargetBlock(inputName);
+    if (!block) {
+      return null;
+    }
+    var typeCtor = block.getTypeCtor();
+    return typeCtor;
   },
 
   getTypeScheme(fieldName) {
@@ -67,24 +77,6 @@ Blockly.Blocks['defined_datatype_typed'] = {
       }
     }
     return null;
-  },
-
-  infer: function(ctx) {
-    for (var x = 0; x < this.itemCount_; x++) {
-      var inputName = 'CTR_INP' + x;
-      var block = this.getInputTargetBlock(inputName);
-      if (!block) {
-        this.lastTypeCtor_['CTR' + x] = null;
-        continue;
-      }
-      var outType = block.outputConnection &&
-          block.outputConnection.typeExpr;
-      goog.asserts.assert(!!outType);
-      outType.unify(new Blockly.TypeExpr.TYPE_CONSTRUCTOR);
-
-      var typeCtor = block.getTypeCtor();
-      this.lastTypeCtor_['CTR' + x] = typeCtor;
-    }
   }
 };
 
