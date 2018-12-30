@@ -110,10 +110,17 @@ function createNestedValueBlock(workspace, size, getNthName) {
 
 function createReferenceBlock(value, useAppBlock, opt_workspace) {
   var workspace = opt_workspace ? opt_workspace : value.getWorkspace();
-  var prototypeName = useAppBlock ? 'function_app_typed' :
+  if (value.isConstructor()) {
+    var prototypeName = 'create_construct_typed';
+    assertTrue(!useAppBlock);
+    var block = workspace.newBlock(prototypeName);
+    var ref = block.getField('CONSTRUCTOR').getVariable();
+  } else {
+    var prototypeName = useAppBlock ? 'function_app_typed' :
       'variables_get_typed';
-  var block = workspace.newBlock(prototypeName);
-  var ref = block.typedReference['VAR'];
+    var block = workspace.newBlock(prototypeName);
+    var ref = block.typedReference['VAR'];
+  }
   ref.setVariableName(value.getVariableName());
   ref.setBoundValue(value);
   if (useAppBlock) {

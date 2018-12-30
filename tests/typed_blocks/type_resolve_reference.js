@@ -524,3 +524,71 @@ function test_resolve_reference_letStatementSimple() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_fixRemoveUndefinedRefInConstruct() {
+  var workspace = create_typed_workspace();
+  Blockly.mainWorkspace = workspace;
+  try {
+    // data bar = Foo of int|float
+    // let a = <> in Foo (let b = <> in a +. b)
+    // - If type constructor block is removed..
+    // let a = <> in Foo
+    //  let b = <> in <> +. b
+    var defineCtr = workspace.newBlock('defined_datatype_typed');
+    defineCtr.getField('DATANAME').setText('bar');
+    var id = defineCtr.getCtorId();
+    assertEquals(workspace.getCtorDataName(id), 'bar');
+    var ctrValue = getVariable(defineCtr, 0);
+    var ctr = createReferenceBlock(ctrValue);
+    assertEquals(ctrValue.getTypeExpr().getDisplayText(), 'bar');
+    var letBlockA = workspace.newBlock('let_typed');
+    setVariableName(letBlockA, 'a');
+    letBlockA.getInput('EXP2').connection.connect(ctr.outputConnection);
+
+    function check(typeBlock, arithBlock, typeName) {
+      assertEquals(letBlockA, ctr.getParent());
+      var inp = ctr.getInput('PARAM');
+      assertNull(inp);
+      var varA = createReferenceBlock(letBlockA.typedValue['VAR']);
+      var letBlockB = workspace.newBlock('let_typed');
+      var varB = createReferenceBlock(letBlockB.typedValue['VAR']);
+      defineCtr.getInput('CTR_INP0').connection.connect(typeBlock.outputConnection);
+      var inp = ctr.getInput('PARAM');
+      assertNotNull(inp);
+      inp.connection.connect(letBlockB.outputConnection);
+      letBlockB.getInput('EXP2').connection.connect(arithBlock.outputConnection);
+      arithBlock.getInput('A').connection.connect(varA.outputConnection);
+      arithBlock.getInput('B').connection.connect(varB.outputConnection);
+      assertTrue(letBlockA.resolveReference(null));
+      if (typeName === 'int') {
+        assertTrue(inp.connection.typeExpr.isInt());
+      } else if (typeName === 'float') {
+        assertTrue(inp.connection.typeExpr.isFloat());
+      } else {
+        assertTrue(false);
+      }
+      typeBlock.outputConnection.disconnect();
+      assertNull(ctr.getInput('PARAM'));
+      assertNull(varA.workspace); // disposed
+      assertNull(arithBlock.getInputTargetBlock('A'));
+      assertTrue(letBlockB.resolveReference(null));
+      // let b = ? in ? + b
+      assertNull(letBlockB.getParent());
+      assertEquals(arithBlock.getParent(), letBlockB);
+      assertEquals(varB.getParent(), arithBlock);
+      assertEquals(arithBlock.getInputTargetBlock('B'), varB);
+      assertEquals(letBlockA, ctr.getParent());
+      varB.dispose();
+    }
+    var intType = workspace.newBlock('int_type_typed');
+    var intArith = workspace.newBlock('int_arithmetic_typed');
+    var floatType = workspace.newBlock('float_type_typed');
+    var floatArith = workspace.newBlock('float_arithmetic_typed');
+    check(intType, intArith, 'int');
+    check(floatType, floatArith, 'float');
+    check(intType, intArith, 'int');
+  } finally {
+    Blockly.mainWorkspace = null;
+    workspace.dispose();
+  }
+}

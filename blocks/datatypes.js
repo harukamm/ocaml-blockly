@@ -142,7 +142,7 @@ Blockly.Blocks['create_construct_typed'] = {
       var targetBlock = input.connection.targetBlock();
       this.removeInput('PARAM');
       if (targetBlock) {
-        var unresolvedRefs = this.getUnboundVariables();
+        var unresolvedRefs = targetBlock.getUnboundVariables();
         for (var i = 0, ref; ref = unresolvedRefs[i]; i++) {
           ref.getSourceBlock().dispose();
         }
