@@ -2034,7 +2034,7 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
 
     if (goog.isArray(block.workbenches)) {
       for (var i = 0, workbench; workbench = block.workbenches[i]; i++) {
-        if (!workbench.checkReference(envOfParent, opt_collector)) {
+        if (!workbench.checkReference(envOfParent, opt_bind, opt_collector)) {
           resolved = false;
           if (returnImmediate) {
             return false;
