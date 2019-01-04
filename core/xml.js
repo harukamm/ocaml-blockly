@@ -166,7 +166,7 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field, rootBlock) {
       var valueDom = goog.dom.createDom('refer-to');
       valueDom.setAttribute('id', value.getId());
       valueDom.setAttribute('workspace-id', value.getWorkspace().id);
-      container.append(valueDom);
+      container.appendChild(valueDom);
     }
   } else if (isValue) {
     // The variable is a value variable for constructor.
@@ -183,7 +183,7 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field, rootBlock) {
       var valueDom = goog.dom.createDom('refer-to');
       valueDom.setAttribute('id', value.getId());
       valueDom.setAttribute('workspace-id', value.getWorkspace().id);
-      container.append(valueDom);
+      container.appendChild(valueDom);
     }
   }
   return container;
