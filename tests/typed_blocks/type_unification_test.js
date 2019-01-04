@@ -1345,3 +1345,32 @@ function test_type_unification_fixArgumentAdditionIsFailed() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_fixLetStatementUnboundVariables() {
+  var workspace = create_typed_workspace();
+  try {
+    // let var0 = <>
+    // let var1 = var0
+    //
+    // let var0 = <>
+    var letBlock0 = workspace.newBlock('letstatement_typed');
+    var letBlock1 = workspace.newBlock('letstatement_typed');
+    var letBlock2 = workspace.newBlock('letstatement_typed');
+    setVariableName(letBlock0, 'var0');
+    setVariableName(letBlock1, 'var1');
+    setVariableName(letBlock2, 'var0');
+
+    letBlock0.nextConnection.connect(letBlock1.previousConnection);
+    var value0 = letBlock0.typedValue['VAR'];
+    var varBlock = createReferenceBlock(value0);
+    var exp1 = letBlock1.getInput('EXP1').connection;
+    assertTrue(varBlock.resolveReference(exp1));
+    exp1.connect(varBlock.outputConnection);
+
+    assertFalse(letBlock1.resolveReference(letBlock2.nextConnection));
+    assertFalse(letBlock1.previousConnection.checkType_(
+        letBlock2.nextConnection));
+  } finally {
+    workspace.dispose();
+  }
+}
