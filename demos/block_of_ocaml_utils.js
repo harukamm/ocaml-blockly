@@ -82,8 +82,9 @@ BlockOfOCamlUtils.codeToBlockImpl_ = function(code, opt_workspace) {
     result.errCode = BlockOfOCamlUtils.ERROR_INVALID_BLOCK_XML;
     return result;
   }
-  var undefineds = block.getUnboundVariables();
-  if (undefineds.length != 0) {
+  var collector = new Blockly.ErrorCollector();
+  if (!block.resolveReference(null, true, null, collector)) {
+    var undefineds = collector.getUnboundVariables();
     result.undefines = goog.array.map(undefineds, x => x.getVariableName());
     result.errCode = BlockOfOCamlUtils.ERROR_UNDEFINED_VARIABLE;
     BlockOfOCamlUtils.forceDispose(block);
