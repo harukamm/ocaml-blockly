@@ -1959,6 +1959,32 @@ Blockly.Block.prototype.isPattern = function() {
   return false;
 };
 
+/**
+ * Returns if this type of block is allowed to be orphan.
+ * @param {Blockly.ErrorCollector=} opt_collector If provided and this block
+ *     is not allowed to be orphan, details of this block will be stored.
+ * @return {boolean} False if this block must be connected to a parent always.
+ *     Otherwise, returns true.
+ */
+Blockly.Block.prototype.allowedToBeOrphan = function(opt_collector) {
+  if (!this.outputConnection || !this.outputConnection.typeExpr) {
+    return true;
+  }
+  if (this.outputConnection.typeExpr.deref().isPattern()) {
+    if (opt_collector) {
+      opt_collector.addOrphanPatternError();
+    }
+    return false;
+  }
+  if (this.outputConnection.typeExpr.deref().isTypeConstructor()) {
+    if (opt_collector) {
+      opt_collector.addOrphanTypeConstructorError();
+    }
+    return false;
+  }
+  return true;
+};
+
 /* Begin functions related variable binding. */
 
 /**

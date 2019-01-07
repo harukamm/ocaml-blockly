@@ -215,6 +215,14 @@ Blockly.ErrorCollector.prototype.addOrphanPatternError = function() {
 };
 
 /**
+ * Represents error for orphan type-constructor block.
+ */
+Blockly.ErrorCollector.prototype.addOrphanTypeConstructorError = function() {
+  var item = new Blockly.ErrorItem(Blockly.ErrorItem.ORPHAN_TYPE_CTOR);
+  this.addItem_(item);
+};
+
+/**
  * @constructor
  */
 Blockly.ErrorItem = function(label, errorElement, errorTarget) {
@@ -226,6 +234,7 @@ Blockly.ErrorItem = function(label, errorElement, errorTarget) {
 Blockly.ErrorItem.UNBOUND_VARIABLE = 1;
 Blockly.ErrorItem.TYPE_ERROR = 2;
 Blockly.ErrorItem.ORPHAN_PATTERN = 5;
+Blockly.ErrorItem.ORPHAN_TYPE_CTOR = 10;
 
 /**
  * Returns error message.
@@ -245,6 +254,8 @@ Blockly.ErrorItem.prototype.toMessage = function() {
     msg = this.errorElement.toMessage();
   } else if (this.label == Blockly.ErrorItem.ORPHAN_PATTERN) {
     msg = 'Pattern block must be connected to match pattern.';
+  } else if (this.label == Blockly.ErrorItem.ORPHAN_TYPE_CTOR) {
+    msg = 'Type constructor block must be connected to datatype declaration.';
   } else {
     goog.asserts.fail('Unknown label');
   }
