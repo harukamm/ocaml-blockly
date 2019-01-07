@@ -23,6 +23,32 @@ Blockly.FlyoutMutator = function(quarkNames) {
 goog.inherits(Blockly.FlyoutMutator, Blockly.Mutator);
 
 /**
+ * Draw the mutator icon.
+ * @param {!Element} group The icon group.
+ * @override
+ * @private
+ */
+Blockly.FlyoutMutator.prototype.drawIcon_ = function(group) {
+  // Square with rounded corners.
+  Blockly.utils.createSvgElement('rect',
+      {
+        'class': 'blocklyIconShape',
+        'rx': '4',
+        'ry': '4',
+        'height': '16',
+        'width': '16'
+      },
+      group);
+  // Gear teeth.
+  Blockly.utils.createSvgElement('path',
+      {
+        'class': 'blocklyIconSymbol',
+        'd': 'm 2,3 l 12,0 -6,10 -6,-10 z'
+      },
+      group);
+};
+
+/**
  * Initialize the workspace if it has not been created.
  * @override
  */
