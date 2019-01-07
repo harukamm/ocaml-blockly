@@ -38,6 +38,10 @@ Blockly.Blocks['defined_datatype_typed'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setOutput(false);
 
+    this.setMutator(new Blockly.FlyoutMutator([
+        'int_type_typed',
+        'float_type_typed'], true));
+
     this.constructId_ = ctrId;
     this.itemCount_ = 2;
     this.disableTransfer_ = true;

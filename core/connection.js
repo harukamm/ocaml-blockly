@@ -343,8 +343,8 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target,
     var blockB = this.sourceBlock_;
     var blockA = target.getSourceBlock();
   }
-  var transferable = blockA && blockB && blockA.isTransferable() &&
-      blockB.isTransferable();
+  var transferable = blockA && blockB && (blockA.isTransferable() ||
+      blockB.isTransferable());
   var isFinalCheck = !!opt_context && opt_context.finalCheck;
   if (blockA && blockA == blockB) {
     return Blockly.Connection.REASON_SELF_CONNECTION;
