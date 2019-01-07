@@ -325,6 +325,10 @@ Blockly.Xml.blockToDom = function(block, opt_noId, opt_rootBlock) {
     var value = block.isRecursive();
     element.setAttribute('rec', value ? 'true' : 'false');
   }
+  if (goog.isFunction(block.getIsStatement)) {
+    var value = block.getIsStatement();
+    element.setAttribute('statement', value ? 'true' : 'false');
+  }
 
   if (block.disabled) {
     element.setAttribute('disabled', true);
@@ -742,6 +746,11 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace,
   }
   var id = xmlBlock.getAttribute('id');
   block = workspace.newBlock(prototypeName, id);
+
+  var statementFlag = xmlBlock.getAttribute('statement');
+  if (statementFlag && goog.isFunction(block.setIsStatement)) {
+    block.setIsStatement(statementFlag == 'true');
+  }
 
   var blockChild = null;
   var disableTypeCheck = opt_disableTypeCheck === true;
