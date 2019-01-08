@@ -451,8 +451,14 @@ Blockly.Workbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
 
   for (var i = 0, name; name = names[i]; i++) {
     var variable = env[name];
-    // TODO(harukam): Avoid providing prototype name using string literal.
-    var getterBlock = flyoutWorkspace.newBlock('variables_get_typed');
+    var getterBlock = flyoutWorkspace.newBlock('function_app_typed');
+    // TODO(harukam): Do not create variable block of type variables_get_typed
+    // because it could be first-order function. Otherwise, the following case
+    // must be fixed:
+    //  1. There is 'let b = ? in a :: b' block.
+    //  2. Add arguments using mutator on let block.
+    //  3. Type error occurs since variable b has 'a list type but was
+    //     expected of type 'b -> 'c.
     if (goog.isFunction(getterBlock.initSvg)) {
       getterBlock.initSvg();
     }
@@ -460,6 +466,9 @@ Blockly.Workbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
     field.initModel();
     field.setVariableName(name);
     field.setBoundValue(variable);
+    if (goog.isFunction(getterBlock.updateInput)) {
+      getterBlock.updateInput();
+    }
     blocks.push(getterBlock);
   }
   return blocks;

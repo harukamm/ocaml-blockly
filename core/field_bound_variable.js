@@ -658,12 +658,17 @@ Blockly.FieldBoundVariable.prototype.newReferenceBlock_ = function() {
   if (this.isForConstructor()) {
     var getterBlock = workspace.newBlock('create_construct_typed');
     var field = getterBlock.getField('CONSTRUCTOR');
-  } else if (typeExpr.deref().isFunction()) {
+  } else {
     var getterBlock = workspace.newBlock('function_app_typed');
     var field = getterBlock.getField('VAR');
-  } else {
-    var getterBlock = workspace.newBlock('variables_get_typed');
-    var field = getterBlock.getField('VAR');
+    // var getterBlock = workspace.newBlock('variables_get_typed');
+    // var field = getterBlock.getField('VAR');
+    // TODO(harukam): Do not create variable block because it could be
+    // first-order function. Otherwise, the following case must be fixed:
+    //  1. There is 'let b = ? in a :: b' block.
+    //  2. Add arguments using mutator on let block.
+    //  3. Type error occurs since variable b has 'a list type but was
+    //     expected of type 'b -> 'c.
   }
   if (goog.isFunction(getterBlock.initSvg)) {
     getterBlock.initSvg();

@@ -20,6 +20,7 @@ function getVariableFieldName(block, opt_n) {
     case 'letstatement_typed':
     case 'lambda_typed':
     case 'variables_get_typed':
+    case 'function_app_typed':
       return 'VAR';
     case 'defined_datatype_typed':
       goog.asserts.assert(goog.isNumber(opt_n));
