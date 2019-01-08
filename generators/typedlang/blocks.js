@@ -93,6 +93,21 @@ Blockly.TypedLang['float_arithmetic_typed'] = function(block) {
   return [code, order];
 };
 
+Blockly.TypedLang['string_typed'] = function(block) {
+  var value = block.getFieldValue('STRING');
+  var literal = JSON.stringify(value);
+  return [literal, Blockly.TypedLang.ORDER_ATOMIC];
+};
+
+Blockly.TypedLang['concat_string_typed'] = function(block) {
+  var left = Blockly.TypedLang.valueToCode(block, 'A',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  var right = Blockly.TypedLang.valueToCode(block, 'B',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  var code = '(' + left + ') ^ (' + right + ')';
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+};
+
 Blockly.TypedLang['lists_create_with_typed'] = function(block) {
   // Create a list with any number of elements of any type.
   var elements = new Array(block.itemCount_);

@@ -288,9 +288,8 @@ Blockly.Blocks['string_typed'] = {
     this.setColour(Blockly.Msg['STRING_HUE']);
     this.appendDummyInput()
         .appendField('"')
-        .appendField(new Blockly.FieldTextInput('foo'))
+        .appendField(new Blockly.FieldTextInput('foo'), 'STRING')
         .appendField('"');
-    // TODO(harukam): Add validator for escaping.
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.TypeExpr.STRING());
   }
