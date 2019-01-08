@@ -592,3 +592,26 @@ function test_resolve_reference_fixRemoveUndefinedRefInConstruct() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_fixLetStatementReferenceRemained() {
+  var workspace = create_typed_workspace();
+  try {
+    // let x = ..
+    // let y = x
+    var letBlock1 = workspace.newBlock('letstatement_typed');
+    var letBlock2 = workspace.newBlock('letstatement_typed');
+    letBlock1.nextConnection.connect(letBlock2.previousConnection);
+    var value1 = letBlock1.typedValue['VAR'];
+    var varBlock = createReferenceBlock(value1);
+    var exp1 = letBlock2.getInput('EXP1').connection;
+    exp1.connect(varBlock.outputConnection);
+    letBlock1.dispose(false /** Do not heal stack. */, true);
+    assertNull(letBlock1.workspace);
+    assertNull(letBlock2.workspace);
+    assertNotNull(exp1);
+    assertFalse(exp1.isConnected());
+    assertNull(varBlock.workspace);
+  } finally {
+    workspace.dispose();
+  }
+}

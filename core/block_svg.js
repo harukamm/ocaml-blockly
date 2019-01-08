@@ -871,6 +871,14 @@ Blockly.BlockSvg.prototype.dispose = function(healStack, animate) {
     // The block has already been deleted.
     return;
   }
+  // TODO(harukam): Support the following case:
+  //  let f = x + 1
+  //  let y = f + 1
+  // When user deletes the first let block, variable f on the second let block
+  // also must be deleted.
+  // Until support for this case, always dispose of all the children blocks.
+  healStack = false;
+
   Blockly.Tooltip.hide();
   Blockly.Field.startCache();
   // Save the block's workspace temporarily so we can resize the
