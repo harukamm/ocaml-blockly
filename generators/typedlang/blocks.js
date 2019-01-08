@@ -208,11 +208,7 @@ Blockly.TypedLang['let_typed'] = function(block) {
   code += varname + arg + ' = ' + exp1;
 
   if (block.getIsStatement()) {
-    var nextBlock = block.getNextBlock();
-    if (nextBlock) {
-      code += '\n';
-      code += Blockly.TypedLang.blockToCode(nextBlock);
-    }
+    code += ';;\n';
     return code;
   }
   var exp2 = Blockly.TypedLang.valueToCode(block, 'EXP2',
