@@ -88,6 +88,24 @@ Blockly.RenderedTypeExpr.shape['bool'] = {
   },
 };
 
+Blockly.RenderedTypeExpr.shape['string'] = {
+  down: function(steps) {
+    steps.push('l 0,5 -8,7.5 8,7.5');
+  },
+
+  up: function(steps) {
+    steps.push('l -8,-7.5 8,-7.5 0,-5');
+  },
+
+  height: function() {
+    return 20;
+  },
+
+  offsetsY: function() {
+    return [];
+  },
+};
+
 Blockly.RenderedTypeExpr.shape['list'] = {
   down: function(steps) {
     Blockly.RenderedTypeExpr.renderTypeExpr(this.element_type, steps, 1);

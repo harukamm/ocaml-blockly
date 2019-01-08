@@ -38,6 +38,12 @@ Blockly.TypeExpr.BOOL_ = 110;
  * @type {number}
  * @private
  */
+Blockly.TypeExpr.STRING_ = 113;
+
+/**
+ * @type {number}
+ * @private
+ */
 Blockly.TypeExpr.LIST_ = 115;
 
 /**
@@ -105,6 +111,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'float';
     case Blockly.TypeExpr.BOOL_:
       return 'bool';
+    case Blockly.TypeExpr.STRING_:
+      return 'string';
     case Blockly.TypeExpr.LIST_:
       return 'list';
     case Blockly.TypeExpr.PAIR_:
@@ -137,10 +145,14 @@ Blockly.TypeExpr.prototype.isFloat = function() {
 Blockly.TypeExpr.prototype.isBool = function() {
   return this.label == Blockly.TypeExpr.BOOL_;
 };
+Blockly.TypeExpr.prototype.isString = function() {
+  return this.label == Blockly.TypeExpr.STRING_;
+};
 Blockly.TypeExpr.prototype.isPrimitive = function() {
   return this.label == Blockly.TypeExpr.INT_ ||
       this.label == Blockly.TypeExpr.FLOAT_ ||
-      this.label == Blockly.TypeExpr.BOOL_;
+      this.label == Blockly.TypeExpr.BOOL_ ||
+      this.label == Blockly.TypeExpr.STRING_;
 };
 Blockly.TypeExpr.prototype.isList = function() {
   return this.label == Blockly.TypeExpr.LIST_;
@@ -159,6 +171,9 @@ Blockly.TypeExpr.prototype.isTypeConstructor = function() {
 };
 Blockly.TypeExpr.prototype.isPattern = function() {
   return this.label == Blockly.TypeExpr.PATTERN_;
+};
+Blockly.TypeExpr.prototype.isString = function() {
+  return this.label == Blockly.TypeExpr.STRING_;
 };
 Blockly.TypeExpr.prototype.isTypeVar = function() {
   return this.label == Blockly.TypeExpr.TVAR_;
@@ -318,6 +333,32 @@ Blockly.TypeExpr.BOOL.prototype.toString = function(opt_deref) {
 Blockly.TypeExpr.BOOL.prototype.clone = function() {
   return new Blockly.TypeExpr.BOOL();
 }
+/**
+ * @constructor
+ * @extends {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.STRING = function() {
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.STRING_);
+};
+goog.inherits(Blockly.TypeExpr.STRING, Blockly.TypeExpr);
+
+/**
+ * @param {boolean=} opt_deref
+ * @return {string}
+ * @override
+ */
+Blockly.TypeExpr.STRING.prototype.toString = function(opt_deref) {
+  return "STRING";
+};
+
+/**
+ * Deeply clone the object
+ * @override
+ * @return {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.STRING.prototype.clone = function() {
+  return new Blockly.TypeExpr.STRING();
+};
 
 /**
  * @extends {Blockly.TypeExpr}

@@ -283,6 +283,49 @@ Blockly.Blocks['float_arithmetic_typed'] = {
   }
 };
 
+Blockly.Blocks['string_typed'] = {
+  init: function() {
+    this.setColour("#ff93c9");
+    this.appendDummyInput()
+        .appendField('"')
+        .appendField(new Blockly.FieldTextInput('foo'))
+        .appendField('"');
+    // TODO(harukam): Add validator for escaping.
+    this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.STRING());
+  }
+};
+
+Blockly.Blocks['concat_string_typed'] = {
+  init: function() {
+    this.setColour("#ff93c9");
+    this.appendValueInput('A')
+        .setTypeExpr(new Blockly.TypeExpr.STRING());
+    this.appendValueInput('B')
+        .setTypeExpr(new Blockly.TypeExpr.STRING())
+        .appendField('^');
+    this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.STRING());
+    this.setInputsInline(true);
+  },
+
+  clearTypes: function() {
+    this.callClearTypes('A');
+    this.callClearTypes('B');
+  },
+
+  infer: function(ctx) {
+    var expected_left = new Blockly.TypeExpr.STRING();
+    var left = this.callInfer('A', ctx);
+    var right = this.callInfer('B', ctx);
+    if (left)
+      left.unify(expected_left);
+    if (right)
+      right.unify(expected_left);
+    return expected_left;
+  }
+};
+
 Blockly.Blocks['lists_create_with_typed'] = {
   /**
    * Block for creating a list with any number of elements of any type.
