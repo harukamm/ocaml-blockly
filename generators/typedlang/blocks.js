@@ -254,7 +254,8 @@ Blockly.TypedLang['defined_datatype_typed'] = function(block) {
 Blockly.TypedLang['create_construct_typed'] = function(block) {
   var field = block.getField('CONSTRUCTOR');
   var code = field.getVariableName();
-  var param = Blockly.TypedLang.valueToCode(block, 'PARAM');
+  var param = Blockly.TypedLang.valueToCode(block, 'PARAM',
+      Blockly.TypedLang.ORDER_ATOMIC);
   if (block.definition_) {
     code += ' ' + param;
   } else {
