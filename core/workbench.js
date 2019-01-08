@@ -440,35 +440,6 @@ Blockly.Workbench.prototype.getBlockContext = function() {
 };
 
 /**
- * Return a DOM tree of blocks to show in a flyout.
- * @return {Node} DOM tree of blocks.
- */
-Blockly.Workbench.prototype.getFlyoutLanguageTree_ = function() {
-  var xml = goog.dom.createDom('xml');
-  var env = this.getContext();
-  var names = Object.keys(env);
-
-  Blockly.Events.disable();
-  try {
-    for (var i = 0, name; name = names[i]; i++) {
-      var variable = env[name];
-      // TODO(harukam): Avoid providing prototype name using string literal.
-      var getterBlock = this.workspace_.newBlock('variables_get_typed');
-      var field = getterBlock.getField('VAR');
-      field.initModel();
-      field.setVariableName(name);
-      field.setBoundValue(variable);
-      var dom = Blockly.Xml.blockToDom(getterBlock);
-      getterBlock.dispose();
-      xml.appendChild(dom);
-    }
-  } finally {
-    Blockly.Events.enable();
-  }
-  return xml;
-};
-
-/**
  * Creates blocks to show in workbench's flyout on the given workspace.
  * @param {!Blockly.Workspace} flyoutWorkspace The workspace to create blocks.
  * @return {!Array.<!Blockly.Block>} List of blocks to show in a flyout.

@@ -348,10 +348,6 @@ function create_mock_workbench(block, opt_inputName) {
       }
       return Blockly.Workbench.prototype.blocksForFlyout.call(this, workspace);
     },
-    getFlyoutLanguageTree_: function() {
-      var func = Blockly.Workbench.prototype.getFlyoutLanguageTree_;
-      return func.call(this);
-    },
     checkReference: function(env, opt_bind) {
       return Blockly.Workbench.prototype.checkReference.call(this, env,
           opt_bind);
@@ -397,13 +393,7 @@ function create_mock_workbench(block, opt_inputName) {
 
 function getFlyoutBlocksFromWorkbench(workbench, opt_workspace) {
   var workspace = opt_workspace ? opt_workspace : workbench.getWorkspace();
-  var xml = workbench.getFlyoutLanguageTree_();
-  var childNodes = xml.childNodes;
-  var blocks = [];
-  for (var i = 0; i < childNodes.length; i++) {
-    blocks.push(Blockly.Xml.domToBlock(childNodes[i], workspace));
-  }
-  return blocks;
+  return workbench.blocksForFlyout(workspace);
 }
 
 /* End functions for workbenches. */

@@ -411,7 +411,7 @@ function test_type_unification_useWorkbenchWithinLetTypedBlock() {
     assertEquals(blocks.length, 2);
     var innersVars = blocks[0];
     var outersVar = blocks[1];
-    // workbench.getFlyoutLanguageTree_() does not guarantee any order. If
+    // workbench.blocksForFlyout() does not guarantee any order. If
     // they seems to have been swapped, just swap them.
     if (isVariableOf(outersVar, innerLetBlock, 'j')) {
       var tmp = outersVar;
@@ -457,7 +457,7 @@ function test_type_unification_useWorkbenchWithinLambdaTypedBlock() {
     assertEquals(blocks.length, 2);
     var innersVars = blocks[0];
     var outersVar = blocks[1];
-    // workbench.getFlyoutLanguageTree_() does not guarantee any order. If
+    // workbench.blocksForFlyout() does not guarantee any order. If
     // they seems to have been swapped, just swap them.
     if (isVariableOf(outersVar, innerLambdaBlock, 'j')) {
       var tmp = outersVar;
@@ -486,11 +486,8 @@ function test_type_unification_simpleTreeInFlyoutReferences() {
     var letBlock = workspace.newBlock('let_typed');
     workbench = create_mock_workbench(letBlock);
     setVariableName(letBlock, 'j');
-    var xml = workbench.getFlyoutLanguageTree_();
-    var childNodes = xml.childNodes;
-    for (var i = 0, node; node = childNodes[i]; i++) {
-      assertEquals(node.tagName, 'BLOCK');
-    }
+    var blocks = workbench.blocksForFlyout();
+    assertEquals(blocks.length, 1);
   } finally {
     workspace.dispose();
     if (workbench) {
