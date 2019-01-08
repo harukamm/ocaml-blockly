@@ -638,7 +638,7 @@ Blockly.Blocks['pair_second_typed'] = {
 
 Blockly.Blocks['function_app_typed'] = {
   init: function() {
-    this.setColour(Blockly.Msg['COLOUR_HUE']);
+    this.setColour('#c97586');
     var A = Blockly.TypeExpr.generateTypeVar();
     this.setHelpUrl(Blockly.Msg.VARIABLES_GET_HELPURL);
     this.appendDummyInput()
