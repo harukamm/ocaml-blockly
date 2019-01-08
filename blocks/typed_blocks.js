@@ -285,7 +285,7 @@ Blockly.Blocks['float_arithmetic_typed'] = {
 
 Blockly.Blocks['string_typed'] = {
   init: function() {
-    this.setColour("#ff93c9");
+    this.setColour(Blockly.Msg['STRING_HUE']);
     this.appendDummyInput()
         .appendField('"')
         .appendField(new Blockly.FieldTextInput('foo'))
@@ -298,7 +298,7 @@ Blockly.Blocks['string_typed'] = {
 
 Blockly.Blocks['concat_string_typed'] = {
   init: function() {
-    this.setColour("#ff93c9");
+    this.setColour(Blockly.Msg['STRING_HUE']);
     this.appendValueInput('A')
         .setTypeExpr(new Blockly.TypeExpr.STRING());
     this.appendValueInput('B')

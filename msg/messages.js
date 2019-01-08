@@ -72,6 +72,8 @@ Blockly.Msg.PAIRS_HUE = '120';
 Blockly.Msg.TYPES_HUE = '#00a968';
 /// {{Notranslate}} Hue value for all pattern blocks.
 Blockly.Msg.PATTERN_HUE = '#9b72b0';
+/// {{Notranslate}} Hue value for all string typed blocks.
+Blockly.Msg.STRING_HUE = '#db7093';
 
 /// default name - A simple, general default name for a variable, preferably short.
 /// For more context, see
