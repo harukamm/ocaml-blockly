@@ -90,11 +90,11 @@ Blockly.RenderedTypeExpr.shape['bool'] = {
 
 Blockly.RenderedTypeExpr.shape['string'] = {
   down: function(steps) {
-    steps.push('l 0,5 -8,7.5 8,7.5');
+    steps.push('v 1 c 5,7 -8,6 -8,9.5 c 0,4 13,3 8,9.5');
   },
 
   up: function(steps) {
-    steps.push('l -8,-7.5 8,-7.5 0,-5');
+    steps.push('c 5,-7 -8,-6 -8,-9.5 c 0,-4 13,-3 8,-9.5 v -1');
   },
 
   height: function() {
