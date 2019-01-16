@@ -411,12 +411,6 @@ Blockly.Connection.prototype.checkConnection_ = function(target) {
  */
 Blockly.Connection.prototype.isConnectionAllowed = function(candidate,
     opt_context) {
-  // Type checking.
-  var canConnect = this.canConnectWithReason_(candidate, opt_context);
-  if (canConnect != Blockly.Connection.CAN_CONNECT) {
-    return false;
-  }
-
   // Don't offer to connect an already connected left (male) value plug to
   // an available right (female) value plug.  Don't offer to connect the
   // bottom of a statement block to one that's already connected.
@@ -450,6 +444,12 @@ Blockly.Connection.prototype.isConnectionAllowed = function(candidate,
 
   // Don't let blocks try to connect to themselves or ones they nest.
   if (Blockly.draggingConnections_.indexOf(candidate) != -1) {
+    return false;
+  }
+
+  // Type checking.
+  var canConnect = this.canConnectWithReason_(candidate, opt_context);
+  if (canConnect != Blockly.Connection.CAN_CONNECT) {
     return false;
   }
 
