@@ -746,12 +746,12 @@ Blockly.Blocks['function_app_typed'] = {
   infer: function(ctx) {
     var variable = this.typedReference['VAR'];
     var varName = variable.getVariableName();
-    var schemeInEnv = (varName in ctx.env) && ctx.env[varName];
+    var schemeInEnv = ctx.getTypeInEnv(varName);
     if (schemeInEnv) {
       // Fix: let rec c = ... c
       schemeInEnv.unify(variable.getTypeExpr());
       this.updateInput();
-    } else if (ctx.unifyOrphan) {
+    } else if (ctx.canUnifyOrphan()) {
       variable.unifyTypeExpr();
       this.updateInput();
     }
@@ -843,9 +843,8 @@ Blockly.Blocks['lambda_typed'] = {
     var variable = this.typedValue['VAR'];
     var var_name = variable.getVariableName();
     var expected = this.outputConnection.typeExpr;
-    var env2 = Object.assign({}, ctx.env);
-    env2[var_name] = Blockly.Scheme.monoType(expected.arg_type);
-    var ctx2 = {unifyOrphan: ctx.unifyOrphan, env: env2};
+    var ctx2 = ctx.copy();
+    ctx2.addTypeToEnv(var_name, Blockly.Scheme.monoType(expected.arg_type));
     var return_type = this.callInfer('RETURN', ctx2);
     if (return_type)
       return_type.unify(expected.return_type);
@@ -1029,7 +1028,7 @@ Blockly.Blocks['variables_get_typed'] = {
     var expected = this.outputConnection.typeExpr;
     var varName = variable.getVariableName();
 
-    var schemeInEnv = (varName in ctx.env) && ctx.env[varName];
+    var schemeInEnv = ctx.getTypeInEnv(varName);
     var scheme;
     if (schemeInEnv) {
       // Fix: let rec c = <c> + c.
@@ -1038,7 +1037,7 @@ Blockly.Blocks['variables_get_typed'] = {
       schemeInEnv.unify(variable.getTypeExpr());
       // TODO(harukam): Check the equality between a type scheme in existing
       // in the env and that of the binding value.
-    } else if (ctx.unifyOrphan) {
+    } else if (ctx.canUnifyOrphan()) {
       variable.unifyTypeExpr();
     }
     goog.asserts.assert(expected == variable.getTypeExpr());
@@ -1440,17 +1439,17 @@ Blockly.Blocks['let_typed'] = {
       variable.getTypeExpr().unify(funType);
     }
     // Create the context for the EXP1 input.
-    var env1 = Object.assign({}, ctx.env);
+    var ctx1 = ctx.copy();
     var monoScheme = Blockly.Scheme.monoType(variable.getTypeExpr());
     if (this.isRecursive_) {
-      env1[var_name] = monoScheme;
+      ctx1.addTypeToEnv(var_name, monoScheme);
     }
     for (var x = 0; x < this.argumentCount_; x++) {
       var argVar = this.typedValue['ARG' + x];
       var varName = argVar.getVariableName();
-      env1[varName] = Blockly.Scheme.monoType(argVar.getTypeExpr());
+      var argScheme = Blockly.Scheme.monoType(argVar.getTypeExpr());
+      ctx1.addTypeToEnv(varName, argScheme);
     }
-    var ctx1 = {unifyOrphan: ctx.unifyOrphan, env: env1};
     var exp1 = this.callInfer('EXP1', ctx1);
 
     if (exp1)
@@ -1458,21 +1457,20 @@ Blockly.Blocks['let_typed'] = {
 
     var applyPolyType = variable.getTypeExpr().deref().isFunction();
     var schemeForExp2;
+    var ctx2 = ctx.copy();
     if (applyPolyType) {
       if (this.isRecursive_) {
         // Prevent recursive reference blocks to be unified with poly-type.
         // All of recursive reference must be mono-type.
         this.lastTypeScheme_['REC_VAR'] = monoScheme;
       }
-      schemeForExp2 = Blockly.Scheme.create(ctx.env, variable.getTypeExpr());
+      schemeForExp2 = ctx.createPolyType(variable.getTypeExpr());
     } else {
       schemeForExp2 = monoScheme;
     }
     this.lastTypeScheme_['VAR'] = schemeForExp2;
 
-    var env2 = Object.assign({}, ctx.env);
-    env2[var_name] = schemeForExp2;
-    var ctx2 = {unifyOrphan: ctx.unifyOrphan, env: env2};
+    ctx2.addTypeToEnv(var_name, schemeForExp2);
     if (this.isStatement_) {
       this.callInfer(this.nextConnection, ctx2);
       return null;

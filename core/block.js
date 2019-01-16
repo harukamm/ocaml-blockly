@@ -1766,6 +1766,44 @@ Blockly.Block.prototype.moveBy = function(dx, dy) {
 /* Begin functions related type inference. */
 
 /**
+ * Class for context during running type inference.
+ * @param {boolean=} opt_unifyOrphan True if unify type expression of reference
+ *     variable which do not have the bound value in its environment.
+ * @param {Object<string, Blockly.Scheme>=} opt_typeEnv Object representing
+ *     type environment.
+ */
+Blockly.Block.typeInferenceContext = function(opt_unifyOrphan, opt_typeEnv) {
+  /** @private */
+  this.unifyOrphan_ = opt_unifyOrphan === true;
+  /** @private */
+  this.typeEnv_ = opt_typeEnv ? opt_typeEnv : {};
+};
+
+Blockly.Block.typeInferenceContext.prototype.canUnifyOrphan = function() {
+  return this.unifyOrphan_;
+};
+
+Blockly.Block.typeInferenceContext.prototype.getTypeInEnv = function(name) {
+  return name in this.typeEnv_ ? this.typeEnv_[name] : null;
+};
+
+Blockly.Block.typeInferenceContext.prototype.addTypeToEnv = function(name,
+    scheme) {
+  this.typeEnv_[name] = scheme;
+};
+
+Blockly.Block.typeInferenceContext.prototype.createPolyType = function(
+    typeExpr) {
+  return Blockly.Scheme.create(this.typeEnv_, typeExpr);
+};
+
+Blockly.Block.typeInferenceContext.prototype.copy = function() {
+  var copiedTypeEnv = Object.assign({}, this.typeEnv_);
+  return new Blockly.Block.typeInferenceContext(this.unifyOrphan_,
+      copiedTypeEnv);
+};
+
+/**
  * Update type inference for each block in the given list.
  * @param {!Array.<!Blockly.Block>} blocks List of blocks whose type
  *     expressions to be updated.
@@ -1787,7 +1825,7 @@ Blockly.Block.inferBlocksType_ = function(blocks, opt_reset, opt_unifyOrphan) {
   }
   for (var i = 0, block; block = blocks[i]; i++) {
     if (!block.isTransferring() && goog.isFunction(block.infer)) {
-      var context = {unifyOrphan: opt_unifyOrphan === true, env: {}};
+      var context = new Blockly.Block.typeInferenceContext(opt_unifyOrphan);
       block.infer(context);
     }
   }
@@ -1900,11 +1938,7 @@ Blockly.Block.prototype.callClearTypes = function(name) {
  * Call the Infer function indirectly if it exists.
  * @param {string|Blockly.Connection} name The name of the input or
  *     connection.
- * @param {unifyOrphan:boolean, env:!Object<string, Blockly.Scheme>} ctx
- *     Object with the following two properties.
- *     - unifyOrphan: Whether to unify type expression of reference variable
- *       which do not have the bound value in its environment.
- *     - env: The current type scheme environment.
+ * @param {!Blockly.Block.typeInferenceContext} ctx Context of type inference.
  * @return {Blockly.TypeExpr} type expression of the input
  */
 Blockly.Block.prototype.callInfer = function(name, ctx) {
