@@ -30,14 +30,13 @@ Typed.init = function() {
   window.addEventListener('resize', onresize, false);
 
   Typed.workspace = Blockly.inject(document.getElementById('blocklyDiv'),
-      {path: '../', toolbox: document.getElementById('toolbox'),
+      {toolbox: document.getElementById('toolbox'),
        grid:
            {spacing: 25,
             length: 3,
             colour: '#ccc',
             snap: true},
        trashcan: true,
-       media: '../media/',
        rtl: false, /*not support RTL */
        zoom:
            {controls: true,
