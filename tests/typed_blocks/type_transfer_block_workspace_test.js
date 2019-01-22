@@ -1110,6 +1110,7 @@ function test_type_transfer_block_workspace_recursiveReferenceMustBeMonoType() {
     function monoTypeCheck(type1, type2) {
       var funarr1 = Blockly.TypeExpr.functionToArray(type1);
       var funarr2 = Blockly.TypeExpr.functionToArray(type2);
+      assertEquals(funarr1.length, funarr2.length);
       for (var i = 0; i < funarr1.length; i++) {
         assertEquals(funarr1[i], funarr2[i]);
       }
