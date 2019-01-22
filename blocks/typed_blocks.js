@@ -104,7 +104,6 @@ Blockly.Blocks['logic_ternary_typed'] = {
     this.setColour(210);
     var A = Blockly.TypeExpr.generateTypeVar();
     this.appendValueInput('IF')
-        .setCheck('Boolean')
         .setTypeExpr(new Blockly.TypeExpr.BOOL())
         .appendField('if')
     this.appendValueInput('THEN')
@@ -175,10 +174,8 @@ Blockly.Blocks['int_arithmetic_typed'] = {
     this.setOutputTypeExpr(new Blockly.TypeExpr.INT());
     this.appendValueInput('A')
         .setTypeExpr(new Blockly.TypeExpr.INT())
-        .setCheck('Int');
     this.appendValueInput('B')
         .setTypeExpr(new Blockly.TypeExpr.INT())
-        .setCheck('Int')
         .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP_INT');
     this.setInputsInline(true);
     // Assign 'this' to a variable for use in the tooltip closure below.
@@ -246,10 +243,8 @@ Blockly.Blocks['float_arithmetic_typed'] = {
     this.setOutputTypeExpr(new Blockly.TypeExpr.FLOAT());
     this.appendValueInput('A')
         .setTypeExpr(new Blockly.TypeExpr.FLOAT())
-        .setCheck('Float');
     this.appendValueInput('B')
         .setTypeExpr(new Blockly.TypeExpr.FLOAT())
-        .setCheck('Float')
         .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP_FLOAT');
     this.setInputsInline(true);
     // Assign 'this' to a variable for use in the tooltip closure below.
