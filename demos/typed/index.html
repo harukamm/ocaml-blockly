@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Blockly Demo</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Compressed code for core, blocks, and generator. -->
+  <script type="text/javascript" src="../../blockly_compressed.js"></script>
+  <script type="text/javascript" src="../../blocks_compressed.js"></script>
+  <script type="text/javascript" src="../../typedlang_compressed.js"></script>
+
+  <script type="text/javascript" src="../../msg/js/en.js"></script>
+
+  <!-- Scripts for block_of_ocaml. -->
+  <script type="text/javascript" src="../../block_of_ocaml/converter.js"></script>
+  <script type="text/javascript" src="../../block_of_ocaml/utils.js"></script>
+
+  <script type="text/javascript" src="typed.js"></script>
+</head>
+<body>
+  <div id="workspaceArea">
+    <div id="blocklyDiv"></div>
+  </div>
+  <div id="rightArea">
+    <h1 class="titleHeader">でも</h1>
+    <div class="content">
+      <div class="codeToBlock">
+        <form onsubmit="Typed.onClickConvert(event)">
+          <div>
+            <h2 class="contentTitle">OCaml => block</h2>
+            <textarea class="ocamlCode" type="text" rows="10" cols="40"></textarea>
+          </div>
+          <input class="btn" type="submit" value="Convert to block"></input>
+        </form>
+      </div>
+      <div class="blockToCode">
+        <h2 class="contentTitle">block => OCaml</h2>
+        <p>
+          <textarea class="generatedCode" type="text" rows="10" cols="40"
+              readonly></textarea>
+          <button class="btn" onclick="Typed.showCode()">Update</button>
+          <button class="btn" onclick="Typed.runCode()">Run</button>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="clear"></div>
+
+  <xml id="toolbox" style="display: none">
+    <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+      <block type="logic_boolean_typed"></block>
+      <block type="logic_ternary_typed"></block>
+      <block type="logic_compare_typed"></block>
+    </category>
+    <category name="Math" colour="%{BKY_MATH_HUE}">
+      <block type="int_typed"></block>
+      <block type="float_typed"></block>
+      <block type="int_arithmetic_typed"></block>
+      <block type="float_arithmetic_typed"></block>
+    </category>
+    <category name="String" colour="%{BKY_STRING_HUE}">
+      <block type="string_typed"></block>
+      <block type="concat_string_typed"></block>
+    </category>
+    <category name="Lists" colour="%{BKY_LISTS_HUE}">
+      <block type="list_empty_typed"></block>
+      <block type="list_cons_typed"></block>
+      <block type="lists_create_with_typed"></block>
+    </category>
+    <category name="Data" colour="%{BKY_PAIRS_HUE}">
+      <block type="pair_create_typed"></block>
+      <block type="pair_first_typed"></block>
+      <block type="pair_second_typed"></block>
+      <block type="defined_datatype_typed"></block>
+    </category>
+    <category name="Functions" colour="%{BKY_PROCEDURES_HUE}">
+      <block type="lambda_typed"></block>
+      <block type="lambda_app_typed"></block>
+      <block type="match_typed"></block>
+    </category>
+    <category name="Variables" colour="%{BKY_VARIABLES_HUE}">
+      <block type="let_typed"></block>
+      <block type="letstatement_typed"></block>
+      <block type="letrec_typed"></block>
+    </category>
+  </xml>
+</body>
+</html>
