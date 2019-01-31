@@ -225,6 +225,7 @@ function test_resolve_reference_renameVariableCheck() {
     assertTrue(Blockly.BoundVariables.canRenameTo(reference, 'z'));
 
     // [let y = <> in <[let x = <> in <[x]>]>]
+    varBlock.outputConnection.disconnect();
     letBlock1.getInput('EXP2').connection.connect(varBlock.outputConnection);
     letBlock2.getInput('EXP2').connection.connect(letBlock1.outputConnection);
     assertTrue(Blockly.BoundVariables.canRenameTo(value1, 'y'));

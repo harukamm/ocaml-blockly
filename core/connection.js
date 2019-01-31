@@ -69,6 +69,7 @@ Blockly.Connection.REASON_DIFFERENT_WORKSPACES = 5;
 Blockly.Connection.REASON_SHADOW_PARENT = 6;
 Blockly.Connection.REASON_TYPE_UNIFICATION = 7;
 Blockly.Connection.REASON_VARIABLE_REFERENCE = 8;
+Blockly.Connection.REASON_CANT_UNPLUG = 9;
 
 /**
  * Connection this connection connects to.  Null if not connected.
@@ -397,6 +398,9 @@ Blockly.Connection.prototype.checkConnection_ = function(target) {
       throw 'Type unification failed.';
     case Blockly.Connection.REASON_VARIABLE_REFERENCE:
       throw 'Some variable references are bound to be illegal.';
+    case Blockly.Connection.REASON_CANT_UNPLUG:
+      throw 'Not allowed to unplug a block which the connection is already ' +
+          'connected to.';
     default:
       throw 'Unknown connection failure: this should never happen!';
   }
@@ -667,6 +671,15 @@ Blockly.Connection.prototype.checkTypeExprAndVariables_ = function(
   if (!resolved) {
     return Blockly.Connection.REASON_VARIABLE_REFERENCE;
   }
+
+  // Check if the already connected block can be unplugged.
+  if (superior.isConnected()) {
+    var connectedChildBlock = superior.targetBlock();
+    if (!connectedChildBlock.canBeRoot(null, collector)) {
+      return Blockly.Connection.REASON_CANT_UNPLUG;
+    }
+  }
+
   return Blockly.Connection.CAN_CONNECT;
 };
 
