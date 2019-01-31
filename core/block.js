@@ -1229,7 +1229,7 @@ Blockly.Block.prototype.getAllWorkbenches = function() {
  * @return {boolean} True if this block are copyable.
  */
 Blockly.Block.prototype.isCopyable = function() {
-  return this.resolveReference(null);
+  return this.canBeRoot();
 };
 
 /**
