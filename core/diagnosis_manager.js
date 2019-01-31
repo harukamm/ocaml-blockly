@@ -291,6 +291,9 @@ Blockly.ErrorItem.ORPHAN_TYPE_CTOR = 10;
 Blockly.ErrorItem.STATE_NONE = 1;
 Blockly.ErrorItem.STATE_CONNECTED_BLOCK = 5;
 
+Blockly.ErrorItem.MESSAGE_PREFIX_CONNECTED_BLOCK =
+  'Can\'t unplug the already-connected block because ';
+
 /**
  * Set the error's state indicating a situation which this error has occurred.
  * @param {number} state An enum to specify an error's state.
@@ -314,23 +317,76 @@ Blockly.ErrorItem.prototype.setErrorState = function(state) {
  */
 Blockly.ErrorItem.prototype.toMessage = function() {
   if (this.label == Blockly.ErrorItem.UNBOUND_VARIABLE) {
-    var name = this.errorElement.getVariableName();
-    var msg = 'Variable `' + name + '\' is ';
-    if (this.errorTarget) {
-      msg += 'bound to unexpected variable value.';
-    } else {
-      msg += 'unbound.';
-    }
-    return msg;
+    return this.toMessageUnboundVariable_();
   }
   if (this.label == Blockly.ErrorItem.TYPE_ERROR) {
     return this.errorElement.toMessage();
   }
   if (this.label == Blockly.ErrorItem.ORPHAN_PATTERN) {
+    return this.toMessageOrphanPattern_();
     return 'Pattern block must be connected to match pattern.';
   }
   if (this.label == Blockly.ErrorItem.ORPHAN_TYPE_CTOR) {
+    return this.toMessageOrphanTypeCtor_();
     return 'Type constructor block must be connected to datatype declaration.';
   }
   goog.asserts.fail('Unknown label');
+};
+
+/**
+ * Get the error message for this unbound-variable error.
+ * @return {string} An error message for this unbound-variable error.
+ * @private
+ */
+Blockly.ErrorItem.prototype.toMessageUnboundVariable_ = function() {
+  var msg = '';
+  var name = '`' + this.errorElement.getVariableName() + '\'';
+
+  if (this.state_ == Blockly.ErrorItem.STATE_CONNECTED_BLOCK) {
+    msg = Blockly.ErrorItem.MESSAGE_PREFIX_CONNECTED_BLOCK;
+    msg += 'the variable ' + name + ' will be ';
+  } else {
+    msg = 'Variable ' + name + ' is ';
+  }
+
+  if (this.errorTarget) {
+    msg += 'bound to unexpected variable value.';
+  } else {
+    msg += 'unbound.';
+  }
+  return msg;
+};
+
+/**
+ * Get the error message for this orphan-pattern error.
+ * @return {string} An error message for this orphan-pattern error.
+ * @private
+ */
+Blockly.ErrorItem.prototype.toMessageOrphanPattern_ = function() {
+  var msg = '';
+  if (this.state_ == Blockly.ErrorItem.STATE_CONNECTED_BLOCK) {
+    msg = Blockly.ErrorItem.MESSAGE_PREFIX_CONNECTED_BLOCK;
+    msg += 'pattern ';
+  } else {
+    msg = 'Pattern ';
+  }
+  msg += 'block must be connected to match pattern.';
+  return msg;
+};
+
+/**
+ * Get the error message for this orphan-typector error.
+ * @return {string} An error message for this orphan-typector error.
+ * @private
+ */
+Blockly.ErrorItem.prototype.toMessageOrphanTypeCtor_ = function() {
+  var msg = '';
+  if (this.state_ == Blockly.ErrorItem.STATE_CONNECTED_BLOCK) {
+    msg = Blockly.ErrorItem.MESSAGE_PREFIX_CONNECTED_BLOCK;
+    msg += 'type constructor ';
+  } else {
+    msg = 'Type constructor ';
+  }
+  msg += 'block must be connected to datatype declaration.';
+  return msg;
 };
