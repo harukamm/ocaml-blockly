@@ -313,23 +313,24 @@ Blockly.ErrorItem.prototype.setErrorState = function(state) {
  * @return {!string} Error message.
  */
 Blockly.ErrorItem.prototype.toMessage = function() {
-  var msg = '';
   if (this.label == Blockly.ErrorItem.UNBOUND_VARIABLE) {
     var name = this.errorElement.getVariableName();
-    msg += 'Variable `' + name + '\' is ';
+    var msg = 'Variable `' + name + '\' is ';
     if (this.errorTarget) {
       msg += 'bound to unexpected variable value.';
     } else {
       msg += 'unbound.';
     }
-  } else if (this.label == Blockly.ErrorItem.TYPE_ERROR) {
-    msg = this.errorElement.toMessage();
-  } else if (this.label == Blockly.ErrorItem.ORPHAN_PATTERN) {
-    msg = 'Pattern block must be connected to match pattern.';
-  } else if (this.label == Blockly.ErrorItem.ORPHAN_TYPE_CTOR) {
-    msg = 'Type constructor block must be connected to datatype declaration.';
-  } else {
-    goog.asserts.fail('Unknown label');
+    return msg;
   }
-  return msg;
+  if (this.label == Blockly.ErrorItem.TYPE_ERROR) {
+    return this.errorElement.toMessage();
+  }
+  if (this.label == Blockly.ErrorItem.ORPHAN_PATTERN) {
+    return 'Pattern block must be connected to match pattern.';
+  }
+  if (this.label == Blockly.ErrorItem.ORPHAN_TYPE_CTOR) {
+    return 'Type constructor block must be connected to datatype declaration.';
+  }
+  goog.asserts.fail('Unknown label');
 };
