@@ -108,6 +108,13 @@ Blockly.TypedLang['concat_string_typed'] = function(block) {
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
+Blockly.TypedLang['string_of_int_typed'] = function(block) {
+  var param = Blockly.TypedLang.valueToCode(block, 'PARAM',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  var code = 'string_of_int (' + param + ')';
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+};
+
 Blockly.TypedLang['lists_create_with_typed'] = function(block) {
   // Create a list with any number of elements of any type.
   var elements = new Array(block.itemCount_);
