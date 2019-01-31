@@ -43,6 +43,8 @@ Blockly.DiagnosisManager.OFFSET_X = 20;
 
 Blockly.DiagnosisManager.OFFSET_Y = 20;
 
+Blockly.DiagnosisManager.WIDTH = 300;
+
 /**
  * Create the div to show error message.
  */
@@ -52,6 +54,7 @@ Blockly.DiagnosisManager.prototype.createDom_ = function() {
   }
   this.dialog_ =
       goog.dom.createDom(goog.dom.TagName.DIV, 'blocklyDiagnosisDialog');
+  this.dialog_.style.width = Blockly.DiagnosisManager.WIDTH + 'px';
   document.body.appendChild(this.dialog_);
 };
 
