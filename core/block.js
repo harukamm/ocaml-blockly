@@ -2021,6 +2021,24 @@ Blockly.Block.prototype.allowedToBeOrphan = function(opt_collector) {
   return true;
 };
 
+/**
+ * Whether this block is able to be at the top level.
+ * @param {Blockly.Workspace=} opt_workspace If provided, returns whether this
+ *     block can be top in the given workspace.
+ * @param {Blockly.ErrorCollector=} opt_collector If provided, details of
+ *     errors will be stored to explain why this block can not be a root block.
+ * @return {boolean} True if this block can be at the top level. False
+ *     otherwise.
+ */
+Blockly.Block.prototype.canBeRoot = function(opt_workspace, opt_collector) {
+  var targetWorkspace = opt_workspace ? opt_workspace : this.workspace;
+  if (!this.resolveReference(null, false, targetWorkspace,
+      opt_collector)) {
+    return false;
+  }
+  return this.allowedToBeOrphan(opt_collector);
+};
+
 /* Begin functions related variable binding. */
 
 /**

@@ -539,13 +539,9 @@ Blockly.BlockDragger.prototype.updateReferenceStateDuringBlockDrag_ =
         this.diagnosisManager_.getUnboundCollector() : null;
     // If the dragging block has found the closest connection, it means that
     // all of references on the block are bound in their context by connecting
-    // with it. Otherwise check if they can be bound in the workspace's context.
-    if (!this.draggingBlock_.resolveReference(null, false, targetWorkspace,
-        collector)) {
-      resolved = false;
-    }
-    // Pattern block can not be an orphan.
-    if (!this.draggingBlock_.allowedToBeOrphan(collector)) {
+    // with it. Otherwise check if they can be bound in the workspace's context
+    // and the block can be at the top level.
+    if (!this.draggingBlock_.canBeRoot(targetWorkspace, collector)) {
       resolved = false;
     }
   }
