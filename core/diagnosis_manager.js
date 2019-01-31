@@ -68,7 +68,7 @@ Blockly.DiagnosisManager.prototype.createDom_ = function() {
 Blockly.DiagnosisManager.prototype.update = function(e, closestError) {
   var message = null;
   if (closestError) {
-    var collector = /** @type {!Blockly.ErrorCollector_} */closestError.error;
+    var collector = /** @type {!Blockly.ErrorCollector_} */(closestError.error);
     message = collector.toMessage();
   } else if (!this.unboundCollector_.isEmpty()) {
     message = this.unboundCollector_.toMessage();
@@ -327,11 +327,9 @@ Blockly.ErrorItem.prototype.toMessage = function() {
   }
   if (this.label == Blockly.ErrorItem.ORPHAN_PATTERN) {
     return this.toMessageOrphanPattern_();
-    return 'Pattern block must be connected to match pattern.';
   }
   if (this.label == Blockly.ErrorItem.ORPHAN_TYPE_CTOR) {
     return this.toMessageOrphanTypeCtor_();
-    return 'Type constructor block must be connected to datatype declaration.';
   }
   goog.asserts.fail('Unknown label');
 };
