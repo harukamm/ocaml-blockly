@@ -133,6 +133,54 @@ Blockly.DiagnosisManager.prototype.dispose = function() {
 Blockly.ErrorCollector = function() {
   /** @type {!Array.<!Blockly.ErrorItem>} */
   this.errors_ = [];
+  /** @type {number} */
+  this.state_ = Blockly.ErrorCollector.STATE_NONE;
+};
+
+Blockly.ErrorCollector.STATE_NONE = 1;
+Blockly.ErrorCollector.STATE_CONNECTED_BLOCK = 2;
+
+/**
+ * Set the collector's state specifying which objects are currently examined.
+ * @param {number} state An enum to specify an collector's state.
+ */
+Blockly.ErrorCollector.prototype.setState = function(state) {
+  switch (state) {
+    case Blockly.ErrorCollector.STATE_CONNECTED_BLOCK:
+      goog.asserts.assert(this.state_ == Blockly.ErrorCollector.STATE_NONE,
+        'The collector\'s state is already given.');
+    case Blockly.ErrorCollector.STATE_NONE:
+      break;
+    default:
+      goog.asserts.fail('Unknown state for an error collector.');
+  }
+  this.state_ = state;
+};
+
+Blockly.ErrorCollector.prototype.clearState = function() {
+  this.setState(Blockly.ErrorCollector.STATE_NONE);
+};
+Blockly.ErrorCollector.prototype.setStateConnectedBlock = function() {
+  this.setState(Blockly.ErrorCollector.STATE_CONNECTED_BLOCK);
+};
+
+/**
+ * Converts the given collector's state to the corresponding state for an
+ * error item.
+ * @param {number} state An enum for a collector's state.
+ * @return {number} An enum representing the corresponding error state.
+ * @static
+ */
+Blockly.ErrorCollector.convertToErrorState = function(state) {
+  switch (state) {
+    case Blockly.ErrorCollector.STATE_NONE:
+      return Blockly.ErrorItem.STATE_NONE;
+    case Blockly.ErrorCollector.STATE_CONNECTED_BLOCK:
+      return Blockly.ErrorItem.STATE_CONNECTED_BLOCK;
+      break;
+    default:
+      goog.asserts.fail('Unknown state for an error collector.');
+  }
 };
 
 /**
@@ -166,6 +214,8 @@ Blockly.ErrorCollector.prototype.clear = function() {
  * @private
  */
 Blockly.ErrorCollector.prototype.addItem_ = function(item) {
+  var errorState = Blockly.ErrorCollector.convertToErrorState(this.state_);
+  item.setErrorState(errorState);
   this.errors_.push(item);
 };
 
@@ -229,12 +279,34 @@ Blockly.ErrorItem = function(label, errorElement, errorTarget) {
   this.label = label;
   this.errorElement = errorElement;
   this.errorTarget = errorTarget;
+
+  this.state_ = Blockly.ErrorItem.STATE_NONE;
 };
 
 Blockly.ErrorItem.UNBOUND_VARIABLE = 1;
 Blockly.ErrorItem.TYPE_ERROR = 2;
 Blockly.ErrorItem.ORPHAN_PATTERN = 5;
 Blockly.ErrorItem.ORPHAN_TYPE_CTOR = 10;
+
+Blockly.ErrorItem.STATE_NONE = 1;
+Blockly.ErrorItem.STATE_CONNECTED_BLOCK = 5;
+
+/**
+ * Set the error's state indicating a situation which this error has occurred.
+ * @param {number} state An enum to specify an error's state.
+ */
+Blockly.ErrorItem.prototype.setErrorState = function(state) {
+  switch (state) {
+    case Blockly.ErrorItem.STATE_CONNECTED_BLOCK:
+      goog.asserts.assert(this.state_ == Blockly.ErrorItem.STATE_NONE,
+        'The error\'s state is already given.');
+    case Blockly.ErrorItem.STATE_NONE:
+      break;
+    default:
+      goog.asserts.fail('Unknown state for an error item.');
+  }
+  this.state_ = state;
+};
 
 /**
  * Returns error message.

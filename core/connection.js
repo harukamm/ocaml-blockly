@@ -675,7 +675,15 @@ Blockly.Connection.prototype.checkTypeExprAndVariables_ = function(
   // Check if the already connected block can be unplugged.
   if (superior.isConnected()) {
     var connectedChildBlock = superior.targetBlock();
-    if (!connectedChildBlock.canBeRoot(null, collector)) {
+    var canBeRoot = true;
+    if (collector) {
+      collector.setStateConnectedBlock();
+      canBeRoot = connectedChildBlock.canBeRoot(null, collector);
+      collector.clearState();
+    } else {
+      canBeRoot = connectedChildBlock.canBeRoot();
+    }
+    if (!canBeRoot) {
       return Blockly.Connection.REASON_CANT_UNPLUG;
     }
   }
