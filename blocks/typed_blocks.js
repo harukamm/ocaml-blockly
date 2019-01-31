@@ -320,6 +320,30 @@ Blockly.Blocks['concat_string_typed'] = {
   }
 };
 
+Blockly.Blocks['string_of_int_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['STRING_HUE']);
+    this.appendValueInput('PARAM')
+        .setTypeExpr(new Blockly.TypeExpr.INT())
+        .appendField('string_of_int');
+    this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.STRING());
+    this.setInputsInline(true);
+  },
+
+  clearTypes: function() {
+    this.callClearTypes('PARAM');
+  },
+
+  infer: function(ctx) {
+    var expected_param = new Blockly.TypeExpr.INT();
+    var param = this.callInfer('PARAM', ctx);
+    if (param)
+      param.unify(expected_param);
+    return new Blockly.TypeExpr.STRING();
+  }
+};
+
 Blockly.Blocks['lists_create_with_typed'] = {
   /**
    * Block for creating a list with any number of elements of any type.
