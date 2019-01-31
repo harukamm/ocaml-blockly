@@ -6,7 +6,6 @@ function test_type_unification_ifThenElseStructure() {
     var block = workspace.newBlock('logic_ternary_typed');
     var int1 = workspace.newBlock('int_typed');
     assertEquals(3, block.inputList && block.inputList.length);
-    assertEquals(1, block.getInput('IF').connection.check_.length);
     assertEquals(Blockly.TypeExpr.BOOL_,
         block.getInput('IF').connection.typeExpr.label);
     assertEquals(Blockly.TypeExpr.TVAR_,
