@@ -2,6 +2,8 @@
 
 var Typed = {};
 
+Typed.devmode = true;
+
 Typed.workspace = null;
 
 Typed.defaultCode =
@@ -30,23 +32,33 @@ Typed.init = function() {
   window.addEventListener('resize', onresize, false);
 
   Typed.workspace = Blockly.inject(document.getElementById('blocklyDiv'),
-      {path: '../../', toolbox: document.getElementById('toolbox'),
+      Typed.getWorkspaceOptions_());
+  onresize();
+  Blockly.svgResize(Typed.workspace);
+};
+
+Typed.getWorkspaceOptions_ = function() {
+  var options =
+      {toolbox: document.getElementById('toolbox'),
        grid:
            {spacing: 25,
             length: 3,
             colour: '#ccc',
             snap: true},
        trashcan: true,
-       media: '../../media/',
        rtl: false, /*not support RTL */
        zoom:
            {controls: true,
             wheel: true},
        collapse: false,
        typedVersion: true
-      });
-  onresize();
-  Blockly.svgResize(Typed.workspace);
+      };
+  // Use local media files if the devmode is enabled.
+  if (Typed.devmode) {
+    options['path'] = '../../';
+    options['media'] = '../../media/';
+  }
+  return options;
 };
 
 Typed.getBBox_ = function(element) {
