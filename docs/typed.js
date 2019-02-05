@@ -2,6 +2,8 @@
 
 var Typed = {};
 
+Typed.devmode = false;
+
 Typed.workspace = null;
 
 Typed.defaultCode =
@@ -11,6 +13,8 @@ Typed.defaultCode =
     "let pi_exp = pi 9000.";
 
 Typed.init = function() {
+  Typed.setDocumentTitle_();
+
   var input = document.querySelector(".ocamlCode");
   input.value = Typed.defaultCode;
 
@@ -30,6 +34,21 @@ Typed.init = function() {
   window.addEventListener('resize', onresize, false);
 
   Typed.workspace = Blockly.inject(document.getElementById('blocklyDiv'),
+      Typed.getWorkspaceOptions_());
+  onresize();
+  Blockly.svgResize(Typed.workspace);
+};
+
+Typed.setDocumentTitle_ = function() {
+  var title = "Blockly Demo";
+  if (Typed.devmode) {
+    title += " (dev)";
+  }
+  document.title = title;
+};
+
+Typed.getWorkspaceOptions_ = function() {
+  var options =
       {toolbox: document.getElementById('toolbox'),
        grid:
            {spacing: 25,
@@ -43,9 +62,13 @@ Typed.init = function() {
             wheel: true},
        collapse: false,
        typedVersion: true
-      });
-  onresize();
-  Blockly.svgResize(Typed.workspace);
+      };
+  // Use local media files if the devmode is enabled.
+  if (Typed.devmode) {
+    options['path'] = '../../';
+    options['media'] = '../../media/';
+  }
+  return options;
 };
 
 Typed.getBBox_ = function(element) {
