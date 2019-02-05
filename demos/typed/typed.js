@@ -13,6 +13,8 @@ Typed.defaultCode =
     "let pi_exp = pi 9000.";
 
 Typed.init = function() {
+  Typed.setDocumentTitle_();
+
   var input = document.querySelector(".ocamlCode");
   input.value = Typed.defaultCode;
 
@@ -35,6 +37,14 @@ Typed.init = function() {
       Typed.getWorkspaceOptions_());
   onresize();
   Blockly.svgResize(Typed.workspace);
+};
+
+Typed.setDocumentTitle_ = function() {
+  var title = "Blockly Demo";
+  if (Typed.devmode) {
+    title += " (dev)";
+  }
+  document.title = title;
 };
 
 Typed.getWorkspaceOptions_ = function() {
