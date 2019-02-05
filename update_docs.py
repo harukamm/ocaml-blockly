@@ -29,11 +29,34 @@ def copy_files():
     shutil.copy(src, 'docs/' + filename)
 
 def edit_copied_files():
-  # TODO(harukam): Support the following three features.
-  # 1. Load compressed JS files in docs/ instead of uncompressed ones.
-  # 2. Change title tag inside index.html.
-  # 3. Remove path and media properties in the workspace options.
+  disable_devmode()
+  # TODO(harukam): Edit dev.html to load compressed JS files in docs/ instead
+  # of uncompressed ones.
   pass
+
+import re
+
+def disable_devmode():
+  path = 'docs/typed.js'
+  if not os.path.isfile(path):
+    raise Exception('Not found script: ' + path)
+
+  pattern = r'^(Typed\.devmode = )(true|false);'
+  replacement = r'\1false;'
+
+  with open(path, 'r+') as f:
+    # Find the statement `Typed.devmode = (true|false);` in the script.
+    body = f.read()
+    m = re.search(pattern, body, flags=re.MULTILINE)
+    if not m:
+      raise Exception('Not found devmode statement')
+
+    # Disable the debugging mode if it's enabled.
+    if m.group(2) == 'true':
+      replaced_body = re.sub(pattern, replacement, body, 1, flags=re.MULTILINE)
+      f.seek(0)
+      f.truncate()
+      f.write(replaced_body)
 
 if __name__ == "__main__":
   verify_sourcepath()
