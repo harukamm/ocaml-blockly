@@ -41,15 +41,15 @@ def disable_devmode():
   if not os.path.isfile(path):
     raise Exception('Not found script: ' + path)
 
-  pattern = r'^(Typed\.devmode = )(true|false);'
+  pattern = r'^(Typed\.DEVMODE = )(true|false);'
   replacement = r'\1false;'
 
   with open(path, 'r+') as f:
-    # Find the statement `Typed.devmode = (true|false);` in the script.
+    # Find the statement `Typed.DEVMODE = (true|false);` in the script.
     body = f.read()
     m = re.search(pattern, body, flags=re.MULTILINE)
     if not m:
-      raise Exception('Not found devmode statement')
+      raise Exception('Not found DEVMODE statement')
 
     # Disable the debugging mode if it's enabled.
     if m.group(2) == 'true':
