@@ -18,14 +18,15 @@ sourceMap = {
 
 import os, shutil
 
-def copy_files():
-  for filename, sourcePath in sourceMap.items():
-    src = sourcePath
-    dest = 'docs/' + filename
-    basename = os.path.basename(sourcePath)
+def verify_sourcepath():
+  for filename, source_path in sourceMap.items():
+    basename = os.path.basename(source_path)
     if not basename:
-      src += filename
-    shutil.copy(src, dest)
+      sourceMap[filename] += filename
+
+def copy_files():
+  for filename, src in sourceMap.items():
+    shutil.copy(src, 'docs/' + filename)
 
 def edit_copied_files():
   # TODO(harukam): Support the following three features.
@@ -35,5 +36,6 @@ def edit_copied_files():
   pass
 
 if __name__ == "__main__":
+  verify_sourcepath()
   copy_files()
   edit_copied_files()
