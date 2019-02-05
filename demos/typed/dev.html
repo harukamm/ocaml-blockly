@@ -3,29 +3,9 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="style.css">
-
-  <!-- TODO: This file and dev.html are almost same, but they just load
-      different scripts. The first one loads compressed code while the other
-      uses the uncompressed version. It is better to auto-generate one of them
-      from the other. -->
-
   <!-- typed.js loads other JS scripts for blockly dynamically.
-      Those files depend on whether  -->
-  <script type="text/javascript" src="../../blockly_uncompressed.js"></script>
-
-  <script src="../../blocks/lists.js"></script>
-  <script src="../../blocks/typed_blocks.js"></script>
-  <script src="../../blocks/parameters.js"></script>
-  <script src="../../blocks/datatypes.js"></script>
-
-  <script src="../../generators/typedlang.js"></script>
-  <script src="../../generators/typedlang/blocks.js"></script>
-
-  <script type="text/javascript" src="../../msg/js/en.js"></script>
-
-  <script type="text/javascript" src="../../block_of_ocaml/converter.js"></script>
-  <script type="text/javascript" src="../../block_of_ocaml/utils.js"></script>
-
+      Those files are different depending on whether the devmode is
+      enabled. You can change the devmode in typed.js. -->
   <script type="text/javascript" src="typed.js"></script>
 </head>
 <body>

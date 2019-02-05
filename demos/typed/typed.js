@@ -4,6 +4,51 @@ var Typed = {};
 
 Typed.devmode = true;
 
+Typed.SCRIPTS_FOR_DEV = [
+  "../../blockly_uncompressed.js",
+  "../../blocks/lists.js",
+  "../../blocks/typed_blocks.js",
+  "../../blocks/parameters.js",
+  "../../blocks/datatypes.js",
+  "../../generators/typedlang.js",
+  "../../generators/typedlang/blocks.js",
+  "../../msg/js/en.js",
+  "../../block_of_ocaml/converter.js",
+  "../../block_of_ocaml/utils.js",
+];
+
+Typed.SCRIPTS_FOR_PROD = [
+  "blockly_compressed.js",
+  "blocks_compressed.js",
+  "typedlang_compressed.js",
+  "en.js",
+  "converter.js",
+  "block_of_ocaml_utils.js",
+];
+
+Typed.BOOT = (function() {
+  var scripts = document.getElementsByTagName('script');
+  var re = new RegExp('(.+)[\/]typed\.js$');
+  var dir;
+  for (var i = 0, script; script = scripts[i]; i++) {
+    var match = re.exec(script.src);
+    if (match) {
+      dir = match[1];
+    }
+  }
+  if (!dir) {
+    alert('Could not detect the directory name.');
+    return;
+  }
+  var scripts = Typed.devmode ? Typed.SCRIPTS_FOR_DEV : Typed.SCRIPTS_FOR_PROD;
+  for (var i = 0, src; src = scripts[i]; i++) {
+    document.write(
+        '<script type="text/javascript" src="' + src + '"></' +
+        'script>');
+  }
+})();
+
+
 Typed.workspace = null;
 
 Typed.defaultCode =
