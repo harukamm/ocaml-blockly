@@ -2,7 +2,10 @@
 
 var Typed = {};
 
-Typed.devmode = false;
+Typed.DEVMODE = false;
+// Note: This demo page must be located in either of the two directories:
+// demos/typed and docs/. The DEVMODE must be enabled if this page exists in
+// the first one. Otherwise, it must be disabled.
 
 Typed.SCRIPTS_FOR_DEV = [
   "../../blockly_uncompressed.js",
@@ -40,7 +43,7 @@ Typed.BOOT = (function() {
     alert('Could not detect the directory name.');
     return;
   }
-  var scripts = Typed.devmode ? Typed.SCRIPTS_FOR_DEV : Typed.SCRIPTS_FOR_PROD;
+  var scripts = Typed.DEVMODE ? Typed.SCRIPTS_FOR_DEV : Typed.SCRIPTS_FOR_PROD;
   for (var i = 0, src; src = scripts[i]; i++) {
     document.write(
         '<script type="text/javascript" src="' + src + '"></' +
@@ -86,7 +89,7 @@ Typed.init = function() {
 
 Typed.setDocumentTitle_ = function() {
   var title = "Blockly Demo";
-  if (Typed.devmode) {
+  if (Typed.DEVMODE) {
     title += " (dev)";
   }
   document.title = title;
@@ -108,8 +111,8 @@ Typed.getWorkspaceOptions_ = function() {
        collapse: false,
        typedVersion: true
       };
-  // Use local media files if the devmode is enabled.
-  if (Typed.devmode) {
+  // Use local media files if the DEVMODE is enabled.
+  if (Typed.DEVMODE) {
     options['path'] = '../../';
     options['media'] = '../../media/';
   }
