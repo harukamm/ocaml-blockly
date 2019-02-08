@@ -100,7 +100,8 @@ Blockly.DiagnosisManager.prototype.updateErrorDialog_ = function(e, message) {
   }
 
   var anchorY = e.pageY;
-  anchorY += Blockly.DiagnosisManager.OFFSET_Y * this.mainScale_;
+  var offsetY = Math.max(this.topBlock_.height, Blockly.DiagnosisManager.OFFSET_Y);
+  anchorY += offsetY * this.mainScale_;
   var anchorX = e.pageX;
   anchorX += Blockly.DiagnosisManager.OFFSET_X * this.mainScale_;
   this.dialog_.style.top = anchorY + 'px';
