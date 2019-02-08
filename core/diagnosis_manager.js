@@ -54,7 +54,7 @@ Blockly.DiagnosisManager.prototype.createDom_ = function() {
   }
   this.dialog_ =
       goog.dom.createDom(goog.dom.TagName.DIV, 'blocklyDiagnosisDialog');
-  this.dialog_.style.width = Blockly.DiagnosisManager.WIDTH + 'px';
+  this.dialog_.style.maxWidth = Blockly.DiagnosisManager.WIDTH + 'px';
   document.body.appendChild(this.dialog_);
 };
 
