@@ -42,7 +42,8 @@ BlockOfOCamlUtils.getErrorMessage = function(result) {
     case BlockOfOCamlUtils.ERROR_NONE:
       return null;
     case BlockOfOCamlUtils.ERROR_AST_PARSING:
-      return "Syntax error or not-supported AST";
+      return result.message ?
+          result.message : "Syntax error or not-supported AST";
     case BlockOfOCamlUtils.ERROR_XML_PARSING:
       return "XML parsing error";
     case BlockOfOCamlUtils.ERROR_INVALID_BLOCK_XML:
@@ -66,6 +67,12 @@ BlockOfOCamlUtils.codeToBlockImpl_ = function(code, opt_workspace) {
     var xmlStr = blockOfOCaml(code);
   } catch (e) {
     result.errCode = BlockOfOCamlUtils.ERROR_AST_PARSING;
+    return result;
+  }
+  var errMsg = BlockOfOCamlUtils.getBlockOfOCamlError_(xmlStr);
+  if (errMsg) {
+    result.errCode = BlockOfOCamlUtils.ERROR_AST_PARSING;
+    result.message = errMsg;
     return result;
   }
   var workspace = opt_workspace ? opt_workspace : Blockly.mainWorkspace;
@@ -104,4 +111,21 @@ BlockOfOCamlUtils.codeToBlockImpl_ = function(code, opt_workspace) {
   block.workspace.renderTypeChangedWorkspaces();
   result.block = block;
   return result;
+};
+
+BlockOfOCamlUtils.getBlockOfOCamlError_ = function(xmlStr) {
+  var errorPrefix = "__error__";
+  if (!xmlStr.startsWith(errorPrefix)) {
+    return null;
+  }
+
+  var error = xmlStr.slice(errorPrefix.length);
+  if (error === "parsing") {
+    return "Syntax error.";
+  }
+  var m = error.match(/^not_supported_(.+)$/);
+  if (!m || !m[1]) {
+    return "Parsing failed but no error was not found.";
+  }
+  return "Not supported syntax: " + m[1];
 };
