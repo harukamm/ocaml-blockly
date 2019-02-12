@@ -429,6 +429,17 @@ Blockly.BoundVariables.getVisibleVariableValues = function(variable) {
   return values;
 };
 
+// Reference: http://caml.inria.fr/pub/docs/manual-ocaml/lex.html#sec84
+Blockly.BoundVariables.RESERVED_KEYWORDS = [
+  "and", "as", "assert", "asr", "begin", "class", "constraint", "do", "done",
+  "downto", "else", "end", "exception", "external", "false", "for", "fun",
+  "function", "functor", "if", "in", "include", "inherit", "initializer",
+  "land", "lazy", "let", "lor", "lsl", "lsr", "lxor", "match", "method", "mod",
+  "module", "mutable", "new", "nonrec", "object", "of", "open", "or",
+  "private", "rec", "sig", "struct", "then", "to", "true", "try", "type",
+  "val", "virtual", "when", "while", "with"
+];
+
 /**
  * Returns whether the given name is legal as a variable name.
  * @param {!number} label An enum representing which type of variable.
@@ -446,6 +457,10 @@ Blockly.BoundVariables.isLegalName = function(label, newName) {
       label == Blockly.BoundVariableAbstract.VALUE_VARIABLE ||
       label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
   goog.asserts.assert(isConstructor || isNormalVariable);
+
+  if (Blockly.BoundVariables.RESERVED_KEYWORDS.indexOf(newName) != -1) {
+    return false;
+  }
 
   // Check if a string follows the naming convention.
   // Reference: https://caml.inria.fr/pub/docs/manual-ocaml/names.html
