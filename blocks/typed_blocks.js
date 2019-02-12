@@ -140,6 +140,16 @@ Blockly.Blocks['logic_ternary_typed'] = {
   }
 };
 
+Blockly.Blocks['infinity_typed'] = {
+  init: function() {
+    this.setColour(100);
+    this.appendDummyInput()
+        .appendField('infinity');
+    this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.FLOAT());
+  }
+};
+
 Blockly.Blocks['int_typed'] = {
   /**
    * Block for numeric value.
