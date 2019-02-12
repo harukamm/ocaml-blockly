@@ -534,7 +534,8 @@ Blockly.BoundVariables.generateUniqueName = function(label, workspace) {
       if (0 < n) {
         name += n;
       }
-      if (name in namesMap) {
+      if (!Blockly.BoundVariables.isLegalName(label, name) ||
+          name in namesMap) {
         name = null;
       }
     }
