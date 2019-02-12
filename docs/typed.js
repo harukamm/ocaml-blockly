@@ -143,7 +143,7 @@ Typed.showCode = function() {
     var input = document.querySelector(".generatedCode");
     input.value = code;
   } catch (e) {
-    // alert('Some of blocks are not supported for converting.');
+    console.warn('Some of blocks are not supported for converting.');
   }
 }
 
