@@ -132,8 +132,7 @@ Blockly.Workbench.prototype.createEditor_ = function() {
   // inherit scale from the parent workspace.
   // To fix this, scale needs to be applied at a different level in the dom.
   if (!this.flyoutSvg_) {
-    this.flyoutSvg_ =  this.workspace_.addFlyout_('g',
-        this.createFlyout_.bind(this));
+    this.flyoutSvg_ =  this.workspace_.addFlyout_('g');
   }
   if (!this.background_) {
     this.background_ = this.workspace_.createDom('blocklyMutatorBackground');
@@ -164,15 +163,6 @@ Blockly.Workbench.prototype.removeSvgElements = function() {
     this.bubble_.removeContent();
   }
   this.svgDialog_ = null;
-};
-
-/**
- * Returns a newly created flyout for this workbench workspace.
- * @param {!Object} workspaceOptions Dictionary of options for the flyout
- *     workspace.
- */
-Blockly.Workbench.prototype.createFlyout_ = function(flyoutWorkspaceOptions) {
-  return new Blockly.WorkbenchVerticalFlyout(flyoutWorkspaceOptions, this);
 };
 
 /**
