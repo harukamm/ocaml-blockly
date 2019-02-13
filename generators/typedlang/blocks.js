@@ -122,7 +122,7 @@ Blockly.TypedLang['lists_create_with_typed'] = function(block) {
     elements[i] = Blockly.TypedLang.valueToCode(block, 'ADD' + i,
         Blockly.TypedLang.ORDER_ATOMIC);
   }
-  var code = '[' + elements.join(', ') + ']';
+  var code = '[' + elements.join('; ') + ']';
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
