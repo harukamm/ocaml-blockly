@@ -276,7 +276,7 @@ Blockly.copy_ = function(toCopy) {
   } else {
     if (!toCopy.isCopyable()) {
       // TODO(harukam): Tell users why the block can not be copied.
-      Blockly.alert('This blocks can not be copied.');
+      Blockly.alert('These blocks can not be copied.');
       return;
     }
     var xml = Blockly.Xml.blockToDom(toCopy);
