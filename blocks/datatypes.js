@@ -13,37 +13,23 @@ Blockly.Blocks['defined_datatype_typed'] = {
     this.setColour(160);
     var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
         Blockly.BoundVariableAbstract.VALUE_VARIABLE);
-    var ctrId = Blockly.utils.genUid();
-    var ctrType0 = new Blockly.TypeExpr.CONSTRUCT(ctrId);
-    var ctrType1 = new Blockly.TypeExpr.CONSTRUCT(ctrId);
-    var variableField0 =
-        Blockly.FieldBoundVariable.newValueConstructor(ctrType0);
-    var variableField1 =
-        Blockly.FieldBoundVariable.newValueConstructor(ctrType1);
+
     this.appendDummyInput()
         .appendField('type ')
         .appendField(new Blockly.FieldTextInput('data', validator), 'DATANAME')
         .appendField('=');
-    this.appendValueInput('CTR_INP0')
-        .appendField('|')
-        .appendField(variableField0, 'CTR0')
-        .appendField('of')
-        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
-        .setAlign(Blockly.ALIGN_RIGHT);
-    this.appendValueInput('CTR_INP1')
-        .appendField('|')
-        .appendField(variableField1, 'CTR1')
-        .appendField('of')
-        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
-        .setAlign(Blockly.ALIGN_RIGHT);
+
+    this.constructId_ = Blockly.utils.genUid();
+    this.itemCount_ = 0;
+    this.appendCtorInput();
+    this.appendCtorInput();
+
     this.setOutput(false);
+    this.setMutator(new Blockly.Mutator(['constructor_variant_item']));
+    // this.setMutator(new Blockly.FlyoutMutator([
+    //     'int_type_typed',
+    //     'float_type_typed'], true));
 
-    this.setMutator(new Blockly.FlyoutMutator([
-        'int_type_typed',
-        'float_type_typed'], true));
-
-    this.constructId_ = ctrId;
-    this.itemCount_ = 2;
     this.disableTransfer_ = true;
   },
 
@@ -81,6 +67,83 @@ Blockly.Blocks['defined_datatype_typed'] = {
       }
     }
     return null;
+  },
+
+  appendCtorInput: function() {
+    var ctrType = new Blockly.TypeExpr.CONSTRUCT(this.constructId_);
+    var variableField =
+        Blockly.FieldBoundVariable.newValueConstructor(ctrType);
+    var index = this.itemCount_++;
+    this.appendValueInput('CTR_INP' + index)
+        .appendField('|')
+        .appendField(variableField, 'CTR' + index)
+        .appendField('of')
+        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
+        .setAlign(Blockly.ALIGN_RIGHT);
+  },
+
+  /**
+   * Create XML to represent constructor inputs.
+   * @return {Element} XML storage element.
+   * @this Blockly.Block
+   */
+  mutationToDom: function() {
+    var container = document.createElement('mutation');
+    container.setAttribute('items', this.itemCount_);
+    return container;
+  },
+  /**
+   * Parse XML to restore the constructor inputs.
+   * @param {!Element} xmlElement XML storage element.
+   * @this Blockly.Block
+   */
+  domToMutation: function(xmlElement) {
+    while (0 < this.itemCount_) {
+      var index = this.itemCount_ - 1;
+      this.removeInput('CTR_INP' + index);
+      this.itemCount_--;
+    }
+
+    var newItemCount = parseInt(xmlElement.getAttribute('items')) || 2;
+    for (var i = 0; i < newItemCount; i++) {
+      this.appendCtorInput();
+    }
+    goog.asserts.assert(this.itemCount_ == newItemCount);
+  },
+  /**
+   * Populate the mutator's dialog with this block's components.
+   * @param {!Blockly.Workspace} workspace Mutator's workspace.
+   * @return {!Blockly.Block} Root block in mutator.
+   * @this Blockly.Block
+   */
+  decompose: function(workspace) {
+    var containerBlock =
+        workspace.newBlock('constructor_variant_container');
+    containerBlock.initSvg();
+    var connection = containerBlock.getInput('STACK').connection;
+    for (var x = 0; x < this.itemCount_; x++) {
+      var itemBlock = workspace.newBlock('constructor_variant_item');
+      itemBlock.initSvg();
+      connection.connect(itemBlock.previousConnection);
+      connection = itemBlock.nextConnection;
+    }
+    return containerBlock;
+  },
+  /**
+   * Reconfigure this block based on the mutator dialog's components.
+   * @param {!Blockly.Block} containerBlock Root block in mutator.
+   * @this Blockly.Block
+   */
+  compose: function(containerBlock) {
+    var itemCount = containerBlock.getItemCount();
+    while (itemCount < this.itemCount_) {
+      var index = this.itemCount_ - 1;
+      this.removeInput('CTR_INP' + index);
+      this.itemCount_--;
+    }
+    while (this.itemCount_ < itemCount) {
+      this.appendCtorInput();
+    }
   }
 };
 

@@ -60,3 +60,37 @@ Blockly.Blocks['parameters_arg_container'] = {
     connection.connect(block.previousConnection);
   }
 };
+
+Blockly.Blocks['constructor_variant_item'] = {
+  /**
+   * Mutator block for adding a variant.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(Blockly.Msg['LISTS_HUE']);
+    this.appendDummyInput()
+        .appendField('constructor');
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.contextMenu = false;
+  }
+};
+
+Blockly.Blocks['constructor_variant_container'] = {
+  /**
+   * Mutator block for variant container.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(Blockly.Msg['LISTS_HUE']);
+    this.appendDummyInput()
+        .appendField('variant');
+    this.appendStatementInput('STACK');
+    this.contextMenu = false;
+  },
+
+  getItemCount: function() {
+    // TODO(harukam):
+    return Blockly.Blocks['parameters_arg_container'].getItemCount.call(this);
+  }
+};
