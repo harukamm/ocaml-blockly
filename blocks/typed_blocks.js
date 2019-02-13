@@ -751,6 +751,17 @@ Blockly.Blocks['function_app_typed'] = {
     var newParamCount = parseInt(xmlElement.getAttribute('params'), 0);
     goog.asserts.assert(this.paramCount_ == 0,
         'Default parameter count must be zero.');
+    if (newParamCount == 0) {
+      return;
+    }
+    // Update parameter inputs depending on the type of the reference value.
+    this.updateInput();
+    if (this.paramCount_ == newParamCount) {
+      return;
+    }
+    // The type of the reference value might not be determined yet. For such
+    // cases (e.g., [let f x y = <> in f <[0]> <[0]>]), append dummy parameter
+    // inputs.
     for (var i = 0; i < newParamCount; i++) {
       var inputName = 'PARAM' + i;
       var rendered = this.rendered;
@@ -760,6 +771,7 @@ Blockly.Blocks['function_app_typed'] = {
       this.rendered = rendered;
       this.paramCount_++;
     }
+    this.setOutputTypeExpr(Blockly.TypeExpr.generateTypeVar(), true);
   },
 
   clearTypes: function() {
