@@ -1964,14 +1964,19 @@ Blockly.Block.prototype.callInfer = function(name, ctx) {
     var connection = name;
   }
   var childBlock = connection.targetBlock();
-  if (!childBlock)
+  if (!childBlock) {
     return null;
-  else if (childBlock.infer)
+  }
+  if (goog.isFunction(childBlock.infer)) {
     return childBlock.infer(ctx);
-  else if (childBlock.outputConnection)
+  }
+  if (childBlock.outputConnection) {
+    if (ctx.useFreshTypes()) {
+      childBlock.outputConnection.typeExpr.clone();
+    }
     return childBlock.outputConnection.typeExpr;
-  else
-    return null;
+  }
+  return null;
 };
 
 /* End functions related type inference. */
