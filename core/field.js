@@ -358,6 +358,10 @@ Blockly.Field.prototype.render_ = function() {
     this.size_.width = 0;
     return;
   }
+  if (!this.textElement_) {
+    // Force to initialize this element.
+    this.init();
+  }
 
   // Replace the text.
   this.textElement_.textContent = this.getDisplayText_();
