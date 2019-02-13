@@ -799,7 +799,7 @@ Blockly.Blocks['function_app_typed'] = {
 
 Blockly.Blocks['lambda_typed'] = {
   init: function() {
-    this.setColour(Blockly.Msg['COLOUR_HUE']);
+    this.setColour(Blockly.Msg['HIGHER_ORDER_HUE']);
     var A = Blockly.TypeExpr.generateTypeVar();
     var B = Blockly.TypeExpr.generateTypeVar();
     var variable_field = Blockly.FieldBoundVariable.newValue(A);
@@ -883,7 +883,7 @@ Blockly.Blocks['lambda_typed'] = {
 
 Blockly.Blocks['lambda_app_typed'] = {
   init: function() {
-    this.setColour(Blockly.Msg['COLOUR_HUE']);
+    this.setColour(Blockly.Msg['HIGHER_ORDER_HUE']);
     var A = Blockly.TypeExpr.generateTypeVar();
     var B = Blockly.TypeExpr.generateTypeVar();
     this.appendValueInput('FUN')
