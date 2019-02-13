@@ -1771,18 +1771,30 @@ Blockly.Block.prototype.moveBy = function(dx, dy) {
  * Class for context during running type inference.
  * @param {boolean=} opt_unifyOrphan True if unify type expression of reference
  *     variable which do not have the bound value in its environment.
+ * @param {boolean=} opt_fresh Use generate fresh type expressions instead of
+ *     ones attached to blocks.
  * @param {Object<string, Blockly.Scheme>=} opt_typeEnv Object representing
  *     type environment.
  */
-Blockly.Block.typeInferenceContext = function(opt_unifyOrphan, opt_typeEnv) {
+Blockly.Block.typeInferenceContext = function(opt_unifyOrphan, opt_fresh,
+    opt_typeEnv) {
   /** @private */
   this.unifyOrphan_ = opt_unifyOrphan === true;
   /** @private */
+  this.useFreshTypeExpr_ = opt_fresh === true;
+  /** @private */
   this.typeEnv_ = opt_typeEnv ? opt_typeEnv : {};
+
+  goog.asserts.assert(!this.useFreshTypeExpr_, 'This feature is under ' +
+      'processing.');
 };
 
 Blockly.Block.typeInferenceContext.prototype.canUnifyOrphan = function() {
   return this.unifyOrphan_;
+};
+
+Blockly.Block.typeInferenceContext.prototype.useFreshTypes = function() {
+  return this.useFreshTypeExpr_;
 };
 
 Blockly.Block.typeInferenceContext.prototype.getTypeInEnv = function(name) {
@@ -1802,7 +1814,7 @@ Blockly.Block.typeInferenceContext.prototype.createPolyType = function(
 Blockly.Block.typeInferenceContext.prototype.copy = function() {
   var copiedTypeEnv = Object.assign({}, this.typeEnv_);
   return new Blockly.Block.typeInferenceContext(this.unifyOrphan_,
-      copiedTypeEnv);
+      this.useFreshTypeExpr_, copiedTypeEnv);
 };
 
 /**
