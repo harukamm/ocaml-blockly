@@ -158,42 +158,108 @@ Blockly.Blocks['create_construct_typed'] = {
     this.setInputsInline(true);
   },
 
-  infer: function(ctx) {
-    var outType = this.outputConnection.typeExpr;
+  removeInputSafely_: function(input) {
+    if (!input || this.inputList.indexOf(input) == -1) {
+      return;
+    }
+    var targetBlock = input.connection ?
+        input.connection.targetBlock() : null;
+    this.removeInput(input.name);
+    if (targetBlock) {
+      var unresolvedRefs = targetBlock.getUnboundVariables();
+      for (var i = 0, ref; ref = unresolvedRefs[i]; i++) {
+        ref.getSourceBlock().dispose();
+      }
+    }
+  },
+
+  updateAndGetParameterInputs_: function() {
+    // TODO(harukam): Move the following code to the bound-varaible class.
     var value = this.getField('CONSTRUCTOR').getBoundValue();
     if (!value) {
-      return outType;
+      return [];
     }
-    // TODO(harukam): Move the following code to the bound-varaible class.
     var valueBlock = value.getSourceBlock();
     var fieldName = value.getContainerFieldName();
     var def = valueBlock.getTypeCtorDef(fieldName);
-    goog.asserts.assert(def === null || def === 'int' ||
-        def === 'float', 'Unknown type ctor.');
+    goog.asserts.assert(def !== undefined, 'Unknown type ctor.');
 
-    var input = this.getInput('PARAM');
+    var lparenInput = this.getInput('LPAREN');
+    var rparenInput = this.getInput('RPAREN');
+    var paramSize = def == null ? 0 : (def.isPair() ? 2 : 1);
+    var paramInputs = [];
 
-    if (def === 'int' && !input) {
-      this.appendValueInput('PARAM')
-          .setTypeExpr(new Blockly.TypeExpr.INT())
-    } else if (def === 'float' && !input) {
-      this.appendValueInput('PARAM')
-          .setTypeExpr(new Blockly.TypeExpr.FLOAT())
-    } else if (def === null && input) {
-      // Definition is cleared by user.
-      var targetBlock = input.connection.targetBlock();
-      this.removeInput('PARAM');
-      input = null;
-      if (targetBlock) {
-        var unresolvedRefs = targetBlock.getUnboundVariables();
-        for (var i = 0, ref; ref = unresolvedRefs[i]; i++) {
-          ref.getSourceBlock().dispose();
-        }
-      }
+    if (paramSize == 0) {
+      this.removeInputSafely_(lparenInput);
+      this.removeInputSafely_(rparenInput);
     }
-    if (input) {
+
+    // Collect current parameter inputs. If there are more inputs than
+    // paramSize expects, remove them.
+    var copiedInputList = [].concat(this.inputList);
+    for (var i = 0, input; input = copiedInputList[i]; i++) {
+      var m = input.name && input.name.match(/PARAM(\d+)/);
+      if (!m) {
+        continue;
+      }
+      var index = parseInt(m[1]);
+      var currentSize = index + 1;
+      if (paramSize < currentSize) {
+        this.removeInputSafely_(input);
+        continue;
+      }
+      if (1 <= index) {
+        var prevInput = paramInputs[index - 1];
+        goog.asserts.assert(!!prevInput);
+      }
+      paramInputs.push(input);
+    }
+
+    if (0 < paramSize && !lparenInput) {
+      goog.asserts.assert(paramInputs.length == 0);
+      this.appendDummyInput('LPAREN')
+          .appendField('(');
+    }
+    // Add additional parameter inputs.
+    var currentSize = paramInputs.length;
+    for (; currentSize < paramSize; currentSize++) {
+      var index = currentSize;
+      var input = this.appendValueInput('PARAM' + index);
+      if (index != 0) {
+        input.appendField(',');
+      }
+      paramInputs.push(input);
+    }
+    if (0 < paramSize && !rparenInput) {
+      this.appendDummyInput('RPAREN')
+          .appendField(')');
+    }
+
+    // Set type expression on the value paramInputs if necessary.
+    if (def == null) {
+      // NOP. There are no parameters.
+    } else if (def.isInt()) {
+      paramInputs[0].setTypeExpr(new Blockly.TypeExpr.INT(), true);
+    } else if (def.isFloat()) {
+      paramInputs[0].setTypeExpr(new Blockly.TypeExpr.FLOAT(), true);
+    } else if (def.isPair()) {
+      paramInputs[0].setTypeExpr(def.first_type, true);
+      paramInputs[1].setTypeExpr(def.second_type, true);
+    } else {
+      goog.asserts.fail('Not supported type ctor: ' + def.toString());
+    }
+    return paramInputs;
+  },
+
+  infer: function(ctx) {
+    var outType = this.outputConnection.typeExpr;
+    var paramInputs = this.updateAndGetParameterInputs_();
+    for (var i = 0, input; input = paramInputs[i]; i++) {
+      if (!input) {
+        continue;
+      }
       var expected = input.connection.typeExpr;
-      var paramType = this.callInfer('PARAM', ctx);
+      var paramType = this.callInfer(input.name, ctx);
       if (paramType) {
         expected.unify(paramType);
       }
@@ -213,9 +279,7 @@ Blockly.Blocks['int_type_typed'] = {
   },
 
   getTypeCtor: function() {
-    // Note: Currently nested type constructor is not supported, so simply
-    // using string to represent it.
-    return 'int';
+    return new Blockly.TypeExpr.INT();
   },
 
   canBeUnplugged: function() {
@@ -240,7 +304,7 @@ Blockly.Blocks['float_type_typed'] = {
   },
 
   getTypeCtor: function() {
-    return 'float';
+    return new Blockly.TypeExpr.FLOAT();
   },
 
   canBeUnplugged: function() {
@@ -269,10 +333,11 @@ Blockly.Blocks['pair_type_constructor_typed'] = {
   },
 
   getTypeCtor: function() {
-    goog.asserts.fail('Not implemented yet.');
-    // TODO(harukam): getTypeCtor is expected to return string, but pair type
-    // ctor can not be represented with string. Make callers receive type
-    // expression instead of string.
+    var leftBlock = this.getInputTargetBlock('LEFT');
+    var rightBlock = this.getInputTargetBlock('RIGHT');
+    var left = leftBlock ? leftBlock.getTypeCtor() : null;
+    var right = rightBlock ? rightBlock.getTypeCtor() : null;
+    return new Blockly.TypeExpr.PAIR(left, right);
   }
 };
 

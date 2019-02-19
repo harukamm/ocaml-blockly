@@ -1269,10 +1269,10 @@ function test_type_unification_constructBlockSimple() {
     assertEquals(ctrReference.getTypeExpr().getDisplayText(), 'fooo');
 
     function check(typeBlock, typeName) {
-      var inp = ctr.getInput('PARAM');
+      var inp = ctr.getInput('PARAM0');
       assertNull(inp);
       defineCtr.getInput('CTR_INP0').connection.connect(typeBlock.outputConnection);
-      var inp = ctr.getInput('PARAM');
+      var inp = ctr.getInput('PARAM0');
       assertNotNull(inp);
       if (typeName === 'int') {
         assertTrue(inp.connection.typeExpr.isInt());

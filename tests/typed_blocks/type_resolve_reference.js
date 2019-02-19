@@ -548,13 +548,13 @@ function test_resolve_reference_fixRemoveUndefinedRefInConstruct() {
 
     function check(typeBlock, arithBlock, typeName) {
       assertEquals(letBlockA, ctr.getParent());
-      var inp = ctr.getInput('PARAM');
+      var inp = ctr.getInput('PARAM0');
       assertNull(inp);
       var varA = createReferenceBlock(letBlockA.typedValue['VAR']);
       var letBlockB = workspace.newBlock('let_typed');
       var varB = createReferenceBlock(letBlockB.typedValue['VAR']);
       defineCtr.getInput('CTR_INP0').connection.connect(typeBlock.outputConnection);
-      var inp = ctr.getInput('PARAM');
+      var inp = ctr.getInput('PARAM0');
       assertNotNull(inp);
       inp.connection.connect(letBlockB.outputConnection);
       letBlockB.getInput('EXP2').connection.connect(arithBlock.outputConnection);
@@ -569,7 +569,7 @@ function test_resolve_reference_fixRemoveUndefinedRefInConstruct() {
         assertTrue(false);
       }
       typeBlock.outputConnection.disconnect();
-      assertNull(ctr.getInput('PARAM'));
+      assertNull(ctr.getInput('PARAM0'));
       assertNull(varA.workspace); // disposed
       assertNull(arithBlock.getInputTargetBlock('A'));
       assertTrue(letBlockB.resolveReference(null));
