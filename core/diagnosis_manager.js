@@ -43,7 +43,7 @@ Blockly.DiagnosisManager.OFFSET_X = 20;
 
 Blockly.DiagnosisManager.OFFSET_Y = 20;
 
-Blockly.DiagnosisManager.WIDTH = 300;
+Blockly.DiagnosisManager.WIDTH = 400;
 
 /**
  * Create the div to show error message.
