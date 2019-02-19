@@ -254,6 +254,29 @@ Blockly.Blocks['float_type_typed'] = {
   }
 };
 
+Blockly.Blocks['pair_type_constructor_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['TYPES_HUE']);
+    this.appendValueInput('LEFT')
+        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR());
+    this.appendValueInput('RIGHT')
+        .appendField('*')
+        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR());
+    this.setOutput(true);
+    this.setInputsInline(true);
+    var typeCtrType = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+    this.setOutputTypeExpr(typeCtrType);
+  },
+
+  getTypeCtor: function() {
+    goog.asserts.fail('Not implemented yet.');
+    // TODO(harukam): getTypeCtor is expected to return string, but pair type
+    // ctor can not be represented with string. Make callers receive type
+    // expression instead of string.
+  }
+};
+
+
 Blockly.Blocks['empty_construct_pattern_typed'] = {
   init: function() {
     var A = Blockly.TypeExpr.generateTypeVar();

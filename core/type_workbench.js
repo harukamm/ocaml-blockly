@@ -58,6 +58,7 @@ Blockly.TypeWorkbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
   var blocks = [];
   blocks.push(flyoutWorkspace.newBlock('int_type_typed'));
   blocks.push(flyoutWorkspace.newBlock('float_type_typed'));
+  blocks.push(flyoutWorkspace.newBlock('pair_type_constructor_typed'));
   for (var i = 0, block; block = blocks[i]; i++) {
     if (goog.isFunction(block.initSvg)) {
       block.initSvg();
