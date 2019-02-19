@@ -2016,10 +2016,12 @@ Blockly.Block.prototype.isPattern = function() {
  * Returns if this type of block is allowed to be orphan.
  * @param {Blockly.ErrorCollector=} opt_collector If provided and this block
  *     is not allowed to be orphan, details of this block will be stored.
+ * @param {Blockly.Workspace=} opt_workspace If provided, check if this type of
+ *     block can be orphan when it's moved to the specified workspace.
  * @return {boolean} False if this block must be connected to a parent always.
  *     Otherwise, returns true.
  */
-Blockly.Block.prototype.allowedToBeOrphan = function(opt_collector) {
+Blockly.Block.prototype.allowedToBeOrphan = function(opt_collector, opt_workspace) {
   if (!this.outputConnection || !this.outputConnection.typeExpr) {
     return true;
   }
@@ -2030,6 +2032,11 @@ Blockly.Block.prototype.allowedToBeOrphan = function(opt_collector) {
     return false;
   }
   if (this.outputConnection.typeExpr.deref().isTypeConstructor()) {
+    var targetWorkspace = opt_targetWorkspace || this.workspace;
+    var mutator = targetWorkspace.ownerMutator_;
+    if (mutator && mutator instanceof Blockly.TypeWorkbench) {
+      return true;
+    }
     if (opt_collector) {
       opt_collector.addOrphanTypeConstructorError();
     }
@@ -2053,7 +2060,7 @@ Blockly.Block.prototype.canBeRoot = function(opt_workspace, opt_collector) {
       opt_collector)) {
     return false;
   }
-  return this.allowedToBeOrphan(opt_collector);
+  return this.allowedToBeOrphan(opt_collector, targetWorkspace);
 };
 
 /* Begin functions related variable binding. */
