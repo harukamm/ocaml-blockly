@@ -26,9 +26,7 @@ Blockly.Blocks['defined_datatype_typed'] = {
 
     this.setOutput(false);
     this.setMutator(new Blockly.Mutator(['constructor_variant_item']));
-    // this.setMutator(new Blockly.FlyoutMutator([
-    //     'int_type_typed',
-    //     'float_type_typed'], true));
+    this.setWorkbench(new Blockly.TypeWorkbench());
 
     this.disableTransfer_ = true;
   },
