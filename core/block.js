@@ -1990,15 +1990,24 @@ Blockly.Block.prototype.callInfer = function(name, ctx) {
  *     block.
  */
 Blockly.Block.prototype.isPairPattern = function(otherBlock) {
-  var pairs = [['cons_construct_pattern_value_typed',
-    'cons_construct_pattern_typed']];
-  for (var i = 0, pair; pair = pairs[i]; i++) {
-    if (this.type === pair[0] && otherBlock.type === pair[1] ||
-        this.type === pair[1] && otherBlock.type === pair[0]) {
-      return true;
-    }
+  var patternBlockSuffix = 'pattern_typed';
+  var patternValueBlockSuffix = 'pattern_value_typed';
+  var patternBlock = null;
+  if (this.type.endsWith(patternBlockSuffix)) {
+    patternBlock = this;
+  } else if (otherBlock.type.endsWith(patternBlockSuffix)) {
+    patternBlock = otherBlock;
   }
-  return false;
+  if (!patternBlock) {
+    return false;
+  }
+  var valueBlock = patternBlock == this ? otherBlock : this;
+  if (!valueBlock.type.endsWith(patternValueBlockSuffix)) {
+    return false;
+  }
+  var prefix1 = patternBlock.type.slice(0, -patternBlockSuffix.length);
+  var prefix2 = valueBlock.type.slice(0, -patternValueBlockSuffix.length);
+  return prefix1 === prefix2;
 };
 
 /**
