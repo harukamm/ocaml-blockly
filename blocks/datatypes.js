@@ -484,3 +484,36 @@ Blockly.Blocks['cons_construct_pattern_value_typed'] = {
     type.element_type.clear();
   }
 };
+
+Blockly.Blocks['pair_pattern_typed'] = {
+  init: function() {
+    var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
+        Blockly.BoundVariableAbstract.VALUE_VARIABLE);
+    this.setColour(Blockly.Msg['PATTERN_HUE']);
+    this.appendDummyInput()
+        .appendField('(');
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldTextInput('a', validator), 'LEFT')
+        .appendField(',');
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldTextInput('b', validator), 'RIGHT')
+        .appendField(')');
+    this.setOutput(true);
+
+    var A = Blockly.TypeExpr.generateTypeVar();
+    var B = Blockly.TypeExpr.generateTypeVar();
+    var pairType = new Blockly.TypeExpr.PAIR(A, B);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN(pairType));
+    this.setInputsInline(true);
+  },
+
+  transformToValue: function(workspace) {
+    goog.asserts.assert(false, 'Not supported yet.');
+  },
+
+  clearTypes: function() {
+    var type = this.outputConnection.typeExpr.pattExpr;
+    type.first_type.clear();
+    type.second_type.clear();
+  }
+};

@@ -90,7 +90,8 @@ Blockly.PatternWorkbench.prototype.updateFlyoutTree = function() {
   }
   var contentsMap = {
     'list': ['empty_construct_pattern_typed',
-        'cons_construct_pattern_typed']
+        'cons_construct_pattern_typed'],
+    'pair': ['pair_pattern_typed']
   };
   var keys = Object.keys(contentsMap);
   var children = [];
