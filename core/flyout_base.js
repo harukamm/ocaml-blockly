@@ -534,7 +534,8 @@ Blockly.Flyout.prototype.obtainContentsToShow_ = function(xmlList, gaps) {
         var curButton = new Blockly.FlyoutButton(this.workspace_,
             this.targetWorkspace_, xml, isLabel);
         contents.push({type: 'button', button: curButton});
-        gaps.push(default_gap);
+        var gap = parseInt(xml.getAttribute('gap'), 10);
+        gaps.push(isNaN(gap) ? default_gap : gap);
       }
     }
   }

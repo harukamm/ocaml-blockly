@@ -97,6 +97,7 @@ Blockly.PatternWorkbench.prototype.updateFlyoutTree = function() {
   for (var i = 0, name; name = keys[i]; i++) {
     var label = goog.dom.createDom('label');
     label.setAttribute('text', name);
+    label.setAttribute('gap', '5');
     children.push(label);
 
     var blockNames = contentsMap[name];
