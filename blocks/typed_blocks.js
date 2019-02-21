@@ -996,10 +996,10 @@ Blockly.Blocks['match_typed'] = {
   },
 
   appendPatternInput: function() {
-    var A = Blockly.TypeExpr.generateTypeVar();
+    var inputType = this.getInput('INPUT').connection.typeExpr;
     var index = this.itemCount_++;
     this.appendValueInput('PATTERN' + index)
-        .setTypeExpr(new Blockly.TypeExpr.PATTERN(A));
+        .setTypeExpr(new Blockly.TypeExpr.PATTERN(inputType));
     this.appendValueInput('OUTPUT' + index)
         .setTypeExpr(this.outputConnection.typeExpr)
         .appendField('->')
