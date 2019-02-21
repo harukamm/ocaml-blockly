@@ -14,6 +14,14 @@ Blockly.TypedLang['logic_boolean_typed'] = function(block) {
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
+Blockly.TypedLang['not_operator_typed'] = function(block) {
+  // Boolean operator "not".
+  var argument = Blockly.TypedLang.valueToCode(block, 'A',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  var code = '(not ' + argument + ')';
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+}
+
 Blockly.TypedLang['logic_operator_typed'] = function(block) {
   // Boolean operators && and ||.
   var OPERATORS = {

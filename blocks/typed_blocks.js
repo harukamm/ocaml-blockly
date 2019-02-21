@@ -75,6 +75,35 @@ Blockly.Blocks['logic_operator_typed'] = {
   }
 }
 
+Blockly.Blocks['not_operator_typed'] = {
+  /**
+   * Block for "not" operator.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(210);
+    this.setOutput(true, 'Boolean');
+    this.setOutputTypeExpr(new Blockly.TypeExpr.BOOL());
+    this.appendValueInput('A')
+        .setTypeExpr(new Blockly.TypeExpr.BOOL())
+        .appendField('not');
+    this.setInputsInline(true);
+    this.setTooltip('Logical negation operator.');
+  },
+
+  clearTypes: function() {
+    this.callClearTypes('A');
+  },
+
+  infer: function(ctx) {
+    var expected = new Blockly.TypeExpr.BOOL();
+    var arg = this.callInfer('A', ctx);
+    if (arg)
+      arg.unify(expected);
+    return expected;
+  }
+}
+
 Blockly.Blocks['logic_compare_typed'] = {
   /**
    * Block for comparison operator.
