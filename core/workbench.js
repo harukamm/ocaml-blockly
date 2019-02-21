@@ -658,6 +658,17 @@ Blockly.Workbench.prototype.isWorkbench = function() {
 };
 
 /**
+ * Returns whether the block is allowed to enter into this workbench.
+ * @param {!Blockly.Block} block The block.
+ * @param {Blockly.ErrorCollector=} opt_collector If provided, the reason why
+ *     the block can not enter will be stored.
+ * @return {boolean} True if this block can enter into this workbench.
+ */
+Blockly.Workbench.prototype.acceptBlock = function(block, opt_collector) {
+  return true;
+};
+
+/**
  * Reconnect an block to a mutated input.
  * @param {Blockly.Connection} connectionChild Connection on child block.
  * @param {!Blockly.Block} block Parent block.
