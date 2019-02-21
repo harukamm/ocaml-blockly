@@ -80,7 +80,7 @@ Blockly.TypeExpr.PATTERN_ = 160;
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.TVAR_ = 135;
+Blockly.TypeExpr.TVAR_ = 170;
 
 /**
  * Convert the type instance into plan text.
