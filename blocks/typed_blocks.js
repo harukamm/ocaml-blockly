@@ -142,11 +142,16 @@ Blockly.Blocks['logic_ternary_typed'] = {
 
 Blockly.Blocks['infinity_typed'] = {
   init: function() {
+    var FLOATS =
+        [['infinity', 'INFINITY'],
+         ['neg_infinity', 'NEG_INFINITY'],
+         ['nan', 'NAN']];
     this.setColour(100);
     this.appendDummyInput()
-        .appendField('infinity');
+        .appendField(new Blockly.FieldDropdown(FLOATS), 'FLOAT');
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.TypeExpr.FLOAT());
+    this.setTooltip('special float value.')
   }
 };
 
