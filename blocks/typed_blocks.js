@@ -933,6 +933,7 @@ Blockly.Blocks['lambda_app_typed'] = {
 Blockly.Blocks['match_typed'] = {
   init: function() {
     this.setColour(290);
+
     var A = Blockly.TypeExpr.generateTypeVar();
     var B = Blockly.TypeExpr.generateTypeVar();
     this.appendDummyInput()
@@ -942,80 +943,134 @@ Blockly.Blocks['match_typed'] = {
     this.appendDummyInput()
         .appendField('with')
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.appendValueInput('PATTERN1')
-        .setTypeExpr(new Blockly.TypeExpr.PATTERN(A));
-    this.appendValueInput('OUTPUT1')
-        .setTypeExpr(B)
-        .appendField('->')
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .setWorkbench(new Blockly.Workbench());
-    this.appendValueInput('PATTERN2')
-        .setTypeExpr(new Blockly.TypeExpr.PATTERN(A));
-    this.appendValueInput('OUTPUT2')
-        .setTypeExpr(B)
-        .appendField('->')
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .setWorkbench(new Blockly.Workbench());
     this.setOutput(true);
     this.setOutputTypeExpr(B);
+
+    this.itemCount_ = 0;
+    this.appendPatternInput();
+
     this.setInputsInline(false);
-    this.setMutator(new Blockly.FlyoutMutator([
-        'empty_construct_pattern_typed',
-        'cons_construct_pattern_typed'], true));
+    this.setMutator(new Blockly.Mutator(['match_pattern_item']));
   },
 
   getVisibleVariables: function(conn) {
-    if (!conn) {
-      return {};
+    console.warn('Not supported yet.');
+    return {};
+  },
+
+  appendPatternInput: function() {
+    var A = Blockly.TypeExpr.generateTypeVar();
+    var index = this.itemCount_++;
+    this.appendValueInput('PATTERN' + index)
+        .setTypeExpr(new Blockly.TypeExpr.PATTERN(A));
+    this.appendValueInput('OUTPUT' + index)
+        .setTypeExpr(this.outputConnection.typeExpr)
+        .appendField('->')
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .setWorkbench(new Blockly.Workbench());
+  },
+
+  /**
+   * Create XML to represent constructor inputs.
+   * @return {Element} XML storage element.
+   * @this Blockly.Block
+   */
+  mutationToDom: function() {
+    var container = document.createElement('mutation');
+    container.setAttribute('items', this.itemCount_);
+    return container;
+  },
+  /**
+   * Parse XML to restore the constructor inputs.
+   * @param {!Element} xmlElement XML storage element.
+   * @this Blockly.Block
+   */
+  domToMutation: function(xmlElement) {
+    var newItemCount = parseInt(xmlElement.getAttribute('items')) || 2;
+    while (newItemCount < this.itemCount_) {
+      var index = this.itemCount_ - 1;
+      var outputInput = this.getInput('OUTPUT' + index);
+      var workbench = outputInput.connection.contextWorkbench;
+      workbench && workbench.dispose();
+      this.removeInput('PATTERN' + index);
+      this.removeInput('OUTPUT' + index);
+      this.itemCount_--;
     }
-    var output1 = this.getInput('OUTPUT1').connection;
-    var output2 = this.getInput('OUTPUT2').connection;
-    if (conn === output1) {
-      var target = this.getInputTargetBlock('PATTERN1');
-    } else if (conn == output2) {
-      var target = this.getInputTargetBlock('PATTERN2');
+
+    for (var i = this.itemCount_; i < newItemCount; i++) {
+      this.appendPatternInput();
     }
-    if (!target) {
-      return;
+    goog.asserts.assert(this.itemCount_ == newItemCount);
+  },
+  /**
+   * Populate the mutator's dialog with this block's components.
+   * @param {!Blockly.Workspace} workspace Mutator's workspace.
+   * @return {!Blockly.Block} Root block in mutator.
+   * @this Blockly.Block
+   */
+  decompose: function(workspace) {
+    var containerBlock =
+        workspace.newBlock('match_pattern_container');
+    containerBlock.initSvg();
+    var connection = containerBlock.getInput('STACK').connection;
+    for (var x = 0; x < this.itemCount_; x++) {
+      var itemBlock = workspace.newBlock('match_pattern_item');
+      itemBlock.initSvg();
+      connection.connect(itemBlock.previousConnection);
+      connection = itemBlock.nextConnection;
     }
-    var map = {};
-    if (goog.isFunction(target.updateUpperContext)) {
-      target.updateUpperContext(map);
+    return containerBlock;
+  },
+  /**
+   * Reconfigure this block based on the mutator dialog's components.
+   * @param {!Blockly.Block} containerBlock Root block in mutator.
+   * @this Blockly.Block
+   */
+  compose: function(containerBlock) {
+    var itemCount = containerBlock.getItemCount();
+    while (itemCount < this.itemCount_) {
+      var index = this.itemCount_ - 1;
+      var outputInput = this.getInput('OUTPUT' + index);
+      var workbench = outputInput.connection.contextWorkbench;
+      workbench && workbench.dispose();
+      this.removeInput('PATTERN' + index);
+      this.removeInput('OUTPUT' + index);
+      this.itemCount_--;
     }
-    return map;
+    while (this.itemCount_ < itemCount) {
+      this.appendPatternInput();
+    }
   },
 
   clearTypes: function() {
     this.outputConnection.typeExpr.clear();
     this.getInput('INPUT').connection.typeExpr.clear();
     this.callClearTypes('INPUT');
-    this.callClearTypes('PATTERN1');
-    this.callClearTypes('PATTERN2');
-    this.callClearTypes('OUTPUT1');
-    this.callClearTypes('OUTPUT2');
+    for (var i = 0; i < this.itemCount_; i++) {
+      this.callClearTypes('PATTERN' + i);
+      this.callClearTypes('OUTPUT' + i);
+    }
   },
 
   infer: function(ctx) {
-    var expected = this.outputConnection.typeExpr;
-    var expected_pattern1 = this.getInput('PATTERN1').connection.typeExpr;
-    var expected_pattern2 = this.getInput('PATTERN2').connection.typeExpr;
-    var input_expected = this.getInput('INPUT').connection.typeExpr;
+    var inputExpected = this.getInput('INPUT').connection.typeExpr;
+    var inputType = this.callInfer('INPUT', ctx);
+    if (inputType)
+      inputExpected.unify(inputType);
 
-    var input_type = this.callInfer('INPUT', ctx);
-    var pattern1_type = this.callInfer('PATTERN1', ctx);
-    var pattern2_type = this.callInfer('PATTERN2', ctx);
-    var output1_type = this.callInfer('OUTPUT1', ctx);
-    var output2_type = this.callInfer('OUTPUT2', ctx);
-    if (input_type)
-      input_expected.unify(input_type);
-    if (pattern1_type)
-      expected_pattern1.unify(pattern1_type);
-    if (pattern2_type)
-      expected_pattern2.unify(pattern2_type);
-    if (output1_type)
-      output1_type.unify(expected);
-    if (output2_type)
-      output2_type.unify(expected);
+    var expected = this.outputConnection.typeExpr;
+    for (var i = 0; i < this.itemCount_; i++) {
+      var patternType = this.callInfer('PATTERN' + i, ctx);
+      var outputType = this.callInfer('OUTPUT' + i, ctx);
+      var expectedPatternType = this.getInput('PATTERN' + i).connection.typeExpr;
+      var expectedOutputType = this.getInput('OUTPUT' + i).connection.typeExpr;
+      goog.asserts.assert(expected === expectedOutputType);
+
+      if (patternType)
+        expectedPatternType.unify(patternType);
+      if (outputType)
+        expectedOutputType.unify(outputType);
+    }
     return expected;
   }
 }

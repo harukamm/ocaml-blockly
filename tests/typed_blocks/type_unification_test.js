@@ -379,8 +379,8 @@ function test_type_unification_matchStructure() {
     var intPtn = workspace.newBlock('int_typed');
     var boolOutput = workspace.newBlock('logic_boolean_typed');
     block.getInput('INPUT').connection.connect(intInput.outputConnection);
-    // block.getInput('PATTERN1').connection.connect(intPtn.outputConnection);
-    block.getInput('OUTPUT1').connection.connect(boolOutput.outputConnection);
+    // block.getInput('PATTERN0').connection.connect(intPtn.outputConnection);
+    block.getInput('OUTPUT0').connection.connect(boolOutput.outputConnection);
 
     assertEquals(Blockly.TypeExpr.BOOL_,
         block.outputConnection.typeExpr.deref().label);
@@ -1305,7 +1305,7 @@ function test_type_unification_matchPatternSimple() {
   try {
     var block = workspace.newBlock('match_typed');
     var pattern = workspace.newBlock('cons_construct_pattern_value_typed');
-    var ptnConn = block.getInput('PATTERN1').connection;
+    var ptnConn = block.getInput('PATTERN0').connection;
     ptnConn.connect(pattern.outputConnection);
     assertEquals(ptnConn.typeExpr.pattExpr.deref(),
         pattern.outputConnection.typeExpr.pattExpr.deref());
@@ -1315,7 +1315,7 @@ function test_type_unification_matchPatternSimple() {
     var value = pattern.typedValue['FIRST'];
     value.setVariableName('x');
     reference.setBoundValue(value);
-    var outConn = block.getInput('OUTPUT1').connection;
+    var outConn = block.getInput('OUTPUT0').connection;
     assertTrue(var1.resolveReference(outConn));
   } finally {
     workspace.dispose();
