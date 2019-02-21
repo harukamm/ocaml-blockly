@@ -140,6 +140,20 @@ Blockly.Blocks['logic_ternary_typed'] = {
   }
 };
 
+Blockly.Blocks['max_int_typed'] = {
+  init: function() {
+    var INTS =
+        [['max_int', 'MAX_INT'],
+         ['min_int', 'MIN_INT']];
+    this.setColour(230);
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldDropdown(INTS), 'INT');
+    this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.INT());
+    this.setTooltip('special int value.');
+  }
+}
+
 Blockly.Blocks['infinity_typed'] = {
   init: function() {
     this.setColour(100);

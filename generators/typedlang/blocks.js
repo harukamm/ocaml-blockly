@@ -52,6 +52,12 @@ Blockly.TypedLang['int_typed'] = function(block) {
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
+Blockly.TypedLang['max_int_typed'] = function(block) {
+  // max_int or min_int.
+  var code = block.getFieldValue('INT') === 'MAX_INT' ? 'max_int' : 'min_int';
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+}
+
 Blockly.TypedLang['int_arithmetic_typed'] = function(block) {
   // Basic arithmetic operators
   var OPERATORS = {
