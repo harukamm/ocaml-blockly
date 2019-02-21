@@ -1007,6 +1007,21 @@ Blockly.Blocks['match_typed'] = {
         .setWorkbench(new Blockly.Workbench());
   },
 
+  resizePatternInput: function(expectedCount) {
+    while (expectedCount < this.itemCount_) {
+      var index = this.itemCount_ - 1;
+      var outputInput = this.getInput('OUTPUT' + index);
+      var workbench = outputInput.connection.contextWorkbench;
+      workbench && workbench.dispose();
+      this.removeInput('PATTERN' + index);
+      this.removeInput('OUTPUT' + index);
+      this.itemCount_--;
+    }
+    while (this.itemCount_ < expectedCount) {
+      this.appendPatternInput();
+    }
+  },
+
   /**
    * Create XML to represent pattern inputs.
    * @return {Element} XML storage element.
@@ -1024,20 +1039,7 @@ Blockly.Blocks['match_typed'] = {
    */
   domToMutation: function(xmlElement) {
     var newItemCount = parseInt(xmlElement.getAttribute('items')) || 2;
-    while (newItemCount < this.itemCount_) {
-      var index = this.itemCount_ - 1;
-      var outputInput = this.getInput('OUTPUT' + index);
-      var workbench = outputInput.connection.contextWorkbench;
-      workbench && workbench.dispose();
-      this.removeInput('PATTERN' + index);
-      this.removeInput('OUTPUT' + index);
-      this.itemCount_--;
-    }
-
-    for (var i = this.itemCount_; i < newItemCount; i++) {
-      this.appendPatternInput();
-    }
-    goog.asserts.assert(this.itemCount_ == newItemCount);
+    this.resizePatternInput(newItemCount);
   },
   /**
    * Populate the mutator's dialog with this block's components.
@@ -1065,18 +1067,7 @@ Blockly.Blocks['match_typed'] = {
    */
   compose: function(containerBlock) {
     var itemCount = containerBlock.getItemCount();
-    while (itemCount < this.itemCount_) {
-      var index = this.itemCount_ - 1;
-      var outputInput = this.getInput('OUTPUT' + index);
-      var workbench = outputInput.connection.contextWorkbench;
-      workbench && workbench.dispose();
-      this.removeInput('PATTERN' + index);
-      this.removeInput('OUTPUT' + index);
-      this.itemCount_--;
-    }
-    while (this.itemCount_ < itemCount) {
-      this.appendPatternInput();
-    }
+    this.resizePatternInput(itemCount);
   },
 
   /**
