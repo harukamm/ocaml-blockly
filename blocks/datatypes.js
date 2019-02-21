@@ -186,7 +186,7 @@ Blockly.Blocks['create_construct_typed'] = {
 
     var lparenInput = this.getInput('LPAREN');
     var rparenInput = this.getInput('RPAREN');
-    var paramSize = def == null ? 0 : (def.isPair() ? 2 : 1);
+    var paramSize = def == null ? 0 : def.getChildren().length;
     var paramInputs = [];
 
     if (paramSize == 0) {
@@ -249,6 +249,10 @@ Blockly.Blocks['create_construct_typed'] = {
     } else if (def.isPair()) {
       paramInputs[0].setTypeExpr(def.first_type, true);
       paramInputs[1].setTypeExpr(def.second_type, true);
+    } else if (def.isTriple()) {
+      paramInputs[0].setTypeExpr(def.first_type, true);
+      paramInputs[1].setTypeExpr(def.second_type, true);
+      paramInputs[2].setTypeExpr(def.third_type, true);	
     } else {
       goog.asserts.fail('Not supported type ctor: ' + def.toString());
     }
@@ -377,6 +381,35 @@ Blockly.Blocks['pair_type_constructor_typed'] = {
   }
 };
 
+Blockly.Blocks['triple_type_constructor_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['TYPES_HUE']);
+    this.appendValueInput('ITEM0')
+        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR());
+    this.appendValueInput('ITEM1')
+        .appendField('*')
+        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR());
+    this.appendValueInput('ITEM2')
+        .appendField('*')
+        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR());
+    this.setOutput(true);
+    this.setInputsInline(true);
+    var typeCtrType = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+    this.setOutputTypeExpr(typeCtrType);
+  },
+
+  getTypeCtor: function() {
+    var item0Block = this.getInputTargetBlock('ITEM0');
+    var item1Block = this.getInputTargetBlock('ITEM1');
+    var item2Block = this.getInputTargetBlock('ITEM2');
+    // TODO(harukam): Create new type expression to represent disabled
+    // connections, and give it if leftBlock/rightBlock is null.
+    var item0 = item0Block ? item0Block.getTypeCtor() : null;
+    var item1 = item1Block ? item1Block.getTypeCtor() : null;
+    var item2 = item2Block ? item2Block.getTypeCtor() : null;
+      return new Blockly.TypeExpr.TRIPLE(item0, item1, item2);
+  }
+};
 
 Blockly.Blocks['empty_construct_pattern_typed'] = {
   init: function() {
