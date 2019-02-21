@@ -268,9 +268,9 @@ function test_resolve_reference_renameVariableCheckWithWorkbench() {
     var value2 = getVariable(letBlock2);
     var value3 = getVariable(letBlock3);
 
-    var refBlocks1 = workbenchList[0].blocksForFlyout();
-    var refBlocks2 = workbenchList[1].blocksForFlyout();
-    var refBlocks3 = workbenchList[2].blocksForFlyout();
+    var refBlocks1 = workbenchList[0].blocksForFlyout_();
+    var refBlocks2 = workbenchList[1].blocksForFlyout_();
+    var refBlocks3 = workbenchList[2].blocksForFlyout_();
 
     assertTrue(Blockly.BoundVariables.canRenameTo(value1, 'z'));
     assertTrue(Blockly.BoundVariables.canRenameTo(value2, 'z'));

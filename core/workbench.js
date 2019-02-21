@@ -433,8 +433,10 @@ Blockly.Workbench.prototype.getBlockContext = function() {
  * Creates blocks to show in workbench's flyout on the given workspace.
  * @param {!Blockly.Workspace} flyoutWorkspace The workspace to create blocks.
  * @return {!Array.<!Blockly.Block>} List of blocks to show in a flyout.
+ * @override
+ * @private
  */
-Blockly.Workbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
+Blockly.Workbench.prototype.blocksForFlyout_ = function(flyoutWorkspace) {
   var env = this.getContext();
   var names = Object.keys(env);
   var blocks = [];
@@ -472,7 +474,7 @@ Blockly.Workbench.prototype.updateFlyoutTree = function() {
     // TODO(harukam): Store the last context, and update blocks shown in a
     // flyout only if the context is changed. Blocks creation and rerendering
     // blocks are expensive.
-    this.workspace_.flyout_.show(this.blocksForFlyout.bind(this));
+    this.workspace_.flyout_.show(this.blocksForFlyout_.bind(this));
     this.updateScreen_();
   }
 };

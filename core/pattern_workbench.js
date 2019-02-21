@@ -73,8 +73,10 @@ Blockly.PatternWorkbench.prototype.acceptBlock = function(block,
  * Creates blocks to show in workbench's flyout on the given workspace.
  * @param {!Blockly.Workspace} flyoutWorkspace The workspace to create blocks.
  * @return {!Array.<!Blockly.Block>} List of blocks to show in a flyout.
+ * @override
+ * @private
  */
-Blockly.PatternWorkbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
+Blockly.PatternWorkbench.prototype.blocksForFlyout_ = function(flyoutWorkspace) {
   var blocks = [];
   blocks.push(flyoutWorkspace.newBlock('empty_construct_pattern_typed'));
   blocks.push(flyoutWorkspace.newBlock('cons_construct_pattern_typed'));

@@ -99,8 +99,10 @@ Blockly.TypeWorkbench.prototype.acceptBlock = function(block, opt_collector) {
  * Creates blocks to show in workbench's flyout on the given workspace.
  * @param {!Blockly.Workspace} flyoutWorkspace The workspace to create blocks.
  * @return {!Array.<!Blockly.Block>} List of blocks to show in a flyout.
+ * @override
+ * @private
  */
-Blockly.TypeWorkbench.prototype.blocksForFlyout = function(flyoutWorkspace) {
+Blockly.TypeWorkbench.prototype.blocksForFlyout_ = function(flyoutWorkspace) {
   var blocks = [];
   blocks.push(flyoutWorkspace.newBlock('int_type_typed'));
   blocks.push(flyoutWorkspace.newBlock('float_type_typed'));
