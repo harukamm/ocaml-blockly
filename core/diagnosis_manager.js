@@ -277,6 +277,24 @@ Blockly.ErrorCollector.prototype.addOrphanTypeConstructorError = function() {
 };
 
 /**
+ * Represents an error where a block can not enter into a pattern workbench.
+ */
+Blockly.ErrorCollector.prototype.addPatternWorkbenchRefuseBlock = function() {
+  var item = new Blockly.ErrorItem(
+      Blockly.ErrorItem.WORKBENCH_REFUSE_BLOCK, 'pattern');
+  this.addItem_(item);
+};
+
+/**
+ * Represents an error where a block can not enter into a type workbench.
+ */
+Blockly.ErrorCollector.prototype.addTypeWorkbenchRefuseBlock = function() {
+  var item = new Blockly.ErrorItem(
+      Blockly.ErrorItem.WORKBENCH_REFUSE_BLOCK, 'type constructor');
+  this.addItem_(item);
+};
+
+/**
  * @constructor
  */
 Blockly.ErrorItem = function(label, errorElement, errorTarget) {
@@ -291,6 +309,7 @@ Blockly.ErrorItem.UNBOUND_VARIABLE = 1;
 Blockly.ErrorItem.TYPE_ERROR = 2;
 Blockly.ErrorItem.ORPHAN_PATTERN = 5;
 Blockly.ErrorItem.ORPHAN_TYPE_CTOR = 10;
+Blockly.ErrorItem.WORKBENCH_REFUSE_BLOCK = 15;
 
 Blockly.ErrorItem.STATE_NONE = 1;
 Blockly.ErrorItem.STATE_CONNECTED_BLOCK = 5;
@@ -331,6 +350,9 @@ Blockly.ErrorItem.prototype.toMessage = function() {
   }
   if (this.label == Blockly.ErrorItem.ORPHAN_TYPE_CTOR) {
     return this.toMessageOrphanTypeCtor_();
+  }
+  if (this.label == Blockly.ErrorItem.WORKBENCH_REFUSE_BLOCK) {
+    return this.toMessageWorkbenchRefuseBlock_();
   }
   goog.asserts.fail('Unknown label');
 };
@@ -391,4 +413,16 @@ Blockly.ErrorItem.prototype.toMessageOrphanTypeCtor_ = function() {
   }
   msg += 'block must be connected to datatype declaration.';
   return msg;
+};
+
+/**
+ * Get the error message for this workbench-refuse-block error.
+ * @return {string} An error message for this workbench-refuse-block error.
+ * @private
+ */
+Blockly.ErrorItem.prototype.toMessageWorkbenchRefuseBlock_ = function() {
+  goog.asserts.assert(this.state_ == Blockly.ErrorCollector.STATE_NONE,
+      'This error should not happen unless the error state is none.');
+  return 'Only ' + this.errorElement + ' blocks are allowed to enter into ' +
+      'this area.';
 };

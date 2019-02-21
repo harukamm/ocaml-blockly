@@ -59,7 +59,13 @@ Blockly.TypeWorkbench.prototype.getBlockContext = function() {
  */
 Blockly.TypeWorkbench.prototype.acceptBlock = function(block, opt_collector) {
   var typeExpr = block.outputConnection && block.outputConnection.typeExpr;
-  return !!typeExpr && typeExpr.isTypeConstructor();
+  if (!!typeExpr && typeExpr.isTypeConstructor()) {
+    return true;
+  }
+  if (opt_collector) {
+    opt_collector.addTypeWorkbenchRefuseBlock();
+  }
+  return false;
 };
 
 /**
