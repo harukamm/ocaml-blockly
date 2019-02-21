@@ -328,10 +328,14 @@ Blockly.TypedLang['triple_type_constructor_typed'] = function(block) {
   var item0 = block.getField('ITEM0');
   var item1 = block.getField('ITEM1');
   var item2 = block.getField('ITEM2');
-    return ['(' + item0.getText() + ', ' +
-	    item1.getText() + ', ' +
-	    item2.getText() + ')',
-	    Blockly.TypedLang.ORDER_ATOMIC];
+  var parentBlock = block.getParent();
+  var isTopLevel = !!parentBlock &&
+      parentBlock.type === 'defined_detatype_typed';
+  var code = isTopLevel ? '' : '(';
+  code += item0.getText() + ' * ' + item1.getText() + ' * ' +
+	item2.getText();
+  code += isTopLevel ? '' : ')';  
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['empty_construct_pattern_typed'] = function(block) {
