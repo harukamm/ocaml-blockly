@@ -75,6 +75,15 @@ Blockly.TypedLang['float_typed'] = function(block) {
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
+Blockly.TypedLang['infinity_typed'] = function(block) {
+  // infinity, neg_infinity or nan.
+  var fieldValue = block.getFieldValue('FLOAT');
+  var code = fieldValue === 'INFINITY' ? 'infinity'
+      : fieldValue === 'NEG_INFINITY' ? 'neg_infinity'
+      : 'nan';
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+}
+
 Blockly.TypedLang['float_arithmetic_typed'] = function(block) {
   // Basic arithmetic operators
   var OPERATORS = {
