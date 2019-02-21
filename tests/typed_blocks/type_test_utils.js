@@ -331,6 +331,9 @@ function create_mock_workbench(block, opt_inputName) {
     isWorkbench: function() {
       return true;
     },
+    acceptBlock: function() {
+      return true;
+    },
     getBlockContext: function() {
       return Blockly.Workbench.prototype.getBlockContext.call(this);
     },
