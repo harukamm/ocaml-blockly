@@ -1078,6 +1078,69 @@ Blockly.Blocks['match_typed'] = {
     return containerBlock.getItemCount() != this.itemCount_;
   },
 
+  isAutoMatchAvailable: function(name) {
+    var inputType = this.getInput('INPUT').connection.typeExpr;
+    switch (name) {
+      case 'list':
+        var A = Blockly.TypeExpr.generateTypeVar();
+        return inputType.ableToUnify(new Blockly.TypeExpr.LIST(A));
+      case 'pair':
+        var A = Blockly.TypeExpr.generateTypeVar();
+        var B = Blockly.TypeExpr.generateTypeVar();
+        return inputType.ableToUnify(new Blockly.TypeExpr.PAIR(A, B));
+      default:
+        return false;
+    }
+  },
+
+  applyAutoMatch: function(name) {
+    var patternValueNames;
+    switch (name) {
+      case 'list':
+        patternValueNames = ['empty_construct_pattern_value_typed',
+            'cons_construct_pattern_value_typed'];
+        break;
+      case 'pair':
+        patternValueNames = ['pair_pattern_value_typed'];
+        break;
+      default:
+        goog.asserts.fail('Unknown auto match operator.');
+    }
+    this.mutator.setVisible(false);
+    this.resizePatternInput(patternValueNames.length);
+    // Initialize icons SVG.
+    this.initSvg();
+    for (var i = 0, name; name = patternValueNames[i]; i++) {
+      var patternConn = this.getInput('PATTERN' + i).connection;
+      var valueBlock = this.workspace.newBlock(name);
+      valueBlock.initSvg();
+      valueBlock.render();
+      patternConn.connect(valueBlock.outputConnection);
+    }
+  },
+
+  customContextMenu: function(options) {
+    if (this.isInFlyout) {
+      return;
+    }
+    var patternAlreadyConnected = false;
+    for (var i = 0; i < this.itemCount_; i++) {
+      if (this.getInputTargetBlock('PATTERN' + i)) {
+        patternAlreadyConnected = true;
+      }
+    }
+    var autoMatchNames = ['list', 'pair'];
+    for (var i = 0, name; name = autoMatchNames[i]; i++) {
+      var isEnabled =
+          patternAlreadyConnected ? false : this.isAutoMatchAvailable(name);
+      var option = {enabled: isEnabled, text: 'Auto match ' + name};
+      if (isEnabled) {
+        option.callback = this.applyAutoMatch.bind(this, name);
+      }
+      options.push(option);
+    }
+  },
+
   clearTypes: function() {
     this.outputConnection.typeExpr.clear();
     this.getInput('INPUT').connection.typeExpr.clear();
