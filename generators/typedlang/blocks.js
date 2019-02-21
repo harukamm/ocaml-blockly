@@ -14,6 +14,21 @@ Blockly.TypedLang['logic_boolean_typed'] = function(block) {
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
+Blockly.TypedLang['logic_operator_typed'] = function(block) {
+  // Boolean operators && and ||.
+  var OPERATORS = {
+    'AND': ' && ',
+    'OR': ' || '
+  };
+  var operator = OPERATORS[block.getFieldValue('OP_BOOL')];
+  var argument0 = Blockly.TypedLang.valueToCode(block, 'A',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  var argument1 = Blockly.TypedLang.valueToCode(block, 'B',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  var code = '(' + argument0 + operator + argument1 + ')';
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+}
+
 Blockly.TypedLang['logic_compare_typed'] = function(block) {
   // Comparison operator.
   var OPERATORS = {
