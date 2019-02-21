@@ -954,8 +954,25 @@ Blockly.Blocks['match_typed'] = {
   },
 
   getVisibleVariables: function(conn) {
-    console.warn('Not supported yet.');
-    return {};
+    if (!conn) {
+      return {};
+    }
+    var target = null;
+    for (var i = 0; i < this.itemCount_; i++) {
+      var outputConn = this.getInput('OUTPUT' + i).connection;
+      if (outputConn == conn) {
+        target = this.getInputTargetBlock('PATTERN' + i);
+        break;
+      }
+    }
+    if (!target) {
+      return;
+    }
+    var map = {};
+    if (goog.isFunction(target.updateUpperContext)) {
+      target.updateUpperContext(map);
+    }
+    return map;
   },
 
   appendPatternInput: function() {
