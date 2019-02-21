@@ -1007,7 +1007,7 @@ Blockly.Blocks['match_typed'] = {
   },
 
   /**
-   * Create XML to represent constructor inputs.
+   * Create XML to represent pattern inputs.
    * @return {Element} XML storage element.
    * @this Blockly.Block
    */
@@ -1017,7 +1017,7 @@ Blockly.Blocks['match_typed'] = {
     return container;
   },
   /**
-   * Parse XML to restore the constructor inputs.
+   * Parse XML to restore the pattern inputs.
    * @param {!Element} xmlElement XML storage element.
    * @this Blockly.Block
    */
