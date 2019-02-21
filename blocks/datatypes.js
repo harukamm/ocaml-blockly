@@ -242,6 +242,8 @@ Blockly.Blocks['create_construct_typed'] = {
       paramInputs[0].setTypeExpr(new Blockly.TypeExpr.INT(), true);
     } else if (def.isFloat()) {
       paramInputs[0].setTypeExpr(new Blockly.TypeExpr.FLOAT(), true);
+    } else if (def.isBool()) {
+      paramInputs[0].setTypeExpr(new Blockly.TypeExpr.BOOL(), true);
     } else if (def.isPair()) {
       paramInputs[0].setTypeExpr(def.first_type, true);
       paramInputs[1].setTypeExpr(def.second_type, true);
@@ -315,6 +317,21 @@ Blockly.Blocks['float_type_typed'] = {
     // TODO(harukam): Ask the parent, which must be define-datatypes block,
     // whether changing definition of datatype is fine or not.
     return true;
+  }
+};
+
+Blockly.Blocks['bool_type_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['TYPES_HUE']);
+    this.appendDummyInput()
+        .appendField('bool');
+    this.setOutput(true);
+    var typeCtrType = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+    this.setOutputTypeExpr(typeCtrType);
+  },
+
+  getTypeCtor: function() {
+    return new Blockly.TypeExpr.BOOL();
   }
 };
 
