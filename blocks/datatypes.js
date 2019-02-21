@@ -508,7 +508,61 @@ Blockly.Blocks['pair_pattern_typed'] = {
   },
 
   transformToValue: function(workspace) {
-    goog.asserts.assert(false, 'Not supported yet.');
+    var valueBlock = workspace.newBlock('pair_pattern_value_typed');
+    var left = this.getField('LEFT');
+    var right = this.getField('RIGHT');
+    valueBlock.initSvg();
+    valueBlock.render();
+    valueBlock.typedValue['LEFT'].setVariableName(left.getText());
+    valueBlock.typedValue['RIGHT'].setVariableName(right.getText());
+    return valueBlock;
+  },
+
+  clearTypes: function() {
+    var type = this.outputConnection.typeExpr.pattExpr;
+    type.first_type.clear();
+    type.second_type.clear();
+  }
+};
+
+Blockly.Blocks['pair_pattern_value_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['PATTERN_HUE']);
+    var A = Blockly.TypeExpr.generateTypeVar();
+    var B = Blockly.TypeExpr.generateTypeVar();
+    var leftVariable = Blockly.FieldBoundVariable.newValue(A, 'a');
+    var rightVariable = Blockly.FieldBoundVariable.newValue(B, 'b');
+    this.appendDummyInput()
+        .appendField('(');
+    this.appendDummyInput()
+        .appendField(leftVariable, 'LEFT')
+        .appendField(', ')
+    this.appendDummyInput()
+        .appendField(rightVariable, 'RIGHT')
+        .appendField(')');
+     this.setOutput(true);
+    var pairType = new Blockly.TypeExpr.PAIR(A, B);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN(pairType));
+    this.setInputsInline(true);
+  },
+
+  getTypeScheme: function(fieldName) {
+    if (fieldName !== 'LEFT' && fieldName !== 'RIGHT') {
+      return null;
+    }
+    var type = this.typedValue[fieldName].getTypeExpr();
+    return Blockly.Scheme.monoType(type);
+  },
+
+  updateUpperContext: function(map) {
+    var parent = this.getParent();
+    if (parent && parent.type !== 'match_typed') {
+      return;
+    }
+    var leftValue = this.typedValue['LEFT'];
+    var rightValue = this.typedValue['RIGHT'];
+    map[leftValue.getVariableName()] = leftValue;
+    map[rightValue.getVariableName()] = rightValue;
   },
 
   clearTypes: function() {
