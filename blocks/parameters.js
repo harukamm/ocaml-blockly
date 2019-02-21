@@ -94,3 +94,36 @@ Blockly.Blocks['constructor_variant_container'] = {
     return Blockly.Blocks['parameters_arg_container'].getItemCount.call(this);
   }
 };
+
+Blockly.Blocks['match_pattern_item'] = {
+  /**
+   * Mutator block for adding a pattern.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(Blockly.Msg['LISTS_HUE']);
+    this.appendDummyInput()
+        .appendField('pattern');
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.contextMenu = false;
+  }
+};
+
+Blockly.Blocks['match_pattern_container'] = {
+  /**
+   * Mutator block for pattern container.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(Blockly.Msg['LISTS_HUE']);
+    this.appendDummyInput()
+        .appendField('match');
+    this.appendStatementInput('STACK');
+    this.contextMenu = false;
+  },
+
+  getItemCount: function() {
+    return Blockly.Blocks['parameters_arg_container'].getItemCount.call(this);
+  }
+};
