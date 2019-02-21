@@ -39,6 +39,7 @@ goog.require('Blockly.FieldBoundVariable');
 goog.require('Blockly.FlyoutMutator');
 goog.require('Blockly.Input');
 goog.require('Blockly.Mutator');
+goog.require('Blockly.PatternWorkbench');
 goog.require('Blockly.Scheme');
 goog.require('Blockly.Workbench');
 goog.require('Blockly.Warning');

@@ -970,6 +970,7 @@ Blockly.Blocks['match_typed'] = {
 
     this.setInputsInline(false);
     this.setMutator(new Blockly.Mutator(['match_pattern_item']));
+    this.setWorkbench(new Blockly.PatternWorkbench());
   },
 
   getVisibleVariables: function(conn) {
