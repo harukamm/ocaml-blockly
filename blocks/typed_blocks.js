@@ -1008,6 +1008,9 @@ Blockly.Blocks['match_typed'] = {
   },
 
   resizePatternInput: function(expectedCount) {
+    // Stop rendering to avoid rendering objects which are already destroyed.
+    var storedRendered = this.rendered;
+    this.rendered = false;
     while (expectedCount < this.itemCount_) {
       var index = this.itemCount_ - 1;
       var outputInput = this.getInput('OUTPUT' + index);
@@ -1017,6 +1020,7 @@ Blockly.Blocks['match_typed'] = {
       this.removeInput('OUTPUT' + index);
       this.itemCount_--;
     }
+    this.rendered = storedRendered;
     while (this.itemCount_ < expectedCount) {
       this.appendPatternInput();
     }
