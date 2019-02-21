@@ -1079,6 +1079,14 @@ Blockly.Blocks['match_typed'] = {
     }
   },
 
+  /**
+   * Would this block be changed based on the mutator blocks?
+   * @this Blockly.Block
+   */
+  wouldChange: function(containerBlock) {
+    return containerBlock.getItemCount() != this.itemCount_;
+  },
+
   clearTypes: function() {
     this.outputConnection.typeExpr.clear();
     this.getInput('INPUT').connection.typeExpr.clear();
