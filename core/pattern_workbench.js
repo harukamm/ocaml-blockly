@@ -77,13 +77,35 @@ Blockly.PatternWorkbench.prototype.acceptBlock = function(block,
  * @private
  */
 Blockly.PatternWorkbench.prototype.blocksForFlyout_ = function(flyoutWorkspace) {
-  var blocks = [];
-  blocks.push(flyoutWorkspace.newBlock('empty_construct_pattern_typed'));
-  blocks.push(flyoutWorkspace.newBlock('cons_construct_pattern_typed'));
-  for (var i = 0, block; block = blocks[i]; i++) {
-    if (goog.isFunction(block.initSvg)) {
-      block.initSvg();
+  return [];
+};
+
+/**
+ * Updates the shown blocks in the workbench flyout.
+ * @override
+ */
+Blockly.PatternWorkbench.prototype.updateFlyoutTree = function() {
+  if (!this.workspace_ || !this.workspace_.flyout_) {
+    return;
+  }
+  var contentsMap = {
+    'list': ['empty_construct_pattern_typed',
+        'cons_construct_pattern_typed']
+  };
+  var keys = Object.keys(contentsMap);
+  var children = [];
+  for (var i = 0, name; name = keys[i]; i++) {
+    var label = goog.dom.createDom('label');
+    label.setAttribute('text', name);
+    children.push(label);
+
+    var blockNames = contentsMap[name];
+    for (var j = 0, blockName; blockName = blockNames[j]; j++) {
+      var blockXml = goog.dom.createDom('block', {'type': blockName});
+      blockXml.setAttribute('gap', '5');
+      children.push(blockXml);
     }
   }
-  return blocks;
+  this.workspace_.flyout_.show(children);
+  this.updateScreen_();
 };
