@@ -16,6 +16,33 @@ Blockly.TypeWorkbench = function() {
 goog.inherits(Blockly.TypeWorkbench, Blockly.Workbench);
 
 /**
+ * Draw the workbench icon.
+ * @param {!Element} group The icon group.
+ * @private
+ * @override
+ */
+Blockly.TypeWorkbench.prototype.drawIcon_ = function(group) {
+  // Square with rounded corners.
+  Blockly.utils.createSvgElement('rect',
+      {
+        'class': 'blocklyWorkbenchIconShape',
+        'rx': '4',
+        'ry': '4',
+        'height': '16',
+        'width': '16'
+      },
+      group);
+  // Path to draw "type".
+  Blockly.utils.createSvgElement('path',
+      {
+        'class': 'blocklyWorkbenchIconSymbol',
+        'd': 'm 2,2 h 6 m -5,0 v 6 l -1,1 m 0,-3 h 6 m -1,-4 v 7 m 3,-7 v 5 ' +
+            'm 4,-5 v 7 l -1,-1 m 0,2 h -9 m -2,3 h 12 m -5.5,0 v -4'
+      },
+      group);
+};
+
+/**
  * Set the connection whose context this workbench should be bound to.
  * @param {!Blockly.Connetion} connection The connection where this workbench's
  *     context is bound.
