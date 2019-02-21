@@ -2026,15 +2026,18 @@ Blockly.Block.prototype.allowedToBeOrphan = function(opt_collector, opt_workspac
   if (!this.outputConnection || !this.outputConnection.typeExpr) {
     return true;
   }
+  var targetWorkspace = opt_workspace || this.workspace;
+  var mutator = targetWorkspace.ownerMutator_;
   if (this.outputConnection.typeExpr.deref().isPattern()) {
+    if (mutator && mutator instanceof Blockly.PatternWorkbench) {
+      return true;
+    }
     if (opt_collector) {
       opt_collector.addOrphanPatternError();
     }
     return false;
   }
   if (this.outputConnection.typeExpr.deref().isTypeConstructor()) {
-    var targetWorkspace = opt_workspace || this.workspace;
-    var mutator = targetWorkspace.ownerMutator_;
     if (mutator && mutator instanceof Blockly.TypeWorkbench) {
       return true;
     }
