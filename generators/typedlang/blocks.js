@@ -313,6 +313,10 @@ Blockly.TypedLang['bool_type_typed'] = function(block) {
   return ['bool', Blockly.TypedLang.ORDER_ATOMIC];
 };
 
+Blockly.TypedLang['string_type_typed'] = function(block) {
+  return ['string', Blockly.TypedLang.ORDER_ATOMIC];
+};
+
 Blockly.TypedLang['empty_construct_pattern_typed'] = function(block) {
   return ['[]', Blockly.TypedLang.ORDER_ATOMIC];
 };

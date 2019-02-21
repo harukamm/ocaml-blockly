@@ -244,6 +244,8 @@ Blockly.Blocks['create_construct_typed'] = {
       paramInputs[0].setTypeExpr(new Blockly.TypeExpr.FLOAT(), true);
     } else if (def.isBool()) {
       paramInputs[0].setTypeExpr(new Blockly.TypeExpr.BOOL(), true);
+    } else if (def.isString()) {
+      paramInputs[0].setTypeExpr(new Blockly.TypeExpr.STRING(), true);	
     } else if (def.isPair()) {
       paramInputs[0].setTypeExpr(def.first_type, true);
       paramInputs[1].setTypeExpr(def.second_type, true);
@@ -332,6 +334,21 @@ Blockly.Blocks['bool_type_typed'] = {
 
   getTypeCtor: function() {
     return new Blockly.TypeExpr.BOOL();
+  }
+};
+
+Blockly.Blocks['string_type_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['TYPES_HUE']);
+    this.appendDummyInput()
+        .appendField('string');
+    this.setOutput(true);
+    var typeCtrType = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+    this.setOutputTypeExpr(typeCtrType);
+  },
+
+  getTypeCtor: function() {
+    return new Blockly.TypeExpr.STRING();
   }
 };
 
