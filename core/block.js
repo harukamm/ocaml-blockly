@@ -2005,7 +2005,7 @@ Blockly.Block.prototype.isPairPattern = function(otherBlock) {
  * Returns if this block is a pattern block.
  * @return {boolean} True if this block has a type of pattern.
  */
-Blockly.Block.prototype.isPattern = function() {
+Blockly.Block.prototype.isPatternBlock = function() {
   if (this.outputConnection &&
       this.outputConnection.typeExpr.deref().isPattern()) {
     return true;

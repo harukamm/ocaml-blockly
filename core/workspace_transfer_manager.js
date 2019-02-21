@@ -254,7 +254,7 @@ Blockly.WorkspaceTransferManager.prototype.setStartTransferring_ = function(
  */
 Blockly.WorkspaceTransferManager.prototype.execTransferring_ = function(
     transferringBlock, opt_beforeDispose) {
-  if (transferringBlock.isPattern()) {
+  if (transferringBlock.isPatternBlock()) {
     var newBlock = transferringBlock.transformToValue(this.pointedWorkspace_);
   } else {
     var xml = Blockly.Xml.blockToDom(transferringBlock);
