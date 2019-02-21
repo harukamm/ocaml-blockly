@@ -34,7 +34,7 @@ this.BLOCKLY_BOOT = function(root) {
     dir = this.BLOCKLY_DIR.match(/[^\/]+$/)[0];
   }
   // Execute after Closure has loaded.
-goog.addDependency("../../../" + dir + "/core/block.js", ['Blockly.Block'], ['Blockly.Blocks', 'Blockly.Comment', 'Blockly.Connection', 'Blockly.ErrorCollector', 'Blockly.Events.BlockChange', 'Blockly.Events.BlockCreate', 'Blockly.Events.BlockDelete', 'Blockly.Events.BlockMove', 'Blockly.Extensions', 'Blockly.FieldBoundVariable', 'Blockly.FlyoutMutator', 'Blockly.Input', 'Blockly.Mutator', 'Blockly.Scheme', 'Blockly.Workbench', 'Blockly.Warning', 'Blockly.Workspace', 'Blockly.Xml', 'goog.array', 'goog.asserts', 'goog.math.Coordinate', 'goog.string']);
+goog.addDependency("../../../" + dir + "/core/block.js", ['Blockly.Block'], ['Blockly.Blocks', 'Blockly.Comment', 'Blockly.Connection', 'Blockly.ErrorCollector', 'Blockly.Events.BlockChange', 'Blockly.Events.BlockCreate', 'Blockly.Events.BlockDelete', 'Blockly.Events.BlockMove', 'Blockly.Extensions', 'Blockly.FieldBoundVariable', 'Blockly.FlyoutMutator', 'Blockly.Input', 'Blockly.Mutator', 'Blockly.PatternWorkbench', 'Blockly.Scheme', 'Blockly.Workbench', 'Blockly.Warning', 'Blockly.Workspace', 'Blockly.Xml', 'goog.array', 'goog.asserts', 'goog.math.Coordinate', 'goog.string']);
 goog.addDependency("../../../" + dir + "/core/block_animations.js", ['Blockly.BlockAnimations'], []);
 goog.addDependency("../../../" + dir + "/core/block_drag_surface.js", ['Blockly.BlockDragSurfaceSvg'], ['Blockly.utils', 'goog.asserts', 'goog.math.Coordinate']);
 goog.addDependency("../../../" + dir + "/core/block_dragger.js", ['Blockly.BlockDragger'], ['Blockly.BlockAnimations', 'Blockly.DiagnosisManager', 'Blockly.DraggedConnectionManager', 'Blockly.WorkspaceTransferManager', 'Blockly.Events.BlockMove', 'goog.math.Coordinate', 'goog.asserts']);
@@ -88,6 +88,7 @@ goog.addDependency("../../../" + dir + "/core/msg.js", ['Blockly.Msg'], []);
 goog.addDependency("../../../" + dir + "/core/mutator.js", ['Blockly.Mutator'], ['Blockly.Bubble', 'Blockly.Events.BlockChange', 'Blockly.Events.Ui', 'Blockly.Icon', 'Blockly.WorkspaceSvg', 'goog.dom']);
 goog.addDependency("../../../" + dir + "/core/names.js", ['Blockly.Names'], []);
 goog.addDependency("../../../" + dir + "/core/options.js", ['Blockly.Options'], []);
+goog.addDependency("../../../" + dir + "/core/pattern_workbench.js", ['Blockly.PatternWorkbench'], ['Blockly.Workbench']);
 goog.addDependency("../../../" + dir + "/core/procedures.js", ['Blockly.Procedures'], ['Blockly.Blocks', 'Blockly.constants', 'Blockly.Events.BlockChange', 'Blockly.Field', 'Blockly.Names', 'Blockly.Workspace']);
 goog.addDependency("../../../" + dir + "/core/rendered_connection.js", ['Blockly.RenderedConnection'], ['Blockly.Connection']);
 goog.addDependency("../../../" + dir + "/core/rendered_type_expr.js", ['Blockly.RenderedTypeExpr'], ['Blockly.TypeExpr']);
@@ -1786,6 +1787,7 @@ goog.require('Blockly.Msg');
 goog.require('Blockly.Mutator');
 goog.require('Blockly.Names');
 goog.require('Blockly.Options');
+goog.require('Blockly.PatternWorkbench');
 goog.require('Blockly.Procedures');
 goog.require('Blockly.RenderedConnection');
 goog.require('Blockly.RenderedTypeExpr');
