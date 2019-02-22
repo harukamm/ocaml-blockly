@@ -180,6 +180,11 @@ Blockly.TypeExpr.prototype.isTypeConstructor = function() {
 Blockly.TypeExpr.prototype.isRecord = function() {
   return this.label == Blockly.TypeExpr.RECORD_;
 };
+Blockly.TypeExpr.prototype.isStructure = function() {
+  // The class of type expression representing a structure is expected to have
+  // a field named `id` to identify the structure.
+  return this.isConstruct() || this.isRecord();
+};
 Blockly.TypeExpr.prototype.isPattern = function() {
   return this.label == Blockly.TypeExpr.PATTERN_;
 };
@@ -1041,13 +1046,10 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       }
     } else if ((t1.isConstruct() && t2.isConstruct()) ||
         (t1.isRecord() && t2.isRecord())) {
+      goog.asserts.assert(t1.isStructure() && t2.isStructure());
       if (t1.id && t2.id) {
         if (t1.id != t2.id) {
-          if (t1.isRecord()) {
-            goog.asserts.fail('Exception for inconsistent record types is ' +
-                'not implemented.');
-          }
-          throw Blockly.TypeExpr.errorInconsistentCtor(t1, t2);
+          throw Blockly.TypeExpr.errorInconsistentStructure(t1, t2);
         }
       } else if (t2.id) {
         t1.id = t2.id;
@@ -1236,7 +1238,7 @@ Blockly.TypeExpr.Error = function(label, t1, t2) {
 Blockly.TypeExpr.ERROR_TYPECTOR = 1;
 Blockly.TypeExpr.ERROR_PATTERN = 5;
 Blockly.TypeExpr.ERROR_OCCUR_CHECK = 10;
-Blockly.TypeExpr.ERROR_CTOR_INCONSISTENT = 15;
+Blockly.TypeExpr.ERROR_STRUCTURE_INCONSISTENT = 15;
 Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT = 20;
 
 Blockly.TypeExpr.errorUnityTypeCtor = function(t) {
@@ -1252,9 +1254,9 @@ Blockly.TypeExpr.errorOccurCheck = function(tvar, type) {
     type);
 };
 
-Blockly.TypeExpr.errorInconsistentCtor = function(t1, t2) {
-  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_CTOR_INCONSISTENT,
-      t1, t2);
+Blockly.TypeExpr.errorInconsistentStructure = function(t1, t2) {
+  return new Blockly.TypeExpr.Error(
+      Blockly.TypeExpr.ERROR_STRUCTURE_INCONSISTENT, t1, t2);
 };
 
 Blockly.TypeExpr.errorInconsistentLabel = function(t1, t2) {
@@ -1276,12 +1278,13 @@ Blockly.TypeExpr.Error.prototype.toMessage = function() {
       return 'Pattern type is not compatible with ' + s1;
     case Blockly.TypeExpr.ERROR_OCCUR_CHECK:
       return 'The type variable ' + s1 + ' occurs inside ' + s2 + '.';
-    case Blockly.TypeExpr.ERROR_CTOR_INCONSISTENT:
+    case Blockly.TypeExpr.ERROR_STRUCTURE_INCONSISTENT:
+      var typeName = this.t1.isConstruct() ? 'constructor' : 'record';
       if (s1 === '' || s2 === '') {
-        // Constructor name is not found.
-        return 'Two type constructors belong to differenct types.'
+        // The name of structure is not found.
+        return 'Two type ' + typeName + 's belong to differenct types.'
       }
-      return 'The constructor does not belong to type ' + s2 + '.';
+      return 'The ' + typeName + ' does not belong to type ' + s2 + '.';
     case Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT:
       return 'Has type ' + s1 + ' but expected of type ' + s2 + '.';
     default:
