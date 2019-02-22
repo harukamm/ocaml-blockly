@@ -1106,7 +1106,7 @@ Blockly.Blocks['match_typed'] = {
     var patternValueNames;
     switch (name) {
       case 'list':
-        patternValueNames = ['empty_construct_pattern_value_typed',
+        patternValueNames = ['empty_construct_pattern_typed',
             'cons_construct_pattern_value_typed'];
         break;
       case 'pair':
