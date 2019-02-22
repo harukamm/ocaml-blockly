@@ -20,7 +20,7 @@ Blockly.TypedLang['not_operator_typed'] = function(block) {
       Blockly.TypedLang.ORDER_ATOMIC);
   var code = '(not ' + argument + ')';
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
-}
+};
 
 Blockly.TypedLang['logic_operator_typed'] = function(block) {
   // Boolean operators && and ||.
@@ -35,7 +35,7 @@ Blockly.TypedLang['logic_operator_typed'] = function(block) {
       Blockly.TypedLang.ORDER_ATOMIC);
   var code = '(' + argument0 + operator + argument1 + ')';
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
-}
+};
 
 Blockly.TypedLang['logic_compare_typed'] = function(block) {
   // Comparison operator.

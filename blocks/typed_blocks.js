@@ -102,7 +102,7 @@ Blockly.Blocks['not_operator_typed'] = {
       arg.unify(expected);
     return expected;
   }
-}
+};
 
 Blockly.Blocks['logic_compare_typed'] = {
   /**
