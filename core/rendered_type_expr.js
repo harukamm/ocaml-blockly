@@ -203,6 +203,24 @@ Blockly.RenderedTypeExpr.shape['type-constructor'] = {
   }
 };
 
+Blockly.RenderedTypeExpr.shape['record'] = {
+  down: function(steps) {
+    steps.push('v 2 h -3 l -5,3.5 v 4 h 5 v 3 h -5 v 4 l 5,3.5 h 3');
+  },
+
+  up: function(steps) {
+    steps.push('v -2 h -3 l -5,-3.5 v -4 h 5 v -3 h -5 v -4 l 5,-3.5 h 3');
+  },
+
+  height: function() {
+    return 20;
+  },
+
+  offsetsY: function() {
+    return [];
+  }
+};
+
 Blockly.RenderedTypeExpr.shape['pattern'] = {
   down: function(steps) {
     steps.push('v 5 h -4 l -4,-4 v 18 l 4,-4 h 4 v 5');
