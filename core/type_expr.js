@@ -1044,9 +1044,9 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       } else {
         tvar.val = othr;
       }
-    } else if ((t1.isConstruct() && t2.isConstruct()) ||
-        (t1.isRecord() && t2.isRecord())) {
-      goog.asserts.assert(t1.isStructure() && t2.isStructure());
+    } else if (t1.label != t2.label) {
+      throw Blockly.TypeExpr.errorInconsistentLabel(t1, t2);
+    } else if (t1.isStructure() && t2.isStructure()) {
       if (t1.id && t2.id) {
         if (t1.id != t2.id) {
           throw Blockly.TypeExpr.errorInconsistentStructure(t1, t2);
@@ -1058,8 +1058,6 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       } else {
         goog.asserts.fail('Both are undefined structure.');
       }
-    } else if (t1.label != t2.label) {
-      throw Blockly.TypeExpr.errorInconsistentLabel(t1, t2);
     } else {
       var children1 = t1.getChildren();
       var children2 = t2.getChildren();
@@ -1140,8 +1138,8 @@ Blockly.TypeExpr.prototype.disconnect = function(other) {
 
 Blockly.TypeExpr.prototype.flatten = function() {
   var t = this.deepDeref();
-  if (t.isTypeVar() || t.isPrimitive() || t.isConstruct() ||
-      t.isTypeConstructor() || t.isRecord()) {
+  if (t.isTypeVar() || t.isPrimitive() || t.isStructure() ||
+      t.isTypeConstructor()) {
     return [t];
   }
   var children = t.getChildren();
@@ -1168,7 +1166,7 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
   if (typ1.isPrimitive()) {
     return true;
   }
-  if (typ1.isConstruct() || typ1.isRecord()) {
+  if (typ1.isStructure()) {
     return typ1.id && typ2.id ? typ1.id == typ2.id : false;
   }
   if (typ1.isTypeConstructor()) {
