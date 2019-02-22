@@ -80,6 +80,22 @@ Blockly.Blocks['defined_datatype_typed'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
   },
 
+  resizeCtorInputs: function(expectedCount) {
+    while (expectedCount < this.itemCount_) {
+      var index = this.itemCount_ - 1;
+      // Decrement the size of items first. The function this.removeInput()
+      // might disconnect some blocks from this block, and disconnecting blocks
+      // triggers type inference, which causes a null pointer exception. To
+      // avoid the type inference for the removed input, update the size of
+      // items first.
+      this.itemCount_--;
+      this.removeInput('CTR_INP' + index);
+    }
+    while (this.itemCount_ < expectedCount) {
+      this.appendCtorInput();
+    }
+  },
+
   /**
    * Create XML to represent constructor inputs.
    * @return {Element} XML storage element.
@@ -96,17 +112,8 @@ Blockly.Blocks['defined_datatype_typed'] = {
    * @this Blockly.Block
    */
   domToMutation: function(xmlElement) {
-    while (0 < this.itemCount_) {
-      var index = this.itemCount_ - 1;
-      this.removeInput('CTR_INP' + index);
-      this.itemCount_--;
-    }
-
     var newItemCount = parseInt(xmlElement.getAttribute('items')) || 2;
-    for (var i = 0; i < newItemCount; i++) {
-      this.appendCtorInput();
-    }
-    goog.asserts.assert(this.itemCount_ == newItemCount);
+    this.resizeCtorInputs(newItemCount);
   },
   /**
    * Populate the mutator's dialog with this block's components.
@@ -134,14 +141,7 @@ Blockly.Blocks['defined_datatype_typed'] = {
    */
   compose: function(containerBlock) {
     var itemCount = containerBlock.getItemCount();
-    while (itemCount < this.itemCount_) {
-      var index = this.itemCount_ - 1;
-      this.removeInput('CTR_INP' + index);
-      this.itemCount_--;
-    }
-    while (this.itemCount_ < itemCount) {
-      this.appendCtorInput();
-    }
+    this.resizeCtorInputs(itemCount);
   }
 };
 

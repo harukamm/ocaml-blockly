@@ -1016,9 +1016,14 @@ Blockly.Blocks['match_typed'] = {
       var outputInput = this.getInput('OUTPUT' + index);
       var workbench = outputInput.connection.contextWorkbench;
       workbench && workbench.dispose();
+      // Decrement the size of items first. The function this.removeInput()
+      // might disconnect some blocks from this block, and disconnecting blocks
+      // triggers type inference, which causes a null pointer exception. To
+      // avoid the type inference for the removed input, update the size of
+      // items first.
+      this.itemCount_--;
       this.removeInput('PATTERN' + index);
       this.removeInput('OUTPUT' + index);
-      this.itemCount_--;
     }
     this.rendered = storedRendered;
     while (this.itemCount_ < expectedCount) {
