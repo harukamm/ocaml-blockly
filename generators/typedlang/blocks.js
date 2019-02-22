@@ -286,29 +286,23 @@ Blockly.TypedLang['letstatement_typed'] = function(block) {
 };
 
 Blockly.TypedLang['defined_datatype_typed'] = function(block) {
+  if (block.itemCount_ == 0) {
+    // The constructor definition is empty.
+    return '';
+  }
   var field = block.getField('DATANAME');
   var dataName = field.getText();
-  var type0 = Blockly.TypedLang.valueToCode(block, 'CTR_INP0',
-      Blockly.TypedLang.ORDER_ATOMIC);
-  var ctorField0 = block.getField('CTR0');
-
-  var type1 = Blockly.TypedLang.valueToCode(block, 'CTR_INP1',
-      Blockly.TypedLang.ORDER_ATOMIC);
-  var ctorField1 = block.getField('CTR1');
-
   var code = 'type ' + dataName + ' =';
-  code += '  | ' + ctorField0.getVariableName();
-  if (type0) {
-    code += ' of ' + type0;
+  for (var i = 0; i < block.itemCount_; i++) {
+    var typeCtor = Blockly.TypedLang.valueToCode(block, 'CTR_INP' + i,
+        Blockly.TypedLang.ORDER_ATOMIC);
+    var ctorField = block.getField('CTR' + i);
+    code += '\n  | ' + ctorField.getVariableName();
+    if (typeCtor) {
+      code += ' of ' + typeCtor;
+    }
   }
-  code += '\n';
-
-  code += '  | ' + ctorField1.getVariableName();
-  if (type1) {
-    code += ' of ' + type1;
-  }
-  code += '\n';
-  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+  return code;
 };
 
 Blockly.TypedLang['create_construct_typed'] = function(block) {
