@@ -28,6 +28,82 @@ Blockly.Blocks['logic_boolean_typed'] = {
   }
 };
 
+Blockly.Blocks['logic_operator_typed'] = {
+  /**
+   * Block for logical operator.
+   * @this Blockly.Block
+   */
+  init: function() {
+    var OPERATORS =
+        [['&&', 'AND'],
+         ['||', 'OR']];
+    this.setColour(210);
+    this.setOutput(true, 'Boolean');
+    this.setOutputTypeExpr(new Blockly.TypeExpr.BOOL());
+    this.appendValueInput('A')
+        .setTypeExpr(new Blockly.TypeExpr.BOOL());
+    this.appendValueInput('B')
+        .setTypeExpr(new Blockly.TypeExpr.BOOL())
+        .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP_BOOL');
+    this.setInputsInline(true);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+    this.setTooltip(function() {
+      var mode = thisBlock.getFieldValue('OP_BOOL');
+      var TOOLTIPS = {
+        'AND': 'Logical product operator.',
+        'OR': 'Logical sum operator.'
+      };
+      return TOOLTIPS[mode];
+    });
+  },
+
+  clearTypes: function() {
+    this.callClearTypes('A');
+    this.callClearTypes('B');
+  },
+
+  infer: function(ctx) {
+    var expected_left = new Blockly.TypeExpr.BOOL();
+    var left = this.callInfer('A', ctx);
+    var right = this.callInfer('B', ctx);
+    if (left)
+      left.unify(expected_left);
+    if (right)
+      right.unify(expected_left);
+    return expected_left;
+  }
+}
+
+Blockly.Blocks['not_operator_typed'] = {
+  /**
+   * Block for "not" operator.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(210);
+    this.setOutput(true, 'Boolean');
+    this.setOutputTypeExpr(new Blockly.TypeExpr.BOOL());
+    this.appendValueInput('A')
+        .setTypeExpr(new Blockly.TypeExpr.BOOL())
+        .appendField('not');
+    this.setInputsInline(true);
+    this.setTooltip('Logical negation operator.');
+  },
+
+  clearTypes: function() {
+    this.callClearTypes('A');
+  },
+
+  infer: function(ctx) {
+    var expected = new Blockly.TypeExpr.BOOL();
+    var arg = this.callInfer('A', ctx);
+    if (arg)
+      arg.unify(expected);
+    return expected;
+  }
+};
+
 Blockly.Blocks['logic_compare_typed'] = {
   /**
    * Block for comparison operator.
