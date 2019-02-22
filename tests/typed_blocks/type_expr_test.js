@@ -566,3 +566,32 @@ function test_type_expr_toDisplayText() {
   var patt = new Blockly.TypeExpr.PATTERN(b);
   assertEquals(patt.getDisplayText(), '<pattern>');
 }
+
+function test_type_expr_record_types() {
+  // type bar = {
+  //   foo: ...;
+  //   hoge: ...;
+  // }
+  var recordType1 = new Blockly.TypeExpr.RECORD(null);
+  var recordType2 = new Blockly.TypeExpr.RECORD('ID_recordBar');
+  var recordType3 = new Blockly.TypeExpr.RECORD('ID_recordBar');
+  var recordType4 = new Blockly.TypeExpr.RECORD('ID_recordFoo');
+  var n = new Blockly.TypeExpr.TVAR('n', recordType1);
+  assertFalse(n.ableToUnify(recordType1));
+  assertFalse(recordType1.ableToUnify(recordType1));
+  assertTrue(recordType1.ableToUnify(recordType2));
+  assertTrue(recordType2.ableToUnify(recordType1));
+  assertTrue(recordType2.ableToUnify(recordType3));
+  assertFalse(recordType3.ableToUnify(recordType4));
+
+  assertFalse(Blockly.TypeExpr.equals(n.flatten()[0], recordType1));
+  assertTrue(Blockly.TypeExpr.equals(recordType2.flatten()[0], recordType2));
+
+  assertFalse(Blockly.TypeExpr.equals(n, recordType1));
+  assertTrue(Blockly.TypeExpr.equals(recordType2, recordType3));
+
+  assertEquals(n.toString(), "<n=RECORD(null)>");
+  n.unify(recordType3);
+  assertEquals(n.toString(), "<n=RECORD(ID_recordBar)>");
+  assertEquals(recordType2.toString(), "RECORD(ID_recordBar)");
+}

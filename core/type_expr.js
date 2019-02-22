@@ -74,6 +74,12 @@ Blockly.TypeExpr.TYPE_CONSTRUCTOR_ = 150;
  * @type {number}
  * @private
  */
+Blockly.TypeExpr.RECORD_ = 155;
+
+/**
+ * @type {number}
+ * @private
+ */
 Blockly.TypeExpr.PATTERN_ = 160;
 
 /**
@@ -123,6 +129,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'construct';
     case Blockly.TypeExpr.TYPE_CONSTRUCTOR_:
       return 'type-constructor';
+    case Blockly.TypeExpr.RECORD_:
+      return 'record';
     case Blockly.TypeExpr.PATTERN_:
       return 'pattern';
     case Blockly.TypeExpr.TVAR_:
@@ -168,6 +176,9 @@ Blockly.TypeExpr.prototype.isConstruct = function() {
 };
 Blockly.TypeExpr.prototype.isTypeConstructor = function() {
   return this.label == Blockly.TypeExpr.TYPE_CONSTRUCTOR_;
+};
+Blockly.TypeExpr.prototype.isRecord = function() {
+  return this.label == Blockly.TypeExpr.RECORD_;
 };
 Blockly.TypeExpr.prototype.isPattern = function() {
   return this.label == Blockly.TypeExpr.PATTERN_;
@@ -681,6 +692,54 @@ Blockly.TypeExpr.TYPE_CONSTRUCTOR.prototype.clone = function() {
 };
 
 /**
+ * @param {string} id The string to identify record type. Null if it's not
+ *     identified.
+ * @constructor
+ * @extends {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.RECORD = function(id) {
+  this.id = goog.isString(id) ? id : null;
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.RECORD_);
+};
+goog.inherits(Blockly.TypeExpr.RECORD, Blockly.TypeExpr);
+
+/**
+ * @param {boolean=} opt_deref
+ * @return {string}
+ * @override
+ */
+Blockly.TypeExpr.RECORD.prototype.toString = function(opt_deref) {
+  return "RECORD(" + (this.id ? this.id : "null") + ")";
+};
+
+/**
+ * Gets the display text for type expression.
+ * @return {string}
+ * @private
+ */
+Blockly.TypeExpr.RECORD.prototype.getDisplayText = function() {
+  goog.asserts.fail('Not implemented yet.');
+};
+
+/**
+ * Deeply clone the object
+ * @return {Blockly.TypeExpr}
+ * @override
+ */
+Blockly.TypeExpr.RECORD.prototype.clone = function() {
+  return new Blockly.TypeExpr.RECORD(this.id);
+};
+
+/**
+ * Returns the object which is dereferenced recursively.
+ * @return {Blockly.TypeExpr}
+ * @override
+ */
+Blockly.TypeExpr.RECORD.prototype.deepDeref = function() {
+  return new Blockly.TypeExpr.RECORD(this.id);
+};
+
+/**
  * @param {!Blockly.TypeExpr} pattExpr
  * @constructor
  * @extends {Blockly.TypeExpr}
@@ -980,9 +1039,14 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       } else {
         tvar.val = othr;
       }
-    } else if (t1.isConstruct() && t2.isConstruct()) {
+    } else if ((t1.isConstruct() && t2.isConstruct()) ||
+        (t1.isRecord() && t2.isRecord())) {
       if (t1.id && t2.id) {
         if (t1.id != t2.id) {
+          if (t1.isRecord()) {
+            goog.asserts.fail('Exception for inconsistent record types is ' +
+                'not implemented.');
+          }
           throw Blockly.TypeExpr.errorInconsistentCtor(t1, t2);
         }
       } else if (t2.id) {
@@ -990,7 +1054,7 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       } else if (t1.id) {
         t2.id = t1.id;
       } else {
-        goog.asserts.fail('Both are undefined constructor.');
+        goog.asserts.fail('Both are undefined structure.');
       }
     } else if (t1.label != t2.label) {
       throw Blockly.TypeExpr.errorInconsistentLabel(t1, t2);
@@ -1075,7 +1139,7 @@ Blockly.TypeExpr.prototype.disconnect = function(other) {
 Blockly.TypeExpr.prototype.flatten = function() {
   var t = this.deepDeref();
   if (t.isTypeVar() || t.isPrimitive() || t.isConstruct() ||
-      t.isTypeConstructor()) {
+      t.isTypeConstructor() || t.isRecord()) {
     return [t];
   }
   var children = t.getChildren();
@@ -1102,7 +1166,7 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
   if (typ1.isPrimitive()) {
     return true;
   }
-  if (typ1.isConstruct()) {
+  if (typ1.isConstruct() || typ1.isRecord()) {
     return typ1.id && typ2.id ? typ1.id == typ2.id : false;
   }
   if (typ1.isTypeConstructor()) {
