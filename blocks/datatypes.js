@@ -56,7 +56,7 @@ Blockly.Blocks['defined_datatype_typed'] = {
     return typeCtor;
   },
 
-  getTypeScheme(fieldName) {
+  getTypeScheme: function(fieldName) {
     if (fieldName.startsWith('CTR')) {
       var numstr = fieldName.substring(3);
       var x = parseInt(numstr);
