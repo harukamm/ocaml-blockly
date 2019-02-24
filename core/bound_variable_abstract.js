@@ -53,6 +53,13 @@ Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr, label) {
   this.label = label;
 
   /**
+   * The list of sub field names which the variable is bound to.
+   * @type {!Array.<string>}
+   * @private
+   */
+  this.subFieldNames_ = [];
+
+  /**
    * A unique id for the variable.
    * @type {string}
    * @private
@@ -90,19 +97,29 @@ Blockly.BoundVariableAbstract.prototype.getWorkspace = function() {
 };
 
 /**
- * Returns the name of the main field this variable is bound to.
+ * Functions to return the name of the field this variable is bound to.
  * @return {!string} The name of this variable's field.
  */
 Blockly.BoundVariableAbstract.prototype.getMainFieldName = function() {
   return this.mainFieldName_;
 };
+Blockly.BoundVariableAbstract.prototype.getSubFieldName = function(index) {
+  return this.subFieldNames_[index];
+};
 
 /**
- * Returns the field this variable is bound to.
+ * Functions to return the field this variable is bound to.
  * @return {!Blockly.FieldBoundVariable} This variable's field.
  */
 Blockly.BoundVariableAbstract.prototype.getMainField = function() {
   return this.sourceBlock_.getField(this.mainFieldName_);
+};
+Blockly.BoundVariableAbstract.prototype.getSubField = function(index) {
+  var name = this.getSubFieldName(index);
+  if (name) {
+    return this.sourceBlock_.getField(name);
+  }
+  throw 'The sub field index is out of bounds.';
 };
 
 /**
