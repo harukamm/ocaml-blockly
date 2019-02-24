@@ -17,9 +17,7 @@ goog.require('goog.string');
  *     variable.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
  * @param {!string} varName The default name of this reference.
- * @param {!number} label An enum representing which type of reference,
- *     Blockly.BoundVariableAbstract.REFERENCE_VARIABLE or
- *     Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR.
+ * @param {!number} label An enum representing which type of reference.
  * @constructor
  */
 Blockly.BoundVariableValueReference = function(block, fieldName, typeExpr,
