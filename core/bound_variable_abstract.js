@@ -123,6 +123,22 @@ Blockly.BoundVariableAbstract.prototype.getSubField = function(index) {
 };
 
 /**
+ * Functions to modify this variable's sub fields.
+ */
+Blockly.BoundVariableAbstract.prototype.addSubField = function(name) {
+  if (!name) {
+    throw 'The sub field name can not be empty.';
+  }
+  if (this.subFieldNames_.indexOf(name) != -1) {
+    throw 'The sub field name must be unique.';
+  }
+  this.subFieldNames_.push(name);
+};
+Blockly.BoundVariableAbstract.prototype.removeSubField = function(name) {
+  goog.array.removeLast(this.subFieldNames_, name);
+};
+
+/**
  * Returns the type expression of this variable.
  * @return {Blockly.TypeExpr} The type expression of this variable, or null.
  */
