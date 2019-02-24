@@ -14,8 +14,8 @@ goog.require('goog.string');
 /**
  * Class for a variable to implement variable binding.
  * @param {!Blockly.Block} block The block of this variable.
- * @param {!string} fieldName The name of the field that contains this
- *     variable.
+ * @param {!string} fieldName The name of the main field this variable is
+ *     bound to.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of this
  *     variable.
  * @param {!number} label The enum representing type of variable.
@@ -35,10 +35,10 @@ Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr, label) {
   this.workspace_ = this.sourceBlock_.workspace;
 
   /**
-   * The name of this variable's name.
+   * The name of the main field name on the block.
    * @type {string}
    */
-  this.fieldName_ = fieldName;
+  this.mainFieldName_ = fieldName;
 
   /**
    * The type expression of this variable.
@@ -90,19 +90,19 @@ Blockly.BoundVariableAbstract.prototype.getWorkspace = function() {
 };
 
 /**
- * Returns the name of field which contains this variable.
+ * Returns the name of the main field this variable is bound to.
  * @return {!string} The name of this variable's field.
  */
-Blockly.BoundVariableAbstract.prototype.getContainerFieldName = function() {
-  return this.fieldName_;
+Blockly.BoundVariableAbstract.prototype.getMainFieldName = function() {
+  return this.mainFieldName_;
 };
 
 /**
- * Returns a field which contains this variable.
+ * Returns the field this variable is bound to.
  * @return {!Blockly.FieldBoundVariable} This variable's field.
  */
-Blockly.BoundVariableAbstract.prototype.getContainerField = function() {
-  return this.sourceBlock_.getField(this.fieldName_);
+Blockly.BoundVariableAbstract.prototype.getMainField = function() {
+  return this.sourceBlock_.getField(this.mainFieldName_);
 };
 
 /**

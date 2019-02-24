@@ -180,7 +180,7 @@ Blockly.Blocks['create_construct_typed'] = {
       return [];
     }
     var valueBlock = value.getSourceBlock();
-    var fieldName = value.getContainerFieldName();
+    var fieldName = value.getMainFieldName();
     var def = valueBlock.getTypeCtorDef(fieldName);
     goog.asserts.assert(def !== undefined, 'Unknown type ctor.');
 

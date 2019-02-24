@@ -39,7 +39,7 @@ Blockly.BoundVariables.createValue = function(block, fieldName, valueTypeExpr,
  */
 Blockly.BoundVariables.addValue = function(workspace, value) {
   var block = value.getSourceBlock();
-  var fieldName = value.getContainerFieldName();
+  var fieldName = value.getMainFieldName();
 
   if (value.isNormalVariable()) {
     if (block.typedValue[fieldName] || value.inBlockDB) {
@@ -67,7 +67,7 @@ Blockly.BoundVariables.addValue = function(workspace, value) {
  */
 Blockly.BoundVariables.removeValue = function(workspace, value) {
   var block = value.getSourceBlock();
-  var fieldName = value.getContainerFieldName();
+  var fieldName = value.getMainFieldName();
 
   if (value.isNormalVariable()) {
     if (value.inBlockDB && !block.typedValue[fieldName]) {
@@ -123,7 +123,7 @@ Blockly.BoundVariables.createReference = function(block, fieldName, typeExpr,
  */
 Blockly.BoundVariables.addReference = function(workspace, reference) {
   var block = reference.getSourceBlock();
-  var fieldName = reference.getContainerFieldName();
+  var fieldName = reference.getMainFieldName();
 
   if (reference.isNormalVariable()) {
     if (block.typedReference[fieldName] || reference.inBlockDB) {
@@ -152,7 +152,7 @@ Blockly.BoundVariables.addReference = function(workspace, reference) {
  */
 Blockly.BoundVariables.removeReference = function(workspace, reference) {
   var block = reference.getSourceBlock();
-  var fieldName = reference.getContainerFieldName();
+  var fieldName = reference.getMainFieldName();
 
   if (reference.isNormalVariable()) {
     if (reference.inBlockDB && !block.typedReference[fieldName]) {
@@ -410,7 +410,7 @@ Blockly.BoundVariables.canRenameTo = function(variable, newName) {
  *     is visible.
  */
 Blockly.BoundVariables.getVisibleVariableValues = function(variable) {
-  var field = variable.getContainerField();
+  var field = variable.getMainField();
   var block = variable.getSourceBlock();
   var targetBlock = block.outputConnection.targetBlock();
   if (!variable.isReferenceVariable()) {

@@ -90,7 +90,7 @@ Blockly.BoundVariableValue.prototype.setVariableName = function(newName) {
       reference.setVariableName(newName);
     }
     // Rerender the block.
-    this.getContainerField().updateText();
+    this.getMainField().updateText();
   }
 };
 
@@ -126,7 +126,7 @@ Blockly.BoundVariableValue.prototype.dispose = function(opt_removeReference) {
 
   if (this.referenceList_.length == 0) {
     Blockly.BoundVariables.removeValue(this.workspace_, this);
-    delete this.sourceBlock_.typedValue[this.fieldName_];
+    delete this.sourceBlock_.typedValue[this.mainFieldName_];
     Blockly.BoundVariableValue.superClass_.dispose.call(this);
   } else {
     // Currently can not be destroyed because this variable value has
@@ -143,7 +143,7 @@ Blockly.BoundVariableValue.prototype.dispose = function(opt_removeReference) {
  * @return {Blockly.Scheme} The type scheme for this value.
  */
 Blockly.BoundVariableValue.prototype.getTypeScheme = function(reference) {
-  return this.sourceBlock_.getTypeScheme(this.fieldName_, reference);
+  return this.sourceBlock_.getTypeScheme(this.mainFieldName_, reference);
 };
 
 /**
@@ -216,7 +216,7 @@ Blockly.BoundVariableValue.prototype.clearCyclicReference = function() {
 Blockly.BoundVariableValue.prototype.copyTo = function(variable) {
   var targetBlock = variable.getSourceBlock();
   if (this.sourceBlock_.type !== targetBlock.type ||
-      this.fieldName_ !== variable.getContainerFieldName()) {
+      this.mainFieldName_ !== variable.getMainFieldName()) {
     throw 'Can\'t copy to a variable of the different type';
   }
 

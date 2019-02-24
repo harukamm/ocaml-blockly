@@ -187,7 +187,7 @@ Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
  * @private
  */
 Blockly.BoundVariableValueReference.prototype.referenceChange_ = function() {
-  this.getContainerField().updateText();
+  this.getMainField().updateText();
 };
 
 /**
