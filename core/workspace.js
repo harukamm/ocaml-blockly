@@ -261,23 +261,39 @@ Blockly.Workspace.prototype.getTopComments = function(ordered) {
 };
 
 /**
- * Finds the name of constructor datatype with the given id.
- * @param {!string} id The string to identify constructor definition.
- * @return {string} The name of constructor definition or null.
+ * Finds the name of structure with the given id.
+ * @param {number} label The type of variable.
+ * @param {!string} id The string to identify structure declaration.
+ * @return {string} The name of structure or null.
  */
-Blockly.Workspace.prototype.getCtorDataName = function(id) {
+Blockly.Workspace.prototype.getStructureName = function(label, id) {
+  if (Blockly.BoundVariableAbstract.isVariableLabel(label)) {
+    // Not a structure.
+    return null;
+  }
+  if (Blockly.BoundVariableAbstract.isConstructorLabel(label)) {
+    var blockType = 'defined_datatype_typed';
+  } else if (Blockly.BoundVariableAbstract.isRecordLabel(label)) {
+    var blockType = 'defined_recordtype_typed';
+  } else {
+    return null;
+  }
   var topBlocks = this.getTopBlocks();
   for (var i = 0, topBlock; topBlock = topBlocks[i]; i++) {
-    if (topBlock.type !== 'defined_datatype_typed') {
+    if (topBlock.type !== blockType) {
       continue;
     }
-    if (topBlock.getCtorId() === id) {
+    if (topBlock.getStructureId() === id) {
       var field = topBlock.getField('DATANAME');
       var dataName = field.getText();
       return dataName;
     }
   }
   return null;
+};
+
+Blockly.Workspace.prototype.getCtorDataName = function(id) {
+  return this.getStructureName(Blockly.BoundVariableAbstract.CONSTRUCTOR, id);
 };
 
 /**

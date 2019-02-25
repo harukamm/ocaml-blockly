@@ -723,7 +723,12 @@ Blockly.TypeExpr.RECORD.prototype.toString = function(opt_deref) {
  * @private
  */
 Blockly.TypeExpr.RECORD.prototype.getDisplayText = function() {
-  goog.asserts.fail('Not implemented yet.');
+  var dataname;
+  if (Blockly.mainWorkspace) {
+    dataname = Blockly.mainWorkspace.getStructureName(
+        Blockly.BoundVariableAbstract.RECORD, this.id);
+  }
+  return dataname ? dataname : '';
 };
 
 /**
