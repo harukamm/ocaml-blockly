@@ -144,11 +144,13 @@ Blockly.BoundVariableAbstract.prototype.getId = function() {
 Blockly.BoundVariableAbstract.VARIABLE = 1;
 Blockly.BoundVariableAbstract.CONSTRUCTOR = 3;
 Blockly.BoundVariableAbstract.RECORD = 5;
+Blockly.BoundVariableAbstract.RECORD_FIELD = 6;
 
 Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS = [
   ['variable', Blockly.BoundVariableAbstract.VARIABLE],
   ['ctor', Blockly.BoundVariableAbstract.CONSTRUCTOR],
-  ['record', Blockly.BoundVariableAbstract.RECORD]
+  ['record', Blockly.BoundVariableAbstract.RECORD],
+  ['record-field', Blockly.BoundVariableAbstract.RECORD_FIELD]
 ];
 
 Blockly.BoundVariableAbstract._LABEL_LIST =

@@ -141,6 +141,12 @@ Blockly.FieldBoundVariable.newValueRecord =
 Blockly.FieldBoundVariable.newReferenceRecord =
   Blockly.FieldBoundVariable.NEW_.bind(null,
         Blockly.BoundVariableAbstract.RECORD, false);
+Blockly.FieldBoundVariable.newValueRecordField =
+  Blockly.FieldBoundVariable.NEW_.bind(null,
+        Blockly.BoundVariableAbstract.RECORD_FIELD, true);
+Blockly.FieldBoundVariable.newReferenceRecordField =
+  Blockly.FieldBoundVariable.NEW_.bind(null,
+        Blockly.BoundVariableAbstract.RECORD_FIELD, false);
 
 /**
  * Attach this field to a block.
