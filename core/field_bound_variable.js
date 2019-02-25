@@ -25,24 +25,21 @@ goog.require('goog.string');
 
 /**
  * Class for a variable's dropdown field with variable binding.
- * @param {!typeExpr} typeExpr The type expression of this variable.
- * @param {string} varName The default name for the variable.  If null, the
- *     generated name will be used.
  * @param {!number} label Enum indicate which type of variable. (Normal
  *     variable or constructor) The type of enum is defined in the
  *     bound-variable-abstract class.
  * @param {boolean} isValue True if the variable is a value, not a reference.
+ * @param {!typeExpr} typeExpr The type expression of this variable.
+ * @param {string} varName The default name for the variable.  If null, the
+ *     generated name will be used.
  * @extends {Blockly.FieldDropdown}
  * @constructor
  */
-Blockly.FieldBoundVariable = function(typeExpr, varName, label, isValue) {
+Blockly.FieldBoundVariable = function(label, isValue, typeExpr, varName) {
   // The FieldDropdown constructor would call setValue, which might create a
   // variable.  Just do the relevant parts of the constructor.
   this.menuGenerator_ = Blockly.FieldBoundVariable.dropdownCreate;
   this.size_ = new goog.math.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
-  this.defaultTypeExpr_ = typeExpr;
-
-  this.defaultVariableName_ = varName;
 
   /**
    * Whether this field is for a variable value. If true, this field works as
@@ -57,6 +54,10 @@ Blockly.FieldBoundVariable = function(typeExpr, varName, label, isValue) {
    * @type {number}
    */
   this.label_ = label;
+
+  this.defaultTypeExpr_ = typeExpr;
+
+  this.defaultVariableName_ = varName;
 
   /**
    * The value of this field's variable if this.forValue_ is true, otherwise
@@ -118,35 +119,28 @@ Blockly.FieldBoundVariable.prototype.typeVarHighlights_ = [];
 /**
  * Functions to obtain a newly created bound-variable field of each type.
  */
-Blockly.FieldBoundVariable.newValue = function(valueTypeExpr, opt_varName) {
-  return new Blockly.FieldBoundVariable(valueTypeExpr, opt_varName,
-      Blockly.BoundVariableAbstract.VARIABLE, true);
-};
-Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
+Blockly.FieldBoundVariable.NEW_ = function(label, isValue, type,
     opt_varName) {
-  return new Blockly.FieldBoundVariable(referenceTypeExpr, opt_varName,
-      Blockly.BoundVariableAbstract.VARIABLE, false);
+  return new Blockly.FieldBoundVariable(label, isValue, type, opt_varName);
 };
-Blockly.FieldBoundVariable.newValueConstructor = function(typeExpr,
-    opt_varName) {
-  return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
-      Blockly.BoundVariableAbstract.CONSTRUCTOR, true);
-};
-Blockly.FieldBoundVariable.newReferenceConstructor = function(typeExpr,
-    opt_varName) {
-  return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
-      Blockly.BoundVariableAbstract.CONSTRUCTOR, false);
-};
-Blockly.FieldBoundVariable.newValueRecord = function(typeExpr,
-    opt_varName) {
-  return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
-      Blockly.BoundVariableAbstract.RECORD, true);
-};
-Blockly.FieldBoundVariable.newReferenceRecord = function(typeExpr,
-    opt_varName) {
-  return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
-      Blockly.BoundVariableAbstract.RECORD, false);
-};
+Blockly.FieldBoundVariable.newValue =
+  Blockly.FieldBoundVariable.NEW_.bind(null,
+        Blockly.BoundVariableAbstract.VARIABLE, true);
+Blockly.FieldBoundVariable.newReference =
+  Blockly.FieldBoundVariable.NEW_.bind(null,
+        Blockly.BoundVariableAbstract.VARIABLE, false);
+Blockly.FieldBoundVariable.newValueConstructor =
+  Blockly.FieldBoundVariable.NEW_.bind(null,
+        Blockly.BoundVariableAbstract.CONSTRUCTOR, true);
+Blockly.FieldBoundVariable.newReferenceConstructor =
+  Blockly.FieldBoundVariable.NEW_.bind(null,
+        Blockly.BoundVariableAbstract.CONSTRUCTOR, false);
+Blockly.FieldBoundVariable.newValueRecord =
+  Blockly.FieldBoundVariable.NEW_.bind(null,
+        Blockly.BoundVariableAbstract.RECORD, true);
+Blockly.FieldBoundVariable.newReferenceRecord =
+  Blockly.FieldBoundVariable.NEW_.bind(null,
+        Blockly.BoundVariableAbstract.RECORD, false);
 
 /**
  * Attach this field to a block.
