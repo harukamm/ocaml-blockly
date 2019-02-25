@@ -131,8 +131,8 @@ Blockly.BoundVariableValue.prototype.getAllBoundVariables = function() {
  * @override
  */
 Blockly.BoundVariableValue.prototype.dispose = function(opt_removeReference) {
-  var forceToRemove = this.isConstructor() ?
-      opt_removeReference !== false: opt_removeReference === true;
+  var forceToRemove = this.isConstructor() || this.isRecord() ?
+      opt_removeReference !== false : opt_removeReference === true;
 
   if (forceToRemove) {
     var referenceList = [].concat(this.referenceList_);
