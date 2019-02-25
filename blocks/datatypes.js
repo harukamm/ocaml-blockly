@@ -56,8 +56,10 @@ Blockly.Blocks['defined_recordtype_typed'] = {
   },
 
   appendRecordFieldInput: function() {
+    var field = this.getField('DATANAME');
     var variableField =
         Blockly.FieldBoundVariable.newValueRecordField(null);
+    field.setChildValue(variableField);
     var index = this.itemCount_++;
     this.appendValueInput('FIELD_INP' + index)
         .appendField(variableField, 'CTR' + index)
