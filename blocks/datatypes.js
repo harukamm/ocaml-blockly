@@ -11,8 +11,6 @@ Blockly.Blocks['defined_recordtype_typed'] = {
   // Declare record types.
   init: function() {
     this.setColour(160);
-    var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
-        Blockly.BoundVariableAbstract.VALUE_VARIABLE);
 
     this.recordId_ = Blockly.utils.genUid();
     var record_type = new Blockly.TypeExpr.RECORD(this.recordId_);
