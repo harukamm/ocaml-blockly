@@ -36,6 +36,18 @@ Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
   this.referenceList_ = [];
 
   /**
+   * This value's children.
+   * @type {!Array.<Blockly.BoundVariableValue>}
+   * @private
+   */
+  this.childValues_ = [];
+
+  /**
+   * This value's parent. If not null, this value's children must be empty.
+   */
+  this.parentValue_ = null;
+
+  /**
    * Whether this variable value is scheduled to be deleted. If true, will be
    * deleted when there is no references to this value.
    * @type {boolean}
@@ -131,6 +143,11 @@ Blockly.BoundVariableValue.prototype.dispose = function(opt_removeReference) {
     goog.asserts.assert(this.referenceList_.length == 0);
   }
 
+  this.setParent(null);
+  for (var i = 0, child; child = this.childValues_[i]; i++) {
+    this.removeChild(child);
+  }
+
   if (this.referenceList_.length == 0) {
     Blockly.BoundVariables.removeValue(this.workspace_, this);
     delete this.sourceBlock_.typedValue[this.mainFieldName_];
@@ -195,6 +212,66 @@ Blockly.BoundVariableValue.prototype.removeReference = function(reference) {
   // Delete this value if it's scheduled to do so and there is no references.
   if (this.deleteLater_ && !this.referenceList_.length) {
     this.dispose();
+  }
+};
+
+/**
+ * Check if the given value and this value can build a parent‐child
+ * relationship.
+ * @param {Blockly.BoundVariableValue} val The value.
+ * @return {boolean} True if two values can be a parent and child.
+ */
+Blockly.BoundVariableValue.prototype.canRelateTo_ = function(val) {
+  return !!val && !val.isReference() && val != this;
+};
+
+/**
+ * Set parent of this value.
+ * @param {!Blockly.BoundVariableValue|null} parentValue New parent value.
+ */
+Blockly.BoundVariableValue.prototype.setParent = function(parentValue) {
+  if (!parentValue) {
+    this.parentValue_ = null;
+  } else if (parentValue != this.parentValue_) {
+    goog.asserts.assert(!this.parentValue_,
+        'Multi-Level parent-child is not allowed.');
+    goog.asserts.assert(this.canRelateTo_(parentValue));
+    this.parentValue_ = parentValue;
+    parentValue.appendChild(this);
+  }
+};
+
+/**
+ * Returns the parent of this value.
+ * @return {Blockly.BoundVariableValue|null} This value's parent or null.
+ */
+Blockly.BoundVariableValue.prototype.getParent = function() {
+  return this.parentValue_ ? this.parentValue_ : null;
+};
+
+/**
+ * Append a value as the child of this value.
+ * @param {!Blockly.BoundVariableValue} child The value to be added as a child.
+ */
+Blockly.BoundVariableValue.prototype.appendChild = function(child) {
+  if (this.childValues_.indexOf(child) == -1) {
+    goog.asserts.assert(!this.parentValue_,
+        'Multi-Level parent-child is not allowed.');
+    goog.asserts.assert(this.canRelateTo_(child));
+    this.childValues_.push(child);
+    child.setParent(this);
+  }
+};
+
+/**
+ * Remove a child value from this value.
+ * @param {!Blockly.BoundVariableValue} child The value to be removed.
+ */
+Blockly.BoundVariableValue.prototype.removeChild = function(child) {
+  var removalIndex = this.childValues_.indexOf(child);
+  if (removalIndex != -1) {
+    this.childValues_.splice(removalIndex, 1);
+    child.setParent(null);
   }
 };
 
