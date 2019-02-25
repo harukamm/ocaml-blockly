@@ -158,6 +158,8 @@ Blockly.Blocks['create_record_typed'] = {
   },
 
   appendFieldInput: function(index) {
+    var storedRendered = this.rendered;
+    this.rendered = false;
     var field = Blockly.FieldBoundVariable.newReferenceRecordField(null);
     var input = this.appendValueInput('FIELD_INP' + index);
     if (index != 0) {
@@ -165,6 +167,7 @@ Blockly.Blocks['create_record_typed'] = {
     }
     input.appendField(field, 'FIELD' + index)
     input.appendField('=');
+    this.rendered = storedRendered;
     this.fieldCount_++;
   },
 
@@ -186,6 +189,9 @@ Blockly.Blocks['create_record_typed'] = {
       this.removeInput('RBRACE');
       this.appendDummyInput('RBRACE')
           .appendField('}');
+    }
+    if (goog.isFunction(this.initSvg)) {
+      this.initSvg();
     }
   },
 
