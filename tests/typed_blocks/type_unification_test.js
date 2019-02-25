@@ -602,21 +602,13 @@ function test_type_unification_isReferenceOrValue() {
     var letValue = getVariable(letBlock);
     var lambdaValue = getVariable(lambdaBlock);
     var varValue = getVariable(varBlock);
-    assertTrue(letValue.isValueVariable());
-    assertTrue(lambdaValue.isValueVariable());
-    assertTrue(varValue.isReferenceVariable());
+    assertFalse(letValue.isReference());
+    assertFalse(lambdaValue.isReference());
+    assertTrue(varValue.isReference());
 
-    assertTrue(letValue.isNormalVariable());
-    assertTrue(lambdaValue.isNormalVariable());
-    assertTrue(varValue.isNormalVariable());
-
-    assertFalse(letValue.isValueConstructor());
-    assertFalse(lambdaValue.isValueConstructor());
-    assertFalse(varValue.isValueConstructor());
-
-    assertFalse(letValue.isReferenceConstructor());
-    assertFalse(lambdaValue.isReferenceConstructor());
-    assertFalse(varValue.isReferenceConstructor());
+    assertTrue(letValue.isVariable());
+    assertTrue(lambdaValue.isVariable());
+    assertTrue(varValue.isVariable());
 
     assertFalse(letValue.isConstructor());
     assertFalse(lambdaValue.isConstructor());

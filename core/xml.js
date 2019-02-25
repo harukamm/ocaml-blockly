@@ -997,9 +997,7 @@ Blockly.Xml.domToFieldBoundVariable_ = function(block, xml, text, field) {
     // Build the variable binding if <refer-to> DOM is specified.
     if (childDom && childDom.nodeName.toLowerCase() == 'refer-to') {
       var valuesWorkspace = getWorkspaceFromDom(childDom);
-      var targetLabel =
-          Blockly.BoundVariableAbstract.getTargetLabel(field.label_);
-      var value = Blockly.BoundVariables.getValueById(targetLabel,
+      var value = Blockly.BoundVariables.getValueById(field.label_,
           valuesWorkspace, childDom.id);
       if (!valuesWorkspace.isFlyout) {
         if (!value) {
