@@ -153,10 +153,6 @@ Blockly.BoundVariableValueReference.prototype.setBoundValue = function(value) {
   }
   this.value_ = value;
   value.storeReference(this);
-  var valueTypeExpr = this.value_.getTypeExpr();
-  if (!valueTypeExpr) {
-    throw 'The type expression of a new value to refer to must be provided.';
-  }
   this.unifyTypeExpr();
 
   this.referenceChange_();
