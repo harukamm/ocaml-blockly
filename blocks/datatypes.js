@@ -150,6 +150,38 @@ Blockly.Blocks['create_record_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(recordType);
     this.setInputsInline(true);
+
+    this.fieldCount_ = 0;
+  },
+
+  appendFieldInput: function(index) {
+    var field = Blockly.FieldBoundVariable.newReferenceRecordField(null);
+    this.appendValueInput('FIELD_INP' + index)
+        .appendField(field, 'FIELD' + index)
+        .appendField(':');
+    this.fieldCount_++;
+  },
+
+  resizeRecordFields_: function(value) {
+    var children = value ? value.getChildren() : [];
+    while (children.length < this.fieldCount_) {
+      var index = --this.fieldCount_;
+      this.removeInput('FIELD_INP' + index);
+    }
+    for (var i = 0; i < children.length; i++) {
+      if (this.fieldCount_ <= i) {
+        this.appendFieldInput(i);
+      }
+      var field = this.getField('FIELD' + i);
+      field.setVariableName(children[i].getVariableName());
+      field.setBoundValue(children[i]);
+    }
+  },
+
+  infer: function() {
+    var reference = this.getField('RECORD').getVariable();
+    var value = reference.getBoundValue();
+    this.resizeRecordFields_(value);
   }
 };
 

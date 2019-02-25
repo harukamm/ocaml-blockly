@@ -275,6 +275,10 @@ Blockly.BoundVariableValue.prototype.removeChild = function(child) {
   }
 };
 
+Blockly.BoundVariableValue.prototype.getChildren = function() {
+  return this.childValues_;
+};
+
 /**
  * Remove the references which refer to this variable and this variable's
  * block is connected to their blocks directly or indirectly.
