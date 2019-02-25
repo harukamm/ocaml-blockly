@@ -14,7 +14,8 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
         Blockly.BoundVariableAbstract.VALUE_VARIABLE);
 
-    var record_type = new Blockly.TypeExpr.CONSTRUCT(null);
+    this.recordId_ = Blockly.utils.genUid();
+    var record_type = new Blockly.TypeExpr.RECORD(this.recordId_);
     var typename_field = Blockly.FieldBoundVariable.newValue(record_type);
 
     this.appendDummyInput()
@@ -22,7 +23,6 @@ Blockly.Blocks['defined_recordtype_typed'] = {
         .appendField(typename_field, 'VAR')
         .appendField('= {');
 
-    this.recordId_ = Blockly.utils.genUid();
     this.itemCount_ = 0;
     this.appendRecordFieldInput();
     this.appendRecordFieldInput();
