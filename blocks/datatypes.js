@@ -8,7 +8,7 @@ goog.require('Blockly.Blocks');
 goog.require('Blockly');
 
 Blockly.Blocks['defined_recordtype_typed'] = {
-  // Declare constructor types.
+  // Declare record types.
   init: function() {
     this.setColour(160);
     var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
@@ -39,7 +39,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
   },
 
   typeExprReplaced() {
-    throw 'Not allowed to replace type expression for value construct.';
+    throw 'Not allowed to replace type expression for record.';
   },
 
   getRecordId: function() {
@@ -89,7 +89,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
   },
 
   /**
-   * Create XML to represent constructor inputs.
+   * Create XML to represent record field inputs.
    * @return {Element} XML storage element.
    * @this Blockly.Block
    */
@@ -99,7 +99,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     return container;
   },
   /**
-   * Parse XML to restore the constructor inputs.
+   * Parse XML to restore the record field inputs.
    * @param {!Element} xmlElement XML storage element.
    * @this Blockly.Block
    */
