@@ -47,31 +47,11 @@ Blockly.Blocks['defined_recordtype_typed'] = {
   },
 
   getTypeCtorDef: function(fieldName) {
-    if (!fieldName.startsWith('CTR')) {
-      return undefined;
-    }
-    var n = parseInt(fieldName.substring(3));
-    if (isNaN(n) || this.itemCount_ <= n) {
-      return undefined;
-    }
-    var inputName = 'CTR_INP' + n;
-    var block = this.getInputTargetBlock(inputName);
-    if (!block) {
-      return null;
-    }
-    var typeCtor = block.getTypeCtor();
-    return typeCtor;
+    goog.asserts.fail('Not implemented yet.');
   },
 
-  getTypeScheme(fieldName) {
-    if (fieldName.startsWith('CTR')) {
-      var numstr = fieldName.substring(3);
-      var x = parseInt(numstr);
-      if (!isNaN(x) && x < this.itemCount_) {
-        return new Blockly.TypeExpr.CONSTRUCT(this.constructId_);
-      }
-    }
-    return null;
+  getTypeScheme: function(fieldName) {
+    goog.asserts.fail('Not implemented yet.');
   },
 
   appendCtorInput: function() {
