@@ -10,7 +10,7 @@ goog.require('Blockly');
 Blockly.Blocks['defined_recordtype_typed'] = {
   // Declare record types.
   init: function() {
-    this.setColour(160);
+    this.setColour('#008b8b');
 
     this.recordId_ = Blockly.utils.genUid();
     var record_type = new Blockly.TypeExpr.RECORD(this.recordId_);
@@ -141,7 +141,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
 
 Blockly.Blocks['create_record_typed'] = {
   init: function() {
-    this.setColour(160);
+    this.setColour('#008b8b');
     var recordType = new Blockly.TypeExpr.RECORD(null);
     var variableField =
         Blockly.FieldBoundVariable.newReferenceRecord(recordType);
