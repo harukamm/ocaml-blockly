@@ -188,6 +188,10 @@ Blockly.FieldBoundVariable.prototype.init = function() {
     // Dropdown has already been initialized once.
     return;
   }
+  if (!this.isForValue() && this.isForRecord()) {
+    // Field for record reference is invisible.
+    return;
+  }
   Blockly.FieldBoundVariable.superClass_.init.call(this);
 
   // If the variable is for a value, and the block is movable, this field can
@@ -468,7 +472,8 @@ Blockly.FieldBoundVariable.prototype.setPendingChildValues_ = function() {
  * @private
  */
 Blockly.FieldBoundVariable.prototype.render_ = function() {
-  if (!this.visible_) {
+  var isReferenceRecord = !this.isForValue() && this.isForRecord();
+  if (!this.visible_ || isReferenceRecord) {
     this.size_.width = 0;
     return;
   }
