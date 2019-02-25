@@ -18,10 +18,11 @@ goog.require('goog.string');
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
  * @param {!string} varName The default name of this reference.
  * @param {!number} label An enum representing which type of reference.
+ * @param {Blockly.BoundVariableValue=} opt_defaultBoundValue
  * @constructor
  */
 Blockly.BoundVariableValueReference = function(block, fieldName, typeExpr,
-    varName, label) {
+    varName, label, opt_defaultBoundValue) {
   /**
    * The variable this reference refers to, or null if it's not been resolved
    * yet.
@@ -40,6 +41,10 @@ Blockly.BoundVariableValueReference = function(block, fieldName, typeExpr,
 
   Blockly.BoundVariableValueReference.superClass_.constructor.call(this,
       block, fieldName, typeExpr, label);
+
+  if (opt_defaultBoundValue) {
+    this.setBoundValue(opt_defaultBoundValue);
+  }
 
   Blockly.BoundVariables.addReference(this.workspace_, this);
 };

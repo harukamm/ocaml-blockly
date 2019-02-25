@@ -239,7 +239,8 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
     } else {
       this.variable_ = Blockly.BoundVariables.createReference(
           this.sourceBlock_, this.name, this.defaultTypeExpr_,
-          this.defaultVariableName_, this.label_);
+          this.defaultVariableName_, this.label_,
+          this.defaultBoundValue_);
     }
   }
 };
@@ -319,6 +320,8 @@ Blockly.FieldBoundVariable.prototype.setBoundValue = function(value) {
   }
   if (this.variable_) {
     this.variable_.setBoundValue(value);
+  } else {
+    this.defaultBoundValue_ = value;
   }
 };
 
@@ -367,10 +370,11 @@ Blockly.FieldBoundVariable.prototype.getVariableName = function() {
  * @return {!string} newName The new name for this field's variable.
  */
 Blockly.FieldBoundVariable.prototype.setVariableName = function(newName) {
-  if (!this.variable_) {
-    throw 'The variable is not initalized.';
+  if (this.variable_) {
+    this.variable_.setVariableName(newName);
+  } else {
+    this.defaultVariableName_ = newName;
   }
-  this.variable_.setVariableName(newName);
 };
 
 /**

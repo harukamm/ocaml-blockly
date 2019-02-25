@@ -105,13 +105,14 @@ Blockly.BoundVariables.getValueById = function(label, workspace, id) {
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
  * @param {!string} name The default variable name.
  * @param {!number} label The enum presenting type of reference.
+ * @param {Blockly.BoundVariableValue=} opt_defaultBoundValue
  */
 Blockly.BoundVariables.createReference = function(block, fieldName, typeExpr,
-    name, label) {
+    name, label, opt_defaultBoundValue) {
   goog.asserts.assert(Blockly.BoundVariableAbstract.isValidLabel(label),
       'Invalid variable label.');
   return new Blockly.BoundVariableValueReference(block, fieldName, typeExpr,
-    name, label);
+    name, label, opt_defaultBoundValue);
 };
 
 /**
