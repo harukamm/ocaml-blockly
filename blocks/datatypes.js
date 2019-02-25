@@ -146,7 +146,10 @@ Blockly.Blocks['create_record_typed'] = {
     var variableField =
         Blockly.FieldBoundVariable.newReferenceRecord(recordType);
     this.appendDummyInput()
-        .appendField(variableField, 'RECORD');
+        .appendField(variableField, 'RECORD')
+        .appendField('{');
+    this.appendDummyInput('RBRACE')
+        .appendField('}');
     this.setOutput(true);
     this.setOutputTypeExpr(recordType);
     this.setInputsInline(true);
@@ -156,9 +159,12 @@ Blockly.Blocks['create_record_typed'] = {
 
   appendFieldInput: function(index) {
     var field = Blockly.FieldBoundVariable.newReferenceRecordField(null);
-    this.appendValueInput('FIELD_INP' + index)
-        .appendField(field, 'FIELD' + index)
-        .appendField(':');
+    var input = this.appendValueInput('FIELD_INP' + index);
+    if (index != 0) {
+      input.appendField(';');
+    }
+    input.appendField(field, 'FIELD' + index)
+    input.appendField('=');
     this.fieldCount_++;
   },
 
@@ -175,6 +181,11 @@ Blockly.Blocks['create_record_typed'] = {
       var field = this.getField('FIELD' + i);
       field.setVariableName(children[i].getVariableName());
       field.setBoundValue(children[i]);
+    }
+    if (goog.array.last(this.inputList).name != 'RBRACE') {
+      this.removeInput('RBRACE');
+      this.appendDummyInput('RBRACE')
+          .appendField('}');
     }
   },
 
