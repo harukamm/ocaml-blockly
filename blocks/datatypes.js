@@ -49,7 +49,10 @@ Blockly.Blocks['defined_recordtype_typed'] = {
   },
 
   getTypeScheme: function(fieldName) {
-    goog.asserts.fail('Not implemented yet.');
+    if (fieldName === 'DATANAME') {
+      return new Blockly.TypeExpr.RECORD(this.recordId_);
+    }
+    return null;
   },
 
   appendRecordFieldInput: function() {
