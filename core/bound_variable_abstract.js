@@ -195,6 +195,9 @@ Blockly.BoundVariableAbstract.isConstructorLabel = function(label) {
 Blockly.BoundVariableAbstract.isRecordLabel = function(label) {
   return label == Blockly.BoundVariableAbstract.RECORD;
 };
+Blockly.BoundVariableAbstract.isRecordFieldLabel = function(label) {
+  return label == Blockly.BoundVariableAbstract.RECORD_FIELD;
+};
 
 /**
  * Get the variable name for this variable.

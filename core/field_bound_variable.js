@@ -225,7 +225,8 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
     this.initDefaultVariableName_();
 
     if (this.forValue_) {
-      this.hasPotentialBlock = this.sourceBlock_.isMovable();
+      this.hasPotentialBlock = this.sourceBlock_.isMovable() &&
+          !this.isForRecordField();
       this.variable_ = Blockly.BoundVariables.createValue(
           this.sourceBlock_, this.name, this.defaultTypeExpr_,
           this.defaultVariableName_, this.label_);
