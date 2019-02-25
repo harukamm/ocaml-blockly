@@ -135,6 +135,20 @@ Blockly.Blocks['defined_recordtype_typed'] = {
   }
 };
 
+Blockly.Blocks['create_record_typed'] = {
+  init: function() {
+    this.setColour(160);
+    var recordType = new Blockly.TypeExpr.RECORD(null);
+    var variableField =
+        Blockly.FieldBoundVariable.newReferenceRecord(recordType);
+    this.appendDummyInput()
+        .appendField(variableField, 'RECORD');
+    this.setOutput(true);
+    this.setOutputTypeExpr(recordType);
+    this.setInputsInline(true);
+  }
+};
+
 Blockly.Blocks['defined_datatype_typed'] = {
   // Declare constructor types.
   init: function() {

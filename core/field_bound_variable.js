@@ -338,6 +338,9 @@ Blockly.FieldBoundVariable.prototype.isForVariable = function() {
 Blockly.FieldBoundVariable.prototype.isForConstructor = function() {
   return Blockly.BoundVariableAbstract.isConstructorLabel(this.label_);
 };
+Blockly.FieldBoundVariable.prototype.isForRecord = function() {
+  return Blockly.BoundVariableAbstract.isRecordLabel(this.label_);
+};
 
 /**
  * Sets the value this reference refers to.  Throws an error if this field
@@ -656,6 +659,9 @@ Blockly.FieldBoundVariable.prototype.newReferenceBlock_ = function() {
   if (this.isForConstructor()) {
     var getterBlock = workspace.newBlock('create_construct_typed');
     var field = getterBlock.getField('CONSTRUCTOR');
+  } else if (this.isForRecord()) {
+    var getterBlock = workspace.newBlock('create_record_typed');
+    var field = getterBlock.getField('RECORD');
   } else if (this.isForVariable()) {
     var getterBlock = workspace.newBlock('function_app_typed');
     var field = getterBlock.getField('VAR');
