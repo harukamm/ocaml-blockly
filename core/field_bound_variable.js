@@ -298,6 +298,9 @@ Blockly.FieldBoundVariable.prototype.isForConstructor = function() {
 Blockly.FieldBoundVariable.prototype.isForRecord = function() {
   return Blockly.BoundVariableAbstract.isRecordLabel(this.label_);
 };
+Blockly.FieldBoundVariable.prototype.isForRecordField = function() {
+  return Blockly.BoundVariableAbstract.isRecordFieldLabel(this.label_);
+};
 
 /**
  * Sets the value this reference refers to.  Throws an error if this field
@@ -557,12 +560,17 @@ Blockly.FieldBoundVariable.dropdownCreate = function() {
   }
   var options = [];
   if (this.isForConstructor()) {
-    options.push(['Rename constructor...', Blockly.RENAME_VARIABLE_ID]);
+    var message = 'Rename constructor...';
+  } else if (this.isForRecord()) {
+    var message = 'Rename record name...';
+  } else if (this.isForRecordField()) {
+    var message = 'Rename record field...';
   } else if (this.isForVariable()) {
-    options.push(['Rename variable..', Blockly.RENAME_VARIABLE_ID]);
+    var message = 'Rename variable..';
   } else {
     goog.asserts.fail('Not implemented for this type of variable.');
   }
+  options.push([message, Blockly.RENAME_VARIABLE_ID]);
   return options;
 };
 
