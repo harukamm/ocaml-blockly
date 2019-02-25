@@ -116,76 +116,32 @@ Blockly.FieldBoundVariable.prototype.lastRenderedTypeExpr_ = null;
 Blockly.FieldBoundVariable.prototype.typeVarHighlights_ = [];
 
 /**
- * Obtain a newly created bound-variable field of value type.
- * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
- * @param {string} opt_varName The default name for the variable.  If null, the
- *     generated name will be used.
- * @return {!Blockly.FieldBoundVariable} The created field.
+ * Functions to obtain a newly created bound-variable field of each type.
  */
 Blockly.FieldBoundVariable.newValue = function(valueTypeExpr, opt_varName) {
   return new Blockly.FieldBoundVariable(valueTypeExpr, opt_varName,
       Blockly.BoundVariableAbstract.VARIABLE, true);
 };
-
-/**
- * Obtain a newly created bound-variable field of reference type.
- * @param {!Blockly.TypeExpr} referenceTypeExpr The type for the reference.
- * @param {string} opt_varName The default name for the variable.  If null, the
- *     generated name will be used.
- * @return {!Blockly.FieldBoundVariable} The created field.
- */
 Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
     opt_varName) {
   return new Blockly.FieldBoundVariable(referenceTypeExpr, opt_varName,
       Blockly.BoundVariableAbstract.VARIABLE, false);
 };
-
-/**
- * Obtain a newly created bound-variable field of constructor value type.
- * @param {!Blockly.TypeExpr} typeExpr The type expression for the constructor.
- * @param {string} opt_varName The default name for the constructor.  If null,
- *     the generated name will be used.
- * @return {!Blockly.FieldBoundVariable} The created field.
- */
 Blockly.FieldBoundVariable.newValueConstructor = function(typeExpr,
     opt_varName) {
   return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
       Blockly.BoundVariableAbstract.CONSTRUCTOR, true);
 };
-
-/**
- * Obtain a newly created bound-variable field of constructor reference type.
- * @param {!Blockly.TypeExpr} typeExpr The type expression for the constructor.
- * @param {string} opt_varName The default name for the constructor.  If null,
- *     the generated name will be used.
- * @return {!Blockly.FieldBoundVariable} The created field.
- */
 Blockly.FieldBoundVariable.newReferenceConstructor = function(typeExpr,
     opt_varName) {
   return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
       Blockly.BoundVariableAbstract.CONSTRUCTOR, false);
 };
-
-/**
- * Obtain a newly created bound-variable field of record value type.
- * @param {!Blockly.TypeExpr} typeExpr The type expression for the record.
- * @param {string} opt_varName The default name for the record.  If null,
- *     the generated name will be used.
- * @return {!Blockly.FieldBoundVariable} The created field.
- */
 Blockly.FieldBoundVariable.newValueRecord = function(typeExpr,
     opt_varName) {
   return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
       Blockly.BoundVariableAbstract.RECORD, true);
 };
-
-/**
- * Obtain a newly created bound-variable field of record reference type.
- * @param {!Blockly.TypeExpr} typeExpr The type expression for the record.
- * @param {string} opt_varName The default name for the record.  If null,
- *     the generated name will be used.
- * @return {!Blockly.FieldBoundVariable} The created field.
- */
 Blockly.FieldBoundVariable.newReferenceRecord = function(typeExpr,
     opt_varName) {
   return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
