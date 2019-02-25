@@ -576,29 +576,11 @@ Blockly.FieldBoundVariable.dropdownCreate = function() {
         'with no variable selected.');
   }
   var options = [];
-  // if (!this.isForValue()) {
-  //   var valueList = Blockly.BoundVariables.getVisibleVariableValues(
-  //       this.variable_);
-  //   valueList.sort(Blockly.BoundVariableAbstract.compareByName);
-  //   for (var i = 0; i < valueList.length; i++) {
-  //     var value = valueList[i];
-  //     options[i] = [value.getVariableName(), value.getId()];
-  //   }
-  // }
   if (this.isForConstructor()) {
     options.push(['Rename constructor...', Blockly.RENAME_VARIABLE_ID]);
   } else {
     options.push(['Rename variable..', Blockly.RENAME_VARIABLE_ID]);
   }
-  // var name = this.getVariableName();
-  // if (Blockly.Msg['DELETE_VARIABLE']) {
-  //   options.push(
-  //       [
-  //         Blockly.Msg['DELETE_VARIABLE'].replace('%1', name),
-  //         Blockly.DELETE_VARIABLE_ID
-  //       ]
-  //   );
-  // }
   return options;
 };
 

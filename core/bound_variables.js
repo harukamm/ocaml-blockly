@@ -390,32 +390,6 @@ Blockly.BoundVariables.canRenameTo = function(variable, newName) {
   return failedIndex < 0;
 };
 
-/**
- * Return a list of variables visible in the scope of the given field.
- * @param {!Blockly.BoundVariableAbstract} variable
- * @return {!Array.<Blockly.BoundVariableValue>} List of variable values which
- *     is visible.
- */
-Blockly.BoundVariables.getVisibleVariableValues = function(variable) {
-  var field = variable.getMainField();
-  var block = variable.getSourceBlock();
-  var targetBlock = block.outputConnection.targetBlock();
-  if (!variable.isReferenceVariable()) {
-    throw 'Not support for a variable value.';
-  }
-  var values = [];
-  if (targetBlock) {
-    var targetConnection = block.outputConnection.targetConnection;
-    var env = targetBlock.allVisibleVariables(targetConnection);
-    var names = Object.keys(env);
-    for (var i = 0, name; name = names[i]; i++) {
-      var variable = env[name];
-      values.push(variable);
-    }
-  }
-  return values;
-};
-
 // Reference: http://caml.inria.fr/pub/docs/manual-ocaml/lex.html#sec84
 Blockly.BoundVariables.RESERVED_KEYWORDS = [
   "and", "as", "assert", "asr", "begin", "class", "constraint", "do", "done",
