@@ -70,22 +70,12 @@ Blockly.Workspace = function(opt_options) {
    * @type {!Object}
    * @private
    */
-  this.valueDB_ = Object.create(null);
+  this.valueDBList_ = Object.create(null);
   /**
    * @type {!Object}
    * @private
    */
-  this.referenceDB_ = Object.create(null);
-  /**
-   * @type {!Object}
-   * @private
-   */
-  this.valueConstructorDB_ = Object.create(null);
-  /**
-   * @type {!Object}
-   * @private
-   */
-  this.referenceConstructorDB_ = Object.create(null);
+  this.referenceDBList_ = Object.create(null);
   /**
    * @type {!Array.<!Function>}
    * @private
@@ -128,6 +118,7 @@ Blockly.Workspace = function(opt_options) {
    */
   this.potentialVariableMap_ = null;
 
+  this.initValueReferenceDBList();
   Blockly.WorkspaceTree.add(this);
 };
 
@@ -290,20 +281,27 @@ Blockly.Workspace.prototype.getCtorDataName = function(id) {
 };
 
 /**
+ * Initialize the database for bound variables.
+ */
+Blockly.Workspace.prototype.initValueReferenceDBList = function() {
+  var labels = Blockly.BoundVariableAbstract._LABEL_LIST;
+  for (var i = 0, label; label = labels[i]; i++) {
+    this.valueDBList_[label] = Object.create(null);
+    this.referenceDBList_[label] = Object.create(null);
+  }
+};
+
+/**
  * Returns the list of values on the workspace. The callers of this function
  * change the content of the list.
  * @param {!number} label An enum indicating which type of value.
  * @return {!Object} The value DB of the workspace.
  */
 Blockly.Workspace.prototype.getValueDB = function(label) {
-  switch (label) {
-    case Blockly.BoundVariableAbstract.VARIABLE:
-      return this.valueDB_;
-    case Blockly.BoundVariableAbstract.CONSTRUCTOR:
-      return this.valueConstructorDB_;
-    default:
-      throw 'Unknown value label';
+  if (!(label in this.valueDBList_)) {
+    throw 'The specified database does not exist.';
   }
+  return this.valueDBList_[label];
 };
 
 /**
@@ -313,16 +311,10 @@ Blockly.Workspace.prototype.getValueDB = function(label) {
  * @return {!Object} The reference DB of the workspace.
  */
 Blockly.Workspace.prototype.getReferenceDB = function(label) {
-  switch (label) {
-    case Blockly.BoundVariableAbstract.VARIABLE:
-      return this.referenceDB_;
-    case Blockly.BoundVariableAbstract.CONSTRUCTOR:
-      return this.referenceConstructorDB_;
-    case Blockly.BoundVariableAbstract.RECORD:
-      return this.referenceRecordDB_;
-    default:
-      throw 'Unknown reference label';
+  if (!(label in this.referenceDBList_)) {
+    throw 'The specified database does not exist.';
   }
+  return this.referenceDBList_[label];
 };
 
 /**
