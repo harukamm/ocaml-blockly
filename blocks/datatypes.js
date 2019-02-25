@@ -57,7 +57,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     var variableField =
         Blockly.FieldBoundVariable.newValueConstructor(ctrType);
     var index = this.itemCount_++;
-    this.appendValueInput('CTR_INP' + index)
+    this.appendValueInput('FIELD_INP' + index)
         .appendField(variableField, 'CTR' + index)
         .appendField(':')
         .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
@@ -73,7 +73,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
       // avoid the type inference for the removed input, update the size of
       // items first.
       this.itemCount_--;
-      this.removeInput('CTR_INP' + index);
+      this.removeInput('FIELD_INP' + index);
     }
     if (this.itemCount_ < expectedCount) {
       this.removeInput('RBRACE');
