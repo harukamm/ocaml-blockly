@@ -537,7 +537,7 @@ function test_resolve_reference_fixRemoveUndefinedRefInConstruct() {
     //  let b = <> in <> +. b
     var defineCtr = workspace.newBlock('defined_datatype_typed');
     defineCtr.getField('DATANAME').setText('bar');
-    var id = defineCtr.getCtorId();
+    var id = defineCtr.getStructureId();
     assertEquals(workspace.getCtorDataName(id), 'bar');
     var ctrValue = getVariable(defineCtr, 0);
     var ctr = createReferenceBlock(ctrValue);

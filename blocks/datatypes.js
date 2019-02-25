@@ -40,7 +40,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     throw 'Not allowed to replace type expression for record.';
   },
 
-  getRecordId: function() {
+  getStructureId: function() {
     return this.recordId_;
   },
 
@@ -213,7 +213,7 @@ Blockly.Blocks['defined_datatype_typed'] = {
     throw 'Not allowed to replace type expression for value construct.';
   },
 
-  getCtorId: function() {
+  getStructureId: function() {
     return this.constructId_;
   },
 

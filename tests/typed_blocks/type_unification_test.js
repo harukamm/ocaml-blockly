@@ -1246,7 +1246,7 @@ function test_type_unification_constructBlockSimple() {
   try {
     var defineCtr = workspace.newBlock('defined_datatype_typed');
     defineCtr.getField('DATANAME').setText('fooo');
-    var id = defineCtr.getCtorId();
+    var id = defineCtr.getStructureId();
     assertEquals(workspace.getCtorDataName(id), 'fooo');
     var ctrValue = getVariable(defineCtr, 0);
     var ctr = workspace.newBlock('create_construct_typed');
