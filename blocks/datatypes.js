@@ -18,7 +18,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
 
     this.appendDummyInput()
         .appendField('type ')
-        .appendField(typename_field, 'VAR')
+        .appendField(typename_field, 'DATANAME')
         .appendField('= {');
 
     this.itemCount_ = 0;
