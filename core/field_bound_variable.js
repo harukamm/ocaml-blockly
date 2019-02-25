@@ -175,6 +175,32 @@ Blockly.FieldBoundVariable.newReferenceConstructor = function(typeExpr,
 };
 
 /**
+ * Obtain a newly created bound-variable field of record value type.
+ * @param {!Blockly.TypeExpr} typeExpr The type expression for the record.
+ * @param {string} opt_varName The default name for the record.  If null,
+ *     the generated name will be used.
+ * @return {!Blockly.FieldBoundVariable} The created field.
+ */
+Blockly.FieldBoundVariable.newValueRecord = function(typeExpr,
+    opt_varName) {
+  return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
+      Blockly.BoundVariableAbstract.RECORD, true);
+};
+
+/**
+ * Obtain a newly created bound-variable field of record reference type.
+ * @param {!Blockly.TypeExpr} typeExpr The type expression for the record.
+ * @param {string} opt_varName The default name for the record.  If null,
+ *     the generated name will be used.
+ * @return {!Blockly.FieldBoundVariable} The created field.
+ */
+Blockly.FieldBoundVariable.newReferenceRecord = function(typeExpr,
+    opt_varName) {
+  return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
+      Blockly.BoundVariableAbstract.RECORD, false);
+};
+
+/**
  * Attach this field to a block.
  * @param {!Blockly.Block} block The block containing this field.
  */

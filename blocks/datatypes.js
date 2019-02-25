@@ -14,7 +14,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
 
     this.recordId_ = Blockly.utils.genUid();
     var record_type = new Blockly.TypeExpr.RECORD(this.recordId_);
-    var typename_field = Blockly.FieldBoundVariable.newValue(record_type);
+    var typename_field = Blockly.FieldBoundVariable.newValueRecord(record_type);
 
     this.appendDummyInput()
         .appendField('type ')
