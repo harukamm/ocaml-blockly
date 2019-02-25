@@ -176,10 +176,12 @@ Blockly.BoundVariableAbstract.prototype.getId = function() {
 
 Blockly.BoundVariableAbstract.VARIABLE = 1;
 Blockly.BoundVariableAbstract.CONSTRUCTOR = 3;
+Blockly.BoundVariableAbstract.RECORD = 5;
 
 Blockly.BoundVariableAbstract._LABEL_LIST = [
   Blockly.BoundVariableAbstract.VARIABLE,
-  Blockly.BoundVariableAbstract.CONSTRUCTOR
+  Blockly.BoundVariableAbstract.CONSTRUCTOR,
+  Blockly.BoundVariableAbstract.RECORD
 ];
 
 /**
@@ -190,6 +192,9 @@ Blockly.BoundVariableAbstract.prototype.isVariable = function() {
 };
 Blockly.BoundVariableAbstract.prototype.isConstructor = function() {
   return this.label == Blockly.BoundVariableAbstract.CONSTRUCTOR;
+};
+Blockly.BoundVariableAbstract.prototype.isRecord = function() {
+  return this.label == Blockly.BoundVariableAbstract.RECORD;
 };
 Blockly.BoundVariableAbstract.isValidLabel = function(label) {
   return Blockly.BoundVariableAbstract._LABEL_LIST.indexOf(label) != -1;
