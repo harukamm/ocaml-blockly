@@ -766,6 +766,9 @@ Blockly.FieldBoundVariable.prototype.highlightVariables_ = function(on, e) {
  * @param {boolean} on True if highlight. Otherwise, unhighlight.
  */
 Blockly.FieldBoundVariable.prototype.highlight = function(on) {
+  if (!this.fieldGroup_) {
+    return;
+  }
   if (on) {
     Blockly.utils.addClass(this.fieldGroup_, 'highlight');
   } else {
