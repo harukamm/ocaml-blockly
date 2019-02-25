@@ -22,10 +22,10 @@ Blockly.Blocks['defined_recordtype_typed'] = {
         .appendField(typename_field, 'VAR')
         .appendField('= {');
 
-    this.constructId_ = Blockly.utils.genUid();
+    this.recordId_ = Blockly.utils.genUid();
     this.itemCount_ = 0;
-    this.appendCtorInput();
-    this.appendCtorInput();
+    this.appendRecordFieldInput();
+    this.appendRecordFieldInput();
     this.appendDummyInput('RBRACE')
         .appendField('}')
         .setAlign(Blockly.ALIGN_RIGHT);
@@ -42,11 +42,11 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     throw 'Not allowed to replace type expression for value construct.';
   },
 
-  getCtorId: function() {
-    return this.constructId_;
+  getRecordId: function() {
+    return this.recordId_;
   },
 
-  getTypeCtorDef: function(fieldName) {
+  getRecordDef: function(fieldName) {
     goog.asserts.fail('Not implemented yet.');
   },
 
@@ -54,8 +54,8 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     goog.asserts.fail('Not implemented yet.');
   },
 
-  appendCtorInput: function() {
-    var ctrType = new Blockly.TypeExpr.CONSTRUCT(this.constructId_);
+  appendRecordFieldInput: function() {
+    var ctrType = new Blockly.TypeExpr.CONSTRUCT(this.recordId_);
     var variableField =
         Blockly.FieldBoundVariable.newValueConstructor(ctrType);
     var index = this.itemCount_++;
@@ -66,7 +66,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
   },
 
-  resizeCtorInputs: function(expectedCount) {
+  resizeRecordFieldInputs: function(expectedCount) {
     while (expectedCount < this.itemCount_) {
       var index = this.itemCount_ - 1;
       // Decrement the size of items first. The function this.removeInput()
@@ -80,7 +80,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     if (this.itemCount_ < expectedCount) {
       this.removeInput('RBRACE');
       while (this.itemCount_ < expectedCount) {
-        this.appendCtorInput();
+        this.appendRecordFieldInput();
       }
       this.appendDummyInput('RBRACE')
           .appendField('}')
@@ -105,7 +105,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
    */
   domToMutation: function(xmlElement) {
     var newItemCount = parseInt(xmlElement.getAttribute('items')) || 2;
-    this.resizeCtorInputs(newItemCount);
+    this.resizeRecordFieldInputs(newItemCount);
   },
   /**
    * Populate the mutator's dialog with this block's components.
@@ -133,7 +133,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
    */
   compose: function(containerBlock) {
     var itemCount = containerBlock.getItemCount();
-    this.resizeCtorInputs(itemCount);
+    this.resizeRecordFieldInputs(itemCount);
   }
 };
 
