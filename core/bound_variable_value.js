@@ -64,6 +64,15 @@ Blockly.BoundVariableValue.prototype.unifyTypeExpr = function() {
 };
 
 /**
+ * Returns if this variable is a reference.
+ * @return {boolean} True if this variable is a reference.
+ * @override
+ */
+Blockly.BoundVariableValue.prototype.isReference = function() {
+  return false;
+};
+
+/**
  * Get the variable name for this variable.
  * @return {!string} This variable's name.
  * @override

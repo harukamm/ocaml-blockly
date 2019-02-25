@@ -46,6 +46,15 @@ Blockly.BoundVariableValueReference = function(block, fieldName, typeExpr,
 goog.inherits(Blockly.BoundVariableValueReference, Blockly.BoundVariableAbstract);
 
 /**
+ * Returns if this variable is a reference.
+ * @return {boolean} True if this variable is a reference.
+ * @override
+ */
+Blockly.BoundVariableValueReference.prototype.isReference = function() {
+  return true;
+};
+
+/**
  * Gets the variable name for this reference. Returns that of the value if the
  * value has been resolved.
  * @return {string} The display name.

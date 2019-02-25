@@ -162,6 +162,12 @@ Blockly.BoundVariableAbstract.prototype.setTypeExpr = function(typeExpr) {
 Blockly.BoundVariableAbstract.prototype.unifyTypeExpr = undefined;
 
 /**
+ * Returns if this variable is a reference.
+ * @return {boolean} True if this variable is a reference.
+ */
+Blockly.BoundVariableAbstract.prototype.isReference = undefined;
+
+/**
  * @return {!string} The ID for the variable.
  */
 Blockly.BoundVariableAbstract.prototype.getId = function() {
