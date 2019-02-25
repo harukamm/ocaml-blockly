@@ -178,11 +178,29 @@ Blockly.BoundVariableAbstract.VARIABLE = 1;
 Blockly.BoundVariableAbstract.CONSTRUCTOR = 3;
 Blockly.BoundVariableAbstract.RECORD = 5;
 
-Blockly.BoundVariableAbstract._LABEL_LIST = [
-  Blockly.BoundVariableAbstract.VARIABLE,
-  Blockly.BoundVariableAbstract.CONSTRUCTOR,
-  Blockly.BoundVariableAbstract.RECORD
+Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS = [
+  ['variable', Blockly.BoundVariableAbstract.VARIABLE],
+  ['ctor', Blockly.BoundVariableAbstract.CONSTRUCTOR],
+  ['record', Blockly.BoundVariableAbstract.RECORD]
 ];
+
+Blockly.BoundVariableAbstract._LABEL_LIST =
+  goog.array.map(Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS,
+      function(pair) {return pair[1];});
+
+/**
+ * Functions to convert the given label to its name.
+ */
+Blockly.BoundVariableAbstract.labelToName = function(label) {
+  var pair = goog.array.find(Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS,
+      function(pair) { return pair[1] == label});
+  return pair ? pair[0] : null;
+};
+Blockly.BoundVariableAbstract.nameToLabel = function(name) {
+  var pair = goog.array.find(Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS,
+      function(pair) { return pair[0] == name});
+  return pair ? pair[1] : null;
+};
 
 /**
  * Functions to return if the variable is of the specified type.
