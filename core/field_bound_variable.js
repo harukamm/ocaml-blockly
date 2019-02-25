@@ -54,14 +54,6 @@ Blockly.FieldBoundVariable = function(typeExpr, varName, label, isValue) {
   this.forValue_ = isValue;
 
   /**
-   * Whether this field is for a normal variable. Otherwise, it represents
-   * constructor.
-   * @type {boolean}
-   */
-  this.isNormalVariable_ =
-      Blockly.BoundVariableAbstract.isVariableLabel(label);
-
-  /**
    * @type {number}
    */
   this.label_ = label;
@@ -338,11 +330,13 @@ Blockly.FieldBoundVariable.prototype.isForValue = function() {
 };
 
 /**
- * Returns whether this field's variable is for constructor.
- * @return {boolean} True if this field's variable is for a constructor.
+ * Functions to return whether this field's variable has the specified type.
  */
+Blockly.FieldBoundVariable.prototype.isForVariable = function() {
+  return Blockly.BoundVariableAbstract.isVariableLabel(this.label_);
+};
 Blockly.FieldBoundVariable.prototype.isForConstructor = function() {
-  return !this.isNormalVariable_;
+  return Blockly.BoundVariableAbstract.isConstructorLabel(this.label_);
 };
 
 /**
@@ -448,7 +442,7 @@ Blockly.FieldBoundVariable.prototype.updateText = function() {
 Blockly.FieldBoundVariable.prototype.setValue = function(id, opt_workspace) {
   var workspace = opt_workspace ? opt_workspace : this.sourceBlock_.workspace;
   var variable;
-  goog.asserts.assert(this.isNormalVariable_, 'not implemented');
+  goog.asserts.assert(this.isForVariable(), 'not implemented');
   if (this.forValue_) {
     variable = Blockly.BoundVariables.getValueById(workspace, id);
     if (!variable) {
