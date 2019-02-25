@@ -297,9 +297,9 @@ Blockly.Workspace.prototype.getCtorDataName = function(id) {
  */
 Blockly.Workspace.prototype.getValueDB = function(label) {
   switch (label) {
-    case Blockly.BoundVariableAbstract.VALUE_VARIABLE:
+    case Blockly.BoundVariableAbstract.VARIABLE:
       return this.valueDB_;
-    case Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR:
+    case Blockly.BoundVariableAbstract.CONSTRUCTOR:
       return this.valueConstructorDB_;
     default:
       throw 'Unknown value label';
@@ -314,10 +314,12 @@ Blockly.Workspace.prototype.getValueDB = function(label) {
  */
 Blockly.Workspace.prototype.getReferenceDB = function(label) {
   switch (label) {
-    case Blockly.BoundVariableAbstract.REFERENCE_VARIABLE:
+    case Blockly.BoundVariableAbstract.VARIABLE:
       return this.referenceDB_;
-    case Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR:
+    case Blockly.BoundVariableAbstract.CONSTRUCTOR:
       return this.referenceConstructorDB_;
+    case Blockly.BoundVariableAbstract.RECORD:
+      return this.referenceRecordDB_;
     default:
       throw 'Unknown reference label';
   }

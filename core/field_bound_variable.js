@@ -31,10 +31,11 @@ goog.require('goog.string');
  * @param {!number} label Enum indicate which type of variable. (Normal
  *     variable or constructor) The type of enum is defined in the
  *     bound-variable-abstract class.
+ * @param {boolean} isValue True if the variable is a value, not a reference.
  * @extends {Blockly.FieldDropdown}
  * @constructor
  */
-Blockly.FieldBoundVariable = function(typeExpr, varName, label) {
+Blockly.FieldBoundVariable = function(typeExpr, varName, label, isValue) {
   // The FieldDropdown constructor would call setValue, which might create a
   // variable.  Just do the relevant parts of the constructor.
   this.menuGenerator_ = Blockly.FieldBoundVariable.dropdownCreate;
@@ -50,8 +51,7 @@ Blockly.FieldBoundVariable = function(typeExpr, varName, label) {
    * Could not be changed later.
    * @type {boolean}
    */
-  this.forValue_ = label == Blockly.BoundVariableAbstract.VALUE_VARIABLE ||
-      label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+  this.forValue_ = isValue;
 
   /**
    * Whether this field is for a normal variable. Otherwise, it represents
@@ -59,8 +59,7 @@ Blockly.FieldBoundVariable = function(typeExpr, varName, label) {
    * @type {boolean}
    */
   this.isNormalVariable_ =
-      label == Blockly.BoundVariableAbstract.VALUE_VARIABLE ||
-      label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
+      Blockly.BoundVariableAbstract.isVariableLabel(label);
 
   /**
    * @type {number}
@@ -133,7 +132,7 @@ Blockly.FieldBoundVariable.prototype.typeVarHighlights_ = [];
  */
 Blockly.FieldBoundVariable.newValue = function(valueTypeExpr, opt_varName) {
   return new Blockly.FieldBoundVariable(valueTypeExpr, opt_varName,
-      Blockly.BoundVariableAbstract.VALUE_VARIABLE);
+      Blockly.BoundVariableAbstract.VARIABLE, true);
 };
 
 /**
@@ -146,7 +145,7 @@ Blockly.FieldBoundVariable.newValue = function(valueTypeExpr, opt_varName) {
 Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
     opt_varName) {
   return new Blockly.FieldBoundVariable(referenceTypeExpr, opt_varName,
-      Blockly.BoundVariableAbstract.REFERENCE_VARIABLE);
+      Blockly.BoundVariableAbstract.VARIABLE, false);
 };
 
 /**
@@ -159,7 +158,7 @@ Blockly.FieldBoundVariable.newReference = function(referenceTypeExpr,
 Blockly.FieldBoundVariable.newValueConstructor = function(typeExpr,
     opt_varName) {
   return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
-      Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR);
+      Blockly.BoundVariableAbstract.CONSTRUCTOR, true);
 };
 
 /**
@@ -172,7 +171,7 @@ Blockly.FieldBoundVariable.newValueConstructor = function(typeExpr,
 Blockly.FieldBoundVariable.newReferenceConstructor = function(typeExpr,
     opt_varName) {
   return new Blockly.FieldBoundVariable(typeExpr, opt_varName,
-      Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR);
+      Blockly.BoundVariableAbstract.CONSTRUCTOR, false);
 };
 
 /**

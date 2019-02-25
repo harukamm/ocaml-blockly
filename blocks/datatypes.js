@@ -12,7 +12,7 @@ Blockly.Blocks['defined_datatype_typed'] = {
   init: function() {
     this.setColour(160);
     var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
-        Blockly.BoundVariableAbstract.VALUE_VARIABLE);
+        Blockly.BoundVariableAbstract.VARIABLE);
 
     this.appendDummyInput()
         .appendField('type ')
@@ -408,7 +408,7 @@ Blockly.Blocks['cons_construct_pattern_typed'] = {
     var A = Blockly.TypeExpr.generateTypeVar();
     var list = new Blockly.TypeExpr.LIST(A);
     var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
-        Blockly.BoundVariableAbstract.VALUE_VARIABLE);
+        Blockly.BoundVariableAbstract.VARIABLE);
     this.setColour(Blockly.Msg['PATTERN_HUE']);
     this.appendDummyInput()
         .appendField(new Blockly.FieldTextInput('x', validator), 'FIRST')
@@ -488,7 +488,7 @@ Blockly.Blocks['cons_construct_pattern_value_typed'] = {
 Blockly.Blocks['pair_pattern_typed'] = {
   init: function() {
     var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
-        Blockly.BoundVariableAbstract.VALUE_VARIABLE);
+        Blockly.BoundVariableAbstract.VARIABLE);
     this.setColour(Blockly.Msg['PATTERN_HUE']);
     this.appendDummyInput()
         .appendField('(');

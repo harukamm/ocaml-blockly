@@ -25,9 +25,8 @@ goog.require('goog.string');
  */
 Blockly.BoundVariables.createValue = function(block, fieldName, valueTypeExpr,
       variableName, label) {
-  var isVal = label == Blockly.BoundVariableAbstract.VALUE_VARIABLE ||
-      label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
-  goog.asserts.assert(isVal, 'Invalid variable label.');
+  goog.asserts.assert(Blockly.BoundVariableAbstract.isValidLabel(label),
+      'Invalid variable label.');
   return new Blockly.BoundVariableValue(block, fieldName, valueTypeExpr,
       variableName, label);
 };
@@ -41,7 +40,7 @@ Blockly.BoundVariables.addValue = function(workspace, value) {
   var block = value.getSourceBlock();
   var fieldName = value.getMainFieldName();
 
-  if (value.isNormalVariable()) {
+  if (value.isVariable()) {
     if (block.typedValue[fieldName] || value.inBlockDB) {
       throw 'The value is already added to the variable map of other block.';
     }
@@ -69,7 +68,7 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
   var block = value.getSourceBlock();
   var fieldName = value.getMainFieldName();
 
-  if (value.isNormalVariable()) {
+  if (value.isVariable()) {
     if (value.inBlockDB && !block.typedValue[fieldName]) {
       throw 'The value doesn\'t exist in DB.';
     }
@@ -109,9 +108,8 @@ Blockly.BoundVariables.getValueById = function(label, workspace, id) {
  */
 Blockly.BoundVariables.createReference = function(block, fieldName, typeExpr,
     name, label) {
-  var isRef = label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE ||
-      label == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR;
-  goog.asserts.assert(isRef, 'Invalid variable label.');
+  goog.asserts.assert(Blockly.BoundVariableAbstract.isValidLabel(label),
+      'Invalid variable label.');
   return new Blockly.BoundVariableValueReference(block, fieldName, typeExpr,
     name, label);
 };
@@ -125,7 +123,7 @@ Blockly.BoundVariables.addReference = function(workspace, reference) {
   var block = reference.getSourceBlock();
   var fieldName = reference.getMainFieldName();
 
-  if (reference.isNormalVariable()) {
+  if (reference.isVariable()) {
     if (block.typedReference[fieldName] || reference.inBlockDB) {
       throw 'The reference is already added to the variable map of other ' +
           'block.';
@@ -154,7 +152,7 @@ Blockly.BoundVariables.removeReference = function(workspace, reference) {
   var block = reference.getSourceBlock();
   var fieldName = reference.getMainFieldName();
 
-  if (reference.isNormalVariable()) {
+  if (reference.isVariable()) {
     if (reference.inBlockDB && !block.typedReference[fieldName]) {
       throw 'The reference doesn\'t exist in DB.';
     }
@@ -203,18 +201,13 @@ Blockly.BoundVariables.clearWorkspaceVariableDB = function(workspace) {
       delete db[id];
     }
   }
-  var referenceDB = workspace.getReferenceDB(
-      Blockly.BoundVariableAbstract.REFERENCE_VARIABLE);
-  var valueDB = workspace.getValueDB(
-      Blockly.BoundVariableAbstract.VALUE_VARIABLE);
-  var referenceCtrDB = workspace.getReferenceDB(
-      Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR);
-  var valueCtrDB = workspace.getValueDB(
-      Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR);
-  clearVariableDB(referenceDB);
-  clearVariableDB(valueDB);
-  clearVariableDB(referenceCtrDB);
-  clearVariableDB(valueCtrDB);
+  var labelList = Blockly.BoundVariableAbstract._LABEL_LIST;
+  for (var i = 0; i < labelList.length; i++) {
+    var referenceDB = workspace.getReferenceDB(labelList[i]);
+    var valueDB = workspace.getValueDB(labelList[i]);
+    clearVariableDB(referenceDB);
+    clearVariableDB(valueDB);
+  }
 };
 
 /**
@@ -377,13 +370,7 @@ Blockly.BoundVariables.canRenameTo = function(variable, newName) {
   if (oldName === newName) {
     return true;
   }
-  if (variable.isReferenceVariable() || variable.isReferenceConstructor()) {
-    var valueLabel = Blockly.BoundVariableAbstract.getTargetLabel(
-        variable.label);
-  } else {
-    var valueLabel = variable.label;
-  }
-  if (Blockly.BoundVariables.isUniqueName(valueLabel, newName,
+  if (Blockly.BoundVariables.isUniqueName(variable.label, newName,
         variable.getWorkspace())) {
     return true;
   }
@@ -450,13 +437,7 @@ Blockly.BoundVariables.isLegalName = function(label, newName) {
   if (!newName) {
     return false;
   }
-  var isConstructor =
-      label == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR ||
-      label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
-  var isNormalVariable =
-      label == Blockly.BoundVariableAbstract.VALUE_VARIABLE ||
-      label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
-  goog.asserts.assert(isConstructor || isNormalVariable);
+  goog.asserts.assert(Blockly.BoundVariableAbstract.isValidLabel(label));
 
   if (Blockly.BoundVariables.RESERVED_KEYWORDS.indexOf(newName) != -1) {
     return false;
@@ -464,7 +445,7 @@ Blockly.BoundVariables.isLegalName = function(label, newName) {
 
   // Check if a string follows the naming convention.
   // Reference: https://caml.inria.fr/pub/docs/manual-ocaml/names.html
-  if (isConstructor) {
+  if (Blockly.BoundVariableAbstract.isConstructorLabel(label)) {
     // [A-Z][\w']*
     if (newName.match(/^[A-Z][\w']*$/) == null) {
       return false;
@@ -520,7 +501,7 @@ Blockly.BoundVariables.generateUniqueName = function(label, workspace) {
     }
   }
 
-  var isCtr = label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+  var isCtr = Blockly.BoundVariableAbstract.isConstructorLabel(label);
   var name = null;
   var acode = 'a'.charCodeAt(0);
   var zcode = 'z';
@@ -554,18 +535,18 @@ Blockly.BoundVariables.renameToGeneratedNames = function(block) {
   var values = Blockly.BoundVariables.getAllVariablesOnBlocks(block, false);
   for (var i = 0, val; val = values[i]; i++) {
     var generated = Blockly.BoundVariables.generateUniqueName(
-        Blockly.BoundVariableAbstract.VALUE_VARIABLE, workspace);
+        Blockly.BoundVariableAbstract.VARIABLE, workspace);
     val.setVariableName(generated);
   }
 
   var ctorValueDB =
-      workspace.getValueDB(Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR);
+      workspace.getValueDB(Blockly.BoundVariableAbstract.CONSTRUCTOR);
   var keys = Object.keys(ctorValueDB);
   for (var i = 0, key; key = keys[i]; i++) {
     var val = ctorValueDB[key];
     if (val.getSourceBlock() == block) {
       var generated = Blockly.BoundVariables.generateUniqueName(
-          Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR, workspace);
+          Blockly.BoundVariableAbstract.CONSTRUCTOR, workspace);
       val.setVariableName(generated);
     }
   }

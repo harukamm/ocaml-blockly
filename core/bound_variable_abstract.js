@@ -174,34 +174,31 @@ Blockly.BoundVariableAbstract.prototype.getId = function() {
   return this.id_;
 };
 
-Blockly.BoundVariableAbstract.VALUE_VARIABLE = 1;
-Blockly.BoundVariableAbstract.REFERENCE_VARIABLE = 2;
-Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR = 3;
-Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR = 4;
+Blockly.BoundVariableAbstract.VARIABLE = 1;
+Blockly.BoundVariableAbstract.CONSTRUCTOR = 3;
+
+Blockly.BoundVariableAbstract._LABEL_LIST = [
+  Blockly.BoundVariableAbstract.VARIABLE,
+  Blockly.BoundVariableAbstract.CONSTRUCTOR
+];
 
 /**
  * Functions to return if the variable is of the specified type.
  */
-Blockly.BoundVariableAbstract.prototype.isValueVariable = function() {
-  return this.label == Blockly.BoundVariableAbstract.VALUE_VARIABLE;
-};
-Blockly.BoundVariableAbstract.prototype.isReferenceVariable = function() {
-  return this.label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
-};
-Blockly.BoundVariableAbstract.prototype.isValueConstructor = function() {
-  return this.label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
-};
-Blockly.BoundVariableAbstract.prototype.isReferenceConstructor = function() {
-  return this.label == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR;
-};
-
-Blockly.BoundVariableAbstract.prototype.isNormalVariable = function() {
-  return this.label == Blockly.BoundVariableAbstract.REFERENCE_VARIABLE ||
-      this.label == Blockly.BoundVariableAbstract.VALUE_VARIABLE;
+Blockly.BoundVariableAbstract.prototype.isVariable = function() {
+  return this.label == Blockly.BoundVariableAbstract.VARIABLE;
 };
 Blockly.BoundVariableAbstract.prototype.isConstructor = function() {
-  return this.label == Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR ||
-      this.label == Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
+  return this.label == Blockly.BoundVariableAbstract.CONSTRUCTOR;
+};
+Blockly.BoundVariableAbstract.isValidLabel = function(label) {
+  return Blockly.BoundVariableAbstract._LABEL_LIST.indexOf(label) != -1;
+};
+Blockly.BoundVariableAbstract.isVariableLabel = function(label) {
+  return label == Blockly.BoundVariableAbstract.VARIABLE;
+};
+Blockly.BoundVariableAbstract.isConstructorLabel = function(label) {
+  return label == Blockly.BoundVariableAbstract.CONSTRUCTOR;
 };
 
 /**
@@ -232,34 +229,6 @@ Blockly.BoundVariableAbstract.prototype.dispose = function() {
   this.sourceBlock_ = null;
   this.workspace_ = null;
   this.typeExpr_ = null;
-};
-
-/**
- * Get the target variable's label of the variable of the given label.
- */
-Blockly.BoundVariableAbstract.getTargetLabel = function(label) {
-  switch (label) {
-    case Blockly.BoundVariableAbstract.VALUE_VARIABLE:
-      return Blockly.BoundVariableAbstract.REFERENCE_VARIABLE;
-    case Blockly.BoundVariableAbstract.REFERENCE_VARIABLE:
-      return Blockly.BoundVariableAbstract.VALUE_VARIABLE;
-    case Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR:
-      return Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR;
-    case Blockly.BoundVariableAbstract.REFERENCE_CONSTRUCTOR:
-      return Blockly.BoundVariableAbstract.VALUE_CONSTRUCTOR;
-    default:
-      goog.asserts.assert(false, 'Unknown variable type.');
-  }
-};
-
-/**
- * The given two variables are matched to bind them with each other.
- * @param {!Blockly.BoundVariableAbstract} v1
- * @param {!Blockly.BoundVariableAbstract} v2
- * @return {boolean} True if type of two variables is matched.
- */
-Blockly.BoundVariableAbstract.isPair = function(v1, v2) {
-  return v1.label == Blockly.BoundVariableAbstract.getTargetLabel(v2.label);
 };
 
 /**
