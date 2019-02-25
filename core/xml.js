@@ -144,14 +144,15 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field, rootBlock) {
   }
   var container = goog.dom.createDom('field', null, field.getVariableName());
   container.setAttribute('name', field.name);
-  var isVariableType = !field.isForConstructor();
+  var isVariableType = field.isForVariable();
+  var isConstructorType = field.isForConstructor();
   var isValue = field.isForValue();
   if (isVariableType && isValue) {
     // The variable is a variable value.
     container.setAttribute('id', id);
     container.setAttribute('isvalue', 'true');
     container.setAttribute('workspace-id', field.sourceBlock_.workspace.id);
-  } else if (isVariableType && !isValue) {
+  } else if (isVariableType) {
     // The variable is a variable reference.
     container.setAttribute('isvalue', 'false');
     var reference = field.getVariable();
@@ -168,13 +169,13 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field, rootBlock) {
       valueDom.setAttribute('workspace-id', value.getWorkspace().id);
       container.appendChild(valueDom);
     }
-  } else if (isValue) {
+  } else if (isConstructorType && isValue) {
     // The variable is a value variable for constructor.
     container.setAttribute('id', id);
     container.setAttribute('isvalue', 'true');
     container.setAttribute('isconstructor', 'true');
     container.setAttribute('workspace-id', field.sourceBlock_.workspace.id);
-  } else {
+  } else if (isConstructorType) {
     // The variable is a reference variable for constructor.
     container.setAttribute('isconstructor', 'true');
     var reference = field.getVariable();
@@ -185,6 +186,8 @@ Blockly.Xml.fieldToDomBoundVariable_ = function(field, rootBlock) {
       valueDom.setAttribute('workspace-id', value.getWorkspace().id);
       container.appendChild(valueDom);
     }
+  } else {
+    goog.asserts.fail('Not implemented for this type of variable.');
   }
   return container;
 };

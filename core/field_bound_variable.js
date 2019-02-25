@@ -598,8 +598,10 @@ Blockly.FieldBoundVariable.dropdownCreate = function() {
   var options = [];
   if (this.isForConstructor()) {
     options.push(['Rename constructor...', Blockly.RENAME_VARIABLE_ID]);
-  } else {
+  } else if (this.isForVariable()) {
     options.push(['Rename variable..', Blockly.RENAME_VARIABLE_ID]);
+  } else {
+    goog.asserts.fail('Not implemented for this type of variable.');
   }
   return options;
 };
@@ -654,7 +656,7 @@ Blockly.FieldBoundVariable.prototype.newReferenceBlock_ = function() {
   if (this.isForConstructor()) {
     var getterBlock = workspace.newBlock('create_construct_typed');
     var field = getterBlock.getField('CONSTRUCTOR');
-  } else {
+  } else if (this.isForVariable()) {
     var getterBlock = workspace.newBlock('function_app_typed');
     var field = getterBlock.getField('VAR');
     // var getterBlock = workspace.newBlock('variables_get_typed');
@@ -665,6 +667,8 @@ Blockly.FieldBoundVariable.prototype.newReferenceBlock_ = function() {
     //  2. Add arguments using mutator on let block.
     //  3. Type error occurs since variable b has 'a list type but was
     //     expected of type 'b -> 'c.
+  } else {
+    goog.asserts.fail('Not implemented for this type of variable.');
   }
   if (goog.isFunction(getterBlock.initSvg)) {
     getterBlock.initSvg();
