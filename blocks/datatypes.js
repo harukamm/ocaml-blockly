@@ -379,11 +379,6 @@ Blockly.Blocks['create_construct_typed'] = {
     var paramSize = def == null ? 0 : (def.isPair() ? 2 : 1);
     var paramInputs = [];
 
-    if (paramSize == 0) {
-      this.removeInputSafely(lparenInput);
-      this.removeInputSafely(rparenInput);
-    }
-
     // Collect current parameter inputs. If there are more inputs than
     // paramSize expects, remove them.
     var copiedInputList = [].concat(this.inputList);
@@ -405,7 +400,12 @@ Blockly.Blocks['create_construct_typed'] = {
       paramInputs.push(input);
     }
 
-    if (0 < paramSize && !lparenInput) {
+    if (paramSize <= 0) {
+      this.removeInputSafely(lparenInput);
+      this.removeInputSafely(rparenInput);
+      return [];
+    }
+    if (!lparenInput) {
       goog.asserts.assert(paramInputs.length == 0);
       this.appendDummyInput('LPAREN')
           .appendField('(');
@@ -420,15 +420,14 @@ Blockly.Blocks['create_construct_typed'] = {
       }
       paramInputs.push(input);
     }
-    if (0 < paramSize && !rparenInput) {
+    if (goog.array.last(this.inputList).name != 'RPAREN') {
+      this.removeInputSafely(rparenInput);
       this.appendDummyInput('RPAREN')
           .appendField(')');
     }
 
     // Set type expression on the value paramInputs if necessary.
-    if (def == null) {
-      // NOP. There are no parameters.
-    } else if (def.isInt()) {
+    if (def.isInt()) {
       paramInputs[0].setTypeExpr(new Blockly.TypeExpr.INT(), true);
     } else if (def.isFloat()) {
       paramInputs[0].setTypeExpr(new Blockly.TypeExpr.FLOAT(), true);
