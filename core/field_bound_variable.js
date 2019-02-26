@@ -234,8 +234,6 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
       this.variable_ = Blockly.BoundVariables.createValue(
           this.defaultTypeExpr_,
           this.defaultVariableName_, this.label_);
-
-      this.setPendingChildValues_();
     } else {
       this.variable_ = Blockly.BoundVariables.createReference(
           this.defaultTypeExpr_,
@@ -445,32 +443,15 @@ Blockly.FieldBoundVariable.prototype.setChildValue = function(field) {
     return;
   }
   var childValue = field.getVariable();
-  if (this.variable_ && childValue) {
-    this.variable_.appendChild(childValue);
-    return;
+  // Force to initialize if either or both of two values are not yet.
+  if (!this.variable_) {
+    this.initModel();
   }
-  // Either or both of two values are not initialized yet. Store the fields
-  // to try later when initModel() is called.
-  if (!goog.isArray(this.defaultChildValueFields_)) {
-    this.defaultChildValueFields_ = [field];
-  } else if (this.defaultChildValueFields_.indexOf(field) == -1) {
-    this.defaultChildValueFields_.push(field);
+  if (!childValue) {
+    field.initModel();
+    childValue = field.getVariable();
   }
-  field.defaultParentValueField_ = this;
-};
-
-/**
- * Build pending parent-child relations.
- */
-Blockly.FieldBoundVariable.prototype.setPendingChildValues_ = function() {
-  if (goog.isArray(this.defaultChildValueFields_)) {
-    for (var i = 0, field; field = this.defaultChildValueFields_[i]; i++) {
-      this.setChildValue(field);
-    }
-  }
-  if (this.defaultParentValueField_) {
-    this.defaultParentValueField_.setChildValue(this);
-  }
+  this.variable_.appendChild(childValue);
 };
 
 /**
