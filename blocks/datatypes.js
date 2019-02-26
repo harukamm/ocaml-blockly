@@ -88,6 +88,8 @@ Blockly.Blocks['defined_recordtype_typed'] = {
           .appendField('}')
           .setAlign(Blockly.ALIGN_RIGHT);
     }
+    var value = this.getField('DATANAME').getVariable();
+    value.updateReferenceStructure();
   },
 
   /**
