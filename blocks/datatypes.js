@@ -206,9 +206,7 @@ Blockly.Blocks['create_record_typed'] = {
       if (def) {
         input.setTypeExpr(def, true);
       } else {
-        // TODO(harukam): Create new type expression to represent disabled
-        // connections.
-        input.setTypeExpr(def, true);
+        input.setTypeExpr(new Blockly.TypeExpr.UNKNOWN(), true);
       }
     }
     if (goog.array.last(this.inputList).name != 'RBRACE') {
@@ -567,10 +565,10 @@ Blockly.Blocks['pair_type_constructor_typed'] = {
   getTypeCtor: function() {
     var leftBlock = this.getInputTargetBlock('LEFT');
     var rightBlock = this.getInputTargetBlock('RIGHT');
-    // TODO(harukam): Create new type expression to represent disabled
-    // connections, and give it if leftBlock/rightBlock is null.
-    var left = leftBlock ? leftBlock.getTypeCtor() : null;
-    var right = rightBlock ? rightBlock.getTypeCtor() : null;
+    var left = leftBlock ?
+        leftBlock.getTypeCtor() : new Blockly.TypeExpr.UNKNOWN();
+    var right = rightBlock ?
+        rightBlock.getTypeCtor() : new Blockly.TypeExpr.UNKNOWN();
     return new Blockly.TypeExpr.PAIR(left, right);
   }
 };

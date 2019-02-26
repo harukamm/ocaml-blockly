@@ -86,6 +86,12 @@ Blockly.TypeExpr.PATTERN_ = 160;
  * @type {number}
  * @private
  */
+Blockly.TypeExpr.UNKNOWN_ = 165;
+
+/**
+ * @type {number}
+ * @private
+ */
 Blockly.TypeExpr.TVAR_ = 170;
 
 /**
@@ -133,6 +139,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'record';
     case Blockly.TypeExpr.PATTERN_:
       return 'pattern';
+    case Blockly.TypeExpr.UNKNOWN_:
+      return 'unknown';
     case Blockly.TypeExpr.TVAR_:
       return 'typeVar';
     default:
@@ -187,6 +195,9 @@ Blockly.TypeExpr.prototype.isStructure = function() {
 };
 Blockly.TypeExpr.prototype.isPattern = function() {
   return this.label == Blockly.TypeExpr.PATTERN_;
+};
+Blockly.TypeExpr.prototype.isUnknown = function() {
+  return this.label == Blockly.TypeExpr.UNKNOWN_;
 };
 Blockly.TypeExpr.prototype.isTypeVar = function() {
   return this.label == Blockly.TypeExpr.TVAR_;
@@ -794,6 +805,42 @@ Blockly.TypeExpr.PATTERN.prototype.unifyPattern = function(otherPatt) {
 };
 
 /**
+ * @constructor
+ * @extends {Blockly.TypeExpr}
+ */
+Blockly.TypeExpr.UNKNOWN = function() {
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.UNKNOWN_);
+};
+goog.inherits(Blockly.TypeExpr.UNKNOWN, Blockly.TypeExpr);
+
+/**
+ * @param {boolean=} opt_deref
+ * @return {string}
+ * @override
+ */
+Blockly.TypeExpr.UNKNOWN.prototype.toString = function(opt_deref) {
+  return "UNKNOWN";
+};
+
+/**
+ * Deeply clone the object
+ * @return {Blockly.TypeExpr}
+ * @override
+ */
+Blockly.TypeExpr.UNKNOWN.prototype.clone = function() {
+  return new Blockly.TypeExpr.UNKNOWN();
+};
+
+/**
+ * Returns the object which is dereferenced recursively.
+ * @return {Blockly.TypeExpr}
+ * @override
+ */
+Blockly.TypeExpr.UNKNOWN.prototype.deepDeref = function() {
+  return new Blockly.TypeExpr.UNKNOWN();
+};
+
+/**
  * @extends {Blockly.TypeExpr}
  * @constructor
  * @param {string} name
@@ -1027,6 +1074,9 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       var othr = t1.isPattern() ? t2 : t1;
       throw Blockly.TypeExpr.errorUnityPattern(othr);
     }
+    if (t1.isUnknown() || t2.isUnknown()) {
+      goog.asserts.fail('Can not unify unknown type');
+    }
     if (t1.isTypeVar() || t2.isTypeVar()) {
       var t1_is_tvar = t1.isTypeVar();
       if (t1_is_tvar && t2.isTypeVar())
@@ -1140,11 +1190,10 @@ Blockly.TypeExpr.prototype.disconnect = function(other) {
 
 Blockly.TypeExpr.prototype.flatten = function() {
   var t = this.deepDeref();
-  if (t.isTypeVar() || t.isPrimitive() || t.isStructure() ||
-      t.isTypeConstructor()) {
+  var children = t.getChildren();
+  if (children.length == 0) {
     return [t];
   }
-  var children = t.getChildren();
   var desc = [];
   for (var i = 0; i < children.length; i++) {
     var child = children[i];
@@ -1176,6 +1225,9 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
   }
   if (typ1.isPattern()) {
     return Blockly.TypeExpr.equals(typ1.pattExpr, typ2.pattExpr);
+  }
+  if (typ1.isUnknown()) {
+    return false;
   }
   if (typ1.isTypeVar()) {
     return typ1.name == typ2.name;

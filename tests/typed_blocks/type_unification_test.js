@@ -1281,8 +1281,8 @@ function test_type_unification_constructBlockSimple() {
         var block = workspace.newBlock('string_typed');
       } else if (typeName === 'pair') {
         assertNotNull(inp1);
-        assertNull(inp0.connection.typeExpr);
-        assertNull(inp1.connection.typeExpr);
+        assertTrue(inp0.connection.typeExpr.isUnknown());
+        assertTrue(inp1.connection.typeExpr.isUnknown());
         return;
       } else {
         assertTrue(false);
@@ -1458,8 +1458,8 @@ function test_type_unification_changeRecordTypeCtor() {
           assertTrue(input.connection.typeExpr.isString());
         } else if (typeName === 'pair') {
           assertTrue(input.connection.typeExpr.isPair());
-          assertNull(input.connection.typeExpr.first_type);
-          assertNull(input.connection.typeExpr.second_type);
+          assertTrue(input.connection.typeExpr.first_type.isUnknown());
+          assertTrue(input.connection.typeExpr.second_type.isUnknown());
         } else {
           assertTrue(false);
         }
