@@ -161,9 +161,8 @@ Blockly.FieldBoundVariable.prototype.setSourceBlock = function(block) {
 };
 
 /**
- * Initialize the string for the default variable name to this variable. If
- * this.defaultVariableName_ is null, store the generated name to that field.
- * Otherwise, if it contains white spaces at start or end, trim them.
+ * Initialize the string for the default variable name to this variable.
+ * If it contains white spaces at start or end, trim them.
  */
 Blockly.FieldBoundVariable.prototype.initDefaultVariableName_ = function() {
   var original = this.defaultVariableName_;
@@ -171,11 +170,8 @@ Blockly.FieldBoundVariable.prototype.initDefaultVariableName_ = function() {
     var cleaned = original.trim();
     if (Blockly.BoundVariables.isLegalName(this.label_, cleaned)) {
       this.defaultVariableName_ = cleaned;
-      return;
     }
   }
-  this.defaultVariableName_ = Blockly.BoundVariables.generateUniqueName(
-      this.label_, this.sourceBlock_.workspace);
 };
 
 /**

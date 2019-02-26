@@ -19,7 +19,7 @@ goog.require('goog.string');
 /**
  * Create a value on the given block.
  * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
- * @param {!string} variableName The default name of this variable value.
+ * @param {string} variableName The default name of this variable value.
  */
 Blockly.BoundVariables.createValue = function(valueTypeExpr, variableName,
     label) {
@@ -98,7 +98,7 @@ Blockly.BoundVariables.getValueById = function(label, workspace, id) {
 /**
  * Create a reference on the given block.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
- * @param {!string} name The default variable name.
+ * @param {string} name The default variable name.
  * @param {!number} label The enum presenting type of reference.
  * @param {Blockly.BoundVariableValue=} opt_defaultBoundValue
  */

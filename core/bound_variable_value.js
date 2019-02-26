@@ -13,7 +13,7 @@ goog.require('goog.string');
 /**
  * Class for a variable declared in the block.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
- * @param {!string} variableName The default name of this variable value.
+ * @param {string} variableName The default name of this variable value.
  * @param {!number} label Enum representing which type of value.
  * @constructor
  */
@@ -69,6 +69,14 @@ Blockly.BoundVariableValue.prototype.setMainField = function(field) {
     return;
   }
   Blockly.BoundVariableValue.superClass_.setMainField.call(this, field);
+
+  if (!this.getVariableName()) {
+    // If not initialized yet, generate an unique name.
+    // Note: Can not generate an unique name until the workspace of this
+    //   variable is specified.
+    this.setVariableName(Blockly.BoundVariables.generateUniqueName(
+        this.label, this.workspace_));
+  }
   Blockly.BoundVariables.addValue(this.workspace_, this);
 };
 
@@ -93,7 +101,7 @@ Blockly.BoundVariableValue.prototype.isReference = function() {
 
 /**
  * Get the variable name for this variable.
- * @return {!string} This variable's name.
+ * @return {string} This variable's name.
  * @override
  */
 Blockly.BoundVariableValue.prototype.getVariableName = function() {

@@ -56,6 +56,14 @@ Blockly.BoundVariableValueReference.prototype.setMainField = function(field) {
     return;
   }
   Blockly.BoundVariableValueReference.superClass_.setMainField.call(this, field);
+
+  if (!this.getVariableName()) {
+    // If not initialized yet, generate an unique name.
+    // Note: Can not generate an unique name until the workspace of this
+    //   variable is specified.
+    this.setVariableName(Blockly.BoundVariables.generateUniqueName(
+        this.label, this.workspace_));
+  }
   Blockly.BoundVariables.addReference(this.workspace_, this);
 };
 
