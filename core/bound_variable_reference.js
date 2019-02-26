@@ -220,7 +220,10 @@ Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
  * @private
  */
 Blockly.BoundVariableValueReference.prototype.referenceChange_ = function() {
-  this.getMainField().updateText();
+  var field = this.getMainField();
+  if (field) {
+    field.updateText();
+  }
 };
 
 /**

@@ -124,7 +124,10 @@ Blockly.BoundVariableValue.prototype.setVariableName = function(newName) {
       reference.setVariableName(newName);
     }
     // Rerender the block.
-    this.getMainField().updateText();
+    var field = this.getMainField();
+    if (field) {
+      field.updateText();
+    };
   }
 };
 
