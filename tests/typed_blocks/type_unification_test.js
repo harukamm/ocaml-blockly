@@ -1374,6 +1374,16 @@ function test_type_unification_resizeRecordBlock() {
 
     defineRecord.resizeRecordFieldInputs(0);
     assertEquals(0, value.getChildren().length);
+
+    defineRecord.resizeRecordFieldInputs(4);
+    assertEquals(4, value.getChildren().length);
+    var firstChild = value.getChildren()[0];
+    var secondChild = value.getChildren()[1];
+
+    defineRecord.resizeRecordFieldInputs(2);
+    assertEquals(2, value.getChildren().length);
+    assertEquals(firstChild, value.getChildren()[0]);
+    assertEquals(secondChild, value.getChildren()[1]);
   } finally {
     Blockly.mainWorkspace = null;
     workspace.dispose();
