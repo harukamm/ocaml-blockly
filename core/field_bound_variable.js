@@ -717,7 +717,7 @@ Blockly.FieldBoundVariable.prototype.highlightVariables_ = function(on, e) {
   if (this.sourceBlock_.workspace.isDragging()) {
     return;
   }
-  var variables = this.variable_.getAllBoundVariables();
+  var variables = this.variable_.getVariablesToHighlight();
   var isOwner = Blockly.WidgetDiv.isOwner(this,
       Blockly.FieldBoundVariable.WIDGET_TYPE_VARIABLES_);
 

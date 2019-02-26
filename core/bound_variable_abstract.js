@@ -239,6 +239,15 @@ Blockly.BoundVariableAbstract.prototype.getAllBoundVariables = function() {
 };
 
 /**
+ * Returns a list of variables to highlight when the container of this variable
+ * is hovered by users.
+ * @return {Array.<!Blockly.BoundVariableAbstract>} A list of variables.
+ */
+Blockly.BoundVariableAbstract.prototype.getVariablesToHighlight = function() {
+  return this.getAllBoundVariables();
+};
+
+/**
  * Dispose of this variable.
  */
 Blockly.BoundVariableAbstract.prototype.dispose = function() {

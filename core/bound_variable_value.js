@@ -132,6 +132,23 @@ Blockly.BoundVariableValue.prototype.getAllBoundVariables = function() {
 };
 
 /**
+ * Returns a list of variables to highlight when the container of this variable
+ * is hovered by users.
+ * @return {Array.<!Blockly.BoundVariableAbstract>} A list of variables.
+ * @override
+ */
+Blockly.BoundVariableValue.prototype.getVariablesToHighlight = function() {
+  if (!this.isRecord()) {
+    return this.getAllBoundVariables();
+  }
+  var variables = [this];
+  for (var i = 0, child; child = this.childValues_[i]; i++) {
+    Array.prototype.push.apply(variables, child.getAllBoundVariables());
+  }
+  return variables;
+};
+
+/**
  * Dispose of this value.
  * @param {boolean=} opt_removeReference True if force to remove reference
  *     blocks which refer to this variable. If variable represents constructor,
