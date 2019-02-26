@@ -209,7 +209,7 @@ Blockly.RenderedTypeExpr.shape['record'] = {
   },
 
   up: function(steps) {
-    steps.push('v -2 h -3 l -5,-3.5 v -4 h 5 v -3 h -5 v -4 l 5,-3.5 h 3');
+    steps.push('h -3 l -5,-3.5 v -4 h 5 v -3 h -5 v -4 l 5,-3.5 h 3 v -2');
   },
 
   height: function() {
