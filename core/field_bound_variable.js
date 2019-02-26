@@ -197,6 +197,7 @@ Blockly.FieldBoundVariable.prototype.init = function() {
   // If the variable is for a value, and the block is movable, this field can
   // have a potential block. Draw a block shape around the group SVG.
   if (this.forValue_ && this.sourceBlock_.isMovable()) {
+    this.hasPotentialBlock = true;
     this.blockShapedPath_ = Blockly.utils.createSvgElement('path',
         {
           'class': 'blocklyFieldBoundValue',
@@ -229,8 +230,6 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
     this.initDefaultVariableName_();
 
     if (this.forValue_) {
-      this.hasPotentialBlock = this.sourceBlock_.isMovable() &&
-          !this.isForRecordField();
       this.variable_ = Blockly.BoundVariables.createValue(
           this.defaultTypeExpr_,
           this.defaultVariableName_, this.label_);
