@@ -60,13 +60,17 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     var field = this.getField('DATANAME');
     var variableField =
         Blockly.FieldBoundVariable.newValueRecordField(null);
-    field.setChildValue(variableField);
     var index = this.itemCount_++;
     this.appendValueInput('FIELD_INP' + index)
         .appendField(variableField, 'FIELD' + index)
         .appendField(':')
         .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
         .setAlign(Blockly.ALIGN_RIGHT);
+    // Set a child value after appending its field to a block. Otherwise,
+    // the child value's block would not be initialized.
+    // To avoid this, call variableField.initModel() here or
+    // store the child after appendField().
+    field.setChildValue(variableField);
   },
 
   resizeRecordFieldInputs: function(expectedCount) {
