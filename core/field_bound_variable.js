@@ -232,16 +232,19 @@ Blockly.FieldBoundVariable.prototype.initModel = function() {
       this.hasPotentialBlock = this.sourceBlock_.isMovable() &&
           !this.isForRecordField();
       this.variable_ = Blockly.BoundVariables.createValue(
-          this.sourceBlock_, this.name, this.defaultTypeExpr_,
+          this.defaultTypeExpr_,
           this.defaultVariableName_, this.label_);
 
       this.setPendingChildValues_();
     } else {
       this.variable_ = Blockly.BoundVariables.createReference(
-          this.sourceBlock_, this.name, this.defaultTypeExpr_,
+          this.defaultTypeExpr_,
           this.defaultVariableName_, this.label_,
           this.defaultBoundValue_);
     }
+  }
+  if (this.sourceBlock_ && this.name) {
+    this.variable_.setMainField(this);
   }
 };
 

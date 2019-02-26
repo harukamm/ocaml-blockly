@@ -13,32 +13,29 @@ goog.require('goog.string');
 
 /**
  * Class for a variable to implement variable binding.
- * @param {!Blockly.Block} block The block of this variable.
- * @param {!string} fieldName The name of the main field this variable is
- *     bound to.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of this
  *     variable.
  * @param {!number} label The enum representing type of variable.
  * @constructor
  */
-Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr, label) {
+Blockly.BoundVariableAbstract = function(typeExpr, label) {
   /**
    * The block the variable is declared in.
-   * @type {!Blockly.Block}
+   * @type {Blockly.Block|null}
    */
-  this.sourceBlock_ = block;
+  this.sourceBlock_ = null;
 
   /**
    * The workspace of this variable's block.
-   * @type {!Blockly.Workspace}
+   * @type {Blockly.Workspace|null}
    */
-  this.workspace_ = this.sourceBlock_.workspace;
+  this.workspace_ = null;
 
   /**
    * The name of the main field name on the block.
    * @type {string}
    */
-  this.mainFieldName_ = fieldName;
+  this.mainFieldName_ = null;
 
   /**
    * The type expression of this variable.
@@ -75,33 +72,59 @@ Blockly.BoundVariableAbstract = function(block, fieldName, typeExpr, label) {
 
 /**
  * Get the source block for this varialbe.
- * @return {!Blockly.Block} The source block
+ * @return {Blockly.Block|null} The source block
  */
 Blockly.BoundVariableAbstract.prototype.getSourceBlock = function() {
-  return this.sourceBlock_;
+  return this.sourceBlock_ ? this.sourceBlock_ : null;
 };
 
 /**
  * Get the workspace of this variable's source block.
- * @return {!Blockly.Workspace} The source block's workspace, or null.
+ * @return {Blockly.Workspace|null} The source block's workspace, or null.
  */
 Blockly.BoundVariableAbstract.prototype.getWorkspace = function() {
-  return this.workspace_;
+  return this.workspace_ ? this.workspace_ : null;
+};
+
+/**
+ * Set the name of the main field this variable is bound to.
+ * @param {!Blockly.FieldBoundVariable} field
+ */
+Blockly.BoundVariableAbstract.prototype.setMainField = function(field) {
+  var fieldName = field.name;
+  if (!goog.isString(fieldName) || !fieldName.length) {
+    throw 'Expected a non empty string.';
+  }
+  this.mainFieldName_ = fieldName;
+
+  // TODO(harukam): Avoid accessing a private member.
+  var block = field.sourceBlock_;
+  if (!block) {
+    throw 'The given field is not initialized yet.'
+  }
+  this.sourceBlock_ = block;
+  this.workspace_ = block.workspace;
 };
 
 /**
  * Returns the name of the main field this variable is bound to.
- * @return {!string} The name of this variable's field.
+ * @return {string|null} The name of this variable's field.
  */
 Blockly.BoundVariableAbstract.prototype.getMainFieldName = function() {
-  return this.mainFieldName_;
+  return this.mainFieldName_ ? this.mainFieldName_ : null;
 };
 
 /**
  * Returns the field this variable is bound to.
- * @return {!Blockly.FieldBoundVariable} This variable's field.
+ * @return {Blockly.FieldBoundVariable|null} This variable's field.
  */
 Blockly.BoundVariableAbstract.prototype.getMainField = function() {
+  if (!this.sourceBlock_) {
+    return null;
+  }
+  if (!goog.isString(this.mainFieldName_)) {
+    return null;
+  }
   return this.sourceBlock_.getField(this.mainFieldName_);
 };
 

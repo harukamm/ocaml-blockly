@@ -12,17 +12,14 @@ goog.require('goog.string');
 
 /**
  * Class for a reference to variable defined in block.
- * @param {!Blockly.Block} block This reference's block.
- * @param {!string} fieldName The name of the field that contains this
- *     variable.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
  * @param {!string} varName The default name of this reference.
  * @param {!number} label An enum representing which type of reference.
  * @param {Blockly.BoundVariableValue=} opt_defaultBoundValue
  * @constructor
  */
-Blockly.BoundVariableValueReference = function(block, fieldName, typeExpr,
-    varName, label, opt_defaultBoundValue) {
+Blockly.BoundVariableValueReference = function(typeExpr, varName, label,
+    opt_defaultBoundValue) {
   /**
    * The variable this reference refers to, or null if it's not been resolved
    * yet.
@@ -40,15 +37,27 @@ Blockly.BoundVariableValueReference = function(block, fieldName, typeExpr,
   this.temporayDisplayName_ = varName;
 
   Blockly.BoundVariableValueReference.superClass_.constructor.call(this,
-      block, fieldName, typeExpr, label);
+      typeExpr, label);
 
   if (opt_defaultBoundValue) {
     this.setBoundValue(opt_defaultBoundValue);
   }
 
-  Blockly.BoundVariables.addReference(this.workspace_, this);
 };
 goog.inherits(Blockly.BoundVariableValueReference, Blockly.BoundVariableAbstract);
+
+/**
+ * Set the field this variable is attached to.
+ * @param {!Blockly.Block} block The source block.
+ * @override
+ */
+Blockly.BoundVariableValueReference.prototype.setMainField = function(field) {
+  if (this.mainFieldName_) {
+    return;
+  }
+  Blockly.BoundVariableValueReference.superClass_.setMainField.call(this, field);
+  Blockly.BoundVariables.addReference(this.workspace_, this);
+};
 
 /**
  * Returns if this variable is a reference.
@@ -114,8 +123,14 @@ Blockly.BoundVariableValueReference.prototype.getAllBoundVariables = function() 
  */
 Blockly.BoundVariableValueReference.prototype.isCyclicReference = function(
     opt_block) {
+  if (opt_block) {
+    var rootBlock = opt_block;
+  } else if (this.sourceBlock_) {
+    var rootBlock = this.sourceBlock_.getRootBlock();
+  } else {
+    return false;
+  }
   if (this.value_) {
-    var rootBlock = opt_block ? opt_block : this.sourceBlock_.getRootBlock();
     var valueBlock = this.value_.getSourceBlock();
     while (valueBlock) {
       if (valueBlock == rootBlock) {
@@ -185,7 +200,9 @@ Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
     }
     if (this.isConstructor() || this.isRecord()) {
       // Update parameter according to the definition of constructor.
-      this.sourceBlock_.infer();
+      if (this.sourceBlock_) {
+        this.sourceBlock_.infer();
+      }
     }
   }
 };
@@ -202,7 +219,9 @@ Blockly.BoundVariableValueReference.prototype.referenceChange_ = function() {
  * Dispose of this reference.
  */
 Blockly.BoundVariableValueReference.prototype.dispose = function() {
-  Blockly.BoundVariables.removeReference(this.workspace_, this);
+  if (this.workspace_) {
+    Blockly.BoundVariables.removeReference(this.workspace_, this);
+  }
   Blockly.BoundVariableValueReference.superClass_.dispose.call(this);
   if (this.value_) {
     this.value_.removeReference(this);

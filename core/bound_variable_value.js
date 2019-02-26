@@ -12,16 +12,12 @@ goog.require('goog.string');
 
 /**
  * Class for a variable declared in the block.
- * @param {!Blockly.Block} block The block the variable is declared in.
- * @param {!string} fieldName The name of the field that contains this
- *     variable.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
  * @param {!string} variableName The default name of this variable value.
  * @param {!number} label Enum representing which type of value.
  * @constructor
  */
-Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
-     variableName, label) {
+Blockly.BoundVariableValue = function(typeExpr, variableName, label) {
   /**
    * The variable name for this value.
    * @type {string}
@@ -55,15 +51,26 @@ Blockly.BoundVariableValue = function(block, fieldName, typeExpr,
    */
   this.deleteLater_ = false;
 
-  Blockly.BoundVariableValue.superClass_.constructor.call(this, block,
-      fieldName, typeExpr, label);
-
-  Blockly.BoundVariables.addValue(this.workspace_, this);
+  Blockly.BoundVariableValue.superClass_.constructor.call(this,
+      typeExpr, label);
 
   // TODO: Register an event for the variable creation.
   // Blockly.Events.fire(new Blockly.Events.VarCreate(this));
 };
 goog.inherits(Blockly.BoundVariableValue, Blockly.BoundVariableAbstract);
+
+/**
+ * Set the field this variable is attached to.
+ * @param {!Blockly.Block} block The source block.
+ * @override
+ */
+Blockly.BoundVariableValue.prototype.setMainField = function(field) {
+  if (this.mainFieldName_) {
+    return;
+  }
+  Blockly.BoundVariableValue.superClass_.setMainField.call(this, field);
+  Blockly.BoundVariables.addValue(this.workspace_, this);
+};
 
 /**
  * Bind references' type expression with this value's type expression.
@@ -149,8 +156,10 @@ Blockly.BoundVariableValue.prototype.dispose = function(opt_removeReference) {
   }
 
   if (this.referenceList_.length == 0) {
-    Blockly.BoundVariables.removeValue(this.workspace_, this);
-    delete this.sourceBlock_.typedValue[this.mainFieldName_];
+    if (this.sourceBlock_) {
+      this.sourceBlock_.typedValue[this.mainFieldName_];
+      Blockly.BoundVariables.removeValue(this.workspace_, this);
+    }
     Blockly.BoundVariableValue.superClass_.dispose.call(this);
   } else {
     // Currently can not be destroyed because this variable value has
@@ -167,6 +176,9 @@ Blockly.BoundVariableValue.prototype.dispose = function(opt_removeReference) {
  * @return {Blockly.Scheme} The type scheme for this value.
  */
 Blockly.BoundVariableValue.prototype.getTypeScheme = function(reference) {
+  if (!this.sourceBlock_ || !this.mainFieldName_) {
+    return null;
+  }
   return this.sourceBlock_.getTypeScheme(this.mainFieldName_, reference);
 };
 
@@ -288,6 +300,9 @@ Blockly.BoundVariableValue.prototype.getChildren = function() {
  * block is connected to their blocks directly or indirectly.
  */
 Blockly.BoundVariableValue.prototype.clearCyclicReference = function() {
+  if (!this.sourceBlock_) {
+    return;
+  }
   var thisRootBlock = this.sourceBlock_.getRootBlock();
   for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
     var block = reference.getSourceBlock();
@@ -307,7 +322,7 @@ Blockly.BoundVariableValue.prototype.clearCyclicReference = function() {
  */
 Blockly.BoundVariableValue.prototype.copyTo = function(variable) {
   var targetBlock = variable.getSourceBlock();
-  if (this.sourceBlock_.type !== targetBlock.type ||
+  if (this.sourceBlock_ && this.sourceBlock_.type !== targetBlock.type ||
       this.mainFieldName_ !== variable.getMainFieldName()) {
     throw 'Can\'t copy to a variable of the different type';
   }
@@ -317,7 +332,7 @@ Blockly.BoundVariableValue.prototype.copyTo = function(variable) {
   if (this.isConstructor() && this.referenceCount() != 0) {
     throw 'Not implemented';
   }
-  if (!this.sourceBlock_.isTransferring()) {
+  if (this.sourceBlock_ && !this.sourceBlock_.isTransferring()) {
     return;
   }
   // The transferring block is scheduled to be disposed of when it has finished

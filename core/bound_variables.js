@@ -18,17 +18,14 @@ goog.require('goog.string');
 
 /**
  * Create a value on the given block.
- * @param {!Blockly.Block} block The block to add the value to.
- * @param {string} fieldName The name of the variable field.
  * @param {!Blockly.TypeExpr} valueTypeExpr The type for the value.
  * @param {!string} variableName The default name of this variable value.
  */
-Blockly.BoundVariables.createValue = function(block, fieldName, valueTypeExpr,
-      variableName, label) {
+Blockly.BoundVariables.createValue = function(valueTypeExpr, variableName,
+    label) {
   goog.asserts.assert(Blockly.BoundVariableAbstract.isValidLabel(label),
       'Invalid variable label.');
-  return new Blockly.BoundVariableValue(block, fieldName, valueTypeExpr,
-      variableName, label);
+  return new Blockly.BoundVariableValue(valueTypeExpr, variableName, label);
 };
 
 /**
@@ -100,19 +97,17 @@ Blockly.BoundVariables.getValueById = function(label, workspace, id) {
 
 /**
  * Create a reference on the given block.
- * @param {!Blockly.Block} block The block to add the reference to.
- * @param {string} fieldName The name of the variable field.
  * @param {!Blockly.TypeExpr} typeExpr The type expression of the variable.
  * @param {!string} name The default variable name.
  * @param {!number} label The enum presenting type of reference.
  * @param {Blockly.BoundVariableValue=} opt_defaultBoundValue
  */
-Blockly.BoundVariables.createReference = function(block, fieldName, typeExpr,
-    name, label, opt_defaultBoundValue) {
+Blockly.BoundVariables.createReference = function(typeExpr, name, label,
+    opt_defaultBoundValue) {
   goog.asserts.assert(Blockly.BoundVariableAbstract.isValidLabel(label),
       'Invalid variable label.');
-  return new Blockly.BoundVariableValueReference(block, fieldName, typeExpr,
-    name, label, opt_defaultBoundValue);
+  return new Blockly.BoundVariableValueReference(typeExpr, name, label,
+      opt_defaultBoundValue);
 };
 
 /**
