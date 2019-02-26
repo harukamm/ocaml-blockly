@@ -198,7 +198,6 @@ Blockly.BoundVariableValueReference.prototype.removeBoundValue = function() {
 
 /**
  * Bind the type expression with the value's type expression.
- * @override
  */
 Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
   var valueType = this.value_ && this.value_.getTypeExpr();

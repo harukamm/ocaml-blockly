@@ -147,11 +147,6 @@ Blockly.BoundVariableAbstract.prototype.setTypeExpr = function(typeExpr) {
 };
 
 /**
- * Restore the bindings on the type expressions.
- */
-Blockly.BoundVariableAbstract.prototype.unifyTypeExpr = undefined;
-
-/**
  * Returns if this variable is a reference.
  * @return {boolean} True if this variable is a reference.
  */

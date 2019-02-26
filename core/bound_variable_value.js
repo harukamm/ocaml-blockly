@@ -81,16 +81,6 @@ Blockly.BoundVariableValue.prototype.setMainField = function(field) {
 };
 
 /**
- * Bind references' type expression with this value's type expression.
- * @override
- */
-Blockly.BoundVariableValue.prototype.unifyTypeExpr = function() {
-  for (var i = 0, reference; reference = this.referenceList_[i]; i++) {
-    reference.unifyTypeExpr();
-  }
-};
-
-/**
  * Returns if this variable is a reference.
  * @return {boolean} True if this variable is a reference.
  * @override
