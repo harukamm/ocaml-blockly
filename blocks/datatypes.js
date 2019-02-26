@@ -163,10 +163,13 @@ Blockly.Blocks['create_record_typed'] = {
     this.fieldCount_ = 0;
   },
 
-  appendFieldInput: function(index) {
+  appendFieldInput: function(index, fieldValue) {
     var storedRendered = this.rendered;
     this.rendered = false;
-    var field = Blockly.FieldBoundVariable.newReferenceRecordField(null);
+    var field = Blockly.FieldBoundVariable.newReferenceRecordField(null,
+        fieldValue.getVariableName());
+    field.setBoundValue(fieldValue);
+
     var input = this.appendValueInput('FIELD_INP' + index);
     if (index != 0) {
       input.appendField(';');
@@ -188,11 +191,8 @@ Blockly.Blocks['create_record_typed'] = {
     }
     for (var i = 0; i < children.length; i++) {
       if (this.fieldCount_ <= i) {
-        this.appendFieldInput(i);
+        this.appendFieldInput(i, children[i]);
       }
-      var field = this.getField('FIELD' + i);
-      field.setVariableName(children[i].getVariableName());
-      field.setBoundValue(children[i]);
     }
     if (goog.array.last(this.inputList).name != 'RBRACE') {
       this.removeInput('RBRACE');
