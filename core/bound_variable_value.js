@@ -157,7 +157,6 @@ Blockly.BoundVariableValue.prototype.dispose = function(opt_removeReference) {
 
   if (this.referenceList_.length == 0) {
     if (this.sourceBlock_) {
-      this.sourceBlock_.typedValue[this.mainFieldName_];
       Blockly.BoundVariables.removeValue(this.workspace_, this);
     }
     Blockly.BoundVariableValue.superClass_.dispose.call(this);
