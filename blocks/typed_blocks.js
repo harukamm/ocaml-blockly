@@ -844,11 +844,6 @@ Blockly.Blocks['function_app_typed'] = {
    */
   domToMutation: function(xmlElement) {
     var newParamCount = parseInt(xmlElement.getAttribute('params'), 0);
-    goog.asserts.assert(this.paramCount_ == 0,
-        'Default parameter count must be zero.');
-    if (newParamCount == 0) {
-      return;
-    }
     // Update parameter inputs depending on the type of the reference value.
     this.updateInput();
     if (this.paramCount_ == newParamCount) {
