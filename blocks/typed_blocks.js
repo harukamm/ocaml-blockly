@@ -1071,11 +1071,12 @@ Blockly.Blocks['match_typed'] = {
     var index = this.itemCount_++;
     this.appendValueInput('PATTERN' + index)
         .setTypeExpr(new Blockly.TypeExpr.PATTERN(inputType));
-    this.appendValueInput('OUTPUT' + index)
+    var input = this.appendValueInput('OUTPUT' + index)
         .setTypeExpr(this.outputConnection.typeExpr)
         .appendField('->')
         .setAlign(Blockly.ALIGN_RIGHT)
         .setWorkbench(new Blockly.Workbench());
+    return input;
   },
 
   resizePatternInput: function(expectedCount) {

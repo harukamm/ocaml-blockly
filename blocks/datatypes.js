@@ -61,7 +61,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     var variableField =
         Blockly.FieldBoundVariable.newValueRecordField(null);
     var index = this.itemCount_++;
-    this.appendValueInput('FIELD_INP' + index)
+    var input = this.appendValueInput('FIELD_INP' + index)
         .appendField(variableField, 'FIELD' + index)
         .appendField(':')
         .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
@@ -71,6 +71,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     // To avoid this, call variableField.initModel() here or
     // store the child after appendField().
     field.setChildValue(variableField);
+    return input;
   },
 
   resizeRecordFieldInputs: function(expectedCount) {
@@ -184,6 +185,7 @@ Blockly.Blocks['create_record_typed'] = {
     field.initModel();
     this.rendered = storedRendered;
     this.fieldCount_++;
+    return input;
   },
 
   updateStructure: function() {
@@ -267,12 +269,13 @@ Blockly.Blocks['defined_datatype_typed'] = {
     var variableField =
         Blockly.FieldBoundVariable.newValueConstructor(ctrType);
     var index = this.itemCount_++;
-    this.appendValueInput('CTR_INP' + index)
+    var input = this.appendValueInput('CTR_INP' + index)
         .appendField('|')
         .appendField(variableField, 'CTR' + index)
         .appendField('of')
         .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
         .setAlign(Blockly.ALIGN_RIGHT);
+    return input;
   },
 
   resizeCtorInputs: function(expectedCount) {
