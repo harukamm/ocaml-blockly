@@ -198,7 +198,17 @@ Blockly.Blocks['create_record_typed'] = {
     }
     for (var i = 0; i < children.length; i++) {
       if (this.fieldCount_ <= i) {
-        this.appendFieldInput(i, children[i]);
+        var input = this.appendFieldInput(i, children[i]);
+      } else {
+        var input = this.getInput('FIELD_INP' + i);
+      }
+      var def = children[i].getStructureTypeDef();
+      if (def) {
+        input.setTypeExpr(def, true);
+      } else {
+        // TODO(harukam): Create new type expression to represent disabled
+        // connections.
+        input.setTypeExpr(def, true);
       }
     }
     if (goog.array.last(this.inputList).name != 'RBRACE') {

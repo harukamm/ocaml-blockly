@@ -1422,3 +1422,69 @@ function test_type_unification_resizeRecordBlock() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_changeRecordTypeCtor() {
+  var workspace = create_typed_workspace();
+  try {
+    var defineRecord = workspace.newBlock('defined_recordtype_typed');
+    var value = getVariable(defineRecord);
+    var fieldSize = defineRecord.itemCount_;
+    assertEquals(fieldSize, value.getChildren().length);
+
+    var recordBlock = workspace.newBlock('create_record_typed');
+    var reference = recordBlock.getField('RECORD').getVariable();
+    reference.setVariableName(value.getVariableName());
+    reference.setBoundValue(value);
+
+    defineRecord.resizeRecordFieldInputs(4);
+    assertEquals(4, value.getChildren().length);
+
+    function check(typeBlocks) {
+      assertEquals(typeBlocks.length, value.getChildren().length);
+      for (var i = 0; i < typeBlocks.length; i++) {
+        var typeBlock = typeBlocks[i];
+        defineRecord.getInput('FIELD_INP' + i).connection.connect(
+            typeBlock.outputConnection);
+        var input = recordBlock.getInput('FIELD_INP' + i);
+        assertNotNull(input);
+        var typeName = typeBlock.type.replace(/^([a-z]+)_.*$/, '$1');
+        if (typeName === 'int') {
+          assertTrue(input.connection.typeExpr.isInt());
+        } else if (typeName === 'float') {
+          assertTrue(input.connection.typeExpr.isFloat());
+        } else if (typeName === 'bool') {
+          assertTrue(input.connection.typeExpr.isBool());
+        } else if (typeName === 'string') {
+          assertTrue(input.connection.typeExpr.isString());
+        } else if (typeName === 'pair') {
+          assertTrue(input.connection.typeExpr.isPair());
+          assertNull(input.connection.typeExpr.first_type);
+          assertNull(input.connection.typeExpr.second_type);
+        } else {
+          assertTrue(false);
+        }
+      }
+      for (var i = 0; i < typeBlocks.length; i++) {
+        var typeBlock = typeBlocks[i];
+        typeBlock.outputConnection.disconnect();
+      }
+    }
+    var intType = workspace.newBlock('int_type_typed');
+    var floatType = workspace.newBlock('float_type_typed');
+    var boolType = workspace.newBlock('bool_type_typed');
+    var stringType = workspace.newBlock('string_type_typed');
+    var pairType = workspace.newBlock('pair_type_constructor_typed');
+    check([intType, floatType, stringType, boolType]);
+    check([pairType, intType, stringType, floatType]);
+
+    defineRecord.resizeRecordFieldInputs(2);
+    assertEquals(2, value.getChildren().length);
+
+    var intType2 = workspace.newBlock('int_type_typed');
+    var pairType2 = workspace.newBlock('pair_type_constructor_typed');
+    check([intType, intType2]);
+    check([pairType, pairType2]);
+  } finally {
+    workspace.dispose();
+  }
+}
