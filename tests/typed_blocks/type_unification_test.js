@@ -1405,6 +1405,18 @@ function test_type_unification_resizeRecordBlock() {
     assertEquals(2, value.getChildren().length);
     assertEquals(firstChild, value.getChildren()[0]);
     assertEquals(secondChild, value.getChildren()[1]);
+
+    var recordBlock = workspace.newBlock('create_record_typed');
+    var reference = recordBlock.getField('RECORD').getVariable();
+    reference.setVariableName(value.getVariableName());
+    reference.setBoundValue(value);
+
+    var children = value.getChildren();
+    for (var i = 0, child; child = children[i]; i++) {
+      var field = recordBlock.getField('FIELD' + i);
+      assertNotNull(field);
+      assertEquals(child, field.getBoundValue());
+    }
   } finally {
     Blockly.mainWorkspace = null;
     workspace.dispose();

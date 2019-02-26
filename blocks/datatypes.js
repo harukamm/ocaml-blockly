@@ -173,6 +173,7 @@ Blockly.Blocks['create_record_typed'] = {
     }
     input.appendField(field, 'FIELD' + index)
     input.appendField('=');
+    field.initModel();
     this.rendered = storedRendered;
     this.fieldCount_++;
   },
