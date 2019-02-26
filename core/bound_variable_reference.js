@@ -164,6 +164,7 @@ Blockly.BoundVariableValueReference.prototype.getBoundValue = function() {
  * @param {!Blockly.BoundVariableValue} value The variable to refer to.
  */
 Blockly.BoundVariableValueReference.prototype.setBoundValue = function(value) {
+  goog.asserts.assert(this.label == value.label && !value.isReference());
   if (this.value_) {
     if (this.value_ == value) {
       return;
