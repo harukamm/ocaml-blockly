@@ -200,6 +200,27 @@ Blockly.BoundVariableValue.prototype.getTypeScheme = function(reference) {
 };
 
 /**
+ * Gets type description for this value. Returns undefined if this variable's
+ * block is not a structure declaration.
+ * @return {undefined|null|!Blockly.TypeExpr} The type description if it's found.
+ *     Null if it's empty. Otherwise undefined.
+ */
+Blockly.BoundVariableValue.prototype.getStructureTypeDef = function() {
+  if (this.isRecordField()) {
+    var block = this.parentValue_ ? this.parentValue_.getSourceBlock() : null;
+  } else {
+    var block = this.sourceBlock_;
+  }
+  if (!block) {
+    return undefined;
+  }
+  if (!goog.isFunction(block.getStructureTypeDef)) {
+    return undefined;
+  }
+  return block.getStructureTypeDef(this.getMainFieldName());
+};
+
+/**
  * Return a number of the references that refers to this value.
  * @return {number} The number of references.
  */

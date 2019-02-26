@@ -201,6 +201,9 @@ Blockly.BoundVariableAbstract.prototype.isConstructor = function() {
 Blockly.BoundVariableAbstract.prototype.isRecord = function() {
   return this.label == Blockly.BoundVariableAbstract.RECORD;
 };
+Blockly.BoundVariableAbstract.prototype.isRecordField = function() {
+  return this.label == Blockly.BoundVariableAbstract.RECORD_FIELD;
+};
 Blockly.BoundVariableAbstract.isValidLabel = function(label) {
   return Blockly.BoundVariableAbstract._LABEL_LIST.indexOf(label) != -1;
 };

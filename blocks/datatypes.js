@@ -44,8 +44,9 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     return this.recordId_;
   },
 
-  getRecordDef: function(fieldName) {
-    goog.asserts.fail('Not implemented yet.');
+  getStructureTypeDef: function(fieldName) {
+    var inputName = fieldName.replace(/FIELD(\d+)/, 'FIELD_INP$1');
+    return this.getTargetTypeCtor(inputName);
   },
 
   getTypeScheme: function(fieldName) {
@@ -358,9 +359,7 @@ Blockly.Blocks['create_construct_typed'] = {
     if (!value) {
       return [];
     }
-    var valueBlock = value.getSourceBlock();
-    var fieldName = value.getMainFieldName();
-    var def = valueBlock.getStructureTypeDef(fieldName);
+    var def = value.getStructureTypeDef();
     goog.asserts.assert(def !== undefined, 'Unknown type ctor.');
 
     var lparenInput = this.getInput('LPAREN');
