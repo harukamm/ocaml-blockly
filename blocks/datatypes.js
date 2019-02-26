@@ -138,6 +138,10 @@ Blockly.Blocks['defined_recordtype_typed'] = {
   compose: function(containerBlock) {
     var itemCount = containerBlock.getItemCount();
     this.resizeRecordFieldInputs(itemCount);
+  },
+
+  wouldChange: function(containerBlock) {
+    return containerBlock.getItemCount() != this.itemCount_;
   }
 };
 
@@ -339,6 +343,10 @@ Blockly.Blocks['defined_datatype_typed'] = {
   compose: function(containerBlock) {
     var itemCount = containerBlock.getItemCount();
     this.resizeCtorInputs(itemCount);
+  },
+
+  wouldChange: function(containerBlock) {
+    return containerBlock.getItemCount() != this.itemCount_;
   }
 };
 
