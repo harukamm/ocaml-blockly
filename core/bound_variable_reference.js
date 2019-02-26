@@ -218,9 +218,7 @@ Blockly.BoundVariableValueReference.prototype.updateStructure = function() {
     return;
   }
   // Update parameter inputs based on the value.
-  if (goog.isFunction(this.sourceBlock_.updateInput)) {
-    this.sourceBlock_.updateInput();
-  } else if (this.isConstructor() || this.isRecord()) {
+  if (goog.isFunction(this.sourceBlock_.updateStructure)) {
     this.sourceBlock_.updateStructure();
   }
 };

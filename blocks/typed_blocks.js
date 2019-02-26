@@ -792,7 +792,7 @@ Blockly.Blocks['function_app_typed'] = {
     }
   },
 
-  updateInput: function() {
+  updateStructure: function() {
     var variable = this.typedReference['VAR'];
     var type = variable.getTypeExpr();
     var types = Blockly.TypeExpr.functionToArray(type);
@@ -845,7 +845,7 @@ Blockly.Blocks['function_app_typed'] = {
   domToMutation: function(xmlElement) {
     var newParamCount = parseInt(xmlElement.getAttribute('params'), 0);
     // Update parameter inputs depending on the type of the reference value.
-    this.updateInput();
+    this.updateStructure();
     if (this.paramCount_ == newParamCount) {
       return;
     }
@@ -881,10 +881,10 @@ Blockly.Blocks['function_app_typed'] = {
     if (schemeInEnv) {
       // Fix: let rec c = ... c
       schemeInEnv.unify(variable.getTypeExpr());
-      this.updateInput();
+      this.updateStructure();
     } else if (ctx.canUnifyOrphan()) {
       variable.unifyTypeExpr();
-      this.updateInput();
+      this.updateStructure();
     }
 
     for (var i = 0; i < this.paramCount_; i++) {
