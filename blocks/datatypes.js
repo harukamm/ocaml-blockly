@@ -363,21 +363,6 @@ Blockly.Blocks['create_construct_typed'] = {
     this.setInputsInline(true);
   },
 
-  removeInputSafely_: function(input) {
-    if (!input || this.inputList.indexOf(input) == -1) {
-      return;
-    }
-    var targetBlock = input.connection ?
-        input.connection.targetBlock() : null;
-    this.removeInput(input.name);
-    if (targetBlock) {
-      var unresolvedRefs = targetBlock.getUnboundVariables();
-      for (var i = 0, ref; ref = unresolvedRefs[i]; i++) {
-        ref.getSourceBlock().dispose();
-      }
-    }
-  },
-
   updateAndGetParameterInputs_: function() {
     // TODO(harukam): Move the following code to the bound-varaible class.
     var value = this.getField('CONSTRUCTOR').getBoundValue();
@@ -395,8 +380,8 @@ Blockly.Blocks['create_construct_typed'] = {
     var paramInputs = [];
 
     if (paramSize == 0) {
-      this.removeInputSafely_(lparenInput);
-      this.removeInputSafely_(rparenInput);
+      this.removeInputSafely(lparenInput);
+      this.removeInputSafely(rparenInput);
     }
 
     // Collect current parameter inputs. If there are more inputs than
@@ -410,7 +395,7 @@ Blockly.Blocks['create_construct_typed'] = {
       var index = parseInt(m[1]);
       var currentSize = index + 1;
       if (paramSize < currentSize) {
-        this.removeInputSafely_(input);
+        this.removeInputSafely(input);
         continue;
       }
       if (1 <= index) {

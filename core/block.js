@@ -2309,6 +2309,27 @@ Blockly.Block.prototype.getUnboundVariables = function() {
   return collector.getUnboundVariables();
 };
 
+/**
+ * Remove an input from this block after deleting free variables on the
+ * attached value block. If the given input does not exist in this block, just
+ * ignore.
+ * @param {Blockly.Input} input The input to be removed. If null, do nothing.
+ */
+Blockly.Block.prototype.removeInputSafely = function(input) {
+  if (!input || this.inputList.indexOf(input) == -1) {
+    return;
+  }
+  var targetBlock = input.connection ?
+      input.connection.targetBlock() : null;
+  this.removeInput(input.name);
+  if (targetBlock) {
+    var unresolvedRefs = targetBlock.getUnboundVariables();
+    for (var i = 0, ref; ref = unresolvedRefs[i]; i++) {
+      ref.getSourceBlock().dispose();
+    }
+  }
+};
+
 /* End functions related variable binding. */
 
 /**
