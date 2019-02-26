@@ -178,6 +178,7 @@ Blockly.BoundVariableValueReference.prototype.setBoundValue = function(value) {
   this.value_ = value;
   value.storeReference(this);
   this.unifyTypeExpr();
+  this.updateStructure();
 
   this.referenceChange_();
 };
@@ -206,12 +207,20 @@ Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
     if (scheme) {
       scheme.unify(this.typeExpr_);
     }
-    if (this.isConstructor() || this.isRecord()) {
-      // Update parameter according to the definition of constructor.
-      if (this.sourceBlock_) {
-        this.sourceBlock_.updateStructure();
-      }
-    }
+  }
+};
+
+/**
+ * Update the block's structure based on the value this reference refers to.
+ */
+Blockly.BoundVariableValueReference.prototype.updateStructure = function() {
+  if (!this.value_ || !this.sourceBlock_) {
+    return;
+  }
+  var isStructure = this.isConstructor() || this.isRecord();
+  // Update parameter according to the definition of constructor.
+  if (isStructure) {
+    this.sourceBlock_.updateStructure();
   }
 };
 
