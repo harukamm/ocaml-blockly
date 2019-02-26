@@ -458,9 +458,6 @@ Blockly.Workbench.prototype.blocksForFlyout_ = function(flyoutWorkspace) {
     field.initModel();
     field.setVariableName(name);
     field.setBoundValue(variable);
-    if (goog.isFunction(getterBlock.updateInput)) {
-      getterBlock.updateInput();
-    }
     blocks.push(getterBlock);
   }
   return blocks;

@@ -126,9 +126,6 @@ function createReferenceBlock(value, useAppBlock, opt_workspace) {
   }
   ref.setVariableName(value.getVariableName());
   ref.setBoundValue(value);
-  if (useAppBlock) {
-    block.updateInput();
-  }
   return block;
 }
 

@@ -675,9 +675,6 @@ Blockly.FieldBoundVariable.prototype.newReferenceBlock_ = function() {
 
   field.setVariableName(this.variable_.getVariableName());
   field.setBoundValue(this.variable_);
-  if (goog.isFunction(getterBlock.updateInput)) {
-    getterBlock.updateInput();
-  }
   getterBlock.render(false);
 
   return getterBlock;
