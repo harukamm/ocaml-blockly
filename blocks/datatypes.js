@@ -62,7 +62,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     field.setChildValue(variableField);
     var index = this.itemCount_++;
     this.appendValueInput('FIELD_INP' + index)
-        .appendField(variableField, 'CTR' + index)
+        .appendField(variableField, 'FIELD' + index)
         .appendField(':')
         .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
         .setAlign(Blockly.ALIGN_RIGHT);
