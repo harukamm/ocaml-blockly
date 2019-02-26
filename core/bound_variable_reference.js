@@ -209,7 +209,7 @@ Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
     if (this.isConstructor() || this.isRecord()) {
       // Update parameter according to the definition of constructor.
       if (this.sourceBlock_) {
-        this.sourceBlock_.infer();
+        this.sourceBlock_.updateStructure();
       }
     }
   }

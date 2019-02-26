@@ -171,7 +171,9 @@ Blockly.Blocks['create_record_typed'] = {
     this.fieldCount_++;
   },
 
-  resizeRecordFields_: function(value) {
+  updateStructure: function() {
+    var reference = this.getField('RECORD').getVariable();
+    var value = reference.getBoundValue();
     var children = value ? value.getChildren() : [];
     while (children.length < this.fieldCount_) {
       var index = --this.fieldCount_;
@@ -196,9 +198,7 @@ Blockly.Blocks['create_record_typed'] = {
   },
 
   infer: function() {
-    var reference = this.getField('RECORD').getVariable();
-    var value = reference.getBoundValue();
-    this.resizeRecordFields_(value);
+    this.updateStructure();
   }
 };
 
@@ -448,6 +448,10 @@ Blockly.Blocks['create_construct_typed'] = {
       goog.asserts.fail('Not supported type ctor: ' + def.toString());
     }
     return paramInputs;
+  },
+
+  updateStructure: function() {
+    this.updateAndGetParameterInputs_();
   },
 
   infer: function(ctx) {
