@@ -241,21 +241,9 @@ Blockly.Blocks['defined_datatype_typed'] = {
     return this.constructId_;
   },
 
-  getTypeCtorDef: function(fieldName) {
-    if (!fieldName.startsWith('CTR')) {
-      return undefined;
-    }
-    var n = parseInt(fieldName.substring(3));
-    if (isNaN(n) || this.itemCount_ <= n) {
-      return undefined;
-    }
-    var inputName = 'CTR_INP' + n;
-    var block = this.getInputTargetBlock(inputName);
-    if (!block) {
-      return null;
-    }
-    var typeCtor = block.getTypeCtor();
-    return typeCtor;
+  getStructureTypeDef: function(fieldName) {
+    var inputName = fieldName.replace(/CTR(\d+)/, 'CTR_INP$1');
+    return this.getTargetTypeCtor(inputName);
   },
 
   getTypeScheme: function(fieldName) {
@@ -372,7 +360,7 @@ Blockly.Blocks['create_construct_typed'] = {
     }
     var valueBlock = value.getSourceBlock();
     var fieldName = value.getMainFieldName();
-    var def = valueBlock.getTypeCtorDef(fieldName);
+    var def = valueBlock.getStructureTypeDef(fieldName);
     goog.asserts.assert(def !== undefined, 'Unknown type ctor.');
 
     var lparenInput = this.getInput('LPAREN');

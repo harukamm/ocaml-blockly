@@ -1675,6 +1675,29 @@ Blockly.Block.prototype.getInputTargetBlock = function(name) {
 };
 
 /**
+ * Returns type description of the block attached to the named input.
+ * @return {undefined|null|!Blockly.TypeExpr} The type description if it's found.
+ *     If the specified input does not exist, undefined. Otherwise null.
+ */
+Blockly.Block.prototype.getTargetTypeCtor = function(name) {
+  if (!name) {
+    return undefined;
+  }
+  var input = this.getInput(name);
+  if (!input || !input.connection) {
+    return undefined;
+  }
+  var block = input.connection.targetBlock();
+  if (!block) {
+    return null;
+  }
+  if (!goog.isFunction(block.getTypeCtor)) {
+    return null;
+  }
+  return block.getTypeCtor();
+};
+
+/**
  * Returns the target connection which connect this block to the parent block.
  * @return {Blockly.Connection} The target connection if this block has a
  *     parent. Otherwise, null.
