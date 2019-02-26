@@ -188,9 +188,6 @@ Blockly.TypeExpr.prototype.isStructure = function() {
 Blockly.TypeExpr.prototype.isPattern = function() {
   return this.label == Blockly.TypeExpr.PATTERN_;
 };
-Blockly.TypeExpr.prototype.isString = function() {
-  return this.label == Blockly.TypeExpr.STRING_;
-};
 Blockly.TypeExpr.prototype.isTypeVar = function() {
   return this.label == Blockly.TypeExpr.TVAR_;
 };
