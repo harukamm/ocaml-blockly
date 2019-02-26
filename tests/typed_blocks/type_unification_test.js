@@ -1264,28 +1264,49 @@ function test_type_unification_constructBlockSimple() {
       var inp = ctr.getInput('PARAM0');
       assertNull(inp);
       defineCtr.getInput('CTR_INP0').connection.connect(typeBlock.outputConnection);
-      var inp = ctr.getInput('PARAM0');
-      assertNotNull(inp);
+      var inp0 = ctr.getInput('PARAM0');
+      var inp1 = ctr.getInput('PARAM1');
+      assertNotNull(inp0);
       if (typeName === 'int') {
-        assertTrue(inp.connection.typeExpr.isInt());
+        assertTrue(inp0.connection.typeExpr.isInt());
         var block = workspace.newBlock('int_typed');
       } else if (typeName === 'float') {
-        assertTrue(inp.connection.typeExpr.isFloat());
+        assertTrue(inp0.connection.typeExpr.isFloat());
         var block = workspace.newBlock('float_typed');
+      } else if (typeName === 'bool') {
+        assertTrue(inp0.connection.typeExpr.isBool());
+        var block = workspace.newBlock('logic_boolean_typed');
+      } else if (typeName === 'string') {
+        assertTrue(inp0.connection.typeExpr.isString());
+        var block = workspace.newBlock('string_typed');
+      } else if (typeName === 'pair') {
+        assertNotNull(inp1);
+        assertNull(inp0.connection.typeExpr);
+        assertNull(inp1.connection.typeExpr);
+        return;
       } else {
         assertTrue(false);
       }
-      inp.connection.connect(block.outputConnection);
-      assertTrue(inp.connection.isConnected());
+      inp0.connection.connect(block.outputConnection);
+      assertTrue(inp0.connection.isConnected());
     }
     var intType = workspace.newBlock('int_type_typed');
     var floatType = workspace.newBlock('float_type_typed');
+    var boolType = workspace.newBlock('bool_type_typed');
+    var stringType = workspace.newBlock('string_type_typed');
+    var pairType = workspace.newBlock('pair_type_constructor_typed');
     check(intType, 'int');
     intType.outputConnection.disconnect();
     check(floatType, 'float');
     floatType.outputConnection.disconnect();
     check(intType, 'int');
     intType.outputConnection.disconnect();
+    check(stringType, 'string');
+    stringType.outputConnection.disconnect();
+    check(boolType, 'bool');
+    boolType.outputConnection.disconnect();
+    check(pairType, 'pair');
+    pairType.outputConnection.disconnect();
   } finally {
     Blockly.mainWorkspace = null;
     workspace.dispose();
