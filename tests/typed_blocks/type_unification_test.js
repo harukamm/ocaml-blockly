@@ -1362,3 +1362,20 @@ function test_type_unification_fixLetStatementUnboundVariables() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_resizeRecordBlock() {
+  var workspace = create_typed_workspace();
+  Blockly.mainWorkspace = workspace;
+  try {
+    var defineRecord = workspace.newBlock('defined_recordtype_typed');
+    var value = getVariable(defineRecord);
+    var fieldSize = defineRecord.itemCount_;
+    assertEquals(fieldSize, value.getChildren().length);
+
+    defineRecord.resizeRecordFieldInputs(0);
+    assertEquals(0, value.getChildren().length);
+  } finally {
+    Blockly.mainWorkspace = null;
+    workspace.dispose();
+  }
+}

@@ -231,7 +231,11 @@ Blockly.BoundVariableValue.prototype.canRelateTo_ = function(val) {
  */
 Blockly.BoundVariableValue.prototype.setParent = function(parentValue) {
   if (!parentValue) {
+    var currentParent = this.parentValue_;
     this.parentValue_ = null;
+    if (currentParent) {
+      currentParent.removeChild(this);
+    }
   } else if (parentValue != this.parentValue_) {
     goog.asserts.assert(!this.parentValue_,
         'Multi-Level parent-child is not allowed.');

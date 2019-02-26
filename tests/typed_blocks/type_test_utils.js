@@ -22,6 +22,8 @@ function getVariableFieldName(block, opt_n) {
     case 'variables_get_typed':
     case 'function_app_typed':
       return 'VAR';
+    case 'defined_recordtype_typed':
+      return 'DATANAME';
     case 'defined_datatype_typed':
       goog.asserts.assert(goog.isNumber(opt_n));
       return 'CTR' + opt_n;
