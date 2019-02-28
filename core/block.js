@@ -977,6 +977,22 @@ Blockly.Block.prototype.setNextStatement = function(newBoolean, opt_check) {
 };
 
 /**
+ * Set or remove previous and next statements with dummy type expressions.
+ * @param {boolean} newBoolean True if there can be statements.
+ */
+Blockly.Block.prototype.setTypedStatements = function(newBoolean) {
+  this.setPreviousStatement(newBoolean);
+  this.setNextStatement(newBoolean);
+
+  if (newBoolean) {
+    // Append dummy type expression to statement connections so that they
+    // can trigger types/variables check.
+    this.previousConnection.setTypeExpr(Blockly.TypeExpr.generateTypeVar());
+    this.nextConnection.setTypeExpr(Blockly.TypeExpr.generateTypeVar());
+  }
+};
+
+/**
  * Set whether this block returns a value.
  * @param {boolean} newBoolean True if there is an output.
  * @param {(string|Array.<string>|null)=} opt_check Returned type or list

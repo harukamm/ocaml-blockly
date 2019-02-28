@@ -1461,15 +1461,9 @@ Blockly.Blocks['let_typed'] = {
         this.removeInput('EXP2');
       }
       this.setOutput(false);
-      this.setPreviousStatement(true);
-      this.setNextStatement(true);
-      // Append dummy type expression to statement connections so that they
-      // can trigger types/variables check.
-      this.previousConnection.setTypeExpr(Blockly.TypeExpr.generateTypeVar());
-      this.nextConnection.setTypeExpr(Blockly.TypeExpr.generateTypeVar());
+      this.setTypedStatements(true);
     } else {
-      this.setPreviousStatement(false);
-      this.setNextStatement(false);
+      this.setTypedStatements(false);
       this.setOutput(true);
       var exp2Type = Blockly.TypeExpr.generateTypeVar();
       this.appendValueInput('EXP2')

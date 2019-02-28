@@ -29,7 +29,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setInputsInline(false);
 
-    this.setOutput(false);
+    this.setTypedStatements(true);
     this.setMutator(new Blockly.Mutator(['constructor_variant_item']));
     this.setWorkbench(new Blockly.TypeWorkbench());
 
@@ -242,7 +242,7 @@ Blockly.Blocks['defined_datatype_typed'] = {
     this.appendCtorInput();
     this.appendCtorInput();
 
-    this.setOutput(false);
+    this.setTypedStatements(true);
     this.setMutator(new Blockly.Mutator(['constructor_variant_item']));
     this.setWorkbench(new Blockly.TypeWorkbench());
 
