@@ -1417,6 +1417,12 @@ function test_type_unification_resizeRecordBlock() {
       assertNotNull(field);
       assertEquals(child, field.getBoundValue());
     }
+
+    var ifBlock = workspace.newBlock('logic_ternary_typed');
+    ifBlock.getInput('THEN').connection.connect(
+        recordBlock.outputConnection);
+    var conn = ifBlock.getInput('ELSE').connection;
+    assertTrue(conn.typeExpr.deref().isRecord());
   } finally {
     Blockly.mainWorkspace = null;
     workspace.dispose();

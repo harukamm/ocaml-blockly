@@ -221,6 +221,7 @@ Blockly.Blocks['create_record_typed'] = {
 
   infer: function() {
     this.updateStructure();
+    return this.outputConnection.typeExpr;
   }
 };
 
