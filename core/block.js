@@ -1878,9 +1878,9 @@ Blockly.Block.inferBlocksType_ = function(blocks, opt_reset, opt_unifyOrphan) {
     }
   }
   for (var i = 0, block; block = blocks[i]; i++) {
-    if (!block.isTransferring() && goog.isFunction(block.infer)) {
+    if (!block.isTransferring()) {
       var context = new Blockly.Block.typeInferenceContext(opt_unifyOrphan);
-      block.infer(context);
+      block.inferTypes(context);
     }
   }
 };
@@ -1905,6 +1905,26 @@ Blockly.Block.prototype.clearTypes = function() {
   for (var i = 0, child; child = children[i]; i++) {
     child.clearTypes();
   }
+};
+
+/**
+ * Do type inference on this block and return its output type expression.
+ * If this block does not have the implementation of type inference, just
+ * return its output type or infer types of the next block.
+ * @return {Blockly.TypeExpr=} The output type expression.
+ */
+Blockly.Block.prototype.inferTypes = function(ctx) {
+  if (goog.isFunction(this.infer)) {
+    return this.infer(ctx);
+  }
+  if (this.outputConnection) {
+    return this.outputConnection.typeExpr;
+  }
+  var nextBlock;
+  if (this.nextConnection) {
+    nextBlock = this.nextConnection.targetBlock();
+  }
+  return nextBlock ? nextBlock.inferTypes(ctx) : null;
 };
 
 /**
@@ -2011,16 +2031,7 @@ Blockly.Block.prototype.callInfer = function(name, ctx) {
   if (!childBlock) {
     return null;
   }
-  if (goog.isFunction(childBlock.infer)) {
-    return childBlock.infer(ctx);
-  }
-  if (childBlock.outputConnection) {
-    if (ctx.useFreshTypes()) {
-      childBlock.outputConnection.typeExpr.clone();
-    }
-    return childBlock.outputConnection.typeExpr;
-  }
-  return null;
+  return childBlock.inferTypes(ctx);
 };
 
 /* End functions related type inference. */
