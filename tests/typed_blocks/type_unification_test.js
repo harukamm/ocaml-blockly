@@ -284,12 +284,11 @@ function test_type_unification_pairStructure() {
     var bool1 = workspace.newBlock('logic_boolean_typed');
     block.getInput('FIRST').connection.connect(int1.outputConnection);
     block.getInput('SECOND').connection.connect(bool1.outputConnection);
-    assertEquals(Blockly.TypeExpr.PAIR_,
-        block.outputConnection.typeExpr.label);
+    assertTrue(block.outputConnection.typeExpr.isPair());
     assertEquals(Blockly.TypeExpr.INT_,
-        block.outputConnection.typeExpr.first_type.deref().label);
+        block.outputConnection.typeExpr.firstType().deref().label);
     assertEquals(Blockly.TypeExpr.BOOL_,
-        block.outputConnection.typeExpr.second_type.deref().label);
+        block.outputConnection.typeExpr.secondType().deref().label);
     firstBlock.getInput('FIRST').connection.connect(block.outputConnection);
     assertEquals(Blockly.TypeExpr.INT_,
         firstBlock.outputConnection.typeExpr.deref().label);
@@ -1464,8 +1463,8 @@ function test_type_unification_changeRecordTypeCtor() {
           assertTrue(input.connection.typeExpr.isString());
         } else if (typeName === 'pair') {
           assertTrue(input.connection.typeExpr.isPair());
-          assertTrue(input.connection.typeExpr.first_type.isUnknown());
-          assertTrue(input.connection.typeExpr.second_type.isUnknown());
+          assertTrue(input.connection.typeExpr.firstType().isUnknown());
+          assertTrue(input.connection.typeExpr.secondType().isUnknown());
         } else {
           assertTrue(false);
         }

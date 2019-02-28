@@ -613,7 +613,7 @@ Blockly.Blocks['pair_create_typed'] = {
     this.appendDummyInput()
         .appendField(')');
     this.setOutput(true);
-    this.setOutputTypeExpr(new Blockly.TypeExpr.PAIR(A, B));
+    this.setOutputTypeExpr(new Blockly.TypeExpr.TUPLE(A, B));
     this.setInputsInline(true);
   },
 
@@ -622,9 +622,9 @@ Blockly.Blocks['pair_create_typed'] = {
     var first = this.callInfer('FIRST', ctx);
     var second = this.callInfer('SECOND', ctx);
     if (first)
-      first.unify(expected.first_type);
+      first.unify(expected.firstType());
     if (second)
-      second.unify(expected.second_type);
+      second.unify(expected.secondType());
     return expected;
   }
 };
@@ -634,7 +634,7 @@ Blockly.Blocks['pair_first_typed'] = {
     this.setColour(Blockly.Msg['PAIRS_HUE']);
     var A = Blockly.TypeExpr.generateTypeVar();
     var B = Blockly.TypeExpr.generateTypeVar();
-    var pair_t = new Blockly.TypeExpr.PAIR(A, B);
+    var pair_t = new Blockly.TypeExpr.TUPLE(A, B);
     this.appendValueInput('FIRST')
         .setTypeExpr(pair_t)
         .appendField('fst (');
@@ -662,7 +662,7 @@ Blockly.Blocks['pair_second_typed'] = {
     this.setColour(Blockly.Msg['PAIRS_HUE']);
     var A = Blockly.TypeExpr.generateTypeVar();
     var B = Blockly.TypeExpr.generateTypeVar();
-    var pair_t = new Blockly.TypeExpr.PAIR(A, B);
+    var pair_t = new Blockly.TypeExpr.TUPLE(A, B);
     this.appendValueInput('SECOND')
         .setTypeExpr(pair_t)
         .appendField('snd (');
@@ -1079,7 +1079,7 @@ Blockly.Blocks['match_typed'] = {
       case 'pair':
         var A = Blockly.TypeExpr.generateTypeVar();
         var B = Blockly.TypeExpr.generateTypeVar();
-        return inputType.ableToUnify(new Blockly.TypeExpr.PAIR(A, B));
+        return inputType.ableToUnify(new Blockly.TypeExpr.TUPLE(A, B));
       default:
         return false;
     }

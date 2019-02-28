@@ -380,7 +380,12 @@ Blockly.Blocks['create_construct_typed'] = {
 
     var lparenInput = this.getInput('LPAREN');
     var rparenInput = this.getInput('RPAREN');
-    var paramSize = def == null ? 0 : def.getChildren().length;
+
+    var paramSize = 0;
+    if (def) {
+      var typeChildrenSize = def.getChildren().length;
+      paramSize = typeChildrenSize == 0 ? 1 : typeChildrenSize;
+    }
     var paramInputs = [];
 
     // Collect current parameter inputs. If there are more inputs than
@@ -440,12 +445,12 @@ Blockly.Blocks['create_construct_typed'] = {
     } else if (def.isString()) {
       paramInputs[0].setTypeExpr(new Blockly.TypeExpr.STRING(), true);	
     } else if (def.isPair()) {
-      paramInputs[0].setTypeExpr(def.first_type, true);
-      paramInputs[1].setTypeExpr(def.second_type, true);
+      paramInputs[0].setTypeExpr(def.firstType(), true);
+      paramInputs[1].setTypeExpr(def.secondType(), true);
     } else if (def.isTriple()) {
-      paramInputs[0].setTypeExpr(def.first_type, true);
-      paramInputs[1].setTypeExpr(def.second_type, true);
-      paramInputs[2].setTypeExpr(def.third_type, true);	
+      paramInputs[0].setTypeExpr(def.firstType(), true);
+      paramInputs[1].setTypeExpr(def.secondType(), true);
+      paramInputs[2].setTypeExpr(def.thirdType(), true);
     } else {
       goog.asserts.fail('Not supported type ctor: ' + def.toString());
     }
@@ -574,7 +579,7 @@ Blockly.Blocks['pair_type_constructor_typed'] = {
         leftBlock.getTypeCtor() : new Blockly.TypeExpr.UNKNOWN();
     var right = rightBlock ?
         rightBlock.getTypeCtor() : new Blockly.TypeExpr.UNKNOWN();
-    return new Blockly.TypeExpr.PAIR(left, right);
+    return new Blockly.TypeExpr.TUPLE(left, right);
   }
 };
 
@@ -604,7 +609,7 @@ Blockly.Blocks['triple_type_constructor_typed'] = {
     var item0 = item0Block ? item0Block.getTypeCtor() : null;
     var item1 = item1Block ? item1Block.getTypeCtor() : null;
     var item2 = item2Block ? item2Block.getTypeCtor() : null;
-      return new Blockly.TypeExpr.TRIPLE(item0, item1, item2);
+      return new Blockly.TypeExpr.TUPLE(item0, item1, item2);
   }
 };
 
@@ -717,7 +722,7 @@ Blockly.Blocks['pair_pattern_typed'] = {
 
     var A = Blockly.TypeExpr.generateTypeVar();
     var B = Blockly.TypeExpr.generateTypeVar();
-    var pairType = new Blockly.TypeExpr.PAIR(A, B);
+    var pairType = new Blockly.TypeExpr.TUPLE(A, B);
     this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN(pairType));
     this.setInputsInline(true);
   },
@@ -750,7 +755,7 @@ Blockly.Blocks['pair_pattern_value_typed'] = {
         .appendField(rightVariable, 'RIGHT')
         .appendField(')');
      this.setOutput(true);
-    var pairType = new Blockly.TypeExpr.PAIR(A, B);
+    var pairType = new Blockly.TypeExpr.TUPLE(A, B);
     this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN(pairType));
     this.setInputsInline(true);
   },

@@ -11,7 +11,7 @@ function test_type_expr_clearTypes() {
   assertTrue(Blockly.TypeExpr.BOOL_ == bool1.label);
   var p = new Blockly.TypeExpr.TVAR('P', null);
   var q = new Blockly.TypeExpr.TVAR('Q', null);
-  var pair1 = new Blockly.TypeExpr.PAIR(p, q);
+  var pair1 = new Blockly.TypeExpr.TUPLE(p, q);
   var ptr1 = new Blockly.TypeExpr.TVAR('R', pair1);
   var ptr2 = new Blockly.TypeExpr.TVAR('S', ptr1);
   p.val = int1;
@@ -26,23 +26,23 @@ function test_type_expr_clearTypes() {
 function test_type_expr_unifyPairType() {
   var p = new Blockly.TypeExpr.TVAR('P', null);
   var q = new Blockly.TypeExpr.TVAR('Q', null);
-  var pair1 = new Blockly.TypeExpr.PAIR(p, q);
+  var pair1 = new Blockly.TypeExpr.TUPLE(p, q);
   var int1 = new Blockly.TypeExpr.INT();
   var bool1 = new Blockly.TypeExpr.BOOL();
   var n = new Blockly.TypeExpr.TVAR('N', int1);
   var o = new Blockly.TypeExpr.TVAR('O', bool1);
-  var pair2 = new Blockly.TypeExpr.PAIR(n, o);
+  var pair2 = new Blockly.TypeExpr.TUPLE(n, o);
   assertTrue(pair1.ableToUnify(pair2));
 }
 
 function test_type_expr_occurTypeName() {
   var p = new Blockly.TypeExpr.TVAR('P', null);
   var q = new Blockly.TypeExpr.TVAR('Q', null);
-  var pair1 = new Blockly.TypeExpr.PAIR(p, q);
+  var pair1 = new Blockly.TypeExpr.TUPLE(p, q);
   var n = new Blockly.TypeExpr.TVAR('N', null);
   var o = new Blockly.TypeExpr.TVAR('O', null);
-  var pair2 = new Blockly.TypeExpr.PAIR(n, o);
-  var pair3 = new Blockly.TypeExpr.PAIR(pair1, pair2);
+  var pair2 = new Blockly.TypeExpr.TUPLE(n, o);
+  var pair3 = new Blockly.TypeExpr.TUPLE(pair1, pair2);
   assertTrue(pair3.occur('P'));
   assertTrue(pair3.occur('O'));
   assertFalse(pair3.occur('xx'));
@@ -60,9 +60,9 @@ function test_type_expr_typesToString() {
   var list1 = new Blockly.TypeExpr.LIST(tvar2);
   assertEquals(list1.toString(), 'LIST[<B=<A=INT>>]');
   assertEquals(list1.toString(true), 'LIST[INT]');
-  var pair1 = new Blockly.TypeExpr.PAIR(int1, tvar2);
-  assertEquals(pair1.toString(), 'PAIR[INT * <B=<A=INT>>]');
-  assertEquals(pair1.toString(true), 'PAIR[INT * INT]');
+  var pair1 = new Blockly.TypeExpr.TUPLE(int1, tvar2);
+  assertEquals(pair1.toString(), 'TUPLE[INT * <B=<A=INT>>]');
+  assertEquals(pair1.toString(true), 'TUPLE[INT * INT]');
   tvar1.val = bool1;
   var fun1 = new Blockly.TypeExpr.FUN(tvar1, tvar2);
   assertEquals(fun1.toString(), 'FUN((<A=BOOL>) -> (<B=<A=BOOL>>))');
@@ -97,8 +97,8 @@ function test_type_expr_derefereceWithSideEffect() {
   var list1 = new Blockly.TypeExpr.LIST(tvarToInt2);
   var list1Expected = new Blockly.TypeExpr.LIST(int1);
   assertValueEquals(list1.deepDeref(), list1Expected);
-  var pair1 = new Blockly.TypeExpr.PAIR(tvarToFloat1, tvarToBool1);
-  var pair1Expected = new Blockly.TypeExpr.PAIR(float1, bool1);
+  var pair1 = new Blockly.TypeExpr.TUPLE(tvarToFloat1, tvarToBool1);
+  var pair1Expected = new Blockly.TypeExpr.TUPLE(float1, bool1);
   assertValueEquals(pair1.deepDeref(), pair1Expected);
   var fun1 = new Blockly.TypeExpr.FUN(tvarToBool2, tvarToInt1);
   var fun1Expected = new Blockly.TypeExpr.FUN(bool1, int1);
@@ -172,10 +172,10 @@ function test_type_expr_isEquals() {
 
   var p1 = new Blockly.TypeExpr.TVAR('p1', null);
   var q1 = new Blockly.TypeExpr.TVAR('q1', null);
-  var pair1 = new Blockly.TypeExpr.PAIR(p1, q1);
+  var pair1 = new Blockly.TypeExpr.TUPLE(p1, q1);
   var p2 = new Blockly.TypeExpr.TVAR('p2', null);
   var q2 = new Blockly.TypeExpr.TVAR('q2', null);
-  var pair2 = new Blockly.TypeExpr.PAIR(p2, q2);
+  var pair2 = new Blockly.TypeExpr.TUPLE(p2, q2);
   assertFalse(Blockly.TypeExpr.equals(pair1, pair2));
   assertTrue(Blockly.TypeExpr.equals(pair1, pair1));
   assertTrue(Blockly.TypeExpr.equals(pair2, pair2));
@@ -245,11 +245,11 @@ function test_type_expr_getTvarListFunc() {
   assertTrue(isSameSet(z.getTvarList(), [m]));
 
   var p = new Blockly.TypeExpr.TVAR('P', z)
-  var pair1 = new Blockly.TypeExpr.PAIR(z, p);
+  var pair1 = new Blockly.TypeExpr.TUPLE(z, p);
   assertTrue(isSameSet(pair1.getTvarList(), [m, m]));
 
   var q = new Blockly.TypeExpr.TVAR('Q', null)
-  var pair2 = new Blockly.TypeExpr.PAIR(z, q);
+  var pair2 = new Blockly.TypeExpr.TUPLE(z, q);
   assertTrue(isSameSet(pair2.getTvarList(), [q, m]));
 
   var bool1 = new Blockly.TypeExpr.BOOL();
@@ -275,7 +275,7 @@ function test_type_expr_typeSchemes() {
   env["var0"] = Blockly.Scheme.monoType(t1);
 
   var t2 = new Blockly.TypeExpr.TVAR('T2', null);
-  var pair = new Blockly.TypeExpr.PAIR(t1, t2);
+  var pair = new Blockly.TypeExpr.TUPLE(t1, t2);
   // t1 * t2
   env["var1"] = Blockly.Scheme.monoType(t2);
 
@@ -290,8 +290,8 @@ function test_type_expr_typeSchemes() {
   var x =  new Blockly.TypeExpr.TVAR('X', null);
   var y = new Blockly.TypeExpr.TVAR('Y', x);
   var a = new Blockly.TypeExpr.TVAR('A', null);
-  var pair = new Blockly.TypeExpr.PAIR(x, a);
-  var pair2 = new Blockly.TypeExpr.PAIR(pair, n);
+  var pair = new Blockly.TypeExpr.TUPLE(x, a);
+  var pair2 = new Blockly.TypeExpr.TUPLE(pair, n);
   var list1 = new Blockly.TypeExpr.LIST(pair2);
   // ∀m.x.a. ((x * a) * m) list
   env["var3"] = Blockly.Scheme.create(env, list1);
@@ -366,12 +366,12 @@ function test_type_expr_replaceChild() {
   var x =  new Blockly.TypeExpr.TVAR('X', null);
   var y = new Blockly.TypeExpr.TVAR('Y', x);
   var a = new Blockly.TypeExpr.TVAR('A', null);
-  var pair = new Blockly.TypeExpr.PAIR(x, a);
+  var pair = new Blockly.TypeExpr.TUPLE(x, a);
 
   pair.replaceChild(x, y);
   pair.replaceChild(a, x);
-  assertEquals(pair.first_type, y);
-  assertEquals(pair.second_type, x);
+  assertEquals(pair.firstType(), y);
+  assertEquals(pair.secondType(), x);
 
   var n = new Blockly.TypeExpr.TVAR('N', null);
   var list1 = new Blockly.TypeExpr.LIST(pair);
@@ -426,8 +426,8 @@ function test_type_expr_schemeInstantiate() {
   assertEquals(env["c"].type, c);
 
   // ∀xyz. a -> (x * x) -> b -> ((x * z) list) -> b -> c -> y -> y list
-  var pair1 = new Blockly.TypeExpr.PAIR(x, x);
-  var pair2 = new Blockly.TypeExpr.PAIR(x, z);
+  var pair1 = new Blockly.TypeExpr.TUPLE(x, x);
+  var pair2 = new Blockly.TypeExpr.TUPLE(x, z);
   var list1 = new Blockly.TypeExpr.LIST(pair2);
   var list2 = new Blockly.TypeExpr.LIST(y);
   var fun =
@@ -556,7 +556,7 @@ function test_type_expr_toDisplayText() {
   b.unify(bool1);
   assertEquals(list.getDisplayText(), 'bool list');
   var c = new Blockly.TypeExpr.TVAR('C', null);
-  var pair = new Blockly.TypeExpr.PAIR(c, float1);
+  var pair = new Blockly.TypeExpr.TUPLE(c, float1);
   assertEquals(pair.getDisplayText(), '\'c * float');
 
   var d = new Blockly.TypeExpr.TVAR('DDD', null);
@@ -607,14 +607,15 @@ function test_type_expr_hasUnknownTypes() {
   assertFalse(floatType.hasUnknown());
   var unknown = new Blockly.TypeExpr.UNKNOWN();
   assertTrue(unknown.hasUnknown());
-  var pairType = new Blockly.TypeExpr.PAIR(unknown, intType);
+  var pairType = new Blockly.TypeExpr.TUPLE(unknown, intType);
   assertTrue(pairType.hasUnknown());
   var listType = new Blockly.TypeExpr.LIST(pairType);
   assertTrue(listType.hasUnknown());
-  pairType.first_type = intType;
-  assertFalse(listType.hasUnknown());
-  var funType = new Blockly.TypeExpr.FUN(listType, pairType);
-  listType.element_type = floatType;
+  var pairType2 = Blockly.TypeExpr.TUPLE(intType, intType);
+  var listType2 = new Blockly.TypeExpr.LIST(pairType2);
+  assertFalse(listType2.hasUnknown());
+  var funType = new Blockly.TypeExpr.FUN(listType2, pairType2);
+  listType2.element_type = floatType;
   assertFalse(funType.hasUnknown());
 }
 
@@ -633,9 +634,23 @@ function test_type_expr_unifyTypesWithUnknown() {
   var unknown1 = new Blockly.TypeExpr.UNKNOWN();
   var unknown2 = new Blockly.TypeExpr.UNKNOWN();
   assertTrue(unifyFailsDueToUnknownType(unknown1, unknown2));
-  var pairType = new Blockly.TypeExpr.PAIR(unknown1, intType);
+  var pairType = new Blockly.TypeExpr.TUPLE(unknown1, intType);
   var listType = new Blockly.TypeExpr.LIST(pairType);
   var funType = new Blockly.TypeExpr.FUN(listType, intType);
   assertTrue(unifyFailsDueToUnknownType(funType, funType));
   assertTrue(unifyFailsDueToUnknownType(funType, intType));
+}
+
+function test_type_expr_pairUsingTuple() {
+  var intType = new Blockly.TypeExpr.INT();
+  var floatType = new Blockly.TypeExpr.FLOAT();
+  var tvar = new Blockly.TypeExpr.TVAR('x', floatType);
+  var pair = new Blockly.TypeExpr.TUPLE(intType, tvar);
+  assertFalse(pair.secondType().isFloat());
+  var pair1 = pair.deepDeref();
+  assertTrue(pair1.secondType().isFloat());
+  var pair2 = pair.clone();
+  assertTrue(pair2.firstType().isInt());
+  assertFalse(pair2.secondType().isFloat());
+  assertTrue(pair2.secondType().isTypeVar());
 }

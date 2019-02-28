@@ -126,30 +126,32 @@ Blockly.RenderedTypeExpr.shape['list'] = {
   }
 };
 
-Blockly.RenderedTypeExpr.shape['pair'] = {
+Blockly.RenderedTypeExpr.shape['tuple'] = {
   down: function(steps) {
+    goog.asserts.assert(this.tuples_.length == 2);
     steps.push('l 0,3 -12,0 0,3 12,0');
-    Blockly.RenderedTypeExpr.renderTypeExpr(this.first_type, steps, 1);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.firstType(), steps, 1);
     steps.push('l -5,3 5,3');
-    Blockly.RenderedTypeExpr.renderTypeExpr(this.second_type, steps, 1);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.secondType(), steps, 1);
     steps.push('l -12,0 0,3 12,0 0,3');
   },
 
   up: function(steps) {
+    goog.asserts.assert(this.tuples_.length == 2);
     steps.push('l 0,-3 -12,0 0,-3 12,0');
-    Blockly.RenderedTypeExpr.renderTypeExpr(this.second_type, steps, 2);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.secondType(), steps, 2);
     steps.push('l -5,-3 5,-3');
-    Blockly.RenderedTypeExpr.renderTypeExpr(this.first_type, steps, 2);
+    Blockly.RenderedTypeExpr.renderTypeExpr(this.firstType(), steps, 2);
     steps.push('l -12,0 0,-3 12,0 0,-3');
   },
 
   height: function() {
-    return Blockly.RenderedTypeExpr.getTypeExprHeight(this.first_type) +
-        Blockly.RenderedTypeExpr.getTypeExprHeight(this.second_type) + 18;
+    return Blockly.RenderedTypeExpr.getTypeExprHeight(this.firstType()) +
+        Blockly.RenderedTypeExpr.getTypeExprHeight(this.secondType()) + 18;
   },
 
   offsetsY: function() {
-    var height = Blockly.RenderedTypeExpr.getTypeExprHeight(this.first_type);
+    var height = Blockly.RenderedTypeExpr.getTypeExprHeight(this.firstType());
     return [6, height + 12];
   }
 };

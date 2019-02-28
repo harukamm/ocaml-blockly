@@ -50,13 +50,7 @@ Blockly.TypeExpr.LIST_ = 115;
  * @type {number}
  * @private
  */
-Blockly.TypeExpr.PAIR_ = 120;
-
-/**
- * @type {number}
- * @private
- */
-Blockly.TypeExpr.TRIPLE_ = 125;
+Blockly.TypeExpr.TUPLE_ = 121;
 
 /**
  * @type {number}
@@ -133,10 +127,8 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
       return 'string';
     case Blockly.TypeExpr.LIST_:
       return 'list';
-    case Blockly.TypeExpr.PAIR_:
-      return 'pair';
-    case Blockly.TypeExpr.TRIPLE_:
-      return 'triple';
+    case Blockly.TypeExpr.TUPLE_:
+      return 'tuple';
     case Blockly.TypeExpr.FUN_:
       return 'function';
     case Blockly.TypeExpr.CONSTRUCT_:
@@ -181,11 +173,16 @@ Blockly.TypeExpr.prototype.isPrimitive = function() {
 Blockly.TypeExpr.prototype.isList = function() {
   return this.label == Blockly.TypeExpr.LIST_;
 };
+Blockly.TypeExpr.prototype.isTuple = function() {
+  return this.label == Blockly.TypeExpr.TUPLE_;
+};
 Blockly.TypeExpr.prototype.isPair = function() {
-  return this.label == Blockly.TypeExpr.PAIR_;
+  return this.label == Blockly.TypeExpr.TUPLE_ &&
+      this.tuples_.length == 2;
 };
 Blockly.TypeExpr.prototype.isTriple = function() {
-  return this.label == Blockly.TypeExpr.TRIPLE_;
+  return this.label == Blockly.TypeExpr.TUPLE_ &&
+      this.tuples_.length == 3;
 };
 Blockly.TypeExpr.prototype.isFunction = function() {
   return this.label == Blockly.TypeExpr.FUN_;
@@ -469,48 +466,63 @@ Blockly.TypeExpr.LIST.prototype.deepDeref = function() {
 }
 
 /**
- * @extends {Blockly.TypeExpr}
+ * @param {Array.<!Blockly.TypeExpr>|...!Blockly.TypeExpr}
  * @constructor
- * @param {Blockly.TypeExpr} first_type
- * @param {Blockly.TypeExpr} second_type
- * @return {Blockly.TypeExpr}
+ * @extends {Blockly.TypeExpr}
  */
-Blockly.TypeExpr.PAIR = function(first_type, second_type) {
-  /** @type {Blockly.TypeExpr} */
-  this.first_type = first_type;
-  /** @type {Blockly.TypeExpr} */
-  this.second_type = second_type;
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.PAIR_);
-}
-goog.inherits(Blockly.TypeExpr.PAIR, Blockly.TypeExpr);
+Blockly.TypeExpr.TUPLE = function() {
+  var args = arguments;
+  if (args.length == 1 && goog.isArray(args[0])) {
+    args = args[0];
+  }
+  this.tuples_ = [];
+  for (var i = 0; i < args.length; i++) {
+    this.tuples_.push(args[i]);
+  }
+  Blockly.TypeExpr.call(this, Blockly.TypeExpr.TUPLE_);
+};
+goog.inherits(Blockly.TypeExpr.TUPLE, Blockly.TypeExpr);
 
 /**
- * @override
  * @param {boolean=} opt_deref
  * @return {string}
+ * @override
  */
-Blockly.TypeExpr.PAIR.prototype.toString = function(opt_deref) {
-  return "PAIR[" + this.first_type.toString(opt_deref) + " * " +
-      this.second_type.toString(opt_deref) + "]";
-}
+Blockly.TypeExpr.TUPLE.prototype.toString = function(opt_deref) {
+  var str = "TUPLE[";
+  for (var i = 0; i < this.tuples_.length; i++) {
+    str += this.tuples_[i].toString(opt_deref);
+    if (i != this.tuples_.length - 1) {
+      str += " * ";
+    }
+  }
+  str += "]";
+  return str;
+};
 
 /**
  * Gets the display text for type expression.
  * @return {string}
  * @private
  */
-Blockly.TypeExpr.PAIR.prototype.getDisplayText = function() {
-  return this.first_type.getDisplayText() + " * " +
-      this.second_type.getDisplayText();
-}
+Blockly.TypeExpr.TUPLE.prototype.getDisplayText = function() {
+  var str = "";
+  for (var i = 0; i < this.tuples_.length; i++) {
+    str += this.tuples_[i].getDisplayText();
+    if (i != this.tuples_.length - 1) {
+      str += " * ";
+    }
+  }
+  return str;
+};
 
 /**
- * @override
  * @return {Array<Type>}
+ * @override
  */
-Blockly.TypeExpr.PAIR.prototype.getChildren = function() {
-  return [this.first_type, this.second_type];
-}
+Blockly.TypeExpr.TUPLE.prototype.getChildren = function() {
+  return [].concat(this.tuples_);
+};
 
 /**
  * Replace one of children type which this type directly has with another
@@ -519,125 +531,55 @@ Blockly.TypeExpr.PAIR.prototype.getChildren = function() {
  * @param {!Blockly.Block} newChild The child type to be inserted instead of
  *     oldChild.
  */
-Blockly.TypeExpr.PAIR.prototype.replaceChild = function(oldChild, newChild) {
-  if (oldChild == this.first_type) {
-    this.first_type = newChild;
-  } else if (oldChild == this.second_type) {
-    this.second_type = newChild;
-  } else {
-    goog.asserts.assert(false, 'The specidied child is not found.');
+Blockly.TypeExpr.TUPLE.prototype.replaceChild = function(oldChild, newChild) {
+  for (var i = 0, type; type = this.tuples_[i]; i++) {
+    if (type == oldChild) {
+      this.tuples_[i] = newChild;
+      return;
+    }
   }
+  goog.asserts.assert(false, 'The specidied child is not found.');
 };
 
 /**
  * Deeply clone the object
- * @override
  * @return {Blockly.TypeExpr}
- */
-Blockly.TypeExpr.PAIR.prototype.clone = function() {
-  return new Blockly.TypeExpr.PAIR(this.first_type.clone(),
-      this.second_type.clone());
-}
-
-/**
- * Returns the object which is dereferenced recursively.
  * @override
- * @return {Blockly.TypeExpr}
  */
-Blockly.TypeExpr.PAIR.prototype.deepDeref = function() {
-  return new Blockly.TypeExpr.PAIR(this.first_type.deepDeref(),
-      this.second_type.deepDeref());
-}
-
-/**
- * @extends {Blockly.TypeExpr}
- * @constructor
- * @param {Blockly.TypeExpr} first_type
- * @param {Blockly.TypeExpr} second_type
- * @param {Blockly.TypeExpr} third_type
- * @return {Blockly.TypeExpr}
- */
-Blockly.TypeExpr.TRIPLE = function(first_type, second_type, third_type) {
-  /** @type {Blockly.TypeExpr} */
-  this.first_type = first_type;
-  /** @type {Blockly.TypeExpr} */
-  this.second_type = second_type;
-  /** @type {Blockly.TypeExpr} */
-  this.third_type = third_type;
-  Blockly.TypeExpr.call(this, Blockly.TypeExpr.TRIPLE_);
-}
-goog.inherits(Blockly.TypeExpr.TRIPLE, Blockly.TypeExpr);
-
-/**
- * @override
- * @param {boolean=} opt_deref
- * @return {string}
- */
-Blockly.TypeExpr.TRIPLE.prototype.toString = function(opt_deref) {
-  return "TRIPLE[" + this.first_type.toString(opt_deref) + " * " +
-	this.second_type.toString(opt_deref) + " * " +
-	this.third_type.toString(opt_deref) + "]";
-}
-
-/**
- * Gets the display text for type expression.
- * @return {string}
- * @private
- */
-Blockly.TypeExpr.TRIPLE.prototype.getDisplayText = function() {
-  return this.first_type.getDisplayText() + " * " +
-	this.second_type.getDisplayText() + " * " +
-	this.third_type.getDisplayText();
-}
-
-/**
- * @override
- * @return {Array<Type>}
- */
-Blockly.TypeExpr.TRIPLE.prototype.getChildren = function() {
-  return [this.first_type, this.second_type, this.third_type];
-}
-
-/**
- * Replace one of children type which this type directly has with another
- * type.
- * @param {!Blockly.Block} oldChild The child type to be replaced.
- * @param {!Blockly.Block} newChild The child type to be inserted instead of
- *     oldChild.
- */
-Blockly.TypeExpr.TRIPLE.prototype.replaceChild = function(oldChild, newChild) {
-  if (oldChild == this.first_type) {
-    this.first_type = newChild;
-  } else if (oldChild == this.second_type) {
-    this.second_type = newChild;
-  } else if (oldChild == this.third_type) {
-    this.third_type = newChild;
-  } else {
-    goog.asserts.assert(false, 'The specidied child is not found.');
+Blockly.TypeExpr.TUPLE.prototype.clone = function() {
+  var types = [];
+  for (var i = 0, type; type = this.tuples_[i]; i++) {
+    types.push(type.clone());
   }
+  return new Blockly.TypeExpr.TUPLE(types);
 };
 
 /**
- * Deeply clone the object
- * @override
+ * Returns the object which is dereferenced recursively.
  * @return {Blockly.TypeExpr}
+ * @override
  */
-Blockly.TypeExpr.TRIPLE.prototype.clone = function() {
-  return new Blockly.TypeExpr.TRIPLE(this.first_type.clone(),
-				     this.second_type.clone(),
-				     this.third_type.clone());
-}
+Blockly.TypeExpr.TUPLE.prototype.deepDeref = function() {
+  var types = [];
+  for (var i = 0, type; type = this.tuples_[i]; i++) {
+    types.push(type.deepDeref());
+  }
+  return new Blockly.TypeExpr.TUPLE(types);
+};
 
 /**
- * Returns the object which is dereferenced recursively.
- * @override
+ * Get the child type of tuples.
  * @return {Blockly.TypeExpr}
  */
-Blockly.TypeExpr.TRIPLE.prototype.deepDeref = function() {
-  return new Blockly.TypeExpr.TRIPLE(this.first_type.deepDeref(),
-				     this.second_type.deepDeref(),
-				     this.third_type.deepDeref());
-}
+Blockly.TypeExpr.TUPLE.prototype.firstType = function() {
+  return this.tuples_[0];
+};
+Blockly.TypeExpr.TUPLE.prototype.secondType = function() {
+  return this.tuples_[1];
+};
+Blockly.TypeExpr.TUPLE.prototype.thirdType = function() {
+  return this.tuples_[2];
+};
 
 /**
  * @extends {Blockly.TypeExpr}
@@ -1233,6 +1175,8 @@ Blockly.TypeExpr.prototype.unify = function(other) {
         tvar.val = othr;
       }
     } else if (t1.label != t2.label) {
+      throw Blockly.TypeExpr.errorInconsistentLabel(t1, t2);
+    } else if (t1.isTuple() && t1.tuples_.length != t1.tuples_.length) {
       throw Blockly.TypeExpr.errorInconsistentLabel(t1, t2);
     } else if (t1.isStructure() && t2.isStructure()) {
       if (t1.id && t2.id) {
