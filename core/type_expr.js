@@ -1075,7 +1075,7 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       throw Blockly.TypeExpr.errorUnifyPattern(othr);
     }
     if (t1.isUnknown() || t2.isUnknown()) {
-      goog.asserts.fail('Can not unify unknown type');
+      throw Blockly.TypeExpr.errorUnknownType(t1, t2);
     }
     if (t1.isTypeVar() || t2.isTypeVar()) {
       var t1_is_tvar = t1.isTypeVar();
@@ -1292,6 +1292,7 @@ Blockly.TypeExpr.ERROR_PATTERN = 5;
 Blockly.TypeExpr.ERROR_OCCUR_CHECK = 10;
 Blockly.TypeExpr.ERROR_STRUCTURE_INCONSISTENT = 15;
 Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT = 20;
+Blockly.TypeExpr.ERROR_UNKNOWN_TYPE = 25;
 
 Blockly.TypeExpr.errorUnifyTypeCtor = function(t) {
   return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_TYPECTOR, t, null);
@@ -1313,6 +1314,11 @@ Blockly.TypeExpr.errorInconsistentStructure = function(t1, t2) {
 
 Blockly.TypeExpr.errorInconsistentLabel = function(t1, t2) {
   return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT,
+    t1, t2);
+};
+
+Blockly.TypeExpr.errorUnknownType = function(t1, t2) {
+  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_UNKNOWN_TYPE,
     t1, t2);
 };
 
@@ -1339,6 +1345,11 @@ Blockly.TypeExpr.Error.prototype.toMessage = function() {
       return 'The ' + typeName + ' does not belong to type ' + s2 + '.';
     case Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT:
       return 'Has type ' + s1 + ' but expected of type ' + s2 + '.';
+    case Blockly.TypeExpr.ERROR_UNKNOWN_TYPE:
+      if (this.t1.isUnknown()) {
+        return 'This type is not decided yet.';
+      }
+      return 'The target type is not decided yet.';
     default:
       goog.asserts.fail('Unexpected type error label.');
   }
