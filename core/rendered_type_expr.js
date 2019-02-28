@@ -239,6 +239,28 @@ Blockly.RenderedTypeExpr.shape['pattern'] = {
   }
 };
 
+Blockly.RenderedTypeExpr.shape['unknown'] = {
+  down: function(steps) {
+    steps.push('l 0,4 -8,0 0,14 8,0 0,2');
+  },
+
+  up: function(steps) {
+    steps.push('l 0,-2 -8,0 0,-14 8,0 0,-4');
+  },
+
+  height: function() {
+    return 20;
+  },
+
+  offsetsY: function() {
+    return [];
+  },
+
+  tvarHighlight: function() {
+    return 'm 0,6 l -8 8 m 0,-8 l 8,8';
+  }
+};
+
 Blockly.RenderedTypeExpr.shape['typeVar'] = {
   down: function(steps) {
     steps.push('l 0,5 -8,0 0,15 8,0 0,5');
@@ -289,6 +311,11 @@ Blockly.RenderedTypeExpr.typeVarHighlights_ = function(type, y, typeVarHighlight
   if (type.isTypeVar()) {
     typeVarHighlights.push({
       color: type.color,
+      path: "m 0," + y + " " + shape.tvarHighlight.call(type)
+    });
+  } else if (type.isUnknown()) {
+    typeVarHighlights.push({
+      color: "#ff0000",
       path: "m 0," + y + " " + shape.tvarHighlight.call(type)
     });
   } else if (children.length != 0) {
