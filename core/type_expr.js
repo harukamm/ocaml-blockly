@@ -1068,11 +1068,11 @@ Blockly.TypeExpr.prototype.unify = function(other) {
     }
     if (t1.isTypeConstructor() || t2.isTypeConstructor()) {
       var othr = t1.isTypeConstructor() ? t2 : t1;
-      throw Blockly.TypeExpr.errorUnityTypeCtor(othr);
+      throw Blockly.TypeExpr.errorUnifyTypeCtor(othr);
     }
     if (t1.isPattern() || t2.isPattern()) {
       var othr = t1.isPattern() ? t2 : t1;
-      throw Blockly.TypeExpr.errorUnityPattern(othr);
+      throw Blockly.TypeExpr.errorUnifyPattern(othr);
     }
     if (t1.isUnknown() || t2.isUnknown()) {
       goog.asserts.fail('Can not unify unknown type');
@@ -1293,11 +1293,11 @@ Blockly.TypeExpr.ERROR_OCCUR_CHECK = 10;
 Blockly.TypeExpr.ERROR_STRUCTURE_INCONSISTENT = 15;
 Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT = 20;
 
-Blockly.TypeExpr.errorUnityTypeCtor = function(t) {
+Blockly.TypeExpr.errorUnifyTypeCtor = function(t) {
   return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_TYPECTOR, t, null);
 };
 
-Blockly.TypeExpr.errorUnityPattern = function(t) {
+Blockly.TypeExpr.errorUnifyPattern = function(t) {
   return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_PATTERN, t, null);
 };
 
