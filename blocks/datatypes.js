@@ -604,11 +604,12 @@ Blockly.Blocks['triple_type_constructor_typed'] = {
     var item0Block = this.getInputTargetBlock('ITEM0');
     var item1Block = this.getInputTargetBlock('ITEM1');
     var item2Block = this.getInputTargetBlock('ITEM2');
-    // TODO(harukam): Create new type expression to represent disabled
-    // connections, and give it if leftBlock/rightBlock is null.
-    var item0 = item0Block ? item0Block.getTypeCtor() : null;
-    var item1 = item1Block ? item1Block.getTypeCtor() : null;
-    var item2 = item2Block ? item2Block.getTypeCtor() : null;
+    var item0 = item0Block ?
+        item0Block.getTypeCtor() : new Blockly.TypeExpr.UNKNOWN();
+    var item1 = item1Block ?
+        item1Block.getTypeCtor() : new Blockly.TypeExpr.UNKNOWN();
+    var item2 = item2Block ?
+        item2Block.getTypeCtor() : new Blockly.TypeExpr.UNKNOWN();
       return new Blockly.TypeExpr.TUPLE(item0, item1, item2);
   }
 };
