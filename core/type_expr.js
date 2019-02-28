@@ -1227,7 +1227,7 @@ Blockly.TypeExpr.equals = function(typ1, typ2) {
     return Blockly.TypeExpr.equals(typ1.pattExpr, typ2.pattExpr);
   }
   if (typ1.isUnknown()) {
-    return false;
+    return true;
   }
   if (typ1.isTypeVar()) {
     return typ1.name == typ2.name;
