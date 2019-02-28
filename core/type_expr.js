@@ -14,7 +14,7 @@ goog.require('goog.dom');
  */
 Blockly.TypeExpr = function(label) {
   this.label = label;
-}
+};
 
 /**
  * @type {number}
@@ -101,7 +101,7 @@ Blockly.TypeExpr.TVAR_ = 170;
  */
 Blockly.TypeExpr.prototype.toString = function(opt_deref) {
   goog.asserts.assert(false, 'Not implemented.');
-}
+};
 
 /**
  * Gets the display text for type expression.
@@ -109,7 +109,7 @@ Blockly.TypeExpr.prototype.toString = function(opt_deref) {
  */
 Blockly.TypeExpr.prototype.getDisplayText = function() {
   return this.getTypeName();
-}
+};
 
 /**
  * Return the object's type name.
@@ -146,7 +146,7 @@ Blockly.TypeExpr.prototype.getTypeName = function() {
     default:
       goog.asserts.assert(false, 'Not implemented.');
   }
-}
+};
 
 /**
  * Functions to return if the object represents a specific type.
@@ -217,7 +217,7 @@ Blockly.TypeExpr.prototype.isTypeVar = function() {
  */
 Blockly.TypeExpr.prototype.getChildren = function() {
   return [];
-}
+};
 
 /**
  * Replace one of children type which this type directly has with another
@@ -246,7 +246,7 @@ Blockly.TypeExpr.prototype.clear = function() {
  */
 Blockly.TypeExpr.prototype.clone = function() {
   goog.asserts.assert(false, 'Not implemented.');
-}
+};
 
 /**
  * @return {Blockly.TypeExpr}
@@ -256,7 +256,7 @@ Blockly.TypeExpr.prototype.deref = function() {
   while (t.isTypeVar() && t.val != null)
     t = t.val;
   return t;
-}
+};
 
 /**
  * Returns the object which is dereferenced recursively.
@@ -264,7 +264,7 @@ Blockly.TypeExpr.prototype.deref = function() {
  */
 Blockly.TypeExpr.prototype.deepDeref = function() {
   return this;
-}
+};
 
 /**
  * @static
@@ -283,7 +283,7 @@ Blockly.TypeExpr.generateColor = function() {
   var b = getRandomInt(1 << 8);
   return '#' + to2digitshexString(r) + to2digitshexString(g) +
       to2digitshexString(b);
-}
+};
 
 /**
  * @extends {Blockly.TypeExpr}
@@ -292,7 +292,7 @@ Blockly.TypeExpr.generateColor = function() {
  */
 Blockly.TypeExpr.INT = function() {
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.INT_);
-}
+};
 goog.inherits(Blockly.TypeExpr.INT, Blockly.TypeExpr);
 
 /**
@@ -302,7 +302,7 @@ goog.inherits(Blockly.TypeExpr.INT, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.INT.prototype.toString = function(opt_deref) {
   return "INT";
-}
+};
 
 /**
  * Deeply clone the object
@@ -311,7 +311,7 @@ Blockly.TypeExpr.INT.prototype.toString = function(opt_deref) {
  */
 Blockly.TypeExpr.INT.prototype.clone = function() {
   return new Blockly.TypeExpr.INT();
-}
+};
 
 /**
  * @extends {Blockly.TypeExpr}
@@ -320,7 +320,7 @@ Blockly.TypeExpr.INT.prototype.clone = function() {
  */
 Blockly.TypeExpr.FLOAT = function() {
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.FLOAT_);
-}
+};
 goog.inherits(Blockly.TypeExpr.FLOAT, Blockly.TypeExpr);
 
 /**
@@ -330,7 +330,7 @@ goog.inherits(Blockly.TypeExpr.FLOAT, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.FLOAT.prototype.toString = function(opt_deref) {
   return "FLOAT";
-}
+};
 
 /**
  * Deeply clone the object
@@ -339,7 +339,7 @@ Blockly.TypeExpr.FLOAT.prototype.toString = function(opt_deref) {
  */
 Blockly.TypeExpr.FLOAT.prototype.clone = function() {
   return new Blockly.TypeExpr.FLOAT();
-}
+};
 
 /**
  * @extends {Blockly.TypeExpr}
@@ -348,7 +348,7 @@ Blockly.TypeExpr.FLOAT.prototype.clone = function() {
  */
 Blockly.TypeExpr.BOOL = function() {
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.BOOL_);
-}
+};
 goog.inherits(Blockly.TypeExpr.BOOL, Blockly.TypeExpr);
 
 /**
@@ -358,7 +358,7 @@ goog.inherits(Blockly.TypeExpr.BOOL, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.BOOL.prototype.toString = function(opt_deref) {
   return "BOOL";
-}
+};
 
 /**
  * Deeply clone the object
@@ -367,7 +367,7 @@ Blockly.TypeExpr.BOOL.prototype.toString = function(opt_deref) {
  */
 Blockly.TypeExpr.BOOL.prototype.clone = function() {
   return new Blockly.TypeExpr.BOOL();
-}
+};
 /**
  * @constructor
  * @extends {Blockly.TypeExpr}
@@ -405,7 +405,7 @@ Blockly.TypeExpr.LIST = function(element_type) {
   /** @type {Blockly.TypeExpr} */
   this.element_type = element_type;
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.LIST_);
-}
+};
 goog.inherits(Blockly.TypeExpr.LIST, Blockly.TypeExpr);
 
 /**
@@ -415,7 +415,7 @@ goog.inherits(Blockly.TypeExpr.LIST, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.LIST.prototype.toString = function(opt_deref) {
   return "LIST[" + this.element_type.toString(opt_deref) + "]";
-}
+};
 
 /**
  * Gets the display text for type expression.
@@ -424,7 +424,7 @@ Blockly.TypeExpr.LIST.prototype.toString = function(opt_deref) {
  */
 Blockly.TypeExpr.LIST.prototype.getDisplayText = function() {
   return this.element_type.getDisplayText() + " list";
-}
+};
 
 /**
  * @override
@@ -432,7 +432,7 @@ Blockly.TypeExpr.LIST.prototype.getDisplayText = function() {
  */
 Blockly.TypeExpr.LIST.prototype.getChildren = function() {
   return [this.element_type];
-}
+};
 
 /**
  * Replace one of children type which this type directly has with another
@@ -454,7 +454,7 @@ Blockly.TypeExpr.LIST.prototype.replaceChild = function(oldChild, newChild) {
  */
 Blockly.TypeExpr.LIST.prototype.clone = function() {
   return new Blockly.TypeExpr.LIST(this.element_type.clone());
-}
+};
 
 /**
  * Returns the object which is dereferenced recursively.
@@ -463,7 +463,7 @@ Blockly.TypeExpr.LIST.prototype.clone = function() {
  */
 Blockly.TypeExpr.LIST.prototype.deepDeref = function() {
   return new Blockly.TypeExpr.LIST(this.element_type.deepDeref());
-}
+};
 
 /**
  * @param {Array.<!Blockly.TypeExpr>|...!Blockly.TypeExpr}
@@ -594,7 +594,7 @@ Blockly.TypeExpr.FUN = function(arg_type, return_type) {
   /** @type {Blockly.TypeExpr} */
   this.return_type = return_type;
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.FUN_);
-}
+};
 goog.inherits(Blockly.TypeExpr.FUN, Blockly.TypeExpr);
 
 /**
@@ -605,7 +605,7 @@ goog.inherits(Blockly.TypeExpr.FUN, Blockly.TypeExpr);
 Blockly.TypeExpr.FUN.prototype.toString = function(opt_deref) {
   return "FUN((" + this.arg_type.toString(opt_deref) + ") -> (" +
       this.return_type.toString(opt_deref) + "))";
-}
+};
 
 /**
  * Gets the display text for type expression.
@@ -615,7 +615,7 @@ Blockly.TypeExpr.FUN.prototype.toString = function(opt_deref) {
 Blockly.TypeExpr.FUN.prototype.getDisplayText = function() {
   return this.arg_type.getDisplayText() + " -> " +
       this.return_type.getDisplayText();
-}
+};
 
 /**
  * Deeply clone the object
@@ -625,7 +625,7 @@ Blockly.TypeExpr.FUN.prototype.getDisplayText = function() {
 Blockly.TypeExpr.FUN.prototype.clone = function() {
   return new Blockly.TypeExpr.FUN(this.arg_type.clone(),
       this.return_type.clone());
-}
+};
 
 /**
  * @override
@@ -633,7 +633,7 @@ Blockly.TypeExpr.FUN.prototype.clone = function() {
  */
 Blockly.TypeExpr.FUN.prototype.getChildren = function() {
   return [this.arg_type, this.return_type];
-}
+};
 
 /**
  * Replace one of children type which this type directly has with another
@@ -660,7 +660,7 @@ Blockly.TypeExpr.FUN.prototype.replaceChild = function(oldChild, newChild) {
 Blockly.TypeExpr.FUN.prototype.deepDeref = function() {
   return new Blockly.TypeExpr.FUN(this.arg_type.deepDeref(),
       this.return_type.deepDeref());
-}
+};
 
 /**
  * @param {string} id The string to identify constructor type. Null if it's not
@@ -671,7 +671,7 @@ Blockly.TypeExpr.FUN.prototype.deepDeref = function() {
 Blockly.TypeExpr.CONSTRUCT = function(id) {
   this.id = goog.isString(id) ? id : null;
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.CONSTRUCT_);
-}
+};
 goog.inherits(Blockly.TypeExpr.CONSTRUCT, Blockly.TypeExpr);
 
 /**
@@ -681,7 +681,7 @@ goog.inherits(Blockly.TypeExpr.CONSTRUCT, Blockly.TypeExpr);
  */
 Blockly.TypeExpr.CONSTRUCT.prototype.toString = function(opt_deref) {
   return "CONSTRUCT(" + (this.id ? this.id : "null") + ")";
-}
+};
 
 /**
  * Gets the display text for type expression.
@@ -694,7 +694,7 @@ Blockly.TypeExpr.CONSTRUCT.prototype.getDisplayText = function() {
     dataname = Blockly.mainWorkspace.getCtorDataName(this.id);
   }
   return dataname ? dataname : '';
-}
+};
 
 /**
  * Deeply clone the object
@@ -703,7 +703,7 @@ Blockly.TypeExpr.CONSTRUCT.prototype.getDisplayText = function() {
  */
 Blockly.TypeExpr.CONSTRUCT.prototype.clone = function() {
   return new Blockly.TypeExpr.CONSTRUCT(this.id);
-}
+};
 
 /**
  * Returns the object which is dereferenced recursively.
@@ -712,7 +712,7 @@ Blockly.TypeExpr.CONSTRUCT.prototype.clone = function() {
  */
 Blockly.TypeExpr.CONSTRUCT.prototype.deepDeref = function() {
   return new Blockly.TypeExpr.CONSTRUCT(this.id);
-}
+};
 
 /**
  * @constructor
@@ -720,7 +720,7 @@ Blockly.TypeExpr.CONSTRUCT.prototype.deepDeref = function() {
  */
 Blockly.TypeExpr.TYPE_CONSTRUCTOR = function() {
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.TYPE_CONSTRUCTOR_);
-}
+};
 goog.inherits(Blockly.TypeExpr.TYPE_CONSTRUCTOR, Blockly.TypeExpr);
 
 /**
@@ -910,7 +910,7 @@ Blockly.TypeExpr.TVAR = function(name, val, opt_color) {
   /** @type {string} */
   this.color = opt_color ? opt_color : Blockly.TypeExpr.generateColor();
   Blockly.TypeExpr.call(this, Blockly.TypeExpr.TVAR_);
-}
+};
 goog.inherits(Blockly.TypeExpr.TVAR, Blockly.TypeExpr);
 
 /**
@@ -926,7 +926,7 @@ Blockly.TypeExpr.TVAR.prototype.toString = function(opt_deref) {
   } else {
     return "" + inst.toString(opt_deref);
   }
-}
+};
 
 /**
  * Gets the display text for type expression.
@@ -939,7 +939,7 @@ Blockly.TypeExpr.TVAR.prototype.getDisplayText = function() {
     return '\'' + t.name.toLowerCase();
   }
   return t.getDisplayText();
-}
+};
 
 /**
  * @override
@@ -947,7 +947,7 @@ Blockly.TypeExpr.TVAR.prototype.getDisplayText = function() {
  */
 Blockly.TypeExpr.TVAR.prototype.getChildren = function() {
   return this.val ? [this.val] : [];
-}
+};
 
 /**
  * Deeply clone the object
@@ -957,7 +957,7 @@ Blockly.TypeExpr.TVAR.prototype.getChildren = function() {
 Blockly.TypeExpr.TVAR.prototype.clone = function() {
   return new Blockly.TypeExpr.TVAR(this.name,
       this.val ? this.val.clone() : null);
-}
+};
 
 /**
  * Returns the object which is dereferenced recursively.
@@ -969,7 +969,7 @@ Blockly.TypeExpr.TVAR.prototype.deepDeref = function() {
   while (t.val != null && t.val.isTypeVar())
     t = t.val;
   return t.val != null ? t.val.deepDeref() : t;
-}
+};
 
 /**
  * Clear a type resolution.
@@ -1003,7 +1003,7 @@ Blockly.TypeExpr.ExcelColumn = function(n) {
     result += r[i];
 
   return result;
-}
+};
 
 /**
  * @static
@@ -1015,7 +1015,7 @@ Blockly.TypeExpr.generateTypeVarName_ = function() {
       Blockly.TypeExpr.gen_counter);
   Blockly.TypeExpr.gen_counter++;
   return name;
-}
+};
 
 Blockly.TypeExpr.generateTypeVar = function() {
   var name = Blockly.TypeExpr.generateTypeVarName_();
@@ -1202,7 +1202,7 @@ Blockly.TypeExpr.prototype.unify = function(other) {
       }
     }
   }
-}
+};
 
 /**
  * @param {string} name
@@ -1219,7 +1219,7 @@ Blockly.TypeExpr.prototype.occur = function(name) {
       staq.push(children[i]);
   }
   return false;
-}
+};
 
 /**
  * Return whether it's possible to unify the object with the give one.
@@ -1243,7 +1243,7 @@ Blockly.TypeExpr.prototype.ableToUnify = function(other, opt_errorCollector) {
     opt_errorCollector.addTypeError(e);
     return false;
   }
-}
+};
 
 /**
  * Disconnect this type expression from another one if they are type variables
