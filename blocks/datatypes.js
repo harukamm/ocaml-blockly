@@ -592,11 +592,6 @@ Blockly.Blocks['empty_construct_pattern_typed'] = {
     valueBlock.initSvg();
     valueBlock.render();
     return valueBlock;
-  },
-
-  clearTypes: function() {
-    var type = this.outputConnection.typeExpr.pattExpr;
-    type.element_type.clear();
   }
 };
 
@@ -627,11 +622,6 @@ Blockly.Blocks['cons_construct_pattern_typed'] = {
     valueBlock.typedValue['FIRST'].setVariableName(first.getText());
     valueBlock.typedValue['CONS'].setVariableName(cons.getText());
     return valueBlock;
-  },
-
-  clearTypes: function() {
-    var type = this.outputConnection.typeExpr.pattExpr;
-    type.element_type.clear();
   }
 };
 
@@ -674,11 +664,6 @@ Blockly.Blocks['cons_construct_pattern_value_typed'] = {
     var consName = this.typedValue['CONS'].getVariableName();
     map[fstName] = this.typedValue['FIRST'];
     map[consName] = this.typedValue['CONS'];
-  },
-
-  clearTypes: function() {
-    var type = this.outputConnection.typeExpr.pattExpr;
-    type.element_type.clear();
   }
 };
 
@@ -713,12 +698,6 @@ Blockly.Blocks['pair_pattern_typed'] = {
     valueBlock.typedValue['LEFT'].setVariableName(left.getText());
     valueBlock.typedValue['RIGHT'].setVariableName(right.getText());
     return valueBlock;
-  },
-
-  clearTypes: function() {
-    var type = this.outputConnection.typeExpr.pattExpr;
-    type.first_type.clear();
-    type.second_type.clear();
   }
 };
 
@@ -760,11 +739,5 @@ Blockly.Blocks['pair_pattern_value_typed'] = {
     var rightValue = this.typedValue['RIGHT'];
     map[leftValue.getVariableName()] = leftValue;
     map[rightValue.getVariableName()] = rightValue;
-  },
-
-  clearTypes: function() {
-    var type = this.outputConnection.typeExpr.pattExpr;
-    type.first_type.clear();
-    type.second_type.clear();
   }
 };

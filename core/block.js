@@ -1872,7 +1872,7 @@ Blockly.Block.typeInferenceContext.prototype.copy = function() {
 Blockly.Block.inferBlocksType_ = function(blocks, opt_reset, opt_unifyOrphan) {
   if (opt_reset) {
     for (var i = 0, block; block = blocks[i]; i++) {
-      if (!block.isTransferring() && goog.isFunction(block.clearTypes)) {
+      if (!block.isTransferring()) {
         block.clearTypes();
       }
     }
@@ -1882,6 +1882,28 @@ Blockly.Block.inferBlocksType_ = function(blocks, opt_reset, opt_unifyOrphan) {
       var context = new Blockly.Block.typeInferenceContext(opt_unifyOrphan);
       block.infer(context);
     }
+  }
+};
+
+/**
+ * Clear unification of all type expressions existing inside blocks and their
+ * descendants.
+ */
+Blockly.Block.prototype.clearTypes = function() {
+  if (this.outputConnection && this.outputConnection.typeExpr) {
+    this.outputConnection.typeExpr.clear();
+  }
+  for (var i = 0, input; input = this.inputList[i]; i++) {
+    if (input.connection && input.connection.typeExpr) {
+      input.connection.typeExpr.clear();
+    }
+  }
+  if (goog.isFunction(this.clearInnerTypes)) {
+    this.clearInnerTypes();
+  }
+  var children = this.getChildren();
+  for (var i = 0, child; child = children[i]; i++) {
+    child.clearTypes();
   }
 };
 
@@ -1968,24 +1990,6 @@ Blockly.Block.doTypeInference = function(workspace) {
   }
 
   Blockly.Block.inferBlocksType_(blocksToUpdate, true, true);
-};
-
-/**
- * Call the clearTypes function indirectly if it exists.
- * @param {string|Blockly.Connection} name The name of the input or
- *     connection.
- */
-Blockly.Block.prototype.callClearTypes = function(name) {
-  if (goog.isString(name)) {
-    var input = this.getInput(name);
-    goog.asserts.assert(!!input, 'Invalid input name');
-    var connection = input.connection;
-  } else {
-    var connection = name;
-  }
-  var childBlock = connection.targetBlock();
-  if (childBlock && childBlock.clearTypes)
-    childBlock.clearTypes();
 };
 
 /**

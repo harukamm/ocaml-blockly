@@ -58,11 +58,6 @@ Blockly.Blocks['logic_operator_typed'] = {
     });
   },
 
-  clearTypes: function() {
-    this.callClearTypes('A');
-    this.callClearTypes('B');
-  },
-
   infer: function(ctx) {
     var expected_left = new Blockly.TypeExpr.BOOL();
     var left = this.callInfer('A', ctx);
@@ -89,10 +84,6 @@ Blockly.Blocks['not_operator_typed'] = {
         .appendField('not');
     this.setInputsInline(true);
     this.setTooltip('Logical negation operator.');
-  },
-
-  clearTypes: function() {
-    this.callClearTypes('A');
   },
 
   infer: function(ctx) {
@@ -152,12 +143,6 @@ Blockly.Blocks['logic_compare_typed'] = {
     });
   },
 
-  clearTypes: function() {
-    this.getInput('A').connection.typeExpr.clear();
-    this.callClearTypes('A');
-    this.callClearTypes('B');
-  },
-
   infer: function(ctx) {
     var expected_left = this.getInput('A').connection.typeExpr;
     var left = this.callInfer('A', ctx);
@@ -191,13 +176,6 @@ Blockly.Blocks['logic_ternary_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(A);
     this.setTooltip(Blockly.Msg.LOGIC_TERNARY_TOOLTIP);
-  },
-
-  clearTypes: function() {
-    this.outputConnection.typeExpr.clear();
-    this.callClearTypes('IF');
-    this.callClearTypes('THEN');
-    this.callClearTypes('ELSE');
   },
 
   infer: function(ctx) {
@@ -297,11 +275,6 @@ Blockly.Blocks['int_arithmetic_typed'] = {
     });
   },
 
-  clearTypes: function() {
-    this.callClearTypes('A');
-    this.callClearTypes('B');
-  },
-
   infer: function(ctx) {
     var expected_left = new Blockly.TypeExpr.INT();
     var left = this.callInfer('A', ctx);
@@ -366,11 +339,6 @@ Blockly.Blocks['float_arithmetic_typed'] = {
     });
   },
 
-  clearTypes: function() {
-    this.callClearTypes('A');
-    this.callClearTypes('B');
-  },
-
   infer: function(ctx) {
     var expected_left = new Blockly.TypeExpr.FLOAT();
     var left = this.callInfer('A', ctx);
@@ -408,11 +376,6 @@ Blockly.Blocks['concat_string_typed'] = {
     this.setInputsInline(true);
   },
 
-  clearTypes: function() {
-    this.callClearTypes('A');
-    this.callClearTypes('B');
-  },
-
   infer: function(ctx) {
     var expected_left = new Blockly.TypeExpr.STRING();
     var left = this.callInfer('A', ctx);
@@ -434,10 +397,6 @@ Blockly.Blocks['string_of_int_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(new Blockly.TypeExpr.STRING());
     this.setInputsInline(true);
-  },
-
-  clearTypes: function() {
-    this.callClearTypes('PARAM');
   },
 
   infer: function(ctx) {
@@ -583,12 +542,6 @@ Blockly.Blocks['lists_create_with_typed'] = {
     }
   },
 
-  clearTypes: function() {
-    this.outputConnection.typeExpr.element_type.clear();
-    for (var x = 0; x < this.itemCount_; x++)
-      this.callClearTypes('ADD' + x);
-  },
-
   infer: function(ctx) {
     var expected = this.outputConnection.typeExpr;
     for (var x = 0; x < this.itemCount_; x++) {
@@ -610,10 +563,6 @@ Blockly.Blocks['list_empty_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(listType);
     this.setInputsInline(true);
-  },
-
-  clearTypes: function() {
-    this.outputConnection.typeExpr.element_type.clear();
   }
 };
 
@@ -630,12 +579,6 @@ Blockly.Blocks['list_cons_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(listType);
     this.setInputsInline(true);
-  },
-
-  clearTypes: function() {
-    this.outputConnection.typeExpr.element_type.clear();
-    this.callClearTypes('FIRST');
-    this.callClearTypes('CONS');
   },
 
   infer: function(ctx) {
@@ -674,13 +617,6 @@ Blockly.Blocks['pair_create_typed'] = {
     this.setInputsInline(true);
   },
 
-  clearTypes: function() {
-    this.outputConnection.typeExpr.first_type.clear();
-    this.outputConnection.typeExpr.second_type.clear();
-    this.callClearTypes('FIRST');
-    this.callClearTypes('SECOND');
-  },
-
   infer: function(ctx) {
     var expected = this.outputConnection.typeExpr;
     var first = this.callInfer('FIRST', ctx);
@@ -710,11 +646,6 @@ Blockly.Blocks['pair_first_typed'] = {
     this.setTooltip('Get the first and second elements of a pair.');
   },
 
-  clearTypes: function() {
-    this.outputConnection.typeExpr.clear();
-    this.callClearTypes('FIRST');
-  },
-
   infer: function(ctx) {
     var expected = this.outputConnection.typeExpr;
     var expected_arg = this.getInput('FIRST').connection.typeExpr;
@@ -741,11 +672,6 @@ Blockly.Blocks['pair_second_typed'] = {
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
     this.setTooltip('Get the second and second elements of a pair.');
-  },
-
-  clearTypes: function() {
-    this.outputConnection.typeExpr.clear();
-    this.callClearTypes('SECOND');
   },
 
   infer: function(ctx) {
@@ -864,14 +790,8 @@ Blockly.Blocks['function_app_typed'] = {
     this.setOutputTypeExpr(Blockly.TypeExpr.generateTypeVar(), true);
   },
 
-  clearTypes: function() {
+  clearInnerTypes: function() {
     this.typedReference['VAR'].getTypeExpr().clear();
-    for (var i = 0; i < this.paramCount_; i++) {
-      this.callClearTypes('PARAM' + i);
-      var input = this.getInput('PARAM' + i);
-      input.connection.typeExpr.clear();
-    }
-    this.outputConnection.typeExpr.clear();
   },
 
   infer: function(ctx) {
@@ -961,13 +881,11 @@ Blockly.Blocks['lambda_typed'] = {
     return scheme;
   },
 
-  clearTypes: function() {
+  clearInnerTypes: function() {
     var variable = this.typedValue['VAR'];
     goog.asserts.assert(this.outputConnection.typeExpr.arg_type ==
         variable.getTypeExpr());
     variable.getTypeExpr().clear();
-    this.outputConnection.typeExpr.return_type.clear();
-    this.callClearTypes('RETURN');
   },
 
   infer: function(ctx) {
@@ -998,13 +916,6 @@ Blockly.Blocks['lambda_app_typed'] = {
     this.setOutput(true);
     this.setOutputTypeExpr(B);
     this.setInputsInline(true);
-  },
-
-  clearTypes: function() {
-    this.getInput('FUN').connection.typeExpr.arg_type.clear();
-    this.getInput('FUN').connection.typeExpr.return_type.clear();
-    this.callClearTypes('FUN');
-    this.callClearTypes('ARG');
   },
 
   infer: function(ctx) {
@@ -1222,16 +1133,6 @@ Blockly.Blocks['match_typed'] = {
     }
   },
 
-  clearTypes: function() {
-    this.outputConnection.typeExpr.clear();
-    this.getInput('INPUT').connection.typeExpr.clear();
-    this.callClearTypes('INPUT');
-    for (var i = 0; i < this.itemCount_; i++) {
-      this.callClearTypes('PATTERN' + i);
-      this.callClearTypes('OUTPUT' + i);
-    }
-  },
-
   infer: function(ctx) {
     var inputExpected = this.getInput('INPUT').connection.typeExpr;
     var inputType = this.callInfer('INPUT', ctx);
@@ -1291,7 +1192,7 @@ Blockly.Blocks['variables_get_typed'] = {
     variable.setTypeExpr(A);
   },
 
-  clearTypes: function() {
+  clearInnerTypes: function() {
     var variable = this.typedReference['VAR'];
     goog.asserts.assert(this.outputConnection.typeExpr ==
         variable.getTypeExpr());
@@ -1670,17 +1571,8 @@ Blockly.Blocks['let_typed'] = {
     return containerBlock.getItemCount() != this.argumentCount_;
   },
 
-  clearTypes: function() {
+  clearInnerTypes: function() {
     this.typedValue['VAR'].getTypeExpr().clear();
-    var exp1Type = this.getInput('EXP1').connection.typeExpr;
-    exp1Type.clear();
-    this.callClearTypes('EXP1');
-    if (this.isStatement_)  {
-      this.callClearTypes(this.nextConnection);
-    } else {
-      this.getInput('EXP2').connection.typeExpr.clear();
-      this.callClearTypes('EXP2');
-    }
     for (var x = 0; x < this.argumentCount_; x++) {
       var variable = this.typedValue['ARG' + x];
       variable.getTypeExpr().clear();

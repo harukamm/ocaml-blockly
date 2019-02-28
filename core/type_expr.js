@@ -223,10 +223,13 @@ Blockly.TypeExpr.prototype.replaceChild = function(oldChild, newChild) {
 };
 
 /**
- * Clear a type resolution.
+ * Clear type resolutions deeply.
  */
 Blockly.TypeExpr.prototype.clear = function() {
-  return;
+  var children = this.getChildren();
+  for (var i = 0, child; child = children[i]; i++) {
+    child.clear();
+  }
 };
 
 /**
@@ -796,6 +799,14 @@ Blockly.TypeExpr.PATTERN.prototype.clone = function() {
 };
 
 /**
+ * Clear type resolutions deeply.
+ * @override
+ */
+Blockly.TypeExpr.PATTERN.prototype.clear = function() {
+  this.pattExpr.clear();
+};
+
+/**
  * @param {!Blockly.TypeExpr} otherPatt
  */
 Blockly.TypeExpr.PATTERN.prototype.unifyPattern = function(otherPatt) {
@@ -922,8 +933,10 @@ Blockly.TypeExpr.TVAR.prototype.deepDeref = function() {
  * @override
  */
 Blockly.TypeExpr.TVAR.prototype.clear = function() {
+  if (this.val) {
+    this.val.clear();
+  }
   this.val = null;
-  return;
 };
 
 Blockly.TypeExpr.gen_counter = 1;

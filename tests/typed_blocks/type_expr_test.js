@@ -14,9 +14,13 @@ function test_type_expr_clearTypes() {
   var pair1 = new Blockly.TypeExpr.PAIR(p, q);
   var ptr1 = new Blockly.TypeExpr.TVAR('R', pair1);
   var ptr2 = new Blockly.TypeExpr.TVAR('S', ptr1);
+  p.val = int1;
+  assertTrue(p.deref().isInt());
   ptr2.clear();
   assertTrue(ptr2.val == null);
-  assertTrue(ptr1.val === pair1);
+  assertTrue(ptr1.val === null);
+  assertTrue(p.val === null);
+  assertFalse(p.deref().isInt());
 }
 
 function test_type_expr_unifyPairType() {
