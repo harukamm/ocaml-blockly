@@ -992,6 +992,24 @@ Blockly.TypeExpr.prototype.getTvarList = function() {
 };
 
 /**
+ * Returns if this type expression includes an unknown type.
+ */
+Blockly.TypeExpr.prototype.hasUnknown = function() {
+  var staq = [this];
+  while (staq.length) {
+    var t = staq.pop();
+    if (t.isUnknown()) {
+      return true;
+    }
+    var children = t.getChildren();
+    for (var i = 0, child; child = children[i]; i++) {
+      staq.push(child);
+    }
+  }
+  return false;
+};
+
+/**
  * Clone type expression and replace some of type variables with flesh ones.
  * @param {!Array.<!string>} targetNames List of type variable names to be
  *     replaced.
@@ -1054,6 +1072,10 @@ Blockly.TypeExpr.prototype.instantiate = function(targetNames) {
  * @param {Blockly.TypeExpr} other
  */
 Blockly.TypeExpr.prototype.unify = function(other) {
+  if (this.hasUnknown() || other.hasUnknown()) {
+    throw new Blockly.TypeExpr.errorUnknownType(this, other);
+  }
+
   var staq = [[this, other]];
   while (staq.length != 0) {
     var pair = staq.pop();

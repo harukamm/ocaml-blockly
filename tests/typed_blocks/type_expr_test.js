@@ -595,3 +595,43 @@ function test_type_expr_record_types() {
   assertEquals(n.toString(), "<n=RECORD(ID_recordBar)>");
   assertEquals(recordType2.toString(), "RECORD(ID_recordBar)");
 }
+
+function test_type_expr_hasUnknownTypes() {
+  var intType = new Blockly.TypeExpr.INT();
+  var floatType = new Blockly.TypeExpr.FLOAT();
+  assertFalse(intType.hasUnknown());
+  assertFalse(floatType.hasUnknown());
+  var unknown = new Blockly.TypeExpr.UNKNOWN();
+  assertTrue(unknown.hasUnknown());
+  var pairType = new Blockly.TypeExpr.PAIR(unknown, intType);
+  assertTrue(pairType.hasUnknown());
+  var listType = new Blockly.TypeExpr.LIST(pairType);
+  assertTrue(listType.hasUnknown());
+  pairType.first_type = intType;
+  assertFalse(listType.hasUnknown());
+  var funType = new Blockly.TypeExpr.FUN(listType, pairType);
+  listType.element_type = floatType;
+  assertFalse(funType.hasUnknown());
+}
+
+function test_type_expr_unifyTypesWithUnknown() {
+  function unifyFailsDueToUnknownType(t1, t2) {
+    var err = null;
+    try {
+      t1.unify(t2);
+    } catch(e) {
+      err = e;
+    }
+    return err ? err.label == Blockly.TypeExpr.ERROR_UNKNOWN_TYPE : false;
+  }
+  var intType = new Blockly.TypeExpr.INT();
+  var floatType = new Blockly.TypeExpr.FLOAT();
+  var unknown1 = new Blockly.TypeExpr.UNKNOWN();
+  var unknown2 = new Blockly.TypeExpr.UNKNOWN();
+  assertTrue(unifyFailsDueToUnknownType(unknown1, unknown2));
+  var pairType = new Blockly.TypeExpr.PAIR(unknown1, intType);
+  var listType = new Blockly.TypeExpr.LIST(pairType);
+  var funType = new Blockly.TypeExpr.FUN(listType, intType);
+  assertTrue(unifyFailsDueToUnknownType(funType, funType));
+  assertTrue(unifyFailsDueToUnknownType(funType, intType));
+}
