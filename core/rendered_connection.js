@@ -202,10 +202,12 @@ Blockly.RenderedConnection.prototype.tighten_ = function() {
 Blockly.RenderedConnection.prototype.closest = function(maxLimit, dxy,
     opt_targetWorkspace, opt_maxErrorRadius) {
   var db, offsetXY;
-  if (opt_targetWorkspace) {
+  var thisWorkspace = this.sourceBlock_.workspace;
+  if (opt_targetWorkspace && opt_targetWorkspace != thisWorkspace) {
     if (!this.sourceBlock_.isTransferable()) {
-      throw 'Couldn\'t specify the workspace to search for the closest ' +
-          'connection unless the block is transferable.';
+      // If the block is not transferable, can not search connections of
+      // other workspace.
+      return {connection: null, radius: maxLimit, reason: null};
     }
     var workspace = this.sourceBlock_.workspace;
     var targetWorkspace = opt_targetWorkspace;
