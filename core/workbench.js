@@ -422,11 +422,11 @@ Blockly.Workbench.prototype.getContext = function(opt_includeImplicit) {
  * @return {!Object} The map to variable value keyed by its name.
  */
 Blockly.Workbench.prototype.getBlockContext = function() {
-  if (!this.block_) {
-    // This workbench is in the process of being deleted.
-    return {};
+  var env = {};
+  if (this.block_) {
+    this.block_.updateVariableEnvImpl(this.contextConnection_, env);
   }
-  return this.block_.getVisibleVariablesImpl(this.contextConnection_);
+  return env;
 };
 
 /**

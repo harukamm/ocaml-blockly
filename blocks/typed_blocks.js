@@ -853,21 +853,18 @@ Blockly.Blocks['lambda_typed'] = {
   },
 
   /**
-   * Return all variables of which is declared in this block, and can be used
+   * Store variables of which is declared in this block, and can be used
    * later the given connection's input.
    * @param {!Blockly.Connection} connection Connection to specify a scope.
-   * @return {Object} Object mapping variable name to its variable
-   *     representations.
+   * @param {!Object} map Map of variable name to variable value.
    */
-  getVisibleVariables: function(conn) {
+  updateVariableEnv: function(conn, map) {
     var returnInput = this.getInput('RETURN');
-    var map = {};
-    if (returnInput.connection == conn) {
+    if (conn && returnInput.connection == conn) {
       var variable = this.typedValue['VAR'];
       var name = variable.getVariableName();
       map[name] = variable;
     }
-    return map;
   },
 
   getTypeScheme: function(fieldName) {
@@ -955,9 +952,9 @@ Blockly.Blocks['match_typed'] = {
     this.setWorkbench(new Blockly.PatternWorkbench());
   },
 
-  getVisibleVariables: function(conn) {
+  updateVariableEnv: function(conn, map) {
     if (!conn) {
-      return {};
+      return;
     }
     var target = null;
     for (var i = 0; i < this.itemCount_; i++) {
@@ -967,14 +964,9 @@ Blockly.Blocks['match_typed'] = {
         break;
       }
     }
-    if (!target) {
-      return;
-    }
-    var map = {};
-    if (goog.isFunction(target.updateUpperContext)) {
+    if (target && goog.isFunction(target.updateUpperContext)) {
       target.updateUpperContext(map);
     }
-    return map;
   },
 
   appendPatternInput: function() {
@@ -1283,17 +1275,15 @@ Blockly.Blocks['let_typed'] = {
   },
 
   /**
-   * Return all variables of which is declared in this block, and can be used
+   * Store variables of which is declared in this block, and can be used
    * later the given connection's input.
    * @param {!Blockly.Connection} connection Connection to specify a scope.
-   * @return {Object} Object mapping variable name to its variable
-   *     representations.
+   * @param {!Object} map Map of variable name to variable value.
    */
-  getVisibleVariables: function(conn) {
+  updateVariableEnv: function(conn, map) {
     if (!conn) {
-      return {};
+      return;
     }
-    var map = {};
     var isExp1 = this.getInput('EXP1').connection == conn;
     var isNext = !isExp1 && this.nextConnection == conn;
     var isExp2 = !isExp1 && !isNext &&
@@ -1311,7 +1301,6 @@ Blockly.Blocks['let_typed'] = {
         map[name] = variable;
       }
     }
-    return map;
   },
 
   getTypeScheme: function(fieldName, opt_reference) {

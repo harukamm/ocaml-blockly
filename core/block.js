@@ -2221,9 +2221,8 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
 
     for (var i = 0, child; child = block.childBlocks_[i]; i++) {
       var targetConn = child.getParentConnection();
-      var additionalEnv = block.getVisibleVariablesImpl(targetConn);
       var envOfChild = Object.assign({}, envOfParent);
-      Object.assign(envOfChild, additionalEnv);
+      block.updateVariableEnvImpl(targetConn, envOfChild);
       bfsStack.push([child, envOfChild]);
     }
   }
@@ -2303,7 +2302,7 @@ Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit,
   for (var i = blocksToCheck.length - 1, pair; pair = blocksToCheck[i]; i--) {
     var block = pair[0];
     var connection = pair[1];
-    env = Object.assign(env, block.getVisibleVariablesImpl(connection));
+    block.updateVariableEnvImpl(connection, env);
   }
   return env;
 };
@@ -2339,13 +2338,14 @@ Blockly.Block.prototype.getPotentialContext = function() {
 
 /**
  * Finds a list of variable values on this block which are referable inside
- * the input of the given connection.
+ * the input of the given connection, and copy the values to the target object.
  * @param {!Blockly.Connection} conn The connection.
- * @return {!Object} Map to variable values by its name.
+ * @param {!Object} map Map of variable name to variable value.
  */
-Blockly.Block.prototype.getVisibleVariablesImpl = function(conn) {
-  return goog.isFunction(this.getVisibleVariables) ?
-      this.getVisibleVariables(conn) : {};
+Blockly.Block.prototype.updateVariableEnvImpl = function(conn, map) {
+  if (goog.isFunction(this.updateVariableEnv)) {
+    this.updateVariableEnv(conn, map);
+  }
 };
 
 /**
