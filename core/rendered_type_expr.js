@@ -128,31 +128,47 @@ Blockly.RenderedTypeExpr.shape['list'] = {
 
 Blockly.RenderedTypeExpr.shape['tuple'] = {
   down: function(steps) {
-    goog.asserts.assert(this.tuples_.length == 2);
     steps.push('l 0,3 -12,0 0,3 12,0');
     Blockly.RenderedTypeExpr.renderTypeExpr(this.firstType(), steps, 1);
-    steps.push('l -5,3 5,3');
-    Blockly.RenderedTypeExpr.renderTypeExpr(this.secondType(), steps, 1);
+    for (var i = 1; i < this.tuples_.length; i++) {
+      steps.push('l -5,3 5,3');
+      Blockly.RenderedTypeExpr.renderTypeExpr(this.tuples_[i], steps, 1);
+    }
     steps.push('l -12,0 0,3 12,0 0,3');
   },
 
   up: function(steps) {
-    goog.asserts.assert(this.tuples_.length == 2);
     steps.push('l 0,-3 -12,0 0,-3 12,0');
-    Blockly.RenderedTypeExpr.renderTypeExpr(this.secondType(), steps, 2);
-    steps.push('l -5,-3 5,-3');
-    Blockly.RenderedTypeExpr.renderTypeExpr(this.firstType(), steps, 2);
+    var last = this.tuples_[this.tuples_.length - 1];
+    Blockly.RenderedTypeExpr.renderTypeExpr(last, steps, 2);
+    for (var i = this.tuples_.length - 2; 0 <= i; i--) {
+      steps.push('l -5,-3 5,-3');
+      Blockly.RenderedTypeExpr.renderTypeExpr(this.tuples_[i], steps, 2);
+    }
     steps.push('l -12,0 0,-3 12,0 0,-3');
   },
 
   height: function() {
-    return Blockly.RenderedTypeExpr.getTypeExprHeight(this.firstType()) +
-        Blockly.RenderedTypeExpr.getTypeExprHeight(this.secondType()) + 18;
+    var height = 6;
+    height += Blockly.RenderedTypeExpr.getTypeExprHeight(this.firstType());
+    for (var i = 1; i < this.tuples_.length; i++) {
+      height += 6;
+      height += Blockly.RenderedTypeExpr.getTypeExprHeight(this.tuples_[i]);
+    }
+    height += 6;
+    return height;
   },
 
   offsetsY: function() {
-    var height = Blockly.RenderedTypeExpr.getTypeExprHeight(this.firstType());
-    return [6, height + 12];
+    var height = 6;
+    var offsets = [height];
+    height += Blockly.RenderedTypeExpr.getTypeExprHeight(this.firstType());
+    for (var i = 1; i < this.tuples_.length; i++) {
+      height += 6;
+      offsets.push(height);
+      height += Blockly.RenderedTypeExpr.getTypeExprHeight(this.tuples_[i]);
+    }
+    return offsets;
   }
 };
 
