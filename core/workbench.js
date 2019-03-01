@@ -502,8 +502,8 @@ Blockly.Workbench.prototype.checkReference = function(ctx, opt_bind,
   }
   var resolved = true;
   var context = new Blockly.Block.VariableContext();
-  context.assignVariableEnv(ctx);
-  context.assignVariableEnv(this.getBlockContext());
+  context.assignEnv(ctx);
+  context.assignEnv(this.getBlockContext());
 
   var topBlocks = this.workspace_.getTopBlocks();
   for (var i = 0, topBlock; topBlock = topBlocks[i]; i++) {

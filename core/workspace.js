@@ -352,7 +352,7 @@ Blockly.Workspace.prototype.getImplicitContext = function() {
   for (var i = mutators.length - 1; 0 <= i; i--) {
     var mutator = mutators[i];
     if (goog.isFunction(mutator.getContext)) {
-      context.assignVariableEnv(mutator.getContext(false));
+      context.assignEnv(mutator.getContext(false));
     }
   }
   return context;

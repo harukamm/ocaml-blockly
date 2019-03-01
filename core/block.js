@@ -2182,10 +2182,6 @@ Blockly.Block.VariableContext.prototype.addVariable = function(variable) {
   this.variableEnv_[name] = variable;
 };
 
-Blockly.Block.VariableContext.prototype.assignVariableEnv = function(ctx) {
-  Object.assign(this.variableEnv_, ctx.variableEnv_);
-};
-
 /**
  * Functions to get, set, and copy structure variable values.
  */
@@ -2198,6 +2194,11 @@ Blockly.Block.VariableContext.prototype.addStructureVariable = function(
      'Only structure variable values are acceptable.');
   var name = variable.getVariableName();
   this.structureEnv_[name] = variable;
+};
+
+Blockly.Block.VariableContext.prototype.assignEnv = function(ctx) {
+  Object.assign(this.variableEnv_, ctx.variableEnv_);
+  Object.assign(this.structureEnv_, ctx.structureEnv_);
 };
 
 
@@ -2240,7 +2241,7 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
     var parentsContext = parentBlock.allVisibleVariables(parentConnection,
         false /** Excludes the default implicit context. */,
         true  /** Includes the potential context. */);
-    context.assignVariableEnv(parentsContext);
+    context.assignEnv(parentsContext);
   }
   return this.resolveReferenceOnDescendants(context, opt_bind, opt_collector);
 };
@@ -2285,7 +2286,7 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(ctx,
     for (var i = 0, child; child = block.childBlocks_[i]; i++) {
       var targetConn = child.getParentConnection();
       var ctxOfChild = new Blockly.Block.VariableContext();
-      ctxOfChild.assignVariableEnv(ctxOfParent);
+      ctxOfChild.assignEnv(ctxOfParent);
       block.updateVariableEnvImpl(targetConn, ctxOfChild);
       bfsStack.push([child, ctxOfChild]);
     }
@@ -2349,7 +2350,7 @@ Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit,
     return context;
   }
   if (opt_implicit === true) {
-    context.assignVariableEnv(this.workspace.getImplicitContext());
+    context.assignEnv(this.workspace.getImplicitContext());
   }
 
   var blocksToCheck = [[this, conn]];
@@ -2360,7 +2361,7 @@ Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit,
     blocksToCheck.push([block, targetConnection]);
   }
   if (opt_potential === true) {
-    context.assignVariableEnv(this.getPotentialContext());
+    context.assignEnv(this.getPotentialContext());
   }
 
   for (var i = blocksToCheck.length - 1, pair; pair = blocksToCheck[i]; i--) {
