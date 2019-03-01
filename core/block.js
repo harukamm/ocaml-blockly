@@ -2208,6 +2208,15 @@ Blockly.Block.VariableContext.prototype.getVariableWithLabel = function(
   return variable.label == label ? variable : null;
 };
 
+Blockly.Block.VariableContext.prototype.getVariablesImpl_ = function(env) {
+  var keys = Object.keys(env);
+  var values = [];
+  for (var i = 0; i < keys.length; i++) {
+    values.push(env[keys[i]]);
+  }
+  return values;
+};
+
 /**
  * Functions to get, set, and copy normal variable values.
  */
@@ -2215,12 +2224,7 @@ Blockly.Block.VariableContext.prototype.getVariable = function(name) {
   return name in this.variableEnv_ ? this.variableEnv_[name] : null;
 };
 Blockly.Block.VariableContext.prototype.getVariables = function(name) {
-  var keys = Object.keys(this.variableEnv_);
-  var values = [];
-  for (var i = 0; i < keys.length; i++) {
-    values.push(this.variableEnv_[keys[i]]);
-  }
-  return values;
+  return this.getVariablesImpl_(this.variableEnv_);
 };
 Blockly.Block.VariableContext.prototype.getVariableNames = function(name) {
   return Object.keys(this.variableEnv_);
@@ -2239,6 +2243,9 @@ Blockly.Block.VariableContext.prototype.addVariable = function(variable) {
 Blockly.Block.VariableContext.prototype.getStructureVariable = function(name) {
   return name in this.structureEnv_ ? this.structureEnv_[name] : null;
 };
+Blockly.Block.VariableContext.prototype.getStructureVariables = function() {
+  return this.getVariablesImpl_(this.structureEnv_);
+};
 Blockly.Block.VariableContext.prototype.addStructureVariable = function(
     variable) {
   goog.asserts.assert(!variable.isReference() && variable.isRecord(),
@@ -2247,6 +2254,11 @@ Blockly.Block.VariableContext.prototype.addStructureVariable = function(
   this.structureEnv_[name] = variable;
 };
 
+Blockly.Block.VariableContext.prototype.getAllVariables = function(ctx) {
+  var variables = this.getVariables();
+  Array.prototype.push.apply(variables, this.getStructureVariables());
+  return variables;
+};
 Blockly.Block.VariableContext.prototype.assignEnv = function(ctx) {
   Object.assign(this.variableEnv_, ctx.variableEnv_);
   Object.assign(this.structureEnv_, ctx.structureEnv_);

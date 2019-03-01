@@ -438,7 +438,7 @@ Blockly.Workbench.prototype.getBlockContext = function() {
  */
 Blockly.Workbench.prototype.blocksForFlyout_ = function(flyoutWorkspace) {
   var ctx = this.getContext();
-  var variables = ctx.getVariables();
+  var variables = ctx.getAllVariables();
   var blocks = [];
 
   for (var i = 0, variable; variable = variables[i]; i++) {
@@ -455,6 +455,9 @@ Blockly.Workbench.prototype.blocksForFlyout_ = function(flyoutWorkspace) {
     } else if (variable.isConstructor()) {
       var prototypeName = 'create_construct_typed';
       var fieldName = 'CONSTRUCTOR';
+    } else if (variable.isRecord()) {
+      var prototypeName = 'create_record_typed';
+      var fieldName = 'RECORD';
     } else {
       goog.asserts.fail('Not supported type of variable.');
     }
