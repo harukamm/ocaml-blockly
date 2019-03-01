@@ -84,8 +84,18 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
   this.inputList = [];
   /** @type {!Object<string, !Blockly.BoundVariableValue>} */
   this.typedValue = {};
-  /** @type {!Object<string, !Blockly.BoundVariableValueReference>} */
+  /*
+   * Map of variable name to normal variable reference. If a reference is stored
+   * in the object, it will be examined if the binding is valid.
+   * @type {!Object<string, !Blockly.BoundVariableValueReference>}
+   */
   this.typedReference = {};
+  /*
+   * Map of variable name to structure variable reference. If a reference is
+   * stored in the object, it will be examined if the binding is valid.
+   * @type {!Object<string, !Blockly.BoundVariableValueReference>}
+   */
+  this.typedStructureReference = {};
   /** @type {boolean|undefined} */
   this.inputsInline = undefined;
   /** @type {boolean} */
@@ -845,15 +855,23 @@ Blockly.Block.prototype.getVarModels = function() {
  * Returns all bound-variables referenced by this block.
  * @param {boolean=} opt_filter If true, collect only variable references. If
  *     false, collect only values. If not provided, include both of them.
+ * @param {boolean=} opt_structFilter If true, collect structure variables too.
+ *     Otherwise, only normal variables. Defaults to false.
  * @return {!Array.<!Blockly.BoundVariableAbstract>} List of variables.
  * @package
  */
-Blockly.Block.prototype.getVariables = function(opt_filter) {
+Blockly.Block.prototype.getVariables = function(opt_filter, opt_structFilter) {
   var vars = [];
   var filtered = opt_filter === true || opt_filter === false;
+  var collectStructure = opt_structFilter == true;
   if (!filtered || opt_filter === true) {
     for (name in this.typedReference) {
       vars.push(this.typedReference[name]);
+    }
+    if (collectStructure) {
+      for (name in this.typedStructureReference) {
+        vars.push(this.typedStructureReference[name]);
+      }
     }
   }
   if (!filtered || opt_filter === false) {
@@ -2305,11 +2323,16 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(ctx,
  */
 Blockly.Block.prototype.resolveReferenceWithEnv_ = function(ctx, opt_bind,
     opt_collector) {
-  var referenceList = this.getVariables(true /** Gets only references. */);
+  var referenceList = this.getVariables(true /** Gets only references. */,
+      true /** Gets structure variables too. */);
   var allBound = true;
   for (var i = 0, variable; variable = referenceList[i]; i++) {
     var name = variable.getVariableName();
-    var value = ctx.getVariable(name);
+    if (variable.isVariable()) {
+      var value = ctx.getVariable(name);
+    } else {
+      var value = ctx.getStructureVariable(name);
+    }
     var currentValue = variable.getBoundValue();
     if (!value) {
       // Refers to an undefined variable.

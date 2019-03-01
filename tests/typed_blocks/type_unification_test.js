@@ -1405,10 +1405,15 @@ function test_type_unification_resizeRecordBlock() {
     assertEquals(firstChild, value.getChildren()[0]);
     assertEquals(secondChild, value.getChildren()[1]);
 
+    var letBlock = workspace.newBlock('letstatement_typed');
+    letBlock.previousConnection.connect(defineRecord.nextConnection);
     var recordBlock = workspace.newBlock('create_record_typed');
     var reference = recordBlock.getField('RECORD').getVariable();
     reference.setVariableName(value.getVariableName());
-    reference.setBoundValue(value);
+
+    assertFalse(recordBlock.resolveReference(null));
+    letBlock.getInput('EXP1').connection.connect(recordBlock.outputConnection);
+    assertEquals(reference.getBoundValue(), value);
 
     var children = value.getChildren();
     for (var i = 0, child; child = children[i]; i++) {
@@ -1417,7 +1422,9 @@ function test_type_unification_resizeRecordBlock() {
       assertEquals(child, field.getBoundValue());
     }
 
+    recordBlock.outputConnection.disconnect();
     var ifBlock = workspace.newBlock('logic_ternary_typed');
+    letBlock.getInput('EXP1').connection.connect(ifBlock.outputConnection);
     ifBlock.getInput('THEN').connection.connect(
         recordBlock.outputConnection);
     var conn = ifBlock.getInput('ELSE').connection;

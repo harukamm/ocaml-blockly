@@ -34,14 +34,14 @@ Blockly.BoundVariables.createValue = function(valueTypeExpr, variableName,
  * @param {!Blockly.BoundVariableValue}
  */
 Blockly.BoundVariables.addValue = function(workspace, value) {
-  var block = value.getSourceBlock();
-  var fieldName = value.getMainFieldName();
+  var valueMap = Blockly.BoundVariables.getBlockVariableDB(value);
 
-  if (value.isVariable()) {
-    if (block.typedValue[fieldName] || value.inBlockDB) {
+  if (valueMap) {
+    var fieldName = value.getMainFieldName();
+    if (valueMap[fieldName] || value.inBlockDB) {
       throw 'The value is already added to the variable map of other block.';
     }
-    block.typedValue[fieldName] = value;
+    valueMap[fieldName] = value;
     value.inBlockDB = true;
   }
 
@@ -62,14 +62,14 @@ Blockly.BoundVariables.addValue = function(workspace, value) {
  * @param {!Blockly.BoundVariableValue}
  */
 Blockly.BoundVariables.removeValue = function(workspace, value) {
-  var block = value.getSourceBlock();
-  var fieldName = value.getMainFieldName();
+  var valueMap = Blockly.BoundVariables.getBlockVariableDB(value);
 
-  if (value.isVariable()) {
-    if (value.inBlockDB && !block.typedValue[fieldName]) {
+  if (valueMap) {
+    var fieldName = value.getMainFieldName();
+    if (value.inBlockDB && !valueMap[fieldName]) {
       throw 'The value doesn\'t exist in DB.';
     }
-    delete block.typedValue[fieldName];
+    delete valueMap[fieldName];
     value.inBlockDB = false;
   }
 
@@ -116,15 +116,15 @@ Blockly.BoundVariables.createReference = function(typeExpr, name, label,
  * @param {!Blockly.BoundVariableValueReference} The reference to add.
  */
 Blockly.BoundVariables.addReference = function(workspace, reference) {
-  var block = reference.getSourceBlock();
-  var fieldName = reference.getMainFieldName();
+  var referenceMap = Blockly.BoundVariables.getBlockVariableDB(reference);
 
-  if (reference.isVariable()) {
-    if (block.typedReference[fieldName] || reference.inBlockDB) {
+  if (referenceMap) {
+    var fieldName = reference.getMainFieldName();
+    if (fieldName in referenceMap || reference.inBlockDB) {
       throw 'The reference is already added to the variable map of other ' +
           'block.';
     }
-    block.typedReference[fieldName] = reference;
+    referenceMap[fieldName] = reference;
     reference.inBlockDB = true;
   }
 
@@ -145,14 +145,14 @@ Blockly.BoundVariables.addReference = function(workspace, reference) {
  * @param {!Blockly.BoundVariableValueReference} The reference to remove.
  */
 Blockly.BoundVariables.removeReference = function(workspace, reference) {
-  var block = reference.getSourceBlock();
-  var fieldName = reference.getMainFieldName();
+  var referenceMap = Blockly.BoundVariables.getBlockVariableDB(reference);
 
-  if (reference.isVariable()) {
-    if (reference.inBlockDB && !block.typedReference[fieldName]) {
+  if (referenceMap) {
+    var fieldName = reference.getMainFieldName();
+    if (reference.inBlockDB && !(fieldName in referenceMap)) {
       throw 'The reference doesn\'t exist in DB.';
     }
-    delete block.typedReference[fieldName];
+    delete referenceMap[fieldName];
     reference.inBlockDB = false;
   }
 
@@ -204,6 +204,26 @@ Blockly.BoundVariables.clearWorkspaceVariableDB = function(workspace) {
     clearVariableDB(referenceDB);
     clearVariableDB(valueDB);
   }
+};
+
+/**
+ * Returns a block's database which keeps variables inside the block.
+ * @param {!Blockly.BoundVariableAbstract} variable The variable.
+ * @return {!Object|null} The variable database if the variable is need to be
+ *     stored in it. Otherwise null.
+ */
+Blockly.BoundVariables.getBlockVariableDB = function(variable) {
+  var block = variable.getSourceBlock();
+  if (!variable.isReference()) {
+    return variable.isVariable() ? block.typedValue : null;
+  }
+  if (variable.isVariable()) {
+    return block.typedReference;
+  }
+  if (variable.isRecord()) {
+    return block.typedStructureReference;
+  }
+  return null;
 };
 
 /**
