@@ -1646,3 +1646,20 @@ Blockly.Blocks['letstatement_typed'] =
 Blockly.Blocks['letstatement_typed'].init = function() {
   Blockly.Blocks['let_typed'].init.call(this, false, true);
 };
+
+Blockly.Blocks['dummy_statement_typed'] = {
+  init: function() {
+    var type = Blockly.TypeExpr.generateTypeVar();
+    this.setTypedStatements(true);
+    this.appendValueInput('VALUE')
+        .setTypeExpr(type);
+  },
+
+  infer: function(ctx) {
+    var expected = this.getInput('VALUE').connection.typeExpr;
+    var valueType = this.callInfer('VALUE', ctx);
+    if (valueType) {
+      valueType.unify(expected);
+    }
+  }
+};

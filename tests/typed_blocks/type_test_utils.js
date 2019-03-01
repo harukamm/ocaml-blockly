@@ -504,3 +504,22 @@ function copyAndPasteBlock(block, opt_targetWorkspace) {
   var newBlock = Blockly.Xml.domToBlock(xml, targetWorkspace);
   return newBlock;
 }
+
+function connectAsStatements(prev, next, opt_workspace) {
+  function wrapWithStatement(block) {
+    assertNotNull(opt_workspace);
+    assertNotNull(block.outputConnection);
+    var dummyStatement = opt_workspace.newBlock('dummy_statement_typed');
+    dummyStatement.getInput('VALUE').connection.connect(
+        block.outputConnection, true);
+    return dummyStatement;
+  }
+  if (!prev.nextConnection) {
+    prev = wrapWithStatement(prev);
+  }
+  if (!next.previousConnection) {
+    next = wrapWithStatement(next);
+  }
+  prev.nextConnection.connect(next.previousConnection);
+  return prev;
+}

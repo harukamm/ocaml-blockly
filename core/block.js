@@ -2175,6 +2175,36 @@ Blockly.Block.VariableContext = function() {
 };
 
 /**
+ * Returns the object to store variables of the given label.
+ * @param {number} label One of variable labels which are defined in
+ *     Blockly.BoundVariableAbstract class.
+ * @return {!Object} Object to store variables.
+ * @private
+ */
+Blockly.Block.VariableContext.prototype.getEnvWithLabel_ = function(label) {
+  if (Blockly.BoundVariableAbstract.isVariableLabel(label) ||
+      Blockly.BoundVariableAbstract.isConstructorLabel(label)) {
+    return this.variableEnv_;
+  }
+  if (Blockly.BoundVariableAbstract.isRecordLabel(label)) {
+    return this.structureEnv_;
+  }
+  goog.asserts.fail('Unexpected variable label.');
+};
+
+/**
+ * Look up a variable using name and variable label.
+ * @param {!string} name
+ * @param {number} label
+ * @return {!Blockly.BoundVariableValue|null} The variable if found, or null.
+ */
+Blockly.Block.VariableContext.prototype.getVariableWithLabel = function(
+    name, label) {
+  var env = this.getEnvWithLabel_(label);
+  return env && (name in env) ? env[name] : null;
+};
+
+/**
  * Functions to get, set, and copy normal variable values.
  */
 Blockly.Block.VariableContext.prototype.getVariable = function(name) {
@@ -2192,8 +2222,9 @@ Blockly.Block.VariableContext.prototype.getVariableNames = function(name) {
   return Object.keys(this.variableEnv_);
 };
 Blockly.Block.VariableContext.prototype.addVariable = function(variable) {
-  goog.asserts.assert(!variable.isReference() && variable.isVariable(),
-      'Only normal variable values are acceptable.');
+  goog.asserts.assert(!variable.isReference() &&
+      (variable.isVariable() || variable.isConstructor()),
+      'Only variable and constructor values are acceptable.');
   var name = variable.getVariableName();
   this.variableEnv_[name] = variable;
 };
@@ -2328,11 +2359,7 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(ctx, opt_bind,
   var allBound = true;
   for (var i = 0, variable; variable = referenceList[i]; i++) {
     var name = variable.getVariableName();
-    if (variable.isVariable()) {
-      var value = ctx.getVariable(name);
-    } else {
-      var value = ctx.getStructureVariable(name);
-    }
+    var value = ctx.getVariableWithLabel(name, variable.label);
     var currentValue = variable.getBoundValue();
     if (!value) {
       // Refers to an undefined variable.

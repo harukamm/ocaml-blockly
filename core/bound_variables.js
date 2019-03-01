@@ -217,7 +217,7 @@ Blockly.BoundVariables.getBlockVariableDB = function(variable) {
   if (!variable.isReference()) {
     return variable.isVariable() ? block.typedValue : null;
   }
-  if (variable.isVariable()) {
+  if (variable.isVariable() || variable.isConstructor()) {
     return block.typedReference;
   }
   if (variable.isRecord()) {

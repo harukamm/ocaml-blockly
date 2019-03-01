@@ -541,8 +541,11 @@ function test_resolve_reference_fixRemoveUndefinedRefInConstruct() {
     assertEquals(workspace.getCtorDataName(id), 'bar');
     var ctrValue = getVariable(defineCtr, 0);
     var ctr = createReferenceBlock(ctrValue);
+    ctrValue.setVariableName('Foo');
+    assertEquals(getVariableName(ctr), 'Foo');
     assertEquals(ctrValue.getTypeExpr().getDisplayText(), 'bar');
     var letBlockA = workspace.newBlock('let_typed');
+    connectAsStatements(defineCtr, letBlockA, workspace);
     setVariableName(letBlockA, 'a');
     letBlockA.getInput('EXP2').connection.connect(ctr.outputConnection);
 
@@ -560,7 +563,8 @@ function test_resolve_reference_fixRemoveUndefinedRefInConstruct() {
       letBlockB.getInput('EXP2').connection.connect(arithBlock.outputConnection);
       arithBlock.getInput('A').connection.connect(varA.outputConnection);
       arithBlock.getInput('B').connection.connect(varB.outputConnection);
-      assertTrue(letBlockA.resolveReference(null));
+      assertFalse(letBlockA.resolveReference(null));
+      assertTrue(defineCtr.resolveReference(null));
       if (typeName === 'int') {
         assertTrue(inp.connection.typeExpr.isInt());
       } else if (typeName === 'float') {

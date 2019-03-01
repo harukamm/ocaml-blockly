@@ -269,6 +269,17 @@ Blockly.Blocks['defined_datatype_typed'] = {
     return this.getTargetTypeCtor(inputName);
   },
 
+  updateVariableEnv: function(conn, ctx) {
+    if (!conn || this.nextConnection != conn) {
+      return;
+    }
+    for (var i = 0; i < this.itemCount_; i++) {
+      var field = this.getField('CTR' + i);
+      var variable = field.getVariable();
+      ctx.addVariable(variable);
+    }
+  },
+
   getTypeScheme: function(fieldName) {
     if (fieldName.startsWith('CTR')) {
       var numstr = fieldName.substring(3);
