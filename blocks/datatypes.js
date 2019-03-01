@@ -694,15 +694,13 @@ Blockly.Blocks['cons_construct_pattern_value_typed'] = {
     return Blockly.Scheme.monoType(type);
   },
 
-  updateUpperContext: function(map) {
+  updateUpperContext: function(ctx) {
     var parent = this.getParent();
     if (parent && parent.type !== 'match_typed') {
       return;
     }
-    var fstName = this.typedValue['FIRST'].getVariableName();
-    var consName = this.typedValue['CONS'].getVariableName();
-    map[fstName] = this.typedValue['FIRST'];
-    map[consName] = this.typedValue['CONS'];
+    ctx.addVariable(this.typedValue['FIRST']);
+    ctx.addVariable(this.typedValue['CONS']);
   }
 };
 
@@ -769,14 +767,14 @@ Blockly.Blocks['pair_pattern_value_typed'] = {
     return Blockly.Scheme.monoType(type);
   },
 
-  updateUpperContext: function(map) {
+  updateUpperContext: function(ctx) {
     var parent = this.getParent();
     if (parent && parent.type !== 'match_typed') {
       return;
     }
     var leftValue = this.typedValue['LEFT'];
     var rightValue = this.typedValue['RIGHT'];
-    map[leftValue.getVariableName()] = leftValue;
-    map[rightValue.getVariableName()] = rightValue;
+    ctx.addVariable(leftValue);
+    ctx.addVariable(rightValue);
   }
 };

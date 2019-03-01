@@ -59,21 +59,21 @@ Blockly.TypeWorkbench.prototype.setContextConnection = function(connection,
  * @param {boolean=} opt_includeImplicit False to exclude implicit context
  *     existing in the workspace of the block, and collects only context that
  *     are bound to the block and its ancestors. Defaults to true.
- * @return {!Object} The map to variable value keyed by its name.
+ * @return {!Blockly.Block.VariableContext} The variable context.
  * @override
  */
 Blockly.TypeWorkbench.prototype.getContext = function(opt_includeImplicit) {
-  return {};
+  return new Blockly.Block.VariableContext();
 };
 
 /**
  * Finds variables environment bound only to the workbench's block, and able to
  * be referred to by blocks inside this workbench workspace.
- * @return {!Object} The map to variable value keyed by its name.
+ * @return {!Blockly.Block.VariableContext} The variable context.
  * @override
  */
 Blockly.TypeWorkbench.prototype.getBlockContext = function() {
-  return {};
+  return new Blockly.Block.VariableContext();
 };
 
 /**

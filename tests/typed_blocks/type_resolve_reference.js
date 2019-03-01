@@ -10,8 +10,8 @@ function test_resolve_reference_letNested() {
     letBlock1.getInput('EXP2').connection.connect(letBlock2.outputConnection);
 
     var exp2 = letBlock2.getInput('EXP2').connection;
-    var env = letBlock2.allVisibleVariables(exp2);
-    assertEquals(env['hoge'], getVariable(letBlock2));
+    var ctx = letBlock2.allVisibleVariables(exp2);
+    assertEquals(ctx.getVariable('hoge'), getVariable(letBlock2));
   } finally {
     workspace.dispose();
   }
@@ -381,7 +381,7 @@ function test_resolve_reference_collectContextForNestedBlocks() {
       var ws = contextWorkspaceList[i];
       var valueBlocks = expectedBlocksList[i];
       var context = ws.getImplicitContext();
-      var contextValues = Object.values(context);
+      var contextValues = context.getVariables();
       checkValuesPariedWithValueBlocks(contextValues, valueBlocks);
     }
 
@@ -405,13 +405,13 @@ function test_resolve_reference_collectContextForNestedBlocks() {
       var expectedMap = expected[i];
       var context = workbench.getContext(false);
       var expectedBlocks = expectedMap["getContextEx"];
-      checkValuesPariedWithValueBlocks(Object.values(context), expectedBlocks);
+      checkValuesPariedWithValueBlocks(context.getVariables(), expectedBlocks);
       var context = workbench.getContext();
       var expectedBlocks = expectedMap["getContext"];
-      checkValuesPariedWithValueBlocks(Object.values(context), expectedBlocks);
+      checkValuesPariedWithValueBlocks(context.getVariables(), expectedBlocks);
       var context = workbench.getBlockContext();
       var expectedBlocks = expectedMap["getBlockContext"];
-      checkValuesPariedWithValueBlocks(Object.values(context), expectedBlocks);
+      checkValuesPariedWithValueBlocks(context.getVariables(), expectedBlocks);
     }
   } finally {
     for (var i = 0, wb; wb = workbenchList[i]; i++) {

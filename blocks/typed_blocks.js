@@ -856,14 +856,13 @@ Blockly.Blocks['lambda_typed'] = {
    * Store variables of which is declared in this block, and can be used
    * later the given connection's input.
    * @param {!Blockly.Connection} connection Connection to specify a scope.
-   * @param {!Object} map Map of variable name to variable value.
+   * @param {!Blockly.Block.VariableContext} ctx The variable context.
    */
-  updateVariableEnv: function(conn, map) {
+  updateVariableEnv: function(conn, ctx) {
     var returnInput = this.getInput('RETURN');
     if (conn && returnInput.connection == conn) {
       var variable = this.typedValue['VAR'];
-      var name = variable.getVariableName();
-      map[name] = variable;
+      ctx.addVariable(variable);
     }
   },
 
@@ -952,7 +951,7 @@ Blockly.Blocks['match_typed'] = {
     this.setWorkbench(new Blockly.PatternWorkbench());
   },
 
-  updateVariableEnv: function(conn, map) {
+  updateVariableEnv: function(conn, ctx) {
     if (!conn) {
       return;
     }
@@ -965,7 +964,7 @@ Blockly.Blocks['match_typed'] = {
       }
     }
     if (target && goog.isFunction(target.updateUpperContext)) {
-      target.updateUpperContext(map);
+      target.updateUpperContext(ctx);
     }
   },
 
@@ -1278,9 +1277,9 @@ Blockly.Blocks['let_typed'] = {
    * Store variables of which is declared in this block, and can be used
    * later the given connection's input.
    * @param {!Blockly.Connection} connection Connection to specify a scope.
-   * @param {!Object} map Map of variable name to variable value.
+   * @param {!Blockly.Block.VariableContext} ctx The variable context.
    */
-  updateVariableEnv: function(conn, map) {
+  updateVariableEnv: function(conn, ctx) {
     if (!conn) {
       return;
     }
@@ -1292,13 +1291,13 @@ Blockly.Blocks['let_typed'] = {
     if (isNext || isExp2 || isExp1 && this.isRecursive_) {
       var variable = this.typedValue['VAR'];
       var name = variable.getVariableName();
-      map[name] = variable;
+      ctx.addVariable(variable);
     }
     if (isExp1) {
       for (var x = 0; x < this.argumentCount_; x++) {
         var variable = this.typedValue['ARG' + x];
         var name = variable.getVariableName();
-        map[name] = variable;
+        ctx.addVariable(variable);
       }
     }
   },

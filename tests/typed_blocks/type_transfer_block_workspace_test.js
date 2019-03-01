@@ -1271,12 +1271,10 @@ function test_type_transfer_block_workspace_statementLetPotentialContext() {
 
     function potCtxCheck(oldB, newB) {
       var potCtx = newB.getPotentialContext();
-      var size = Object.keys(potCtx).length;
+      var size = potCtx.getVariableNames().length;
       assertEquals(size, 2);
-      assertTrue('var0' in potCtx);
-      assertTrue('var1' in potCtx);
-      assertEquals(potCtx['var0'], value0);
-      assertEquals(potCtx['var1'], letBlock1.typedValue['VAR']);
+      assertEquals(potCtx.getVariable('var0'), value0);
+      assertEquals(potCtx.getVariable('var1'), letBlock1.typedValue['VAR']);
     }
 
     var transBlock = virtually_transfer_workspace(letBlock2, workspace,

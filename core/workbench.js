@@ -404,29 +404,29 @@ Blockly.Workbench.prototype.getFlyoutMetrics_ = function() {
  * @param {boolean=} opt_includeImplicit False to exclude implicit context
  *     existing in the workspace of the block, and collects only context that
  *     are bound to the block and its ancestors. Defaults to true.
- * @return {!Object} The map to variable value keyed by its name.
+ * @return {!Blockly.Block.VariableContext} The variable context.
  */
 Blockly.Workbench.prototype.getContext = function(opt_includeImplicit) {
-  if (!this.block_) {
-    // This workbench is in the process of being deleted.
-    return {};
+  if (this.block_) {
+    // Unless this workbench is in the process of being deleted.
+    var includeImplicit = opt_includeImplicit !== false;
+    return this.block_.allVisibleVariables(this.contextConnection_,
+        includeImplicit);
   }
-  var includeImplicit = opt_includeImplicit !== false;
-  return this.block_.allVisibleVariables(this.contextConnection_,
-      includeImplicit);
+  return new Blockly.Block.VariableContext();
 };
 
 /**
  * Finds variables environment bound only to the workbench's block, and able to
  * be referred to by blocks inside this workbench workspace.
- * @return {!Object} The map to variable value keyed by its name.
+ * @return {!Blockly.Block.VariableContext} The variable context.
  */
 Blockly.Workbench.prototype.getBlockContext = function() {
-  var env = {};
+  var ctx = new Blockly.Block.VariableContext;
   if (this.block_) {
-    this.block_.updateVariableEnvImpl(this.contextConnection_, env);
+    this.block_.updateVariableEnvImpl(this.contextConnection_, ctx);
   }
-  return env;
+  return ctx;
 };
 
 /**
@@ -437,12 +437,12 @@ Blockly.Workbench.prototype.getBlockContext = function() {
  * @private
  */
 Blockly.Workbench.prototype.blocksForFlyout_ = function(flyoutWorkspace) {
-  var env = this.getContext();
-  var names = Object.keys(env);
+  var ctx = this.getContext();
+  var names = ctx.getVariableNames();
   var blocks = [];
 
   for (var i = 0, name; name = names[i]; i++) {
-    var variable = env[name];
+    var variable = ctx.getVariable(name);
     var getterBlock = flyoutWorkspace.newBlock('function_app_typed');
     // TODO(harukam): Do not create variable block of type variables_get_typed
     // because it could be first-order function. Otherwise, the following case
@@ -487,7 +487,7 @@ Blockly.Workbench.prototype.updateScreen_ = function() {
 /**
  * Check if all of reference blocks on the workbench's workspace and its nested
  * workbenchs are correctly bound to their context.
- * @param {!Object} env The variable environments the block can refer to.
+ * @param {!Blockly.Block.VariableContext} ctx The variable context.
  * @param {boolean=} opt_bind True to newly bind variable reference with the
  *     variable found in the context.
  * @param {Blockly.ErrorCollector=} opt_collector If provided, details of
@@ -495,14 +495,15 @@ Blockly.Workbench.prototype.updateScreen_ = function() {
  * @return {boolean} True if reference blocks on the workbench's workspace and
  *     its nested workbenchs' workspaces can be resolved.
  */
-Blockly.Workbench.prototype.checkReference = function(env, opt_bind,
+Blockly.Workbench.prototype.checkReference = function(ctx, opt_bind,
     opt_collector) {
   if (!this.workspace_) {
     return true;
   }
   var resolved = true;
-  var context = Object.assign({}, env);
-  Object.assign(context, this.getBlockContext());
+  var context = new Blockly.Block.VariableContext();
+  context.assignVariableEnv(ctx);
+  context.assignVariableEnv(this.getBlockContext());
 
   var topBlocks = this.workspace_.getTopBlocks();
   for (var i = 0, topBlock; topBlock = topBlocks[i]; i++) {

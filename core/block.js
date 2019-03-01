@@ -2138,6 +2138,47 @@ Blockly.Block.prototype.canBeRoot = function(opt_workspace, opt_collector) {
 /* Begin functions related variable binding. */
 
 /**
+ * Class for context during checking variable binding.
+ * @constructor
+ */
+Blockly.Block.VariableContext = function() {
+  // TODO(harukam): Merge this class with Blockly.Block.typeInferenceContext,
+  // which is used while doing type inference. Perform type checking and
+  // variable binding check at the same time.
+  // TODO(harukam): Implement ordered dictionary to keep the order of
+  // variables.
+  /**
+   * @type {!Object<!string, !Blockly.BoundVariableValue}
+   * @private
+   */
+  this.variableEnv_ = {};
+};
+
+Blockly.Block.VariableContext.prototype.getVariable = function(name) {
+  return name in this.variableEnv_ ? this.variableEnv_[name] : null;
+};
+Blockly.Block.VariableContext.prototype.getVariables = function(name) {
+  var keys = Object.keys(this.variableEnv_);
+  var values = [];
+  for (var i = 0; i < keys.length; i++) {
+    values.push(this.variableEnv_[keys[i]]);
+  }
+  return values;
+};
+Blockly.Block.VariableContext.prototype.getVariableNames = function(name) {
+  return Object.keys(this.variableEnv_);
+};
+
+Blockly.Block.VariableContext.prototype.addVariable = function(variable) {
+  var name = variable.getVariableName();
+  this.variableEnv_[name] = variable;
+};
+
+Blockly.Block.VariableContext.prototype.assignVariableEnv = function(ctx) {
+  Object.assign(this.variableEnv_, ctx.variableEnv_);
+};
+
+/**
  * Whether there would be no getter block which refers to a non-existing
  * variable. Check not only this block but also all the blocks nested inside
  * it.
@@ -2170,38 +2211,37 @@ Blockly.Block.prototype.resolveReference = function(parentConnection,
   } else {
     contextWorkspace = this.workspace;
   }
-  var env = Object.assign({}, contextWorkspace.getImplicitContext());
+  var context = contextWorkspace.getImplicitContext();
 
   if (parentConnection) {
-    Object.assign(env, parentBlock.allVisibleVariables(parentConnection,
+    var parentsContext = parentBlock.allVisibleVariables(parentConnection,
         false /** Excludes the default implicit context. */,
-        true  /** Includes the potential context. */));
+        true  /** Includes the potential context. */);
+    context.assignVariableEnv(parentsContext);
   }
-
-  return this.resolveReferenceOnDescendants(env, opt_bind, opt_collector);
+  return this.resolveReferenceOnDescendants(context, opt_bind, opt_collector);
 };
 
 /**
  * Check if variables on this block and nested blocks are correctly bound to
  * the variable context. Also look through variables on blocks mutators.
- * @param {!Object} env The variable environment this block and nested blocks
- *     can refer to.
+ * @param {!Blockly.Block.VariableContext} ctx The variable context.
  * @param {boolean=} opt_bind Bind reference block with the proper variable if
  *     true.
  * @param {Blockly.ErrorCollector=} opt_collector If provided, details of
  *     unresolved variables will be stored.
  */
-Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
+Blockly.Block.prototype.resolveReferenceOnDescendants = function(ctx,
     opt_bind, opt_collector) {
   var returnImmediate = !opt_collector;
   var resolved = true;
-  var bfsStack = [[this, env]];
+  var bfsStack = [[this, ctx]];
   while (bfsStack.length) {
     var pair = bfsStack.shift();
     var block = pair[0];
-    var envOfParent = pair[1];
+    var ctxOfParent = pair[1];
 
-    if (!block.resolveReferenceWithEnv_(envOfParent, opt_bind, opt_collector)) {
+    if (!block.resolveReferenceWithEnv_(ctxOfParent, opt_bind, opt_collector)) {
       resolved = false;
       if (returnImmediate) {
         return false;
@@ -2210,7 +2250,7 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
 
     if (goog.isArray(block.workbenches)) {
       for (var i = 0, workbench; workbench = block.workbenches[i]; i++) {
-        if (!workbench.checkReference(envOfParent, opt_bind, opt_collector)) {
+        if (!workbench.checkReference(ctxOfParent, opt_bind, opt_collector)) {
           resolved = false;
           if (returnImmediate) {
             return false;
@@ -2221,9 +2261,10 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
 
     for (var i = 0, child; child = block.childBlocks_[i]; i++) {
       var targetConn = child.getParentConnection();
-      var envOfChild = Object.assign({}, envOfParent);
-      block.updateVariableEnvImpl(targetConn, envOfChild);
-      bfsStack.push([child, envOfChild]);
+      var ctxOfChild = new Blockly.Block.VariableContext();
+      ctxOfChild.assignVariableEnv(ctxOfParent);
+      block.updateVariableEnvImpl(targetConn, ctxOfChild);
+      bfsStack.push([child, ctxOfChild]);
     }
   }
   return resolved;
@@ -2232,8 +2273,7 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
 /**
  * Returns if all of references this block contains can be resolved with the
  * given variable environment.
- * @param {!Object} env The Object mapping variable name to a variable which
- *     can be referred to by reference in this block keyed by variable's name.
+ * @param {!Blockly.Block.VariableContext} ctx The variable context.
  * @param {boolean=} opt_bind Bind the getter with the proper variable if
  *     true.
  * @param {Blockly.ErrorCollector} opt_collector If provided, details of
@@ -2241,13 +2281,13 @@ Blockly.Block.prototype.resolveReferenceOnDescendants = function(env,
  * @return {boolean} True if all of references this block contains are
  *     resolved. Otherwise false.
  */
-Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind,
+Blockly.Block.prototype.resolveReferenceWithEnv_ = function(ctx, opt_bind,
     opt_collector) {
   var referenceList = this.getVariables(true /** Gets only references. */);
   var allBound = true;
   for (var i = 0, variable; variable = referenceList[i]; i++) {
     var name = variable.getVariableName();
-    var value = env[name];
+    var value = ctx.getVariable(name);
     var currentValue = variable.getBoundValue();
     if (!value) {
       // Refers to an undefined variable.
@@ -2277,17 +2317,18 @@ Blockly.Block.prototype.resolveReferenceWithEnv_ = function(env, opt_bind,
  * @param {boolean=} opt_implicit If true, also collect implicit context of the
  *     workspace. Defaults to false.
  * @param {boolean=} opt_potential If true, also include potential context.
- * @return {Object} Object mapping variable name to its variable representation.
+ * @return {!Blockly.Block.VariableContext} The variable context.
  */
 Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit,
     opt_potential) {
+  var context = new Blockly.Block.VariableContext();
   if (conn.getSourceBlock() != this) {
-    return {};
+    return context;
   }
-  var env = opt_implicit === true ? this.workspace.getImplicitContext() : {};
+  if (opt_implicit === true) {
+    context.assignVariableEnv(this.workspace.getImplicitContext());
+  }
 
-  // TODO(harukam): Use ordered dictionary to keep the order of variable
-  // declaration.
   var blocksToCheck = [[this, conn]];
   var block = this;
   while (block.getParent()) {
@@ -2296,31 +2337,29 @@ Blockly.Block.prototype.allVisibleVariables = function(conn, opt_implicit,
     blocksToCheck.push([block, targetConnection]);
   }
   if (opt_potential === true) {
-    Object.assign(env, this.getPotentialContext());
+    context.assignVariableEnv(this.getPotentialContext());
   }
 
   for (var i = blocksToCheck.length - 1, pair; pair = blocksToCheck[i]; i--) {
     var block = pair[0];
     var connection = pair[1];
-    block.updateVariableEnvImpl(connection, env);
+    block.updateVariableEnvImpl(connection, context);
   }
-  return env;
+  return context;
 };
 
 /**
  * Finds the list of variables on the block which this block is due to connect
  * to. Returns empty unless another block is currently transferring and this
  * block would take the place of the transferring block.
- * @return {!Object} Object mapping variable name to variable representation.
+ * @return {!Blockly.Block.VariableContext} The variable context.
  */
 Blockly.Block.prototype.getPotentialContext = function() {
   if (!Blockly.transferring.block ||
       !Blockly.transferring.localConnection ||
-      !Blockly.transferring.pendingTargetConnection) {
-    return;
-  }
-  if (this.isTransferring() || this.getParent()) {
-    return;
+      !Blockly.transferring.pendingTargetConnection ||
+      this.isTransferring() || this.getParent()) {
+    return new Blockly.Block.VariableContext();
   }
   // TODO(harukam): Check if this block is the newly created one that takes
   // the place of transferring block.
@@ -2334,17 +2373,18 @@ Blockly.Block.prototype.getPotentialContext = function() {
         false /** Excludes the default implicit context. */,
         false /** Excludes the potential context. */);
   }
+  return new Blockly.Block.VariableContext();
 };
 
 /**
  * Finds a list of variable values on this block which are referable inside
  * the input of the given connection, and copy the values to the target object.
  * @param {!Blockly.Connection} conn The connection.
- * @param {!Object} map Map of variable name to variable value.
+ * @param {!Blockly.Block.VariableContext} ctx The variable context.
  */
-Blockly.Block.prototype.updateVariableEnvImpl = function(conn, map) {
+Blockly.Block.prototype.updateVariableEnvImpl = function(conn, ctx) {
   if (goog.isFunction(this.updateVariableEnv)) {
-    this.updateVariableEnv(conn, map);
+    this.updateVariableEnv(conn, ctx);
   }
 };
 
