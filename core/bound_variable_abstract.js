@@ -164,9 +164,11 @@ Blockly.BoundVariableAbstract.CONSTRUCTOR = 3;
 Blockly.BoundVariableAbstract.RECORD = 5;
 Blockly.BoundVariableAbstract.RECORD_FIELD = 6;
 
+// Note: Label names are used to make an error message. They must be lowercase,
+// and do not give short forms.
 Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS = [
   ['variable', Blockly.BoundVariableAbstract.VARIABLE],
-  ['ctor', Blockly.BoundVariableAbstract.CONSTRUCTOR],
+  ['constructor', Blockly.BoundVariableAbstract.CONSTRUCTOR],
   ['record', Blockly.BoundVariableAbstract.RECORD],
   ['record-field', Blockly.BoundVariableAbstract.RECORD_FIELD]
 ];

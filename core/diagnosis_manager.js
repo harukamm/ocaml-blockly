@@ -365,18 +365,22 @@ Blockly.ErrorItem.prototype.toMessage = function() {
 Blockly.ErrorItem.prototype.toMessageUnboundVariable_ = function() {
   var msg = '';
   var name = '`' + this.errorElement.getVariableName() + '\'';
+  var labelName =
+      Blockly.BoundVariableAbstract.labelToName(this.errorElement.label);
 
   if (this.state_ == Blockly.ErrorItem.STATE_CONNECTED_BLOCK) {
     msg = Blockly.ErrorItem.MESSAGE_PREFIX_CONNECTED_BLOCK;
-    msg += 'the variable ' + name + ' will be ';
+    msg += 'the ' + labelName + ' ' + name + ' will be ';
   } else {
-    msg = 'Variable ' + name + ' is ';
+    var capitalFirst = labelName.charAt(0).toUpperCase() + labelName.slice(1);
+    msg += capitalFirst + ' ' + name + ' is ';
   }
 
   if (this.errorTarget) {
-    msg += 'bound to unexpected variable value.';
+    msg += 'bound to unexpected ' + labelName + '.';
   } else {
-    msg += 'unbound.';
+    msg += this.errorElement.isVariable() ? 'unbound' : 'undefined';
+    msg += '.';
   }
   return msg;
 };
