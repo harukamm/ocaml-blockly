@@ -475,6 +475,8 @@ Blockly.TypeExpr.TUPLE = function() {
   if (args.length == 1 && goog.isArray(args[0])) {
     args = args[0];
   }
+  goog.asserts.assert(1 < args.length);
+
   this.tuples_ = [];
   for (var i = 0; i < args.length; i++) {
     this.tuples_.push(args[i]);
