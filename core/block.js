@@ -2201,7 +2201,11 @@ Blockly.Block.VariableContext.prototype.getEnvWithLabel_ = function(label) {
 Blockly.Block.VariableContext.prototype.getVariableWithLabel = function(
     name, label) {
   var env = this.getEnvWithLabel_(label);
-  return env && (name in env) ? env[name] : null;
+  if (!env || !(name in env)) {
+    return null;
+  }
+  var variable = env[name];
+  return variable.label == label ? variable : null;
 };
 
 /**
