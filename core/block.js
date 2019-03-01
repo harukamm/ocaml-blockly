@@ -2154,8 +2154,12 @@ Blockly.Block.VariableContext = function() {
    * @private
    */
   this.variableEnv_ = {};
+  this.structureEnv_ = {};
 };
 
+/**
+ * Functions to get, set, and copy normal variable values.
+ */
 Blockly.Block.VariableContext.prototype.getVariable = function(name) {
   return name in this.variableEnv_ ? this.variableEnv_[name] : null;
 };
@@ -2181,6 +2185,21 @@ Blockly.Block.VariableContext.prototype.addVariable = function(variable) {
 Blockly.Block.VariableContext.prototype.assignVariableEnv = function(ctx) {
   Object.assign(this.variableEnv_, ctx.variableEnv_);
 };
+
+/**
+ * Functions to get, set, and copy structure variable values.
+ */
+Blockly.Block.VariableContext.prototype.getStructureVariable = function(name) {
+  return name in this.structureEnv_ ? this.structureEnv_[name] : null;
+};
+Blockly.Block.VariableContext.prototype.addStructureVariable = function(
+    variable) {
+  goog.asserts.assert(!variable.isReference() && variable.isRecord(),
+     'Only structure variable values are acceptable.');
+  var name = variable.getVariableName();
+  this.structureEnv_[name] = variable;
+};
+
 
 /**
  * Whether there would be no getter block which refers to a non-existing

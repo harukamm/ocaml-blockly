@@ -49,6 +49,13 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     return this.getTargetTypeCtor(inputName);
   },
 
+  updateVariableEnv: function(conn, ctx) {
+    if (conn && this.nextConnection == conn) {
+      var variable = this.getField('DATANAME').getVariable();
+      ctx.addStructureVariable(variable);
+    }
+  },
+
   getTypeScheme: function(fieldName) {
     if (fieldName === 'DATANAME') {
       return new Blockly.TypeExpr.RECORD(this.recordId_);
