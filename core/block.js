@@ -1953,9 +1953,8 @@ Blockly.Block.isTypedBlock = function(block) {
   if (block.outputConnection && block.outputConnection.typeExpr) {
     return true;
   }
-  // Some typed blocks don't have the output connection. Check if the given
-  // block is one of them.
-  if (block.type === 'defined_datatype_typed') {
+  if (block.nextConnection && block.nextConnection.typeExpr &&
+      block.previousConnection && block.previousConnection.typeExpr) {
     return true;
   }
   var m = block.type.match(/let([a-z]*)_typed/);

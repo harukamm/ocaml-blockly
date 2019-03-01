@@ -616,3 +616,25 @@ function test_resolve_reference_fixLetStatementReferenceRemained() {
     workspace.dispose();
   }
 }
+
+function test_resolve_reference_datatypeDeclarationBlocksTriggerTypeInf() {
+  var workspace = create_typed_workspace();
+  try {
+    var defineRecord = workspace.newBlock('defined_recordtype_typed');
+    var letBlock = workspace.newBlock('letstatement_typed');
+    var intBlock = workspace.newBlock('int_typed');
+    defineRecord.nextConnection.connect(letBlock.previousConnection);
+    var exp1 = letBlock.getInput('EXP1');
+    exp1.connection.connect(intBlock.outputConnection);
+    assertTrue(exp1.connection.typeExpr.deref().isInt());
+
+    intBlock.outputConnection.disconnect();
+    var defineCtor = workspace.newBlock('defined_datatype_typed');
+    defineCtor.nextConnection.connect(letBlock.previousConnection);
+    var exp1 = letBlock.getInput('EXP1');
+    exp1.connection.connect(intBlock.outputConnection);
+    assertTrue(exp1.connection.typeExpr.deref().isInt());
+  } finally {
+    workspace.dispose();
+  }
+}
