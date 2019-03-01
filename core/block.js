@@ -2173,7 +2173,6 @@ Blockly.Block.VariableContext.prototype.getVariables = function(name) {
 Blockly.Block.VariableContext.prototype.getVariableNames = function(name) {
   return Object.keys(this.variableEnv_);
 };
-
 Blockly.Block.VariableContext.prototype.addVariable = function(variable) {
   goog.asserts.assert(!variable.isReference() && variable.isVariable(),
       'Only normal variable values are acceptable.');
