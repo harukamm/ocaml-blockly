@@ -438,25 +438,33 @@ Blockly.Workbench.prototype.getBlockContext = function() {
  */
 Blockly.Workbench.prototype.blocksForFlyout_ = function(flyoutWorkspace) {
   var ctx = this.getContext();
-  var names = ctx.getVariableNames();
+  var variables = ctx.getVariables();
   var blocks = [];
 
-  for (var i = 0, name; name = names[i]; i++) {
-    var variable = ctx.getVariable(name);
-    var getterBlock = flyoutWorkspace.newBlock('function_app_typed');
-    // TODO(harukam): Do not create variable block of type variables_get_typed
-    // because it could be first-order function. Otherwise, the following case
-    // must be fixed:
-    //  1. There is 'let b = ? in a :: b' block.
-    //  2. Add arguments using mutator on let block.
-    //  3. Type error occurs since variable b has 'a list type but was
-    //     expected of type 'b -> 'c.
+  for (var i = 0, variable; variable = variables[i]; i++) {
+    if (variable.isVariable()) {
+      var prototypeName = 'function_app_typed';
+      // TODO(harukam): Do not create variable block of type variables_get_typed
+      // because it could be first-order function. Otherwise, the following case
+      // must be fixed:
+      //  1. There is 'let b = ? in a :: b' block.
+      //  2. Add arguments using mutator on let block.
+      //  3. Type error occurs since variable b has 'a list type but was
+      //     expected of type 'b -> 'c.
+      var fieldName = 'VAR';
+    } else if (variable.isConstructor()) {
+      var prototypeName = 'create_construct_typed';
+      var fieldName = 'CONSTRUCTOR';
+    } else {
+      goog.asserts.fail('Not supported type of variable.');
+    }
+    var getterBlock = flyoutWorkspace.newBlock(prototypeName);
+    var field = getterBlock.getField(fieldName);
     if (goog.isFunction(getterBlock.initSvg)) {
       getterBlock.initSvg();
     }
-    var field = getterBlock.getField('VAR');
     field.initModel();
-    field.setVariableName(name);
+    field.setVariableName(variable.getVariableName());
     field.setBoundValue(variable);
     blocks.push(getterBlock);
   }
