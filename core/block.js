@@ -1818,6 +1818,7 @@ Blockly.Block.prototype.moveBy = function(dx, dy) {
  */
 Blockly.Block.typeInferenceContext = function(opt_unifyOrphan, opt_fresh,
     opt_typeEnv) {
+  // TODO(harukam): Move this class to another file.
   /** @private */
   this.unifyOrphan_ = opt_unifyOrphan === true;
   /** @private */
@@ -2147,6 +2148,7 @@ Blockly.Block.VariableContext = function() {
   // variable binding check at the same time.
   // TODO(harukam): Implement ordered dictionary to keep the order of
   // variables.
+  // TODO(harukam): Move this class to another file.
   /**
    * @type {!Object<!string, !Blockly.BoundVariableValue}
    * @private
