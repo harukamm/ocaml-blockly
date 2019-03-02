@@ -164,8 +164,10 @@ Blockly.BoundVariableAbstract.CONSTRUCTOR = 3;
 Blockly.BoundVariableAbstract.RECORD = 5;
 Blockly.BoundVariableAbstract.RECORD_FIELD = 6;
 
-// Note: Label names are used to make an error message. They must be lowercase,
-// and do not give short forms.
+// Note: Since label names are used to make an error message, they must be
+// lowercase and not be abbreviated. These names are synchronized with XML
+// encoder/decoder, so if these names are changed, the implementation of
+// block_of_ocaml (https://github.com/harukamm/block_of_ocaml) must be updated.
 Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS = [
   ['variable', Blockly.BoundVariableAbstract.VARIABLE],
   ['constructor', Blockly.BoundVariableAbstract.CONSTRUCTOR],
