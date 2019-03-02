@@ -118,6 +118,11 @@ function createReferenceBlock(value, useAppBlock, opt_workspace) {
     assertTrue(!useAppBlock);
     var block = workspace.newBlock(prototypeName);
     var ref = block.getField('CONSTRUCTOR').getVariable();
+  } else if (value.isRecord()) {
+    var prototypeName = 'create_record_typed';
+    assertTrue(!useAppBlock);
+    var block = workspace.newBlock(prototypeName);
+    var ref = block.getField('RECORD').getVariable();
   } else {
     var prototypeName = useAppBlock ? 'function_app_typed' :
       'variables_get_typed';

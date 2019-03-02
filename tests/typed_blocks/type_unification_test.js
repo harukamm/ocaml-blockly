@@ -1500,3 +1500,26 @@ function test_type_unification_changeRecordTypeCtor() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_screenRattlingRecordBlocks() {
+  var workspace = create_typed_workspace();
+  try {
+    var defineCtr = workspace.newBlock('defined_datatype_typed');
+    var defineRecord = workspace.newBlock('defined_recordtype_typed');
+    connectAsStatements(defineCtr, defineRecord);
+    var size = 20;
+    var blocks = [];
+    var prev = defineRecord;
+    for (var i = 0; i < size; i++) {
+      var block = workspace.newBlock('letstatement_typed');
+      blocks.push(block);
+      connectAsStatements(prev, block);
+      prev = block;
+    }
+    var recordValue = getVariable(defineRecord);
+    var recordBlock = createReferenceBlock(recordValue);
+    prev.getInput('EXP1').connection.connect(recordBlock.outputConneciton);
+  } finally {
+    workspace.dispose();
+  }
+}
