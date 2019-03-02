@@ -324,6 +324,9 @@ Blockly.BoundVariables.findReferencesInside = function(value, connection) {
     if (workspace == block.workspace) {
       var refBlock = ref.getSourceBlock();
       while (refBlock && refBlock.getParent()) {
+        if (!refBlock.outputConnection) {
+          break;
+        }
         var parent = refBlock.getParent();
         if (parent != block) {
           // NOP.
