@@ -349,6 +349,7 @@ Blockly.TypedLang['defined_datatype_typed'] = function(block) {
       code += ' of ' + typeCtor;
     }
   }
+  code += '\n';
   return code;
 };
 
