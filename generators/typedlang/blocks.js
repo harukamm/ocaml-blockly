@@ -379,25 +379,37 @@ Blockly.TypedLang['string_type_typed'] = function(block) {
   return ['string', Blockly.TypedLang.ORDER_ATOMIC];
 };
 
-Blockly.TypedLang['pair_type_constructor_typed'] = function(block) {
-  var left = block.getField('LEFT');
-  var right = block.getField('RIGHT');
-  return ['(' + left.getText() + ', ' + right.getText() + ')',
-	    Blockly.TypedLang.ORDER_ATOMIC];
-};
-
-Blockly.TypedLang['triple_type_constructor_typed'] = function(block) {
-  var item0 = block.getField('ITEM0');
-  var item1 = block.getField('ITEM1');
-  var item2 = block.getField('ITEM2');
+Blockly.TypedLang['pair_type_constructor_typed'] = function(block, names) {
+  var names = goog.isArray(names) ? names : ['LEFT', 'RIGHT'];
+  var tuples = '';
+  for (var i = 0, name; name = names[i]; i++) {
+    var item = Blockly.TypedLang.valueToCode(block, name,
+        Blockly.TypedLang.ORDER_ATOMIC);
+    if (!item) {
+      item = '?';
+    }
+    tuples += item;
+    if (i != names.length - 1) {
+      tuples += ' * ';
+    }
+  }
   var parentBlock = block.getParent();
   var isTopLevel = !!parentBlock &&
       parentBlock.type === 'defined_detatype_typed';
-  var code = isTopLevel ? '' : '(';
-  code += item0.getText() + ' * ' + item1.getText() + ' * ' +
-	item2.getText();
-  code += isTopLevel ? '' : ')';  
+  var code = '';
+  if (!isTopLevel) {
+    code += '(';
+  }
+  code += tuples;
+  if (!isTopLevel) {
+    code += ')';
+  }
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
+};
+
+Blockly.TypedLang['triple_type_constructor_typed'] = function(block) {
+  return Blockly.TypedLang['pair_type_constructor_typed'].call(null, block,
+      ['ITEM0', 'ITEM1', 'ITEM2']);
 };
 
 Blockly.TypedLang['empty_construct_pattern_typed'] = function(block) {
