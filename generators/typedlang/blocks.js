@@ -309,6 +309,7 @@ Blockly.TypedLang['defined_recordtype_typed'] = function(block) {
       code += '; ';
     }
   }
+  code += '}\n';
   return code;
 };
 
@@ -327,6 +328,7 @@ Blockly.TypedLang['create_record_typed'] = function(block) {
       code += '; ';
     }
   }
+  code += '}';
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
