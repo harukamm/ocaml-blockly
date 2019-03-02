@@ -41,6 +41,7 @@ goog.require('Blockly.Input');
 goog.require('Blockly.Mutator');
 goog.require('Blockly.PatternWorkbench');
 goog.require('Blockly.Scheme');
+goog.require('Blockly.TypeWorkbench');
 goog.require('Blockly.Workbench');
 goog.require('Blockly.Warning');
 goog.require('Blockly.Workspace');
