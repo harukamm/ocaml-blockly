@@ -285,6 +285,51 @@ Blockly.TypedLang['letstatement_typed'] = function(block) {
   return Blockly.TypedLang['let_typed'].call(this, block);
 };
 
+Blockly.TypedLang['dummy_statement_typed'] = function(block) {
+  var code = Blockly.TypedLang.valueToCode(block, 'VALUE',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  return code;
+};
+
+Blockly.TypedLang['defined_recordtype_typed'] = function(block) {
+  if (block.itemCount_ == 0) {
+    return '';
+  }
+  var field = block.getField('DATANAME');
+  var dataName = field.getVariableName();
+  var code = 'type ' + dataName + ' = {';
+  for (var i = 0; i < block.itemCount_; i++) {
+    var recordField = block.getField('FIELD' + i);
+    code += recordField.getVariableName();
+    code += ': ';
+    var typeCtor = Blockly.TypedLang.valueToCode(block, 'FIELD_INP' + i,
+        Blockly.TypedLang.ORDER_ATOMIC);
+    code += typeCtor;
+    if (i != block.itemCount_ - 1) {
+      code += '; ';
+    }
+  }
+  return code;
+};
+
+Blockly.TypedLang['create_record_typed'] = function(block) {
+  if (block.fieldCount_) {
+    return '';
+  }
+  var code = '{';
+  for (var i = 0; i < block.fieldCount_; i++) {
+    var recordField = block.getField('FIELD' + i);
+    code += recordField.getVariableName();
+    code += '=';
+    code += Blockly.TypedLang.valueToCode(block, 'FIELD_INP' + i,
+        Blockly.TypedLang.ORDER_ATOMIC);
+    if (i != block.fieldCount_ - 1) {
+      code += '; ';
+    }
+  }
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+};
+
 Blockly.TypedLang['defined_datatype_typed'] = function(block) {
   if (block.itemCount_ == 0) {
     // The constructor definition is empty.
@@ -371,4 +416,17 @@ Blockly.TypedLang['cons_construct_pattern_value_typed'] = function(block) {
   var cons = block.typedValue['CONS'].getVariableName();
   return [first + '::' + cons,
       Blockly.TypedLang.ORDER_ATOMIC];
+};
+
+Blockly.TypedLang['pair_pattern_typed'] = function(block) {
+  var left = block.getField('LEFT');
+  var right = block.getField('RIGHT');
+  return ['(' + left.getText() + ',' + right.getText() + ')',
+      Blockly.TypedLang.ORDER_ATOMIC];
+};
+
+Blockly.TypedLang['pair_pattern_value_typed'] = function(block) {
+  var left = block.typedValue['LEFT'].getVariableName();
+  var right = block.typedValue['RIGHT'].getVariableName();
+  return ['(' + left + ',' + right + ')', Blockly.TypedLang.ORDER_ATOMIC];
 };
