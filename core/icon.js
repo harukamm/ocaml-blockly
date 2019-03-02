@@ -158,7 +158,8 @@ Blockly.Icon.prototype.updateColour = function() {
  *    properties in workspace units.
  */
 Blockly.Icon.prototype.getHeightWidth = function() {
-  if (this.collapseHidden && this.block_.isCollapsed()) {
+  if (!this.block_ ||
+      this.collapseHidden && this.block_.isCollapsed()) {
     return {height: 0, width: 0};
   }
   var height = this.SIZE + this.TOP_MARGIN;
@@ -173,7 +174,8 @@ Blockly.Icon.prototype.getHeightWidth = function() {
  * @return {number} Horizontal offset for next item to draw.
  */
 Blockly.Icon.prototype.renderIcon = function(cursorX, opt_cursorY) {
-  if (this.collapseHidden && this.block_.isCollapsed()) {
+  if (!this.block_ ||
+      this.collapseHidden && this.block_.isCollapsed()) {
     this.iconGroup_.setAttribute('display', 'none');
     return cursorX;
   }
