@@ -26,6 +26,7 @@ function test_code_generator_checkIfImplementations() {
 
 var codeList = [
   "let x = 42 in x",
+  "let f x y = x + y in f 1 2",
   "let rec pi_impl n d =" +
     "if n > 0.0 " +
     "then n *. n /. d /. (d -. 2.0) *. pi_impl (n -. 2.0) (d -. 2.0) " +
@@ -48,7 +49,6 @@ function test_block_generator_convertSampleCodeList() {
     for (var i = 0, code; code = codeList[i]; i++) {
       var result = BlockOfOCamlUtils.codeToBlock(code, false);
       if (result.errCode != BlockOfOCamlUtils.ERROR_NONE) {
-        // TODO(harukam): This test fails. Make it pass.
         goog.asserts.fail('Could not convert to block: ' + code);
       }
     }
