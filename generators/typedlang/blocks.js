@@ -314,7 +314,7 @@ Blockly.TypedLang['defined_recordtype_typed'] = function(block) {
 };
 
 Blockly.TypedLang['create_record_typed'] = function(block) {
-  if (block.fieldCount_) {
+  if (block.fieldCount_ == 0) {
     return '';
   }
   var code = '{';
