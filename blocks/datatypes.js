@@ -299,7 +299,6 @@ Blockly.Blocks['defined_datatype_typed'] = {
     var input = this.appendValueInput('CTR_INP' + index)
         .appendField('|')
         .appendField(variableField, 'CTR' + index)
-        .appendField('of')
         .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR())
         .setAlign(Blockly.ALIGN_RIGHT);
     return input;
@@ -371,6 +370,25 @@ Blockly.Blocks['defined_datatype_typed'] = {
 
   wouldChange: function(containerBlock) {
     return containerBlock.getItemCount() != this.itemCount_;
+  },
+
+  infer: function(ctx) {
+    for (var i = 0; i < this.inputList.length; i++) {
+      var input = this.inputList[i];
+      if (!input.name.match(/CTR_INP\d+/)) {
+        continue;
+      }
+      var lastField = goog.array.last(input.fieldRow);
+      var hasOf = lastField.name === 'OF';
+      var hasTypeCtor = !!input.connection.targetBlock();
+      if (hasTypeCtor) {
+        if (!hasOf) input.appendField('of', 'OF');
+      } else {
+        if (hasOf) input.removeField('OF');
+      }
+    }
+    this.callInfer(this.nextConnection, ctx);
+    return null;
   }
 };
 
