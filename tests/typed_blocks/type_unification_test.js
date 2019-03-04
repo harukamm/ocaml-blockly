@@ -1523,3 +1523,30 @@ function test_type_unification_screenRattlingRecordBlocks() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_fixListCtorCrashedWhenDisconnecting() {
+  var workspace = create_typed_workspace();
+  try {
+    var defineCtr = workspace.newBlock('defined_datatype_typed');
+    defineCtr.getField('DATANAME').setText('fooo');
+    var ctorValue = getVariable(defineCtr, 0);
+    ctorValue.setVariableName('Bar');
+    var listType = workspace.newBlock('alist_type_constructor_typed');
+    defineCtr.getInput('CTR_INP0').connection.connect(listType.outputConnection);
+    var intType = workspace.newBlock('int_type_typed');
+    listType.getInput('ITEM').connection.connect(intType.outputConnection);
+
+    var ctorBlock = createReferenceBlock(ctorValue);
+    assertStructureInputSize(ctorBlock, 1);
+    var param = ctorBlock.getInput('PARAM0').connection;
+    assertTrue(param.typeExpr.isList());
+    assertTrue(param.typeExpr.element_type.isInt());
+
+    var listBlock = workspace.newBlock('lists_create_with_typed');
+    param.connect(listBlock.outputConnection);
+
+    intType.outputConnection.disconnect();
+  } finally {
+    workspace.dispose();
+  }
+}

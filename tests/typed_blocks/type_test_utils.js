@@ -134,6 +134,22 @@ function createReferenceBlock(value, useAppBlock, opt_workspace) {
   return block;
 }
 
+function assertStructureInputSize(block, size) {
+  switch (block.type) {
+    case 'create_construct_typed':
+      var filtered = goog.array.filter(block.inputList, function(inp) {
+          return inp.name.match(/PARAM\d+/);});
+      break;
+    case 'create_record_typed':
+      var filtered = goog.array.filter(block.inputList, function(inp) {
+          return inp.name.match(/FIELD_INP\d+/);});
+      break;
+    default:
+      assertTrue(false);
+  }
+  assertEquals(size, filtered.length);
+}
+
 function checkValuesPariedWithValueBlocks(values, valueBlocks) {
   assertEquals(values.length, valueBlocks.length);
   var blockValues = goog.array.map(valueBlocks,
