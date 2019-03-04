@@ -415,6 +415,12 @@ Blockly.TypedLang['triple_type_constructor_typed'] = function(block) {
       ['ITEM0', 'ITEM1', 'ITEM2']);
 };
 
+Blockly.TypedLang['alist_type_constructor_typed'] = function(block) {
+  var param = Blockly.TypedLang.valueToCode(block, 'ITEM',
+      Blockly.TypedLang.ORDER_ATOMIC);
+  return [param + ' list ', Blockly.TypedLang.ORDER_ATOMIC];
+};
+
 Blockly.TypedLang['empty_construct_pattern_typed'] = function(block) {
   return ['[]', Blockly.TypedLang.ORDER_ATOMIC];
 };
