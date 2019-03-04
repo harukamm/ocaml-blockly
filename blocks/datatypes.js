@@ -472,25 +472,23 @@ Blockly.Blocks['create_construct_typed'] = {
     }
 
     // Set type expression on the value paramInputs if necessary.
-    if (def.isInt()) {
-      paramInputs[0].setTypeExpr(new Blockly.TypeExpr.INT(), true);
-    } else if (def.isFloat()) {
-      paramInputs[0].setTypeExpr(new Blockly.TypeExpr.FLOAT(), true);
-    } else if (def.isBool()) {
-      paramInputs[0].setTypeExpr(new Blockly.TypeExpr.BOOL(), true);
-    } else if (def.isString()) {
-      paramInputs[0].setTypeExpr(new Blockly.TypeExpr.STRING(), true);	
-    } else if (def.isPair()) {
-      paramInputs[0].setTypeExpr(def.firstType(), true);
-      paramInputs[1].setTypeExpr(def.secondType(), true);
-    } else if (def.isTriple()) {
-      paramInputs[0].setTypeExpr(def.firstType(), true);
-      paramInputs[1].setTypeExpr(def.secondType(), true);
-      paramInputs[2].setTypeExpr(def.thirdType(), true);
-    } else if (def.isList()) {
-      paramInputs[0].setTypeExpr(def, true);
-    } else {
-      goog.asserts.fail('Not supported type ctor: ' + def.toString());
+    switch (paramSize) {
+      case 1:
+        paramInputs[0].setTypeExpr(def, true);
+        break;
+      case 2:
+        goog.asserts.assert(def.isPair());
+        paramInputs[0].setTypeExpr(def.firstType(), true);
+        paramInputs[1].setTypeExpr(def.secondType(), true);
+        break;
+      case 3:
+        goog.asserts.assert(def.isTriple());
+        paramInputs[0].setTypeExpr(def.firstType(), true);
+        paramInputs[1].setTypeExpr(def.secondType(), true);
+        paramInputs[2].setTypeExpr(def.thirdType(), true);
+        break;
+      default:
+        goog.asserts.fail('Not supported more than 3 tuples');
     }
     return paramInputs;
   },
