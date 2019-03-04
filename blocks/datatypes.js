@@ -487,6 +487,8 @@ Blockly.Blocks['create_construct_typed'] = {
       paramInputs[0].setTypeExpr(def.firstType(), true);
       paramInputs[1].setTypeExpr(def.secondType(), true);
       paramInputs[2].setTypeExpr(def.thirdType(), true);
+    } else if (def.isList()) {
+      paramInputs[0].setTypeExpr(def, true);
     } else {
       goog.asserts.fail('Not supported type ctor: ' + def.toString());
     }
@@ -647,6 +649,27 @@ Blockly.Blocks['triple_type_constructor_typed'] = {
     var item2 = item2Block ?
         item2Block.getTypeCtor() : new Blockly.TypeExpr.UNKNOWN();
       return new Blockly.TypeExpr.TUPLE(item0, item1, item2);
+  }
+};
+
+Blockly.Blocks['alist_type_constructor_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['TYPES_HUE']);
+    this.appendValueInput('ITEM')
+        .setTypeExpr(new Blockly.TypeExpr.TYPE_CONSTRUCTOR());
+    this.appendDummyInput()
+        .appendField(' list')
+    this.setOutput(true);
+    this.setInputsInline(true);
+    var typeCtrType = new Blockly.TypeExpr.TYPE_CONSTRUCTOR();
+    this.setOutputTypeExpr(typeCtrType);
+  },
+
+  getTypeCtor: function() {
+    var itemBlock = this.getInputTargetBlock('ITEM');
+    var item = itemBlock ?
+        itemBlock.getTypeCtor() : new Blockly.TypeExpr.UNKNOWN();
+    return new Blockly.TypeExpr.LIST(item);
   }
 };
 
