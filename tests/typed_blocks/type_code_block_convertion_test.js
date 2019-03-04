@@ -38,7 +38,9 @@ var codeList = [
     "then n *. n /. d /. (d -. 2.0) *. pi_impl (n -. 2.0) (d -. 2.0) " +
     "else 1.0 in " +
     "let pi n = 2.0 *. pi_impl (n *. 2.0) (n *. 2.0 +. 1.0) in " +
-    "pi 9000."
+    "pi 9000.",
+  "type t = {l:int*int*bool;l2:float;l3:string*int}",
+  "type t = Ctor1 | Ctor2 of string | Bar of int * string * float | Foo of int * int"
 ];
 
 function test_block_generator_convertSampleCodeList() {
@@ -49,7 +51,8 @@ function test_block_generator_convertSampleCodeList() {
     for (var i = 0, code; code = codeList[i]; i++) {
       var result = BlockOfOCamlUtils.codeToBlock(code, false);
       if (result.errCode != BlockOfOCamlUtils.ERROR_NONE) {
-        goog.asserts.fail('Could not convert to block: ' + code);
+        var errMsg = BlockOfOCamlUtils.getErrorMessage(result);
+        goog.asserts.fail(errMsg);
       }
     }
   } finally {
