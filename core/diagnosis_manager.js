@@ -315,8 +315,8 @@ Blockly.ErrorItem.TYPE_WORKBENCH_REFUSE_BLOCK = 20;
 Blockly.ErrorItem.STATE_NONE = 1;
 Blockly.ErrorItem.STATE_CONNECTED_BLOCK = 5;
 
-Blockly.ErrorItem.MESSAGE_PREFIX_CONNECTED_BLOCK =
-  'Can\'t unplug the already-connected block because ';
+Blockly.ErrorItem.MESSAGE_CONNECTED_BLOCK =
+  '既に接続されているブロックを外すことができません。';
 
 /**
  * Set the error's state indicating a situation which this error has occurred.
@@ -367,25 +367,26 @@ Blockly.ErrorItem.prototype.toMessage = function() {
  * @private
  */
 Blockly.ErrorItem.prototype.toMessageUnboundVariable_ = function() {
-  var msg = '';
-  var name = '`' + this.errorElement.getVariableName() + '\'';
+  var variable = this.errorElement;
+  var name = '`' + variable.getVariableName() + '\'';
   var labelName =
-      Blockly.BoundVariableAbstract.labelToName(this.errorElement.label);
+      Blockly.BoundVariableAbstract.labelToDisplayName(variable.label);
 
-  if (this.state_ == Blockly.ErrorItem.STATE_CONNECTED_BLOCK) {
-    msg = Blockly.ErrorItem.MESSAGE_PREFIX_CONNECTED_BLOCK;
-    msg += 'the ' + labelName + ' ' + name + ' will be ';
-  } else {
-    var capitalFirst = labelName.charAt(0).toUpperCase() + labelName.slice(1);
-    msg += capitalFirst + ' ' + name + ' is ';
+  var msg = labelName + ' ' + name;
+  if (this.state_ != Blockly.ErrorItem.STATE_CONNECTED_BLOCK) {
+    if (this.errorTarget) {
+      msg += 'が別の変数として扱われてしまう場所です。';
+    } else {
+      msg += 'が定義されてない場所です。';
+    }
+    return msg;
   }
-
   if (this.errorTarget) {
-    msg += 'bound to unexpected ' + labelName + '.';
+    msg += 'が別の変数として扱われてしまうため、';
   } else {
-    msg += this.errorElement.isVariable() ? 'unbound' : 'undefined';
-    msg += '.';
+    msg += 'が未定義になってしまうため、';
   }
+  msg += Blockly.ErrorItem.MESSAGE_CONNECTED_BLOCK;
   return msg;
 };
 
@@ -395,15 +396,11 @@ Blockly.ErrorItem.prototype.toMessageUnboundVariable_ = function() {
  * @private
  */
 Blockly.ErrorItem.prototype.toMessageOrphanPattern_ = function() {
-  var msg = '';
   if (this.state_ == Blockly.ErrorItem.STATE_CONNECTED_BLOCK) {
-    msg = Blockly.ErrorItem.MESSAGE_PREFIX_CONNECTED_BLOCK;
-    msg += 'pattern ';
-  } else {
-    msg = 'Pattern ';
+    return 'パターンブロックが match ブロックから孤立してしまうため、' +
+        Blockly.ErrorItem.MESSAGE_CONNECTED_BLOCK;
   }
-  msg += 'block must be connected to match pattern.';
-  return msg;
+  return 'パターンブロックは match ブロックに接続してください。';
 };
 
 /**
@@ -412,15 +409,11 @@ Blockly.ErrorItem.prototype.toMessageOrphanPattern_ = function() {
  * @private
  */
 Blockly.ErrorItem.prototype.toMessageOrphanTypeCtor_ = function() {
-  var msg = '';
   if (this.state_ == Blockly.ErrorItem.STATE_CONNECTED_BLOCK) {
-    msg = Blockly.ErrorItem.MESSAGE_PREFIX_CONNECTED_BLOCK;
-    msg += 'type constructor ';
-  } else {
-    msg = 'Type constructor ';
+    return '型ブロックはデータ定義ブロックから孤立してしまうため、' +
+        Blockly.ErrorItem.MESSAGE_CONNECTED_BLOCK;
   }
-  msg += 'block must be connected to datatype declaration.';
-  return msg;
+  return 'パターンブロックは match ブロックに接続してください。';
 };
 
 /**
@@ -431,8 +424,7 @@ Blockly.ErrorItem.prototype.toMessageOrphanTypeCtor_ = function() {
 Blockly.ErrorItem.prototype.toMessagePatternWorkbenchRefuseBlock_ = function() {
   goog.asserts.assert(this.state_ == Blockly.ErrorCollector.STATE_NONE,
       'This error should not happen unless the error state is none.');
-  return 'Only pattern blocks are allowed to enter into ' +
-      'this area.';
+  return 'ここにはパターンブロックしか入れません。';
 };
 
 /**
@@ -443,6 +435,5 @@ Blockly.ErrorItem.prototype.toMessagePatternWorkbenchRefuseBlock_ = function() {
 Blockly.ErrorItem.prototype.toMessageTypeWorkbenchRefuseBlock_ = function() {
   goog.asserts.assert(this.state_ == Blockly.ErrorCollector.STATE_NONE,
       'This error should not happen unless the error state is none.');
-  return 'Only type constructor blocks are allowed to enter into ' +
-      'this area.';
+  return 'ここには型ブロックしか入れません。';
 };

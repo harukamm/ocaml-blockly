@@ -1413,25 +1413,27 @@ Blockly.TypeExpr.Error.prototype.toMessage = function() {
   var s2 = this.t2 ? this.t2.getDisplayText() : '';
   switch (this.label) {
     case Blockly.TypeExpr.ERROR_TYPECTOR:
-      return 'Type constructor type is not compatible with ' + s1 + '.';
+      return '型ブロックは、型 ' + s1 + ' と相入れません。';
     case Blockly.TypeExpr.ERROR_PATTERN:
-      return 'Pattern type is not compatible with ' + s1;
+      return 'パターンブロックは、型 ' + s1 + ' と相入れません。';
     case Blockly.TypeExpr.ERROR_OCCUR_CHECK:
-      return 'The type variable ' + s1 + ' occurs inside ' + s2 + '.';
+      return '型変数 ' + s1 + 'が、型 ' + s2 + ' の中に出現しています！';
     case Blockly.TypeExpr.ERROR_STRUCTURE_INCONSISTENT:
-      var typeName = this.t1.isConstruct() ? 'constructor' : 'record';
+      var isRecord = this.t1.isRecord();
+      var typeName = isRecord ? 'レコード' : 'ヴァリアント';
       if (s1 === '' || s2 === '') {
         // The name of structure is not found.
-        return 'Two type ' + typeName + 's belong to differenct types.'
+        return '異なる' + typeName + 'の型です。';
       }
-      return 'The ' + typeName + ' does not belong to type ' + s2 + '.';
+      return typeName + ' ' + s2 + ' の型が求められていますが、' +
+          'これは' + typeName + ' ' + s1 + ' の型です。';
     case Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT:
-      return 'Has type ' + s1 + ' but expected of type ' + s2 + '.';
+      return s1 + ' 型を持っているので、' + s2 + ' 型にはなれません。';
     case Blockly.TypeExpr.ERROR_UNKNOWN_TYPE:
       if (this.t1.isUnknown()) {
-        return 'This type is not decided yet.';
+        return 'この型はまだ決定されていません。';
       }
-      return 'The target type is not decided yet.';
+      return '相手の型はまだ決定されていません。';
     default:
       goog.asserts.fail('Unexpected type error label.');
   }

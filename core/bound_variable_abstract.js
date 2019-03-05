@@ -168,29 +168,34 @@ Blockly.BoundVariableAbstract.RECORD_FIELD = 6;
 // lowercase and not be abbreviated. These names are synchronized with XML
 // encoder/decoder, so if these names are changed, the implementation of
 // block_of_ocaml (https://github.com/harukamm/block_of_ocaml) must be updated.
-Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS = [
-  ['variable', Blockly.BoundVariableAbstract.VARIABLE],
-  ['constructor', Blockly.BoundVariableAbstract.CONSTRUCTOR],
-  ['record', Blockly.BoundVariableAbstract.RECORD],
-  ['record-field', Blockly.BoundVariableAbstract.RECORD_FIELD]
+Blockly.BoundVariableAbstract._NAME_LABEL_LIST = [
+  ['variable', '変数', Blockly.BoundVariableAbstract.VARIABLE],
+  ['constructor', 'コンストラクタ', Blockly.BoundVariableAbstract.CONSTRUCTOR],
+  ['record', 'レコード', Blockly.BoundVariableAbstract.RECORD],
+  ['record-field', 'レコードフィールド', Blockly.BoundVariableAbstract.RECORD_FIELD]
 ];
 
 Blockly.BoundVariableAbstract._LABEL_LIST =
-  goog.array.map(Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS,
-      function(pair) {return pair[1];});
+  goog.array.map(Blockly.BoundVariableAbstract._NAME_LABEL_LIST,
+      function(tuple) {return tuple[2];});
 
 /**
  * Functions to convert the given label to its name.
  */
 Blockly.BoundVariableAbstract.labelToName = function(label) {
-  var pair = goog.array.find(Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS,
-      function(pair) { return pair[1] == label});
-  return pair ? pair[0] : null;
+  var tuple = goog.array.find(Blockly.BoundVariableAbstract._NAME_LABEL_LIST,
+      function(tuple) { return tuple[2] == label});
+  return tuple ? tuple[0] : null;
+};
+Blockly.BoundVariableAbstract.labelToDisplayName = function(label) {
+  var tuple = goog.array.find(Blockly.BoundVariableAbstract._NAME_LABEL_LIST,
+      function(tuple) { return tuple[2] == label});
+  return tuple ? tuple[1] : null;
 };
 Blockly.BoundVariableAbstract.nameToLabel = function(name) {
-  var pair = goog.array.find(Blockly.BoundVariableAbstract._NAME_LABEL_PAIRS,
-      function(pair) { return pair[0] == name});
-  return pair ? pair[1] : null;
+  var tuple = goog.array.find(Blockly.BoundVariableAbstract._NAME_LABEL_LIST,
+      function(tuple) { return tuple[0] == name});
+  return tuple ? tuple[2] : null;
 };
 
 /**
