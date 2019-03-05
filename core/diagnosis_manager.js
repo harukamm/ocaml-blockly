@@ -281,7 +281,7 @@ Blockly.ErrorCollector.prototype.addOrphanTypeConstructorError = function() {
  */
 Blockly.ErrorCollector.prototype.addPatternWorkbenchRefuseBlock = function() {
   var item = new Blockly.ErrorItem(
-      Blockly.ErrorItem.WORKBENCH_REFUSE_BLOCK, 'pattern');
+      Blockly.ErrorItem.PATTERN_WORKBENCH_REFUSE_BLOCK);
   this.addItem_(item);
 };
 
@@ -290,7 +290,7 @@ Blockly.ErrorCollector.prototype.addPatternWorkbenchRefuseBlock = function() {
  */
 Blockly.ErrorCollector.prototype.addTypeWorkbenchRefuseBlock = function() {
   var item = new Blockly.ErrorItem(
-      Blockly.ErrorItem.WORKBENCH_REFUSE_BLOCK, 'type constructor');
+      Blockly.ErrorItem.TYPE_WORKBENCH_REFUSE_BLOCK);
   this.addItem_(item);
 };
 
@@ -309,7 +309,8 @@ Blockly.ErrorItem.UNBOUND_VARIABLE = 1;
 Blockly.ErrorItem.TYPE_ERROR = 2;
 Blockly.ErrorItem.ORPHAN_PATTERN = 5;
 Blockly.ErrorItem.ORPHAN_TYPE_CTOR = 10;
-Blockly.ErrorItem.WORKBENCH_REFUSE_BLOCK = 15;
+Blockly.ErrorItem.PATTERN_WORKBENCH_REFUSE_BLOCK = 15;
+Blockly.ErrorItem.TYPE_WORKBENCH_REFUSE_BLOCK = 20;
 
 Blockly.ErrorItem.STATE_NONE = 1;
 Blockly.ErrorItem.STATE_CONNECTED_BLOCK = 5;
@@ -351,8 +352,11 @@ Blockly.ErrorItem.prototype.toMessage = function() {
   if (this.label == Blockly.ErrorItem.ORPHAN_TYPE_CTOR) {
     return this.toMessageOrphanTypeCtor_();
   }
-  if (this.label == Blockly.ErrorItem.WORKBENCH_REFUSE_BLOCK) {
-    return this.toMessageWorkbenchRefuseBlock_();
+  if (this.label == Blockly.ErrorItem.PATTERN_WORKBENCH_REFUSE_BLOCK) {
+    return this.toMessagePatternWorkbenchRefuseBlock_();
+  }
+  if (this.label == Blockly.ErrorItem.TYPE_WORKBENCH_REFUSE_BLOCK) {
+    return this.toMessageTypeWorkbenchRefuseBlock_();
   }
   goog.asserts.fail('Unknown label');
 };
@@ -420,13 +424,25 @@ Blockly.ErrorItem.prototype.toMessageOrphanTypeCtor_ = function() {
 };
 
 /**
- * Get the error message for this workbench-refuse-block error.
+ * Get the error message for this pattern-workbench-refuse-block error.
  * @return {string} An error message for this workbench-refuse-block error.
  * @private
  */
-Blockly.ErrorItem.prototype.toMessageWorkbenchRefuseBlock_ = function() {
+Blockly.ErrorItem.prototype.toMessagePatternWorkbenchRefuseBlock_ = function() {
   goog.asserts.assert(this.state_ == Blockly.ErrorCollector.STATE_NONE,
       'This error should not happen unless the error state is none.');
-  return 'Only ' + this.errorElement + ' blocks are allowed to enter into ' +
+  return 'Only pattern blocks are allowed to enter into ' +
+      'this area.';
+};
+
+/**
+ * Get the error message for this type-workbench-refuse-block error.
+ * @return {string} An error message for this workbench-refuse-block error.
+ * @private
+ */
+Blockly.ErrorItem.prototype.toMessageTypeWorkbenchRefuseBlock_ = function() {
+  goog.asserts.assert(this.state_ == Blockly.ErrorCollector.STATE_NONE,
+      'This error should not happen unless the error state is none.');
+  return 'Only type constructor blocks are allowed to enter into ' +
       'this area.';
 };
