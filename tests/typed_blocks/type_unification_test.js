@@ -1524,6 +1524,7 @@ function test_type_unification_screenRattlingRecordBlocks() {
   }
 }
 
+// TODO(harukam): Make the following test pass.
 function test_type_unification_fixListCtorCrashedWhenDisconnecting() {
   var workspace = create_typed_workspace();
   try {
