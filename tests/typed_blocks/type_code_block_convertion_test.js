@@ -40,7 +40,10 @@ var codeList = [
     "let pi n = 2.0 *. pi_impl (n *. 2.0) (n *. 2.0 +. 1.0) in " +
     "pi 9000.",
   "type t = {l:int*int*bool;l2:float;l3:string*int}",
-  "type t = Ctor1 | Ctor2 of string | Bar of int * string * float | Foo of int * int"
+  "type t = Ctor1 | Ctor2 of string | Bar of int * string * float | Foo of int * int",
+  "[1;2;3]",
+  "[]",
+  "[[1;2];[2;3;4];[4;5;6]]"
 ];
 
 function test_block_generator_convertSampleCodeList() {
