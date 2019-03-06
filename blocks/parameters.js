@@ -8,37 +8,29 @@
 goog.require('Blockly.Blocks');
 goog.require('Blockly');
 
-Blockly.Blocks['parameters_arg_item'] = {
-  /**
-   * Mutator block for adding arguments.
-   * @this Blockly.Block
-   */
-  init: function() {
+Blockly.Blocks['item_template'] = {
+  init: function(str) {
     this.setColour(Blockly.Msg['LISTS_HUE']);
     this.appendDummyInput()
-        .appendField('x');
+        .appendField(str);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.contextMenu = false;
   }
 };
 
-Blockly.Blocks['parameters_arg_container'] = {
-  /**
-   * Mutator block for arguments container.
-   * @this Blockly.Block
-   */
-  init: function() {
+Blockly.Blocks['container_template'] = {
+  init: function(str) {
     this.setColour(Blockly.Msg['LISTS_HUE']);
     this.appendDummyInput()
-        .appendField('args');
+        .appendField(str);
     this.appendStatementInput('STACK');
     this.contextMenu = false;
   },
 
   /**
-   * Returns how many argument blocks exist in this container.
-   * @return {number} Number of argument blocks this container holds.
+   * Returns how many blocks exist in this container.
+   * @return {number} Number of blocks this container holds.
    */
   getItemCount: function() {
     var itemBlock = this.getInputTargetBlock('STACK');
@@ -61,69 +53,38 @@ Blockly.Blocks['parameters_arg_container'] = {
   }
 };
 
-Blockly.Blocks['constructor_variant_item'] = {
-  /**
-   * Mutator block for adding a variant.
-   * @this Blockly.Block
-   */
-  init: function() {
-    this.setColour(Blockly.Msg['LISTS_HUE']);
-    this.appendDummyInput()
-        .appendField('constructor');
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.contextMenu = false;
-  }
+Blockly.Blocks['parameters_arg_item'] =
+  Object.assign({}, Blockly.Blocks['item_template']);
+Blockly.Blocks['parameters_arg_item'].init = function() {
+  Blockly.Blocks['item_template'].init.call(this, 'parameter');
 };
 
-Blockly.Blocks['constructor_variant_container'] = {
-  /**
-   * Mutator block for variant container.
-   * @this Blockly.Block
-   */
-  init: function() {
-    this.setColour(Blockly.Msg['LISTS_HUE']);
-    this.appendDummyInput()
-        .appendField('variant');
-    this.appendStatementInput('STACK');
-    this.contextMenu = false;
-  },
-
-  getItemCount: function() {
-    // TODO(harukam):
-    return Blockly.Blocks['parameters_arg_container'].getItemCount.call(this);
-  }
+Blockly.Blocks['parameters_arg_container'] =
+  Object.assign({}, Blockly.Blocks['container_template']);
+Blockly.Blocks['parameters_arg_container'].init = function() {
+  Blockly.Blocks['container_template'].init.call(this, 'parameters');
 };
 
-Blockly.Blocks['match_pattern_item'] = {
-  /**
-   * Mutator block for adding a pattern.
-   * @this Blockly.Block
-   */
-  init: function() {
-    this.setColour(Blockly.Msg['LISTS_HUE']);
-    this.appendDummyInput()
-        .appendField('pattern');
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.contextMenu = false;
-  }
+Blockly.Blocks['constructor_variant_item'] =
+  Object.assign({}, Blockly.Blocks['item_template']);
+Blockly.Blocks['constructor_variant_item'].init = function() {
+  Blockly.Blocks['item_template'].init.call(this, 'constructor');
 };
 
-Blockly.Blocks['match_pattern_container'] = {
-  /**
-   * Mutator block for pattern container.
-   * @this Blockly.Block
-   */
-  init: function() {
-    this.setColour(Blockly.Msg['LISTS_HUE']);
-    this.appendDummyInput()
-        .appendField('match');
-    this.appendStatementInput('STACK');
-    this.contextMenu = false;
-  },
+Blockly.Blocks['constructor_variant_container'] =
+  Object.assign({}, Blockly.Blocks['container_template']);
+Blockly.Blocks['constructor_variant_container'].init = function() {
+  Blockly.Blocks['container_template'].init.call(this, 'variant');
+};
 
-  getItemCount: function() {
-    return Blockly.Blocks['parameters_arg_container'].getItemCount.call(this);
-  }
+Blockly.Blocks['match_pattern_item'] =
+  Object.assign({}, Blockly.Blocks['item_template']);
+Blockly.Blocks['match_pattern_item'].init = function() {
+  Blockly.Blocks['item_template'].init.call(this, 'pattern');
+};
+
+Blockly.Blocks['match_pattern_container'] =
+  Object.assign({}, Blockly.Blocks['container_template']);
+Blockly.Blocks['match_pattern_container'].init = function() {
+  Blockly.Blocks['container_template'].init.call(this, 'match');
 };
