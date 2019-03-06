@@ -30,7 +30,7 @@ Blockly.Blocks['defined_recordtype_typed'] = {
     this.setInputsInline(false);
 
     this.setTypedStatements(true);
-    this.setMutator(new Blockly.Mutator(['constructor_variant_item']));
+    this.setMutator(new Blockly.Mutator(['record_field_item']));
     this.setWorkbench(new Blockly.TypeWorkbench());
 
     this.disableTransfer_ = true;
@@ -132,11 +132,11 @@ Blockly.Blocks['defined_recordtype_typed'] = {
    */
   decompose: function(workspace) {
     var containerBlock =
-        workspace.newBlock('constructor_variant_container');
+        workspace.newBlock('record_field_container');
     containerBlock.initSvg();
     var connection = containerBlock.getInput('STACK').connection;
     for (var x = 0; x < this.itemCount_; x++) {
-      var itemBlock = workspace.newBlock('constructor_variant_item');
+      var itemBlock = workspace.newBlock('record_field_item');
       itemBlock.initSvg();
       connection.connect(itemBlock.previousConnection);
       connection = itemBlock.nextConnection;

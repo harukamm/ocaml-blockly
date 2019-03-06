@@ -88,3 +88,15 @@ Blockly.Blocks['match_pattern_container'] =
 Blockly.Blocks['match_pattern_container'].init = function() {
   Blockly.Blocks['container_template'].init.call(this, 'match');
 };
+
+Blockly.Blocks['record_field_item'] =
+  Object.assign({}, Blockly.Blocks['item_template']);
+Blockly.Blocks['record_field_item'].init = function() {
+  Blockly.Blocks['item_template'].init.call(this, 'field');
+};
+
+Blockly.Blocks['record_field_container'] =
+  Object.assign({}, Blockly.Blocks['container_template']);
+Blockly.Blocks['record_field_container'].init = function() {
+  Blockly.Blocks['container_template'].init.call(this, 'record fields');
+};
