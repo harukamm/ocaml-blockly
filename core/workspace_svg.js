@@ -1266,7 +1266,8 @@ Blockly.WorkspaceSvg.prototype.recordDeleteAreas = function() {
  */
 Blockly.WorkspaceSvg.prototype.recordWorkspaceArea = function() {
   if (this.isFlyout) {
-    var rect = this.ownerFlyout_.getBoundingRectangle();
+    var rect = goog.math.Rect.createFromBox(
+        this.ownerFlyout_.svgBackground_.getBoundingClientRect());
   } else {
     var rect = goog.math.Rect.createFromBox(
         this.svgBackground_.getBoundingClientRect());
