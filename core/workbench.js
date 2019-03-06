@@ -37,13 +37,19 @@ Blockly.Workbench.prototype.workspaceHeight_ = 0;
  * Minimum width of workspace.
  * @private
  */
-Blockly.Workbench.MINIMUM_WIDTH_ = 180;
+Blockly.Workbench.MINIMUM_WIDTH_ = 300;
 
 /**
  * Minimum height of workspace.
  * @private
  */
 Blockly.Workbench.MINIMUM_HEIGHT_ = 100;
+
+/**
+ * Minimum height of workspace.
+ * @private
+ */
+Blockly.Workbench.MAX_HEIGHT_ = 200;
 
 /**
  * Whether the workbench dialog has been initialized.
@@ -293,6 +299,7 @@ Blockly.Workbench.prototype.resizeBubble_ = function() {
   // Minimum size of a workbench workspace.
   width = Math.max(width, Blockly.Workbench.MINIMUM_WIDTH_);
   height = Math.max(height, Blockly.Workbench.MINIMUM_HEIGHT_);
+  height = Math.min(height, Blockly.Workbench.MAX_HEIGHT_);
   // Only resize if the size difference is significant.  Eliminates shuddering.
   if (Math.abs(this.workspaceWidth_ - width) > doubleBorderWidth ||
       Math.abs(this.workspaceHeight_ - height) > doubleBorderWidth) {
