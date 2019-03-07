@@ -63,7 +63,7 @@ textarea.ocamlCode, textarea.generatedCode {
   cursor: pointer;
   background-color: #d3d3d3;
   outline: none;
-  width: 110px;
+  width: 150px;
 }
 
 .clear {
