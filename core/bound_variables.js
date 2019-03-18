@@ -38,6 +38,9 @@ Blockly.BoundVariables.addValue = function(workspace, value) {
 
   if (valueMap) {
     var fieldName = value.getMainFieldName();
+    if (!fieldName) {
+      throw 'The value is not initialized yet.';
+    }
     if (valueMap[fieldName] || value.inBlockDB) {
       throw 'The value is already added to the variable map of other block.';
     }
@@ -66,6 +69,9 @@ Blockly.BoundVariables.removeValue = function(workspace, value) {
 
   if (valueMap) {
     var fieldName = value.getMainFieldName();
+    if (!fieldName) {
+      throw 'The value is not initialized yet.';
+    }
     if (value.inBlockDB && !valueMap[fieldName]) {
       throw 'The value doesn\'t exist in DB.';
     }
@@ -120,6 +126,9 @@ Blockly.BoundVariables.addReference = function(workspace, reference) {
 
   if (referenceMap) {
     var fieldName = reference.getMainFieldName();
+    if (!fieldName) {
+      throw 'The reference is not initialized yet.';
+    }
     if (fieldName in referenceMap || reference.inBlockDB) {
       throw 'The reference is already added to the variable map of other ' +
           'block.';
@@ -149,6 +158,9 @@ Blockly.BoundVariables.removeReference = function(workspace, reference) {
 
   if (referenceMap) {
     var fieldName = reference.getMainFieldName();
+    if (!fieldName) {
+      throw 'The reference is not initialized yet.';
+    }
     if (reference.inBlockDB && !(fieldName in referenceMap)) {
       throw 'The reference doesn\'t exist in DB.';
     }

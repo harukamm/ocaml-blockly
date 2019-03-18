@@ -217,7 +217,11 @@ Blockly.BoundVariableValue.prototype.getStructureTypeDef = function() {
   if (!goog.isFunction(block.getStructureTypeDef)) {
     return undefined;
   }
-  return block.getStructureTypeDef(this.getMainFieldName());
+  var fieldName = this.getMainFieldName();
+  if (!fieldName) {
+    return undefined;
+  }
+  return block.getStructureTypeDef(fieldName);
 };
 
 /**
