@@ -43,90 +43,42 @@ Blockly.TypedLang = new Blockly.Generator('TypedLang');
  * @private
  */
 Blockly.TypedLang.addReservedWords(
-    'Blockly,' +  // In case JS is evaled in the current window.
-    // https://developer.mozilla.org/en/TypedLang/Reference/Reserved_Words
-    'break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,' +
-    'class,enum,export,extends,import,super,implements,interface,let,package,private,protected,public,static,yield,' +
-    'const,null,true,false,' +
-    // https://developer.mozilla.org/en/TypedLang/Reference/Global_Objects
-    'Array,ArrayBuffer,Boolean,Date,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Error,eval,EvalError,Float32Array,Float64Array,Function,Infinity,Int16Array,Int32Array,Int8Array,isFinite,isNaN,Iterator,JSON,Math,NaN,Number,Object,parseFloat,parseInt,RangeError,ReferenceError,RegExp,StopIteration,String,SyntaxError,TypeError,Uint16Array,Uint32Array,Uint8Array,Uint8ClampedArray,undefined,uneval,URIError,' +
-    // https://developer.mozilla.org/en/DOM/window
-    'applicationCache,closed,Components,content,_content,controllers,crypto,defaultStatus,dialogArguments,directories,document,frameElement,frames,fullScreen,globalStorage,history,innerHeight,innerWidth,length,location,locationbar,localStorage,menubar,messageManager,mozAnimationStartTime,mozInnerScreenX,mozInnerScreenY,mozPaintCount,name,navigator,opener,outerHeight,outerWidth,pageXOffset,pageYOffset,parent,performance,personalbar,pkcs11,returnValue,screen,screenX,screenY,scrollbars,scrollMaxX,scrollMaxY,scrollX,scrollY,self,sessionStorage,sidebar,status,statusbar,toolbar,top,URL,window,' +
-    'addEventListener,alert,atob,back,blur,btoa,captureEvents,clearImmediate,clearInterval,clearTimeout,close,confirm,disableExternalCapture,dispatchEvent,dump,enableExternalCapture,escape,find,focus,forward,GeckoActiveXObject,getAttention,getAttentionWithCycleCount,getComputedStyle,getSelection,home,matchMedia,maximize,minimize,moveBy,moveTo,mozRequestAnimationFrame,open,openDialog,postMessage,print,prompt,QueryInterface,releaseEvents,removeEventListener,resizeBy,resizeTo,restore,routeEvent,scroll,scrollBy,scrollByLines,scrollByPages,scrollTo,setCursor,setImmediate,setInterval,setResizable,setTimeout,showModalDialog,sizeToContent,stop,unescape,updateCommands,XPCNativeWrapper,XPCSafeJSObjectWrapper,' +
-    'onabort,onbeforeunload,onblur,onchange,onclick,onclose,oncontextmenu,ondevicemotion,ondeviceorientation,ondragdrop,onerror,onfocus,onhashchange,onkeydown,onkeypress,onkeyup,onload,onmousedown,onmousemove,onmouseout,onmouseover,onmouseup,onmozbeforepaint,onpaint,onpopstate,onreset,onresize,onscroll,onselect,onsubmit,onunload,onpageshow,onpagehide,' +
-    'Image,Option,Worker,' +
-    // https://developer.mozilla.org/en/Gecko_DOM_Reference
-    'Event,Range,File,FileReader,Blob,BlobBuilder,' +
-    'Attr,CDATASection,CharacterData,Comment,console,DocumentFragment,DocumentType,DomConfiguration,DOMError,DOMErrorHandler,DOMException,DOMImplementation,DOMImplementationList,DOMImplementationRegistry,DOMImplementationSource,DOMLocator,DOMObject,DOMString,DOMStringList,DOMTimeStamp,DOMUserData,Entity,EntityReference,MediaQueryList,MediaQueryListListener,NameList,NamedNodeMap,Node,NodeFilter,NodeIterator,NodeList,Notation,Plugin,PluginArray,ProcessingInstruction,SharedWorker,Text,TimeRanges,Treewalker,TypeInfo,UserDataHandler,Worker,WorkerGlobalScope,' +
-    'HTMLDocument,HTMLElement,HTMLAnchorElement,HTMLAppletElement,HTMLAudioElement,HTMLAreaElement,HTMLBaseElement,HTMLBaseFontElement,HTMLBodyElement,HTMLBRElement,HTMLButtonElement,HTMLCanvasElement,HTMLDirectoryElement,HTMLDivElement,HTMLDListElement,HTMLEmbedElement,HTMLFieldSetElement,HTMLFontElement,HTMLFormElement,HTMLFrameElement,HTMLFrameSetElement,HTMLHeadElement,HTMLHeadingElement,HTMLHtmlElement,HTMLHRElement,HTMLIFrameElement,HTMLImageElement,HTMLInputElement,HTMLKeygenElement,HTMLLabelElement,HTMLLIElement,HTMLLinkElement,HTMLMapElement,HTMLMenuElement,HTMLMetaElement,HTMLModElement,HTMLObjectElement,HTMLOListElement,HTMLOptGroupElement,HTMLOptionElement,HTMLOutputElement,HTMLParagraphElement,HTMLParamElement,HTMLPreElement,HTMLQuoteElement,HTMLScriptElement,HTMLSelectElement,HTMLSourceElement,HTMLSpanElement,HTMLStyleElement,HTMLTableElement,HTMLTableCaptionElement,HTMLTableCellElement,HTMLTableDataCellElement,HTMLTableHeaderCellElement,HTMLTableColElement,HTMLTableRowElement,HTMLTableSectionElement,HTMLTextAreaElement,HTMLTimeElement,HTMLTitleElement,HTMLTrackElement,HTMLUListElement,HTMLUnknownElement,HTMLVideoElement,' +
-    'HTMLCanvasElement,CanvasRenderingContext2D,CanvasGradient,CanvasPattern,TextMetrics,ImageData,CanvasPixelArray,HTMLAudioElement,HTMLVideoElement,NotifyAudioAvailableEvent,HTMLCollection,HTMLAllCollection,HTMLFormControlsCollection,HTMLOptionsCollection,HTMLPropertiesCollection,DOMTokenList,DOMSettableTokenList,DOMStringMap,RadioNodeList,' +
-    'SVGDocument,SVGElement,SVGAElement,SVGAltGlyphElement,SVGAltGlyphDefElement,SVGAltGlyphItemElement,SVGAnimationElement,SVGAnimateElement,SVGAnimateColorElement,SVGAnimateMotionElement,SVGAnimateTransformElement,SVGSetElement,SVGCircleElement,SVGClipPathElement,SVGColorProfileElement,SVGCursorElement,SVGDefsElement,SVGDescElement,SVGEllipseElement,SVGFilterElement,SVGFilterPrimitiveStandardAttributes,SVGFEBlendElement,SVGFEColorMatrixElement,SVGFEComponentTransferElement,SVGFECompositeElement,SVGFEConvolveMatrixElement,SVGFEDiffuseLightingElement,SVGFEDisplacementMapElement,SVGFEDistantLightElement,SVGFEFloodElement,SVGFEGaussianBlurElement,SVGFEImageElement,SVGFEMergeElement,SVGFEMergeNodeElement,SVGFEMorphologyElement,SVGFEOffsetElement,SVGFEPointLightElement,SVGFESpecularLightingElement,SVGFESpotLightElement,SVGFETileElement,SVGFETurbulenceElement,SVGComponentTransferFunctionElement,SVGFEFuncRElement,SVGFEFuncGElement,SVGFEFuncBElement,SVGFEFuncAElement,SVGFontElement,SVGFontFaceElement,SVGFontFaceFormatElement,SVGFontFaceNameElement,SVGFontFaceSrcElement,SVGFontFaceUriElement,SVGForeignObjectElement,SVGGElement,SVGGlyphElement,SVGGlyphRefElement,SVGGradientElement,SVGLinearGradientElement,SVGRadialGradientElement,SVGHKernElement,SVGImageElement,SVGLineElement,SVGMarkerElement,SVGMaskElement,SVGMetadataElement,SVGMissingGlyphElement,SVGMPathElement,SVGPathElement,SVGPatternElement,SVGPolylineElement,SVGPolygonElement,SVGRectElement,SVGScriptElement,SVGStopElement,SVGStyleElement,SVGSVGElement,SVGSwitchElement,SVGSymbolElement,SVGTextElement,SVGTextPathElement,SVGTitleElement,SVGTRefElement,SVGTSpanElement,SVGUseElement,SVGViewElement,SVGVKernElement,' +
-    'SVGAngle,SVGColor,SVGICCColor,SVGElementInstance,SVGElementInstanceList,SVGLength,SVGLengthList,SVGMatrix,SVGNumber,SVGNumberList,SVGPaint,SVGPoint,SVGPointList,SVGPreserveAspectRatio,SVGRect,SVGStringList,SVGTransform,SVGTransformList,' +
-    'SVGAnimatedAngle,SVGAnimatedBoolean,SVGAnimatedEnumeration,SVGAnimatedInteger,SVGAnimatedLength,SVGAnimatedLengthList,SVGAnimatedNumber,SVGAnimatedNumberList,SVGAnimatedPreserveAspectRatio,SVGAnimatedRect,SVGAnimatedString,SVGAnimatedTransformList,' +
-    'SVGPathSegList,SVGPathSeg,SVGPathSegArcAbs,SVGPathSegArcRel,SVGPathSegClosePath,SVGPathSegCurvetoCubicAbs,SVGPathSegCurvetoCubicRel,SVGPathSegCurvetoCubicSmoothAbs,SVGPathSegCurvetoCubicSmoothRel,SVGPathSegCurvetoQuadraticAbs,SVGPathSegCurvetoQuadraticRel,SVGPathSegCurvetoQuadraticSmoothAbs,SVGPathSegCurvetoQuadraticSmoothRel,SVGPathSegLinetoAbs,SVGPathSegLinetoHorizontalAbs,SVGPathSegLinetoHorizontalRel,SVGPathSegLinetoRel,SVGPathSegLinetoVerticalAbs,SVGPathSegLinetoVerticalRel,SVGPathSegMovetoAbs,SVGPathSegMovetoRel,ElementTimeControl,TimeEvent,SVGAnimatedPathData,' +
-    'SVGAnimatedPoints,SVGColorProfileRule,SVGCSSRule,SVGExternalResourcesRequired,SVGFitToViewBox,SVGLangSpace,SVGLocatable,SVGRenderingIntent,SVGStylable,SVGTests,SVGTextContentElement,SVGTextPositioningElement,SVGTransformable,SVGUnitTypes,SVGURIReference,SVGViewSpec,SVGZoomAndPan');
+    // http://caml.inria.fr/pub/docs/manual-ocaml/lex.html#sec84
+    'and,as,assert,asr,begin,class,constraint,do,done,downto,else,end,' +
+    'exception,external,false,for,fun,function,functor,if,in,include,' +
+    'inherit,initializer,land,lazy,let,lor,lsl,lsr,lxor,match,method,' +
+    'mod,module,mutable,new,nonrec,object,of,open,or,private,rec,sig,' +
+    'struct,then,to,true,try,type,val,virtual,when,while,with');
 
 /**
  * Order of operation ENUMs.
- * https://developer.mozilla.org/en/TypedLang/Reference/Operators/Operator_Precedence
+ * See precedence section of parser.mly in the OCaml distribution.
  */
 Blockly.TypedLang.ORDER_ATOMIC = 0;           // 0 "" ...
-Blockly.TypedLang.ORDER_NEW = 1.1;            // new
-Blockly.TypedLang.ORDER_MEMBER = 1.2;         // . []
-Blockly.TypedLang.ORDER_FUNCTION_CALL = 2;    // ()
-Blockly.TypedLang.ORDER_INCREMENT = 3;        // ++
-Blockly.TypedLang.ORDER_DECREMENT = 3;        // --
-Blockly.TypedLang.ORDER_BITWISE_NOT = 4.1;    // ~
-Blockly.TypedLang.ORDER_UNARY_PLUS = 4.2;     // +
-Blockly.TypedLang.ORDER_UNARY_NEGATION = 4.3; // -
-Blockly.TypedLang.ORDER_LOGICAL_NOT = 4.4;    // !
-Blockly.TypedLang.ORDER_TYPEOF = 4.5;         // typeof
-Blockly.TypedLang.ORDER_VOID = 4.6;           // void
-Blockly.TypedLang.ORDER_DELETE = 4.7;         // delete
-Blockly.TypedLang.ORDER_AWAIT = 4.8;          // await
-Blockly.TypedLang.ORDER_EXPONENTIATION = 5.0; // **
-Blockly.TypedLang.ORDER_MULTIPLICATION = 5.1; // *
-Blockly.TypedLang.ORDER_DIVISION = 5.2;       // /
-Blockly.TypedLang.ORDER_MODULUS = 5.3;        // %
-Blockly.TypedLang.ORDER_SUBTRACTION = 6.1;    // -
-Blockly.TypedLang.ORDER_ADDITION = 6.2;       // +
-Blockly.TypedLang.ORDER_BITWISE_SHIFT = 7;    // << >> >>>
-Blockly.TypedLang.ORDER_RELATIONAL = 8;       // < <= > >=
-Blockly.TypedLang.ORDER_IN = 8;               // in
-Blockly.TypedLang.ORDER_INSTANCEOF = 8;       // instanceof
-Blockly.TypedLang.ORDER_EQUALITY = 9;         // == != === !==
-Blockly.TypedLang.ORDER_BITWISE_AND = 10;     // &
-Blockly.TypedLang.ORDER_BITWISE_XOR = 11;     // ^
-Blockly.TypedLang.ORDER_BITWISE_OR = 12;      // |
+Blockly.TypedLang.ORDER_FUNCTION_CALL = 2;    // f x
+Blockly.TypedLang.ORDER_MULTIPLICATION = 5;   // * (INFIXOP3)
+Blockly.TypedLang.ORDER_DIVISION = 5;         // / (INFIXOP3)
+Blockly.TypedLang.ORDER_SUBTRACTION = 6;      // - (INFIXOP2)
+Blockly.TypedLang.ORDER_ADDITION = 6;         // + (INFIXOP2)
+Blockly.TypedLang.ORDER_CONS = 7;             // ::
+Blockly.TypedLang.ORDER_CONCAT_STRING = 8;    // ^ (INFIXOP1)
+Blockly.TypedLang.ORDER_RELATIONAL = 9;       // < <= > >= = <> (INFIXOP0)
 Blockly.TypedLang.ORDER_LOGICAL_AND = 13;     // &&
 Blockly.TypedLang.ORDER_LOGICAL_OR = 14;      // ||
-Blockly.TypedLang.ORDER_CONDITIONAL = 15;     // ?:
-Blockly.TypedLang.ORDER_ASSIGNMENT = 16;      // = += -= **= *= /= %= <<= >>= ...
-Blockly.TypedLang.ORDER_YIELD = 16.5;         // yield
-Blockly.TypedLang.ORDER_COMMA = 17;           // ,
-Blockly.TypedLang.ORDER_NONE = 99;            // (...)
+Blockly.TypedLang.ORDER_ARROW = 15;           // ->
+Blockly.TypedLang.ORDER_COMMA = 16;           // ,
+Blockly.TypedLang.ORDER_ELSE = 17;            // else
+Blockly.TypedLang.ORDER_THEN = 18;            // then
+Blockly.TypedLang.ORDER_WITH = 19;            // with
+Blockly.TypedLang.ORDER_SEMI = 20;            // ;
+Blockly.TypedLang.ORDER_IN = 21;              // in
+Blockly.TypedLang.ORDER_EXPR = 50;            // any expression
 
 /**
  * List of outer-inner pairings that do NOT require parentheses.
  * @type {!Array.<!Array.<number>>}
  */
 Blockly.TypedLang.ORDER_OVERRIDES = [
-  // (foo()).bar -> foo().bar
-  // (foo())[0] -> foo()[0]
-  [Blockly.TypedLang.ORDER_FUNCTION_CALL, Blockly.TypedLang.ORDER_MEMBER],
-  // (foo())() -> foo()()
-  [Blockly.TypedLang.ORDER_FUNCTION_CALL, Blockly.TypedLang.ORDER_FUNCTION_CALL],
-  // (foo.bar).baz -> foo.bar.baz
-  // (foo.bar)[0] -> foo.bar[0]
-  // (foo[0]).bar -> foo[0].bar
-  // (foo[0])[1] -> foo[0][1]
-  [Blockly.TypedLang.ORDER_MEMBER, Blockly.TypedLang.ORDER_MEMBER],
-  // (foo.bar)() -> foo.bar()
-  // (foo[0])() -> foo[0]()
-  [Blockly.TypedLang.ORDER_MEMBER, Blockly.TypedLang.ORDER_FUNCTION_CALL],
-
-  // !(!foo) -> !!foo
-  [Blockly.TypedLang.ORDER_LOGICAL_NOT, Blockly.TypedLang.ORDER_LOGICAL_NOT],
   // a * (b * c) -> a * b * c
   [Blockly.TypedLang.ORDER_MULTIPLICATION, Blockly.TypedLang.ORDER_MULTIPLICATION],
   // a + (b + c) -> a + b + c
@@ -134,7 +86,11 @@ Blockly.TypedLang.ORDER_OVERRIDES = [
   // a && (b && c) -> a && b && c
   [Blockly.TypedLang.ORDER_LOGICAL_AND, Blockly.TypedLang.ORDER_LOGICAL_AND],
   // a || (b || c) -> a || b || c
-  [Blockly.TypedLang.ORDER_LOGICAL_OR, Blockly.TypedLang.ORDER_LOGICAL_OR]
+  [Blockly.TypedLang.ORDER_LOGICAL_OR, Blockly.TypedLang.ORDER_LOGICAL_OR],
+  // a ^ (b ^ c) -> a ^ b ^ c
+  [Blockly.TypedLang.ORDER_CONCAT_STRING, Blockly.TypedLang.ORDER_CONCAT_STRING],
+  // a :: (b :: c) -> a :: b :: c
+  [Blockly.TypedLang.ORDER_CONS, Blockly.TypedLang.ORDER_CONS]
 ];
 
 /**
@@ -240,14 +196,9 @@ Blockly.TypedLang.scrub_ = function(block, code) {
     var comment = block.getCommentText();
     comment = Blockly.utils.wrap(comment, Blockly.TypedLang.COMMENT_WRAP - 3);
     if (comment) {
-      if (block.getProcedureDef) {
-        // Use a comment block for function comments.
-        commentCode += '/**\n' +
-                       Blockly.TypedLang.prefixLines(comment + '\n', ' * ') +
-                       ' */\n';
-      } else {
-        commentCode += Blockly.TypedLang.prefixLines(comment + '\n', '// ');
-      }
+      commentCode += Blockly.TypedLang.prefixLines(comment, '   ')
+                            .replace(/^  /, '(*') +
+                     ' *)\n';
     }
     // Collect comments for all value arguments.
     // Don't collect comments for nested statements.
@@ -257,7 +208,9 @@ Blockly.TypedLang.scrub_ = function(block, code) {
         if (childBlock) {
           var comment = Blockly.TypedLang.allNestedComments(childBlock);
           if (comment) {
-            commentCode += Blockly.TypedLang.prefixLines(comment, '// ');
+            commentCode += Blockly.TypedLang.prefixLines(comment, '   ')
+                                  .replace(/^  /, '(*')
+                                  .replace(/\n$/, ' *)\n');
           }
         }
       }
