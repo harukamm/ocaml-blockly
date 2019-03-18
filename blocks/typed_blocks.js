@@ -247,10 +247,10 @@ Blockly.Blocks['int_arithmetic_typed'] = {
    */
   init: function() {
     var OPERATORS =
-        [[Blockly.Msg.MATH_ADDITION_SYMBOL, 'ADD_INT'],
-         [Blockly.Msg.MATH_SUBTRACTION_SYMBOL, 'MINUS_INT'],
-         [Blockly.Msg.MATH_MULTIPLICATION_SYMBOL, 'MULTIPLY_INT'],
-         [Blockly.Msg.MATH_DIVISION_SYMBOL, 'DIVIDE_INT']];
+        [['+', 'ADD_INT'],
+         ['-', 'MINUS_INT'],
+         ['*', 'MULTIPLY_INT'],
+         ['/', 'DIVIDE_INT']];
     this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
     this.setColour(230);
     this.setOutput(true, 'Int');
