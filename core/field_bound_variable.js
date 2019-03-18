@@ -714,6 +714,9 @@ Blockly.FieldBoundVariable.prototype.highlightVariables_ = function(on, e) {
   if (!this.variable_) {
     return;
   }
+  if (!this.sourceBlock_ || !this.sourceBlock_.workspace) {
+    return;
+  }
   if (this.sourceBlock_.workspace.isDragging()) {
     return;
   }
