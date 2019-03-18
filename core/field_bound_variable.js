@@ -725,7 +725,9 @@ Blockly.FieldBoundVariable.prototype.highlightVariables_ = function(on, e) {
     var callback = function(variables, on) {
       for (var i = 0, variable; variable = variables[i]; i++) {
         var field = variable.getMainField();
-        field.highlight(on);
+        if (field) {
+          field.highlight(on);
+        }
       }
     };
     var showCallback = callback.bind(null, variables, true);
