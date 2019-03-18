@@ -404,7 +404,7 @@ Blockly.TypedLang.tupleTypeUtil_ = function(block, names) {
   }
   var parentBlock = block.getParent();
   var isTopLevel = !!parentBlock &&
-      parentBlock.type === 'defined_detatype_typed';
+      parentBlock.type === 'defined_datatype_typed';
   var code = '';
   if (!isTopLevel) {
     code += '(';
