@@ -392,8 +392,7 @@ Blockly.TypedLang['string_type_typed'] = function(block) {
   return ['string', Blockly.TypedLang.ORDER_ATOMIC];
 };
 
-Blockly.TypedLang['pair_type_constructor_typed'] = function(block, names) {
-  var names = goog.isArray(names) ? names : ['LEFT', 'RIGHT'];
+Blockly.TypedLang.tupleTypeUtil_ = function(block, names) {
   var tuples = '';
   for (var i = 0, name; name = names[i]; i++) {
     var item = Blockly.TypedLang.valueToCode(block, name,
@@ -414,12 +413,18 @@ Blockly.TypedLang['pair_type_constructor_typed'] = function(block, names) {
   if (!isTopLevel) {
     code += ')';
   }
+  return code;
+};
+
+Blockly.TypedLang['pair_type_constructor_typed'] = function(block, names) {
+  var code = Blockly.TypedLang.tupleTypeUtil_(block, ['LEFT', 'RIGHT']);
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['triple_type_constructor_typed'] = function(block) {
-  return Blockly.TypedLang['pair_type_constructor_typed'].call(null, block,
+  var code = Blockly.TypedLang.tupleTypeUtil_(block,
       ['ITEM0', 'ITEM1', 'ITEM2']);
+  return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['alist_type_constructor_typed'] = function(block) {
