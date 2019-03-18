@@ -358,14 +358,20 @@ Blockly.TypedLang['defined_datatype_typed'] = function(block) {
 };
 
 Blockly.TypedLang['create_construct_typed'] = function(block) {
+  var params = [];
+  for (var i = 0, input; input = block.inputList[i]; i++) {
+    var m = input.name && input.name.match(/PARAM(\d+)/);
+    if (!m) {
+      continue;
+    }
+    var param = Blockly.TypedLang.valueToCode(block, input.name,
+        Blockly.TypedLang.ORDER_ATOMIC) || '?';
+    params.push(param);
+  }
   var field = block.getField('CONSTRUCTOR');
   var code = field.getVariableName();
-  var param = Blockly.TypedLang.valueToCode(block, 'PARAM',
-      Blockly.TypedLang.ORDER_ATOMIC) || '?';
-  if (block.definition_) {
-    code += ' ' + param;
-  } else {
-    code += ' ?';
+  if (params.length != 0) {
+    code += ' (' + params.join(', ') + ')';
   }
   return [code, Blockly.TypedLang.ORDER_ATOMIC];
 };
