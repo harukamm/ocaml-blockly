@@ -636,9 +636,9 @@ Blockly.BlockSvg.prototype.storeCursorYRelativeToBlock_ = function(e) {
   var top = rect.y;
   var bottom = top + this.height * mainScale;
   var y = e.clientY;
-  if (y < top || bottom < y) {
-    console.warn('The position and size caluculation might be wrong.');
-  }
+  // TODO(harukam): Expect that `y` satisfies `top <= y && y <= bottom`, but
+  // it does not seem to always be satisfied. Find the reason and fix.
+
   /** @type {number} */
   this.cursorYRelativeToBlock_ = e.clientY - rect.y;
 };
