@@ -1546,7 +1546,13 @@ function test_type_unification_fixListCtorCrashedWhenDisconnecting() {
     var listBlock = workspace.newBlock('lists_create_with_typed');
     param.connect(listBlock.outputConnection);
 
-    intType.outputConnection.disconnect();
+    var failed = false;
+    try {
+      intType.outputConnection.disconnect();
+    } catch (e) {
+      failed = true;
+    }
+    assertTrue(failed);
   } finally {
     workspace.dispose();
   }
