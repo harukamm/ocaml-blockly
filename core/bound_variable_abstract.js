@@ -107,7 +107,8 @@ Blockly.BoundVariableAbstract.prototype.setMainField = function(field) {
 };
 
 /**
- * Returns the name of the main field this variable is bound to.
+ * Returns the name of the main field this variable is bound to. If it's not
+ * decided yet, returns null.
  * @return {string|null} The name of this variable's field.
  */
 Blockly.BoundVariableAbstract.prototype.getMainFieldName = function() {
@@ -115,7 +116,8 @@ Blockly.BoundVariableAbstract.prototype.getMainFieldName = function() {
 };
 
 /**
- * Returns the field this variable is bound to.
+ * Returns the field this variable is bound to. If it's not provided yet,
+ * returns null.
  * @return {Blockly.FieldBoundVariable|null} This variable's field.
  */
 Blockly.BoundVariableAbstract.prototype.getMainField = function() {
