@@ -197,8 +197,11 @@ Blockly.TypedLang.scrub_ = function(block, code) {
     var comment = block.getCommentText();
     comment = Blockly.utils.wrap(comment, Blockly.TypedLang.COMMENT_WRAP - 3);
     if (comment) {
-      commentCode += Blockly.TypedLang.prefixLines(comment, '   ')
-                            .replace(/^  /, '(*') +
+      commentCode += '\n' +
+                     Blockly.TypedLang.prefixLines(comment, '   ')
+                            .replace(/^  /g, '(*')
+                            .replace(/\n  /g, '\n(*')
+                            .replace(/\n/g, ' *)\n') +
                      ' *)\n';
     }
     // Collect comments for all value arguments.
