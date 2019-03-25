@@ -73,6 +73,7 @@ Blockly.TypedLang.ORDER_WITH = 19;            // with
 Blockly.TypedLang.ORDER_SEMI = 20;            // ;
 Blockly.TypedLang.ORDER_IN = 21;              // in
 Blockly.TypedLang.ORDER_EXPR = 50;            // any expression
+Blockly.TypedLang.ORDER_NONE = 99;            // (...)
 
 /**
  * List of outer-inner pairings that do NOT require parentheses.
@@ -160,7 +161,7 @@ Blockly.TypedLang.finish = function(code) {
  * @return {string} Legal line of code.
  */
 Blockly.TypedLang.scrubNakedValue = function(line) {
-  return line + '\n';
+  return 'let _ = ' + line + '\n';
 };
 
 /**

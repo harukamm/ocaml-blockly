@@ -66,8 +66,6 @@ Blockly.TypedLang['logic_ternary_typed'] = function(block) {
       Blockly.TypedLang.ORDER_ELSE) || '?';
   var code = 'if ' + value_if + ' then ' + value_then + ' else ' +
       value_else;
-  // TODO: Make sure that this supports the following case.
-  // `(if e then e else e); e -> if e then e else e; e`
   return [code, Blockly.TypedLang.ORDER_EXPR];
 };
 
@@ -265,14 +263,15 @@ Blockly.TypedLang['let_typed'] = function(block) {
   var varname = block.typedValue['VAR'].getVariableName();
   var arg = args.length == 0 ? '' : ' ' + args.join(' ');
   var exp1 = Blockly.TypedLang.valueToCode(block, 'EXP1',
-      Blockly.TypedLang.ORDER_EXPR) || '?';
+      Blockly.TypedLang.ORDER_NONE) || '?';
+	// ORDER_NONE = no parenthesis needed for exp1
 
   var code = 'let ';
   if (block.isRecursive()) code += 'rec ';
   code += varname + arg + ' = ' + exp1;
 
   if (block.getIsStatement()) {
-    code += ';;\n';
+    code += '\n';
     return code;
   }
   var exp2 = Blockly.TypedLang.valueToCode(block, 'EXP2',
