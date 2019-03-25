@@ -199,10 +199,9 @@ Blockly.TypedLang.scrub_ = function(block, code) {
     if (comment) {
       commentCode += '\n' +
                      Blockly.TypedLang.prefixLines(comment, '   ')
-                            .replace(/^  /g, '(*')
-                            .replace(/\n  /g, '\n(*')
-                            .replace(/\n/g, ' *)\n') +
-                     ' *)\n';
+                            .replace(/^  /gm, '(* ')
+                            .replace(/$/gm, ' *)') +
+                     '\n';
     }
     // Collect comments for all value arguments.
     // Don't collect comments for nested statements.
