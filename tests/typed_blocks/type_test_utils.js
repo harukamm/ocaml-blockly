@@ -536,11 +536,13 @@ function copyAndPasteBlock(block, opt_targetWorkspace) {
   return newBlock;
 }
 
-function connectAsStatements(prev, next, opt_workspace) {
+function connectAsStatements(prev, next) {
+  assertEquals(prev.workspace, next.workspace);
+  var workspace = prev.workspace;
   function wrapWithStatement(block) {
-    assertNotNull(opt_workspace);
+    assertNotNull(workspace);
     assertNotNull(block.outputConnection);
-    var dummyStatement = opt_workspace.newBlock('dummy_statement_typed');
+    var dummyStatement = workspace.newBlock('dummy_statement_typed');
     dummyStatement.getInput('VALUE').connection.connect(
         block.outputConnection, true);
     return dummyStatement;

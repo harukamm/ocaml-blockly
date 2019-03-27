@@ -989,7 +989,7 @@ function test_type_transfer_block_workspace_constructBlockSimple() {
 
     assertFalse(ctr.resolveReference(null));
     assertTrue(ctr.resolveReference(defineCtr.nextConnection));
-    connectAsStatements(defineCtr, ctr, workspace);
+    connectAsStatements(defineCtr, ctr);
 
     // TODO(harukam): Make define-ctr block transferable.
     //  var transBlock = repeat_transfer_workspace(defineCtr, otherWorkspace, 10);

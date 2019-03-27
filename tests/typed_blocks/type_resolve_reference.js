@@ -545,7 +545,7 @@ function test_resolve_reference_fixRemoveUndefinedRefInConstruct() {
     assertEquals(getVariableName(ctr), 'Foo');
     assertEquals(ctrValue.getTypeExpr().getDisplayText(), 'bar');
     var letBlockA = workspace.newBlock('let_typed');
-    connectAsStatements(defineCtr, letBlockA, workspace);
+    connectAsStatements(defineCtr, letBlockA);
     setVariableName(letBlockA, 'a');
     letBlockA.getInput('EXP2').connection.connect(ctr.outputConnection);
 
