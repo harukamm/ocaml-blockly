@@ -29,6 +29,9 @@ function getVariableFieldName(block, opt_n) {
       return 'CTR' + opt_n;
     case 'create_construct_typed':
       return 'CONSTRUCTOR';
+    case 'create_record_typed':
+    case 'record_pattern_typed':
+      return 'RECORD';
     default:
       assertTrue(false, 'Unexpected case.');
   }
@@ -342,6 +345,11 @@ function create_mock_workbench_impl_(workbenchClass, block, opt_connection) {
     getWorkspace: function() {
       return this.workspace_;
     },
+    _initFlyoutWorkspace: function() {
+      if (!this.flyoutWorkspace_) {
+        this.flyoutWorkspace_ = create_mock_flyoutWorkspace(this.workspace_);
+      }
+    },
     getFlyoutWorkspace: function() {
       return this.flyoutWorkspace_ ? this.flyoutWorkspace_ : null;
     },
@@ -362,12 +370,13 @@ function create_mock_workbench_impl_(workbenchClass, block, opt_connection) {
       if (opt_workspace) {
         var workspace = opt_workspace;
       } else {
-        if (!this.flyoutWorkspace_) {
-          this.flyoutWorkspace_ = create_mock_flyoutWorkspace(this.workspace_);
-        }
+        this._initFlyoutWorkspace();
         var workspace = this.flyoutWorkspace_;
       }
       return this._workbenchClass.prototype.blocksForFlyout_.call(this, workspace);
+    },
+    getContentsMap_: function() {
+      return this._workbenchClass.prototype.getContentsMap_.call(this);
     },
     checkReference: function(env, opt_bind) {
       return this._workbenchClass.prototype.checkReference.call(this, env,
@@ -429,6 +438,11 @@ function create_mock_pattern_workbench(block) {
 function getFlyoutBlocksFromWorkbench(workbench, opt_workspace) {
   var workspace = opt_workspace ? opt_workspace : workbench.getWorkspace();
   return workbench.blocksForFlyout_(workspace);
+}
+
+function domToFlyoutBlockInWorkbench(workbench, xml) {
+  workbench._initFlyoutWorkspace();
+  return Blockly.Xml.domToBlock(xml, workbench.getFlyoutWorkspace());
 }
 
 /* End functions for workbenches. */

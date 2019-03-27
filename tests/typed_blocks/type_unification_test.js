@@ -1557,3 +1557,44 @@ function test_type_unification_fixListCtorCrashedWhenDisconnecting() {
     workspace.dispose();
   }
 }
+
+function test_type_unification_recordTypePatternMatching() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var defineRecord = workspace.newBlock('defined_recordtype_typed');
+    var matchBlock = workspace.newBlock('match_typed');
+    connectAsStatements(defineRecord, matchBlock);
+    var recordValue = getVariable(defineRecord);
+    var recordBlock = createReferenceBlock(recordValue);
+    matchBlock.getInput('INPUT').connection.connect(recordBlock.outputConnection);
+    var patternType = matchBlock.getInput('PATTERN0').connection.typeExpr;
+    assertNotNull(patternType.pattExpr);
+    assertTrue(patternType.pattExpr.deref().isRecord());
+
+    workbench = create_mock_pattern_workbench(matchBlock);
+    var contentsMap = workbench.getContentsMap_();
+    assertTrue('record' in contentsMap);
+    assertEquals(contentsMap.record.length, 1);
+    var blockXml = contentsMap.record[0];
+    var recordPattern = domToFlyoutBlockInWorkbench(workbench, blockXml);
+
+    var reference = getVariable(recordPattern);
+    assertTrue(reference.isRecord());
+    assertTrue(reference.isReference());
+    assertEquals(reference.getBoundValue(), recordValue);
+
+    var patternValue = recordPattern.transformToValue(workspace);
+    assertEquals(recordPattern.fieldCount_, patternValue.fieldCount_);
+    var children = recordValue.getChildren();
+    for (var i = 0; i < children.length; i++) {
+      var field = patternValue.getField('FIELD' + i);
+      assertEquals(children[i], field.getBoundValue());
+    }
+  } finally {
+    workspace.dispose();
+    if (workbench) {
+      workbench.dispose();
+    }
+  }
+}
