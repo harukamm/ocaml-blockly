@@ -2255,6 +2255,12 @@ Blockly.Block.VariableContext.prototype.addStructureVariable = function(
   this.structureEnv_[name] = variable;
 };
 
+Blockly.Block.VariableContext.prototype.getVariablesWithLabel = function(
+    label) {
+  var env = this.getEnvWithLabel_(label);
+  var values = this.getVariablesImpl_(env);
+  return goog.array.filter(values, function(val) {return val.label == label;});
+};
 Blockly.Block.VariableContext.prototype.getAllVariables = function(ctx) {
   var variables = this.getVariables();
   Array.prototype.push.apply(variables, this.getStructureVariables());

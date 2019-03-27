@@ -113,11 +113,7 @@ Blockly.PatternWorkbench.prototype.updateFlyoutTree = function() {
   if (!this.workspace_ || !this.workspace_.flyout_) {
     return;
   }
-  var contentsMap = {
-    'list': ['empty_construct_pattern_typed',
-        'cons_construct_pattern_typed'],
-    'pair': ['pair_pattern_typed']
-  };
+  var contentsMap = this.getContentsMap_();
   var keys = Object.keys(contentsMap);
   var children = [];
   for (var i = 0, name; name = keys[i]; i++) {
@@ -126,13 +122,69 @@ Blockly.PatternWorkbench.prototype.updateFlyoutTree = function() {
     label.setAttribute('gap', '5');
     children.push(label);
 
-    var blockNames = contentsMap[name];
-    for (var j = 0, blockName; blockName = blockNames[j]; j++) {
-      var blockXml = goog.dom.createDom('block', {'type': blockName});
+    var blockXmlList = contentsMap[name];
+    for (var j = 0, blockXml; blockXml = blockXmlList[j]; j++) {
       blockXml.setAttribute('gap', '5');
       children.push(blockXml);
     }
   }
   this.workspace_.flyout_.show(children);
   this.updateScreen_();
+};
+
+/**
+ * Get a map that maps from block's name to a list of pattern block XML.
+ * @return {Object.<string,!Array.<!Element>>} Object mapping category name
+ *     to block XML list.
+ */
+Blockly.PatternWorkbench.prototype.getContentsMap_ = function() {
+  var map = {
+    'list': ['empty_construct_pattern_typed',
+        'cons_construct_pattern_typed'],
+    'pair': ['pair_pattern_typed']
+  };
+  var keys = Object.keys(map);
+  var contentsMap = {};
+  var children = [];
+  for (var i = 0, name; name = keys[i]; i++) {
+    var blockXmlList = [];
+    var blockNames = map[name];
+    for (var j = 0, blockName; blockName = blockNames[j]; j++) {
+      var blockXml = goog.dom.createDom('block', {'type': blockName});
+      blockXmlList.push(blockXml);
+    }
+    contentsMap[name] = blockXmlList;
+  }
+  var parentConnection = this.block_.outputConnection ?
+      this.block_.outputConnection.targetConnection : null;
+  var parentBlock = parentConnection &&
+      parentConnection.getSourceBlock();
+  if (!parentBlock || !parentConnection) {
+    return contentsMap;
+  }
+  var ctx = parentBlock.allVisibleVariables(parentConnection);
+  var recordValues = ctx.getVariablesWithLabel(
+      Blockly.BoundVariableAbstract.RECORD);
+  if (recordValues.length != 0) {
+    var blockXmlList = [];
+    for (var i = 0, val; val = recordValues[i]; i++) {
+      var blockXml = goog.dom.createDom('block',
+          {'type': 'record_pattern_typed'});
+      var field = goog.dom.createDom('field', {}, val.getVariableName());
+      var typeName = Blockly.BoundVariableAbstract.labelToName(val.label);
+      field.setAttribute('name', 'RECORD');
+      field.setAttribute('isvalue', 'false');
+      field.setAttribute('variable-type', typeName);
+
+      var valueDom = goog.dom.createDom('refer-to');
+      valueDom.setAttribute('id', val.getId());
+      valueDom.setAttribute('workspace-id', val.getWorkspace().id);
+      field.appendChild(valueDom);
+
+      blockXml.appendChild(field);
+      blockXmlList.push(blockXml);
+    }
+    contentsMap['record'] = blockXmlList;
+  }
+  return contentsMap;
 };
