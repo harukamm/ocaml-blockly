@@ -316,23 +316,37 @@ Blockly.TypedLang['defined_recordtype_typed'] = function(block) {
   return code;
 };
 
-Blockly.TypedLang['create_record_typed'] = function(block) {
-  if (block.fieldCount_ == 0) {
+Blockly.TypedLang.recordTypeUtil_ = function(pairs) {
+  if (pairs.length == 0) {
     return '';
   }
   var code = '{';
-  for (var i = 0; i < block.fieldCount_; i++) {
-    var recordField = block.getField('FIELD' + i);
-    code += recordField.getVariableName();
+  for (var i = 0; i < pairs.length; i++) {
+    var pair = pairs[i];
+    var fieldName = pair[0];
+    var fieldInput = pair[1];
+    code += fieldName;
     code += ' = ';
-    code += Blockly.TypedLang.valueToCode(block, 'FIELD_INP' + i,
-        Blockly.TypedLang.ORDER_SEMI) || '?';
-    if (i != block.fieldCount_ - 1) {
+    code += fieldInput;
+    if (i != pairs.length - 1) {
       code += '; ';
     }
   }
   code += '}';
-  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+  return code;
+};
+
+Blockly.TypedLang['create_record_typed'] = function(block) {
+  var pairs = [];
+  for (var i = 0; i < block.fieldCount_; i++) {
+    var recordField = block.getField('FIELD' + i);
+    var fieldName = recordField.getVariableName();
+    var fieldInput = Blockly.TypedLang.valueToCode(block, 'FIELD_INP' + i,
+        Blockly.TypedLang.ORDER_SEMI) || '?';
+    pairs.push([fieldName, fieldInput]);
+  }
+  return [Blockly.TypedLang.recordTypeUtil_(pairs),
+      Blockly.TypedLang.ORDER_ATOMIC];
 };
 
 Blockly.TypedLang['defined_datatype_typed'] = function(block) {
@@ -462,4 +476,28 @@ Blockly.TypedLang['pair_pattern_value_typed'] = function(block) {
   var left = block.typedValue['LEFT'].getVariableName();
   var right = block.typedValue['RIGHT'].getVariableName();
   return ['(' + left + ', ' + right + ')', Blockly.TypedLang.ORDER_ATOMIC];
+};
+
+Blockly.TypedLang['record_pattern_typed'] = function(block) {
+  var pairs = [];
+  for (var i = 0; i < block.fieldCount_; i++) {
+    var recordField = block.getField('FIELD' + i);
+    var fieldName = recordField.getVariableName();
+    var fieldInput = block.getField('TEXT' + i).getText();
+    pairs.push([fieldName, fieldInput]);
+  }
+  return [Blockly.TypedLang.recordTypeUtil_(pairs),
+      Blockly.TypedLang.ORDER_ATOMIC];
+};
+
+Blockly.TypedLang['record_pattern_value_typed'] = function(block) {
+  var pairs = [];
+  for (var i = 0; i < block.fieldCount_; i++) {
+    var recordField = block.getField('FIELD' + i);
+    var fieldName = recordField.getVariableName();
+    var fieldInput = block.getField('TEXT' + i).getVariableName();
+    pairs.push([fieldName, fieldInput]);
+  }
+  return [Blockly.TypedLang.recordTypeUtil_(pairs),
+      Blockly.TypedLang.ORDER_ATOMIC];
 };

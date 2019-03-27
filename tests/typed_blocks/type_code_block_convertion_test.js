@@ -20,6 +20,38 @@ function test_code_generator_checkIfImplementations() {
   }
 }
 
+function test_code_generator_matchPatternBlock() {
+  var workspace = create_typed_workspace();
+  var workbench;
+  try {
+    var defineRecord = workspace.newBlock('defined_recordtype_typed');
+    var matchBlock = workspace.newBlock('match_typed');
+    connectAsStatements(defineRecord, matchBlock);
+    workbench = create_mock_pattern_workbench(matchBlock);
+    var contentsMap = workbench.getContentsMap_();
+    var blockXml = contentsMap.record[0];
+    var recordPattern = domToFlyoutBlockInWorkbench(workbench, blockXml);
+    var code = Blockly.TypedLang.blockToCode(recordPattern)[0];
+    assertTrue(goog.isString(code));
+    assertTrue(0 < code.length);
+    var recordPatternValue = recordPattern.transformToValue(workspace);
+    code = Blockly.TypedLang.blockToCode(recordPatternValue)[0];
+    assertTrue(goog.isString(code));
+    assertTrue(0 < code.length);
+
+    matchBlock.getInput('PATTERN0').connection.connect(
+        recordPatternValue.outputConnection);
+    var code = Blockly.TypedLang.workspaceToCode(workspace);
+    assertTrue(goog.isString(code));
+    assertTrue(0 < code.length);
+  } finally {
+    workspace.dispose();
+    if (workbench) {
+      workbench.dispose();
+    }
+  }
+}
+
 /** End tests for code generator. */
 
 /** Begin tests for block generator. */
