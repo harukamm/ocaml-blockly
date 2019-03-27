@@ -209,12 +209,7 @@ Blockly.Blocks['create_record_typed'] = {
       } else {
         var input = this.getInput('FIELD_INP' + i);
       }
-      var def = children[i].getStructureTypeDef();
-      if (def) {
-        input.setTypeExpr(def, true);
-      } else {
-        input.setTypeExpr(new Blockly.TypeExpr.UNKNOWN(), true);
-      }
+      this.setChildInputTypeExpr_(input, children[i]);
     }
     if (goog.array.last(this.inputList).name != 'RBRACE') {
       this.removeInput('RBRACE');
@@ -223,6 +218,15 @@ Blockly.Blocks['create_record_typed'] = {
     }
     if (goog.isFunction(this.initSvg)) {
       this.initSvg();
+    }
+  },
+
+  setChildInputTypeExpr_: function(input, fieldValue) {
+    var def = fieldValue.getStructureTypeDef();
+    if (def) {
+      input.setTypeExpr(def, true);
+    } else {
+      input.setTypeExpr(new Blockly.TypeExpr.UNKNOWN(), true);
     }
   },
 
@@ -834,4 +838,96 @@ Blockly.Blocks['pair_pattern_value_typed'] = {
     ctx.addVariable(leftValue);
     ctx.addVariable(rightValue);
   }
+};
+
+Blockly.Blocks['record_pattern_typed'] = {
+  init: function() {
+    this.setColour(Blockly.Msg['PATTERN_HUE']);
+    var recordType = new Blockly.TypeExpr.RECORD(null);
+    var variableField =
+        Blockly.FieldBoundVariable.newReferenceRecord(recordType);
+    this.appendDummyInput()
+        .appendField(variableField, 'RECORD')
+        .appendField('{');
+    this.appendDummyInput('RBRACE')
+        .appendField('}');
+    this.setOutput(true);
+    this.setOutputTypeExpr(new Blockly.TypeExpr.PATTERN(recordType));
+    this.setInputsInline(true);
+
+    this.fieldCount_ = 0;
+  },
+
+  transformToValue: function(workspace) {
+    var recordValue = this.getField('RECORD').getBoundValue();
+    var recordName = recordValue.getVariableName();
+    var patternValueBlock = workspace.newBlock('record_pattern_value_typed');
+    var reference = patternValueBlock.getField('RECORD').getVariable();
+    reference.setVariableName(recordName);
+    reference.setBoundValue(recordValue);
+    var children = recordValue.getChildren();
+    for (var i = 0; i < children.length; i++) {
+      var textField = this.getField('TEXT' + i);
+      var value = patternValueBlock.getField('TEXT' + i).getVariable();
+      value.setVariableName(textField.getText());
+    }
+    if (goog.isFunction(patternValueBlock.initSvg)) {
+      patternValueBlock.initSvg();
+      patternValueBlock.render();
+    }
+    return patternValueBlock;
+  },
+
+  appendFieldInput: function(index, fieldValue) {
+    var input = this.appendDummyInput('FIELD_INP' + index);
+    if (index != 0) {
+      input.appendField(';');
+    }
+    var field = Blockly.FieldBoundVariable.newReferenceRecordField(null,
+        fieldValue.getVariableName());
+    field.setBoundValue(fieldValue);
+    input.appendField(field, 'FIELD' + index)
+    input.appendField('=');
+
+    input.appendField(this.createFieldText_(), 'TEXT' + index);
+
+    field.initModel();
+    this.fieldCount_++;
+    return input;
+  },
+
+  createFieldText_: function() {
+    var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
+        Blockly.BoundVariableAbstract.VARIABLE);
+    return new Blockly.FieldTextInput('a', validator);
+  },
+
+  updateStructure: Blockly.Blocks['create_record_typed'].updateStructure,
+
+  setChildInputTypeExpr_: function(input, fieldValue) {
+    // NOP.
+  },
+
+  infer: Blockly.Blocks['create_record_typed'].infer
+};
+
+Blockly.Blocks['record_pattern_value_typed'] = {
+  init: Blockly.Blocks['record_pattern_typed'].init,
+
+  appendFieldInput: Blockly.Blocks['record_pattern_typed'].appendFieldInput,
+
+  createFieldText_: function() {
+    var A = Blockly.TypeExpr.generateTypeVar();
+    var field = Blockly.FieldBoundVariable.newValue(A, 'a');
+    field.initModel();
+    return field;
+  },
+
+  updateStructure: Blockly.Blocks['record_pattern_typed'].updateStructure,
+
+  setChildInputTypeExpr_: function(input, fieldValue) {
+    // TODO(harukam): Set type expression to each field value.
+  },
+
+  infer: Blockly.Blocks['record_pattern_typed'].infer
 };
