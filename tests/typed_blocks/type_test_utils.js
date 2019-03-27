@@ -334,6 +334,7 @@ function create_mock_workbench_impl_(workbenchClass, block, opt_connection) {
   };
   var workspace = new Blockly.Workspace(workspaceOptions);
   var workbenchMock = {
+    _workbenchClass: workbenchClass,
     block_: block,
     workspace_: workspace,
     flyoutWorkspace_: null,
@@ -351,10 +352,10 @@ function create_mock_workbench_impl_(workbenchClass, block, opt_connection) {
       return true;
     },
     getBlockContext: function() {
-      return workbenchClass.prototype.getBlockContext.call(this);
+      return this._workbenchClass.prototype.getBlockContext.call(this);
     },
     getContext: function(opt_includeImplicit) {
-      return workbenchClass.prototype.getContext.call(this,
+      return this._workbenchClass.prototype.getContext.call(this,
           opt_includeImplicit);
     },
     blocksForFlyout_: function(opt_workspace) {
@@ -366,19 +367,19 @@ function create_mock_workbench_impl_(workbenchClass, block, opt_connection) {
         }
         var workspace = this.flyoutWorkspace_;
       }
-      return workbenchClass.prototype.blocksForFlyout_.call(this, workspace);
+      return this._workbenchClass.prototype.blocksForFlyout_.call(this, workspace);
     },
     checkReference: function(env, opt_bind) {
-      return workbenchClass.prototype.checkReference.call(this, env,
+      return this._workbenchClass.prototype.checkReference.call(this, env,
           opt_bind);
     },
     removeChangeListener: function() {},
     adaptWorkspace_: function() {},
     releaseWorkspace: function() {
-      workbenchClass.prototype.releaseWorkspace.call(this);
+      this._workbenchClass.prototype.releaseWorkspace.call(this);
     },
     replaceWorkspace: function(workbench) {
-      workbenchClass.prototype.replaceWorkspace.call(this, workbench);
+      this._workbenchClass.prototype.replaceWorkspace.call(this, workbench);
     },
     dispose: function() {
       this.contextConnection_ = null;
