@@ -926,7 +926,15 @@ Blockly.Blocks['record_pattern_value_typed'] = {
   updateStructure: Blockly.Blocks['record_pattern_typed'].updateStructure,
 
   setChildInputTypeExpr_: function(input, fieldValue) {
-    // TODO(harukam): Set type expression to each field value.
+    var field = goog.array.find(input.fieldRow,
+        function(field) {return field.name && field.name.startsWith('TEXT');});
+    if (!field) {
+      return;
+    }
+    var variable = field.getVariable();
+    var typeExpr = variable.getTypeExpr();
+    var def = fieldValue.getStructureTypeDef();
+    variable.setTypeExpr(def ? def : new Blockly.TypeExpr.UNKNOWN(), true);
   },
 
   infer: Blockly.Blocks['record_pattern_typed'].infer
