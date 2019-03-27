@@ -1518,7 +1518,7 @@ function test_type_unification_screenRattlingRecordBlocks() {
     }
     var recordValue = getVariable(defineRecord);
     var recordBlock = createReferenceBlock(recordValue);
-    prev.getInput('EXP1').connection.connect(recordBlock.outputConneciton);
+    prev.getInput('EXP1').connection.connect(recordBlock.outputConnection);
   } finally {
     workspace.dispose();
   }
