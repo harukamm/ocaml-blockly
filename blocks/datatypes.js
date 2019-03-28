@@ -914,6 +914,15 @@ Blockly.Blocks['record_pattern_typed'] = {
 Blockly.Blocks['record_pattern_value_typed'] = {
   init: Blockly.Blocks['record_pattern_typed'].init,
 
+  getTypeScheme: function(fieldName) {
+    var m = fieldName && fieldName.match(/^TEXT(\d+)$/);
+    if (!m || this.fieldCount_ <= parseInt(m[1])) {
+      return null;
+    }
+    var variable = this.typedValue[fieldName];
+    return Blockly.Scheme.monoType(variable.getTypeExpr());
+  },
+
   appendFieldInput: Blockly.Blocks['record_pattern_typed'].appendFieldInput,
 
   createFieldText_: function() {
