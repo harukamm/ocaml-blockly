@@ -58,7 +58,8 @@ Blockly.Blocks['defined_recordtype_typed'] = {
 
   getTypeScheme: function(fieldName) {
     if (fieldName === 'DATANAME') {
-      return new Blockly.TypeExpr.RECORD(this.recordId_);
+      var recordType = new Blockly.TypeExpr.RECORD(this.recordId_);
+      return Blockly.Scheme.monoType(recordType);
     }
     return null;
   },
@@ -289,7 +290,8 @@ Blockly.Blocks['defined_datatype_typed'] = {
       var numstr = fieldName.substring(3);
       var x = parseInt(numstr);
       if (!isNaN(x) && x < this.itemCount_) {
-        return new Blockly.TypeExpr.CONSTRUCT(this.constructId_);
+        var ctorType = new Blockly.TypeExpr.CONSTRUCT(this.constructId_);
+        return Blockly.Scheme.monoType(ctorType);
       }
     }
     return null;
