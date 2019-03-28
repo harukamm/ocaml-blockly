@@ -1595,6 +1595,21 @@ function test_type_unification_recordTypePatternMatching() {
     assertFalse(value0.isReference());
     assertNotNull(value0.getSourceBlock());
     assertNotNull(value0.getWorkspace());
+    assertTrue(value0.getTypeExpr().deref().isUnknown());
+    var varBlock = createReferenceBlock(value0, true);
+
+    var intType = workspace.newBlock('int_type_typed');
+    defineRecord.getInput('FIELD_INP0').connection.connect(
+        intType.outputConnection);
+    assertTrue(value0.getTypeExpr().deref().isInt());
+    assertTrue(varBlock.outputConnection.typeExpr.deref().isInt());
+    intType.dispose();
+
+    var floatType = workspace.newBlock('float_type_typed');
+    defineRecord.getInput('FIELD_INP0').connection.connect(
+        floatType.outputConnection);
+    assertTrue(value0.getTypeExpr().deref().isFloat());
+    assertTrue(varBlock.outputConnection.typeExpr.deref().isFloat());
   } finally {
     workspace.dispose();
     if (workbench) {

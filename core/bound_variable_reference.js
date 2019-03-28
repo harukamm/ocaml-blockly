@@ -202,12 +202,23 @@ Blockly.BoundVariableValueReference.prototype.removeBoundValue = function() {
  */
 Blockly.BoundVariableValueReference.prototype.unifyTypeExpr = function() {
   var valueType = this.value_ && this.value_.getTypeExpr();
-  if (valueType) {
-    var scheme = this.value_.getTypeScheme(this);
-    if (scheme) {
-      scheme.unify(this.typeExpr_);
+  if (!valueType) {
+    return;
+  }
+  var scheme = this.value_.getTypeScheme(this);
+  if (!scheme) {
+    return;
+  }
+  if (scheme.type.isUnknown()) {
+    // Reference variables are allowed to exist even if they refer to a
+    // variable of unknown type. However any type expression can not be unified
+    // with an unknown type, so avoid just calling `scheme.unify()`.
+    if (this.typeExpr_.isTypeVar() && !this.typeExpr_.val) {
+      this.typeExpr_.val = new Blockly.TypeExpr.UNKNOWN();
+      return;
     }
   }
+  scheme.unify(this.typeExpr_);
 };
 
 /**
