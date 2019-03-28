@@ -1591,6 +1591,10 @@ function test_type_unification_recordTypePatternMatching() {
       var field = patternValue.getField('FIELD' + i);
       assertEquals(children[i], field.getBoundValue());
     }
+    var value0 = patternValue.getField('TEXT0').getVariable();
+    assertFalse(value0.isReference());
+    assertNotNull(value0.getSourceBlock());
+    assertNotNull(value0.getWorkspace());
   } finally {
     workspace.dispose();
     if (workbench) {
