@@ -1585,11 +1585,16 @@ function test_type_unification_recordTypePatternMatching() {
     assertEquals(reference.getBoundValue(), recordValue);
 
     var patternValue = recordPattern.transformToValue(workspace);
+    matchBlock.getInput('PATTERN0').connection.connect(
+        patternValue.outputConnection);
     assertEquals(recordPattern.fieldCount_, patternValue.fieldCount_);
     var children = recordValue.getChildren();
+    // match ? with { a='x0'; b='x1' } -> ?
     for (var i = 0; i < children.length; i++) {
       var field = patternValue.getField('FIELD' + i);
       assertEquals(children[i], field.getBoundValue());
+      var value = patternValue.getField('TEXT' + i).getVariable();
+      value.setVariableName('x' + i);
     }
     var value0 = patternValue.getField('TEXT0').getVariable();
     assertFalse(value0.isReference());
@@ -1597,12 +1602,16 @@ function test_type_unification_recordTypePatternMatching() {
     assertNotNull(value0.getWorkspace());
     assertTrue(value0.getTypeExpr().deref().isUnknown());
     var varBlock = createReferenceBlock(value0, true);
+    assertEquals(getVariableName(varBlock), 'x0');
+    var output = matchBlock.getInput('OUTPUT0').connection;
+    assertTrue(varBlock.resolveReference(output));
 
     var intType = workspace.newBlock('int_type_typed');
     defineRecord.getInput('FIELD_INP0').connection.connect(
         intType.outputConnection);
     assertTrue(value0.getTypeExpr().deref().isInt());
     assertTrue(varBlock.outputConnection.typeExpr.deref().isInt());
+    assertTrue(varBlock.resolveReference(output));
     intType.dispose();
 
     var floatType = workspace.newBlock('float_type_typed');
@@ -1610,6 +1619,7 @@ function test_type_unification_recordTypePatternMatching() {
         floatType.outputConnection);
     assertTrue(value0.getTypeExpr().deref().isFloat());
     assertTrue(varBlock.outputConnection.typeExpr.deref().isFloat());
+    assertTrue(varBlock.resolveReference(output));
   } finally {
     workspace.dispose();
     if (workbench) {

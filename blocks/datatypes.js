@@ -926,6 +926,16 @@ Blockly.Blocks['record_pattern_value_typed'] = {
     return Blockly.Scheme.monoType(variable.getTypeExpr());
   },
 
+  updateUpperContext: function(ctx) {
+    var parent = this.getParent();
+    if (parent && parent.type !== 'match_typed') {
+      return;
+    }
+    for (var i = 0; i < this.fieldCount_; i++) {
+      ctx.addVariable(this.typedValue['TEXT' + i]);
+    }
+  },
+
   appendFieldInput: Blockly.Blocks['record_pattern_typed'].appendFieldInput,
 
   appendFieldText_: function(index, input) {
