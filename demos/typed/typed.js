@@ -55,12 +55,21 @@ Typed.BOOT = (function() {
 Typed.workspace = null;
 
 Typed.defaultCode =
-    "let rec pi_impl n d =" +
-    "if n > 0.0 " +
-    "then n *. n /. d /. (d -. 2.0) *. pi_impl (n -. 2.0) (d -. 2.0) " +
-    "else 1.0;;\n" +
-    "let pi n = 2.0 *. pi_impl (n *. 2.0) (n *. 2.0 +. 1.0);;\n" +
-    "let pi_exp = pi 9000.";
+    "(* 目的：この関数の目的を書く *)\n" +
+    "(* f : 型 -> 型 *)\n" +
+    "let f 引数 =\n" +
+    "  ...\n" +
+    "\n" +
+    "(* テスト *)\n" +
+    "let test1 = f 値 = 値\n" +
+    "let test2 = f 値 = 値\n" +
+    "let test3 = f 値 = 値"
+//  "let rec pi_impl n d =" +
+//  "if n > 0.0 " +
+//  "then n *. n /. d /. (d -. 2.0) *. pi_impl (n -. 2.0) (d -. 2.0) " +
+//  "else 1.0;;\n" +
+//  "let pi n = 2.0 *. pi_impl (n *. 2.0) (n *. 2.0 +. 1.0);;\n" +
+//  "let pi_exp = pi 9000.";
 
 Typed.init = function() {
   Typed.setDocumentTitle_();
