@@ -56,10 +56,10 @@ Blockly.TypedLang.addReservedWords(
  */
 Blockly.TypedLang.ORDER_ATOMIC = 0;           // 0 "" ...
 Blockly.TypedLang.ORDER_FUNCTION_CALL = 2;    // f x
-Blockly.TypedLang.ORDER_MULTIPLICATION = 5;   // * (INFIXOP3)
-Blockly.TypedLang.ORDER_DIVISION = 5;         // / (INFIXOP3)
-Blockly.TypedLang.ORDER_SUBTRACTION = 6;      // - (INFIXOP2)
-Blockly.TypedLang.ORDER_ADDITION = 6;         // + (INFIXOP2)
+Blockly.TypedLang.ORDER_MULTIPLICATION = 5.1; // * (INFIXOP3)
+Blockly.TypedLang.ORDER_DIVISION = 5.2;       // / (INFIXOP3)
+Blockly.TypedLang.ORDER_SUBTRACTION = 6.1;    // - (INFIXOP2)
+Blockly.TypedLang.ORDER_ADDITION = 6.2;       // + (INFIXOP2)
 Blockly.TypedLang.ORDER_CONS = 7;             // ::
 Blockly.TypedLang.ORDER_CONCAT_STRING = 8;    // ^ (INFIXOP1)
 Blockly.TypedLang.ORDER_RELATIONAL = 9;       // < <= > >= = <> (INFIXOP0)
