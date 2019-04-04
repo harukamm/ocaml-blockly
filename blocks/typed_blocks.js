@@ -287,6 +287,31 @@ Blockly.Blocks['int_arithmetic_typed'] = {
   }
 };
 
+Blockly.Blocks['int_abs_typed'] = {
+  /**
+   * Block for Pervasives.abs function.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(230);
+    this.setOutput(true, 'Int');
+    this.setOutputTypeExpr(new Blockly.TypeExpr.INT());
+    this.appendValueInput('A')
+        .setTypeExpr(new Blockly.TypeExpr.INT())
+        .appendField('abs');
+    this.setInputsInline(true);
+    this.setTooltip('整数の絶対値を計算する関数');
+  },
+
+  infer: function(ctx) {
+    var expected = new Blockly.TypeExpr.INT();
+    var arg = this.callInfer('A', ctx);
+    if (arg)
+      arg.unify(expected);
+    return expected;
+  }
+};
+
 Blockly.Blocks['float_typed'] = {
   /**
    * Block for numeric value.

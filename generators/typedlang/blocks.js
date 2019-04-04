@@ -98,6 +98,14 @@ Blockly.TypedLang['int_arithmetic_typed'] = function(block) {
   return [code, order];
 };
 
+Blockly.TypedLang['int_abs_typed'] = function(block) {
+  // int function "abs".
+  var argument = Blockly.TypedLang.valueToCode(block, 'A',
+      Blockly.TypedLang.ORDER_FUNCTION_CALL) || '?';
+  var code = 'abs ' + argument;
+  return [code, Blockly.TypedLang.ORDER_FUNCTION_CALL];
+};
+
 Blockly.TypedLang['float_typed'] = function(block) {
   // float value.
   var code = block.getFieldValue('Float');
