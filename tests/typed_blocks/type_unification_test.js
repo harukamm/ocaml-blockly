@@ -1627,3 +1627,27 @@ function test_type_unification_recordTypePatternMatching() {
     }
   }
 }
+
+function test_type_unification_fixTypeErrorLetPolyApplication() {
+  var workspace = create_typed_workspace();
+  try {
+    var code = "let f x = \"\";;" +
+        "let test = f 0 = \"a\"";
+    var block = getBlockFromCode(code, workspace);
+    block.getInputTargetBlock('EXP1').dispose();
+    var value = block.typedValue['ARG0'];
+    var varBlock = createReferenceBlock(value, true);
+    var error = null;
+    try {
+      block.getInput('EXP1').connection.connect(varBlock.outputConnection);
+    } catch (e) {
+      error = e;
+    }
+    // TODO(harukam): This test reproduces issue #10. Fix it.
+    assertNotNull(error);
+    assertEquals(error.label, Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT);
+    disableAllTypeCheck(block);
+  } finally {
+    workspace.dispose();
+  }
+}
