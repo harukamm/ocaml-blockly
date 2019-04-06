@@ -1131,7 +1131,7 @@ Blockly.TypeExpr.prototype.instantiate = function(targetNames) {
  */
 Blockly.TypeExpr.prototype.unify = function(other) {
   if (this.hasUnknown() || other.hasUnknown()) {
-    throw new Blockly.TypeExpr.errorUnknownType(this, other);
+    throw Blockly.TypeExpr.errorUnknownType(this, other);
   }
 
   var staq = [[this, other]];
