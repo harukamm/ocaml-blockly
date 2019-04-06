@@ -571,3 +571,19 @@ function connectAsStatements(prev, next) {
   prev.nextConnection.connect(next.previousConnection);
   return prev;
 }
+
+function getBlockFromCode(code, workspace) {
+  workspace.renderTypeChangedWorkspaces = function() {};
+  Blockly.mainWorkspace = workspace;
+  try {
+    var result = BlockOfOCamlUtils.codeToBlock(code, false);
+    if (result.errCode != BlockOfOCamlUtils.ERROR_NONE) {
+      var errMsg = BlockOfOCamlUtils.getErrorMessage(result);
+      goog.asserts.fail(errMsg);
+    }
+    return result.block;
+  } finally {
+    delete workspace.renderTypeChangedWorkspaces;
+    Blockly.mainWorkspace = null;
+  }
+}

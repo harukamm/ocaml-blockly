@@ -80,15 +80,10 @@ var codeList = [
 
 function test_block_generator_convertSampleCodeList() {
   var workspace = create_typed_workspace();
-  workspace.renderTypeChangedWorkspaces = function() {};
-  Blockly.mainWorkspace = workspace;
   try {
     for (var i = 0, code; code = codeList[i]; i++) {
-      var result = BlockOfOCamlUtils.codeToBlock(code, false);
-      if (result.errCode != BlockOfOCamlUtils.ERROR_NONE) {
-        var errMsg = BlockOfOCamlUtils.getErrorMessage(result);
-        goog.asserts.fail(errMsg);
-      }
+      var block = getBlockFromCode(code, workspace);
+      assertNotNull(block);
     }
   } finally {
     workspace.dispose();
