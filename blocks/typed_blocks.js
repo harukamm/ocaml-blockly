@@ -376,6 +376,31 @@ Blockly.Blocks['float_arithmetic_typed'] = {
   }
 };
 
+Blockly.Blocks['float_sqrt_typed'] = {
+  /**
+   * Block for Pervasives.sqrt function.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(100);
+    this.setOutput(true, 'Float');
+    this.setOutputTypeExpr(new Blockly.TypeExpr.FLOAT());
+    this.appendValueInput('A')
+        .setTypeExpr(new Blockly.TypeExpr.FLOAT())
+        .appendField('sqrt');
+    this.setInputsInline(true);
+    this.setTooltip('実数の平方根を計算する関数');
+  },
+
+  infer: function(ctx) {
+    var expected = new Blockly.TypeExpr.FLOAT();
+    var arg = this.callInfer('A', ctx);
+    if (arg)
+      arg.unify(expected);
+    return expected;
+  }
+};
+
 Blockly.Blocks['string_typed'] = {
   init: function() {
     this.setColour(Blockly.Msg['STRING_HUE']);
