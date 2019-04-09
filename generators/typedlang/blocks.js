@@ -72,7 +72,9 @@ Blockly.TypedLang['logic_ternary_typed'] = function(block) {
 Blockly.TypedLang['int_typed'] = function(block) {
   // int value.
   var code = parseInt(block.getFieldValue('INT'));
-  return [code, Blockly.TypedLang.ORDER_ATOMIC];
+  var order = code < 0 ? Blockly.TypedLang.ORDER_SUBTRACTION
+            : Blockly.TypedLang.ORDER_ATOMIC;
+  return [code, order];
 };
 
 Blockly.TypedLang['max_int_typed'] = function(block) {
@@ -272,7 +274,7 @@ Blockly.TypedLang['let_typed'] = function(block) {
   var arg = args.length == 0 ? '' : ' ' + args.join(' ');
   var exp1 = Blockly.TypedLang.valueToCode(block, 'EXP1',
       Blockly.TypedLang.ORDER_NONE) || '?';
-	// ORDER_NONE = no parenthesis needed for exp1
+        // ORDER_NONE = no parenthesis needed for exp1
 
   var code = 'let ';
   if (block.isRecursive()) code += 'rec ';
