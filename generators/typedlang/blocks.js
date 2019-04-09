@@ -140,6 +140,14 @@ Blockly.TypedLang['float_arithmetic_typed'] = function(block) {
   return [code, order];
 };
 
+Blockly.TypedLang['float_sqrt_typed'] = function(block) {
+  // float function "sqrt".
+  var argument = Blockly.TypedLang.valueToCode(block, 'A',
+      Blockly.TypedLang.ORDER_FUNCTION_CALL) || '?';
+  var code = 'sqrt ' + argument;
+  return [code, Blockly.TypedLang.ORDER_FUNCTION_CALL];
+};
+
 Blockly.TypedLang['string_typed'] = function(block) {
   var value = block.getFieldValue('STRING');
   var literal = JSON.stringify(value);
