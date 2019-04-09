@@ -250,7 +250,8 @@ Blockly.Blocks['int_arithmetic_typed'] = {
         [['+', 'ADD_INT'],
          ['-', 'MINUS_INT'],
          ['*', 'MULTIPLY_INT'],
-         ['/', 'DIVIDE_INT']];
+         ['/', 'DIVIDE_INT'],
+         ['mod', 'MOD_INT']];
     this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
     this.setColour(230);
     this.setOutput(true, 'Int');
@@ -269,7 +270,8 @@ Blockly.Blocks['int_arithmetic_typed'] = {
         'ADD_INT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_ADD,
         'MINUS_INT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MINUS,
         'MULTIPLY_INT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MULTIPLY,
-        'DIVIDE_INT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_DIVIDE
+        'DIVIDE_INT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_DIVIDE,
+        'MOD_INT': '整数の割り算の余りを計算する演算子'
       };
       return TOOLTIPS[mode];
     });
@@ -339,7 +341,8 @@ Blockly.Blocks['float_arithmetic_typed'] = {
         [['+.', 'ADD_FLOAT'],
          ['-.', 'MINUS_FLOAT'],
          ['*.', 'MULTIPLY_FLOAT'],
-         ['/.', 'DIVIDE_FLOAT']];
+         ['/.', 'DIVIDE_FLOAT'],
+         ['**', 'POWER_FLOAT']];
     this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
     this.setColour(100);
     this.setOutput(true, 'Float');
@@ -359,6 +362,7 @@ Blockly.Blocks['float_arithmetic_typed'] = {
         'MINUS_FLOAT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MINUS,
         'MULTIPLY_FLOAT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MULTIPLY,
         'DIVIDE_FLOAT': Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_DIVIDE,
+        'POWER_FLOAT': '実数のべき乗の演算子'
       };
       return TOOLTIPS[mode];
     });

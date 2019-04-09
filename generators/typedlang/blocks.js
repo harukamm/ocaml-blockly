@@ -87,7 +87,8 @@ Blockly.TypedLang['int_arithmetic_typed'] = function(block) {
     'ADD_INT': [' + ', Blockly.TypedLang.ORDER_ADDITION],
     'MINUS_INT': [' - ', Blockly.TypedLang.ORDER_SUBTRACTION],
     'MULTIPLY_INT': [' * ', Blockly.TypedLang.ORDER_MULTIPLICATION],
-    'DIVIDE_INT': [' / ', Blockly.TypedLang.ORDER_DIVISION]
+    'DIVIDE_INT': [' / ', Blockly.TypedLang.ORDER_DIVISION],
+    'MOD_INT': [' mod ', Blockly.TypedLang.ORDER_MOD]
   };
   var tuple = OPERATORS[block.getFieldValue('OP_INT')];
   var operator = tuple[0];
@@ -127,7 +128,8 @@ Blockly.TypedLang['float_arithmetic_typed'] = function(block) {
     'ADD_FLOAT': [' +. ', Blockly.TypedLang.ORDER_ADDITION],
     'MINUS_FLOAT': [' -. ', Blockly.TypedLang.ORDER_SUBTRACTION],
     'MULTIPLY_FLOAT': [' *. ', Blockly.TypedLang.ORDER_MULTIPLICATION],
-    'DIVIDE_FLOAT': [' /. ', Blockly.TypedLang.ORDER_DIVISION]
+    'DIVIDE_FLOAT': [' /. ', Blockly.TypedLang.ORDER_DIVISION],
+    'POWER_FLOAT': [' ** ', Blockly.TypedLang.ORDER_POWER]
   };
   var tuple = OPERATORS[block.getFieldValue('OP_FLOAT')];
   var operator = tuple[0];
