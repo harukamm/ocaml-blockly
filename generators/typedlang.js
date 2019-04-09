@@ -89,9 +89,7 @@ Blockly.TypedLang.ORDER_OVERRIDES = [
   // a || (b || c) -> a || b || c
   [Blockly.TypedLang.ORDER_LOGICAL_OR, Blockly.TypedLang.ORDER_LOGICAL_OR],
   // a ^ (b ^ c) -> a ^ b ^ c
-  [Blockly.TypedLang.ORDER_CONCAT_STRING, Blockly.TypedLang.ORDER_CONCAT_STRING],
-  // a :: (b :: c) -> a :: b :: c
-  [Blockly.TypedLang.ORDER_CONS, Blockly.TypedLang.ORDER_CONS]
+  [Blockly.TypedLang.ORDER_CONCAT_STRING, Blockly.TypedLang.ORDER_CONCAT_STRING]
 ];
 
 /**
