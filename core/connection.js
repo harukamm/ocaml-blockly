@@ -680,8 +680,10 @@ Blockly.Connection.prototype.checkTypeExprAndVariables_ = function(
     }
     return Blockly.Connection.REASON_TYPE_UNIFICATION;
   } finally {
+    // Clear temporary connection and revert type inference on blocks.
     this.targetConnection = tmpLocalTargetConnection;
     otherConnection.targetConnection = tmpParentTargetConnection;
+    childBlock.updateTypeInference(true);
   }
 
   var bindNewly = context.finalCheck === true;
