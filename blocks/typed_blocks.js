@@ -1469,9 +1469,9 @@ Blockly.Blocks['let_typed'] = {
     // returns non empty array.
     var option = {enabled: canBeToggled};
     if (this.isRecursive_) {
-      option.text = 'Remove rec.';
+      option.text = Blockly.Msg['REMOVE_REC'];
     } else {
-      option.text = 'Set rec.';
+      option.text = Blockly.Msg['ADD_REC'];
     }
     option.callback = this.setRecursiveFlag.bind(this, !this.isRecursive_);
     options.push(option);
