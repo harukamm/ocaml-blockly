@@ -673,7 +673,11 @@ Blockly.Connection.prototype.checkTypeExprAndVariables_ = function(
   try {
     childBlock.updateTypeInference(true);
   } catch (e) {
-    // TODO(harukam): Let the error collector collect a type unification error.
+    if (collector) {
+      // Currently this type unification error can not be specified, so store
+      // a dummy type error.
+      collector.addTypeError(Blockly.TypeExpr.errorNotSpecified());
+    }
     return Blockly.Connection.REASON_TYPE_UNIFICATION;
   } finally {
     this.targetConnection = tmpLocalTargetConnection;

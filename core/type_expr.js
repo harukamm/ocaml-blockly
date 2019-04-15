@@ -1375,6 +1375,7 @@ Blockly.TypeExpr.ERROR_OCCUR_CHECK = 10;
 Blockly.TypeExpr.ERROR_STRUCTURE_INCONSISTENT = 15;
 Blockly.TypeExpr.ERROR_LABEL_INCONSISTENT = 20;
 Blockly.TypeExpr.ERROR_UNKNOWN_TYPE = 25;
+Blockly.TypeExpr.ERROR_NOT_SPECIFIED = 30;
 
 Blockly.TypeExpr.errorUnifyTypeCtor = function(t) {
   return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_TYPECTOR, t, null);
@@ -1402,6 +1403,10 @@ Blockly.TypeExpr.errorInconsistentLabel = function(t1, t2) {
 Blockly.TypeExpr.errorUnknownType = function(t1, t2) {
   return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_UNKNOWN_TYPE,
     t1, t2);
+};
+
+Blockly.TypeExpr.errorNotSpecified = function() {
+  return new Blockly.TypeExpr.Error(Blockly.TypeExpr.ERROR_NOT_SPECIFIED);
 };
 
 /**
@@ -1434,6 +1439,8 @@ Blockly.TypeExpr.Error.prototype.toMessage = function() {
         return 'この型はまだ決定されていません。';
       }
       return '相手の型はまだ決定されていません。';
+    case Blockly.TypeExpr.ERROR_NOT_SPECIFIED:
+      return '別の箇所の部分で型が合っていません。';
     default:
       goog.asserts.fail('Unexpected type error label.');
   }
