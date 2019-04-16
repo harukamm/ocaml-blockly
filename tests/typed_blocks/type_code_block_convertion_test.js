@@ -71,6 +71,10 @@ var codeList = [
     "else 1.0 in " +
     "let pi n = 2.0 *. pi_impl (n *. 2.0) (n *. 2.0 +. 1.0) in " +
     "pi 9000.",
+  "let rec sum lst =" +
+    "match lst with " +
+    "| [] -> 0" +
+    "| x :: xs -> x + sum xs",
   "type t = {l:int*int*bool;l2:float;l3:string*int}",
   "type t = Ctor1 | Ctor2 of string | Bar of int * string * float | Foo of int * int",
   "[1;2;3]",
