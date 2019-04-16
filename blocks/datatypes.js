@@ -885,23 +885,24 @@ Blockly.Blocks['record_pattern_typed'] = {
     if (index != 0) {
       input.appendField(';');
     }
+    var name = fieldValue.getVariableName();
     var field = Blockly.FieldBoundVariable.newReferenceRecordField(null,
-        fieldValue.getVariableName());
+        name);
     field.setBoundValue(fieldValue);
     input.appendField(field, 'FIELD' + index)
     input.appendField('=');
 
-    this.appendFieldText_(index, input);
+    this.appendFieldText_(index, input, name);
 
     field.initModel();
     this.fieldCount_++;
     return input;
   },
 
-  appendFieldText_: function(index, input) {
+  appendFieldText_: function(index, input, name) {
     var validator = Blockly.BoundVariables.variableNameValidator.bind(null,
         Blockly.BoundVariableAbstract.VARIABLE);
-    var field = new Blockly.FieldTextInput('a', validator);
+    var field = new Blockly.FieldTextInput(name + '_v', validator);
     input.appendField(field, 'TEXT' + index);
   },
 
@@ -938,9 +939,9 @@ Blockly.Blocks['record_pattern_value_typed'] = {
 
   appendFieldInput: Blockly.Blocks['record_pattern_typed'].appendFieldInput,
 
-  appendFieldText_: function(index, input) {
+  appendFieldText_: function(index, input, name) {
     var A = Blockly.TypeExpr.generateTypeVar();
-    var field = Blockly.FieldBoundVariable.newValue(A, 'a');
+    var field = Blockly.FieldBoundVariable.newValue(A, name + '_v');
     input.appendField(field, 'TEXT' + index);
     // Call initModel on the field after it's attached to a block. Otherwise
     // variable can not store information about where it's located. (e.g.,
