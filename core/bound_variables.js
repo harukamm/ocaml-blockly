@@ -507,9 +507,8 @@ Blockly.BoundVariables.generateUniqueName = function(label, workspace) {
   }
 
   var isCtr = Blockly.BoundVariableAbstract.isConstructorLabel(label);
+  var isRecordName = Blockly.BoundVariableAbstract.isRecordLabel(label);
   var name = null;
-  var acode = 'a'.charCodeAt(0);
-  var zcode = 'z';
   var n = 0;
   while (!name) {
     var code = 'a'.charCodeAt(0);
@@ -520,6 +519,7 @@ Blockly.BoundVariables.generateUniqueName = function(label, workspace) {
       if (0 < n) {
         name += n;
       }
+      name = isRecordName ? name + '_t' : name;
       if (!Blockly.BoundVariables.isLegalName(label, name) ||
           name in namesMap) {
         name = null;
