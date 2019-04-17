@@ -267,7 +267,13 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
   if (this.typeExprEnabled()) {
     var rootBlock = parentBlock.getRootBlock();
-    rootBlock.updateTypeInference();
+    try {
+      rootBlock.updateTypeInference();
+    } catch (e) {
+      var sourceBlock = this.getSourceBlock();
+      var mainWorkspace = sourceBlock.workspace.getMainWorkspace();
+      mainWorkspace.undo(false);
+    }
   }
 
   if (event) {
