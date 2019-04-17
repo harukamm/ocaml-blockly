@@ -332,7 +332,11 @@ Blockly.TypedLang['defined_recordtype_typed'] = function(block) {
     var typeCtor = Blockly.TypedLang.valueToCode(block, 'FIELD_INP' + i,
         Blockly.TypedLang.ORDER_SEMI) || '?';
     code += typeCtor;
-    code += ';\n';
+    if (recordField.inlineComment) {
+      code += ';\t(* ' + recordField.inlineComment + ' *)\n';
+    } else {
+      code += ';\n';
+    }
   }
   code += '}\n';
   return code;

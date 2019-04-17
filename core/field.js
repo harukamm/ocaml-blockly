@@ -627,3 +627,10 @@ Blockly.Field.prototype.getAbsoluteXY_ = function() {
 Blockly.Field.prototype.referencesVariables = function() {
   return Blockly.FIELD_VARIABLE_NONE;
 };
+
+/**
+ * Inline comment for this field.
+ * @type {string}
+ * @private
+ */
+Blockly.Field.prototype.inlineComment = null;

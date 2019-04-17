@@ -612,3 +612,25 @@ Blockly.BoundVariables.renameVariable = function(variable) {
   };
   promptAndCheckWithAlert('');
 };
+
+/**
+ * Input an inline comment for field.  Open a user prompt dialog to
+ * input an inline comment.
+ * @param {Blockly.Field} field The field to add inline comment.
+ */
+Blockly.BoundVariables.inputInlineComment = function(field) {
+  var promptText = 'Input inline comment';
+  var defaultComment = field.inlineComment ? field.inlineComment : '';
+  // TODO: Define the message in the Blockly.Msg class.
+  Blockly.prompt(promptText, defaultComment,
+      function(newComment) {
+        if (newComment === '') {
+          // clear the inline comment.
+          field.inlineComment = null;
+	} else if (!newComment) {
+          // NOP. User canceled prompt.
+        } else {
+          field.inlineComment = newComment;
+        }
+      });
+};

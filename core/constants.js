@@ -290,3 +290,12 @@ Blockly.RENAME_VARIABLE_ID = 'RENAME_VARIABLE_ID';
  * @const {string}
  */
 Blockly.DELETE_VARIABLE_ID = 'DELETE_VARIABLE_ID';
+
+/**
+ * String for use in the dropdown created in record_field_variable.
+ * This string indicates that this option in the dropdown is 'Input
+ * inline comment...' and if selected, should trigger the prompt to
+ * input inline comment.
+ * @const {string}
+ */
+Blockly.INPUT_INLINE_COMMENT = 'INPUT_INLINE_COMMENT'
