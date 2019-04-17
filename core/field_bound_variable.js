@@ -599,6 +599,10 @@ Blockly.FieldBoundVariable.dropdownCreate = function() {
     goog.asserts.fail('Not implemented for this type of variable.');
   }
   options.push([message, Blockly.RENAME_VARIABLE_ID]);
+  if (this.isForRecordField()) {
+    var message = 'Input inline comment...';
+    options.push([message, Blockly.INPUT_INLINE_COMMENT]);
+  }
   return options;
 };
 
@@ -617,6 +621,8 @@ Blockly.FieldBoundVariable.prototype.onItemSelected = function(menu, menuItem) {
     Blockly.BoundVariables.renameVariable(this.variable_);
   } else if (id == Blockly.DELETE_VARIABLE_ID) {
     throw 'Not implemented yet.';
+  } else if (id == Blockly.INPUT_INLINE_COMMENT) {
+    Blockly.BoundVariables.inputInlineComment(this);
   }
 };
 

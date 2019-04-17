@@ -64,7 +64,7 @@ Blockly.TypedLang['logic_ternary_typed'] = function(block) {
       Blockly.TypedLang.ORDER_THEN) || '?';
   var value_else = Blockly.TypedLang.valueToCode(block, 'ELSE',
       Blockly.TypedLang.ORDER_ELSE) || '?';
-  var code = 'if ' + value_if + ' then ' + value_then + ' else ' +
+  var code = 'if ' + value_if + ' then ' + value_then + '\n  else ' +
       value_else;
   return [code, Blockly.TypedLang.ORDER_EXPR];
 };
@@ -288,7 +288,11 @@ Blockly.TypedLang['let_typed'] = function(block) {
 
   var code = 'let ';
   if (block.isRecursive()) code += 'rec ';
-  code += varname + arg + ' = ' + exp1;
+  if (args.length == 0) {
+    code += varname + ' = ' + exp1;
+  } else {
+    code += varname + arg + ' =\n  ' + exp1;
+  }
 
   if (block.getIsStatement()) {
     code += '\n';
@@ -296,7 +300,7 @@ Blockly.TypedLang['let_typed'] = function(block) {
   }
   var exp2 = Blockly.TypedLang.valueToCode(block, 'EXP2',
       Blockly.TypedLang.ORDER_IN) || '?';
-  code += ' in ' + exp2;
+  code += '\n  in ' + exp2;
   return [code, Blockly.TypedLang.ORDER_EXPR];
 };
 
@@ -320,16 +324,18 @@ Blockly.TypedLang['defined_recordtype_typed'] = function(block) {
   }
   var field = block.getField('DATANAME');
   var dataName = field.getVariableName();
-  var code = 'type ' + dataName + ' = {';
+  var code = 'type ' + dataName + ' = {\n';
   for (var i = 0; i < block.itemCount_; i++) {
     var recordField = block.getField('FIELD' + i);
-    code += recordField.getVariableName();
+    code += '  ' + recordField.getVariableName();
     code += ' : ';
     var typeCtor = Blockly.TypedLang.valueToCode(block, 'FIELD_INP' + i,
         Blockly.TypedLang.ORDER_SEMI) || '?';
     code += typeCtor;
-    if (i != block.itemCount_ - 1) {
-      code += '; ';
+    if (recordField.inlineComment) {
+      code += ';\t(* ' + recordField.inlineComment + ' *)\n';
+    } else {
+      code += ';\n';
     }
   }
   code += '}\n';
