@@ -16,6 +16,7 @@ Typed.SCRIPTS_FOR_DEV = [
   "../../generators/typedlang.js",
   "../../generators/typedlang/blocks.js",
   "../../msg/js/en.js",
+  "../../msg/js/ja.js",
   "../../block_of_ocaml/converter.js",
   "../../block_of_ocaml/utils.js",
 ];
@@ -25,6 +26,7 @@ Typed.SCRIPTS_FOR_PROD = [
   "blocks_compressed.js",
   "typedlang_compressed.js",
   "en.js",
+  "ja.js",
   "converter.js",
   "block_of_ocaml_utils.js",
 ];

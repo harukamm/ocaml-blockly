@@ -11,6 +11,7 @@ sourceMap = {
   "blocks_compressed.js": "./",
   "typedlang_compressed.js": "./",
   "en.js": "msg/js/",
+  "ja.js": "msg/js/",
   "index.html": "demos/typed/dev.html",
   "style.css": "demos/typed/",
   "typed.js": "demos/typed/",

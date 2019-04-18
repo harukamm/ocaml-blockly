@@ -1209,3 +1209,8 @@ Blockly.Msg.PROCEDURES_IFRETURN_WARNING = 'Warning: This block may be used only 
 /// comment text - This text appears in a new workspace comment, to hint that
 /// the user can type here.
 Blockly.Msg.WORKSPACE_COMMENT_DEFAULT_TEXT = 'Say something...';
+
+/// context menu - Add 'rec' to a let block
+Blockly.Msg.ADD_REC = 'Add rec';
+/// context menu - Remove 'rec' from a let block
+Blockly.Msg.REMOVE_REC = 'Remove rec';
