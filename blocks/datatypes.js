@@ -234,7 +234,39 @@ Blockly.Blocks['create_record_typed'] = {
   infer: function() {
     this.updateStructure();
     return this.outputConnection.typeExpr;
-  }
+  },
+
+  resizeRecordFieldInputs: function(expectedCount) {
+    while (expectedCount < this.itemCount_) {
+      var index = this.itemCount_ - 1;
+      // Decrement the size of items first. The function this.removeInput()
+      // might disconnect some blocks from this block, and disconnecting blocks
+      // triggers type inference, which causes a null pointer exception. To
+      // avoid the type inference for the removed input, update the size of
+      // items first.
+      this.itemCount_--;
+      this.removeInput('FIELD_INP' + index);
+    }
+    if (this.itemCount_ < expectedCount) {
+      this.removeInput('RBRACE');
+      while (this.itemCount_ < expectedCount) {
+        this.appendFieldInput();
+      }
+      this.appendDummyInput('RBRACE')
+          .appendField('}')
+          .setAlign(Blockly.ALIGN_RIGHT);
+    }
+  },
+
+  /**
+   * Parse XML to restore the record field inputs.
+   * @param {!Element} xmlElement XML storage element.
+   * @this Blockly.Block
+   */
+  domToMutation: function(xmlElement) {
+    var newItemCount = parseInt(xmlElement.getAttribute('items')) || 2;
+    this.resizeRecordFieldInputs(newItemCount);
+  },
 };
 
 Blockly.Blocks['defined_datatype_typed'] = {
